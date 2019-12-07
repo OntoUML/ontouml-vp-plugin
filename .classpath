@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/openapi"/>
+	<classpathentry kind="lib" path="lib/antlr-runtime-3.2.jar"/>
+	<classpathentry kind="lib" path="lib/aopalliance-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/guava-19.0-rc3.jar"/>
+	<classpathentry kind="lib" path="lib/guice-3.0.jar"/>
+	<classpathentry kind="lib" path="lib/it.unibz.inf.ontouml.xtext-1.0.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/javax.inject-1.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.16.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.emf.common-2.12.0.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.emf.ecore-2.12.0.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.emf.ecore.xmi-2.12.0.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.equinox.common-3.8.0.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.osgi-3.11.2.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.xtend.lib-2.13.0.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.xtend.lib.macro-2.13.0.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.xtext-2.13.0.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.xtext.util-2.13.0.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.xtext.xbase.lib-2.13.0.jar"/>
+	<classpathentry kind="lib" path="lib/json-simple-1.1.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Visual Paradigm Plugin Development"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Visual Paradigm Plug-in Library"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>

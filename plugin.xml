@@ -1,0 +1,8 @@
+<plugin
+		id="it.unibz.inf.ontouml.vp"
+		name="OntoUML Plugin for Visual Paradigm"
+		description="OntoUML Plugin Visual Paradigm"
+		provider="University of Bolzano"
+		class="it.unibz.inf.ontouml.vp.OntoUMLPluginForVP">
+	<actionSets />
+</plugin>

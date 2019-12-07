@@ -1,0 +1,15 @@
+*~
+logs.zip
+*.orig
+# we need xtend generated Java files for tycho building in Jenkins
+# xtend-gen/
+target/
+*.java._trace
+*.smap
+*.xtendbin
+
+# We have to upload the compiled files in order to work in VP out of the box. In the future we can just upload JAR files in the releases.
+#/classes/
+#*.class
+#bin/
+*.DS_Store
