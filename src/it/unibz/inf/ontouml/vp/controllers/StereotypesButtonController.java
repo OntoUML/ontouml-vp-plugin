@@ -1,4 +1,4 @@
-package it.unibz.inf.ontuml.vp.controllers;
+package it.unibz.inf.ontouml.vp.controllers;
 
 import java.awt.Graphics2D;
 import java.awt.Paint;
