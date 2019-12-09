@@ -4,5 +4,34 @@
 		description="OntoUML Plugin Visual Paradigm"
 		provider="University of Bolzano"
 		class="it.unibz.inf.ontouml.vp.OntoUMLPluginForVP">
-	<actionSets />
+	<actionSets>
+		<actionSet id="it.unibz.inf.ontouml.vp.actionset1">
+			<toolbar
+					id="it.unibz.inf.ontouml.vp.actionset1.toolbar1"
+					orientation="north"
+					index="last"/>
+			<action 
+					id="it.unibz.inf.ontouml.vp.actions.OpenOntoUMLMenuAction"
+					actionType="generalAction"
+					description="Add OntoUML Stereotypes."
+					style="normal"
+					tooltip="Add OntoUML Stereotypes." 
+					icon="icons/menu.png"
+					label="Add OntoUML"
+					toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ActivateOntoUMLPlugin" />
+			</action>
+			<action 
+					id="it.unibz.inf.ontouml.vp.actions.OpenOntoUMLMenuAction2"
+					actionType="generalAction"
+					description="Default Stereotypes."
+					style="normal"
+					tooltip="Default Stereotypes." 
+					icon="icons/menu.png"
+					label="Default Stereotypes"
+					toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ActivateDefaultStereotypes" />
+			</action>
+		</actionSet>
+	</actionSets>
 </plugin>

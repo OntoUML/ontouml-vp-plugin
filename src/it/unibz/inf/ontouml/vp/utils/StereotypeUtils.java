@@ -37,32 +37,64 @@ public class StereotypeUtils {
 	public static final String STR_EXTERNAL_DEPENDENCE = "external dependence";
 
 	public static void removeAllModelSteryotypes(String modelType) {
-		ProjectManager pm = ApplicationManager.instance().getProjectManager();
-		IProject p = pm.getProject();
-		IModelElement[] all_strs = pm.getSelectableStereotypesForModelType(modelType, p, true);
+		
+		ProjectManager projectManager = ApplicationManager.instance().getProjectManager();
+		IProject project = projectManager.getProject();
+		IModelElement[] allModels = projectManager.getSelectableStereotypesForModelType(modelType, project, true);
 
-		for (IModelElement str : all_strs)
-			str.delete();
+		for (IModelElement model : allModels)
+			model.delete();
+
+		return;
+	}
+	
+	public static void removeAllModelSteryotypesButOntoUML(String modelType) {
+		
+		ProjectManager projectManager = ApplicationManager.instance().getProjectManager();
+		IProject project = projectManager.getProject();
+		IModelElement[] allModels = projectManager.getSelectableStereotypesForModelType(modelType, project, true);
+		
+		final Set<String> classStereotypes = getOntoUMLClassStereotypeNames();
+		final Set<String> associationStereotypes = getOntoUMLAssociationStereotypeNames();
+		
+		
+		for (IModelElement model : allModels) {
+			
+			if(!classStereotypes.contains(model.getName()) || !associationStereotypes.contains(model.getName()))
+				model.delete();
+		}
+
+		return;
+	}
+
+	public static void setDefaultStereotypes(IModelElement[] elements) {
+
+		for (IModelElement model : elements) {
+			IStereotype stereotype = IModelElementFactory.instance().createStereotype();
+			stereotype.setName(model.getName());
+			stereotype.setBaseType(IModelElementFactory.MODEL_TYPE_CLASS);
+		}
 
 		return;
 	}
 
 	public static void setUpOntoUMLStereotypes() {
+		
 		System.out.println("Checking stereotypes...");
 
-		final Set<String> class_stereotypes = getOntoUMLClassStereotypeNames();
+		final Set<String> classStereotypes = getOntoUMLClassStereotypeNames();
 
-		for (String ontoUML_stereotype : class_stereotypes) {
-			System.out.println("Generating stereotype «" + ontoUML_stereotype + "».");
+		for (String ontoUML_stereotype : classStereotypes) {
+			System.out.println("Generating stereotype Â«" + ontoUML_stereotype + "Â»");
 			final IStereotype s = IModelElementFactory.instance().createStereotype();
 			s.setName(ontoUML_stereotype);
 			s.setBaseType(IModelElementFactory.MODEL_TYPE_CLASS);
 		}
 
-		final Set<String> association_stereotypes = getOntoUMLAssociationStereotypeNames();
+		final Set<String> associationStereotypes = getOntoUMLAssociationStereotypeNames();
 
-		for (String missing_str_name : association_stereotypes) {
-			System.out.println("Generating stereotype «" + missing_str_name + "».");
+		for (String missing_str_name : associationStereotypes) {
+			System.out.println("Generating stereotype Â«" + missing_str_name + "Â»");
 			final IStereotype s = IModelElementFactory.instance().createStereotype();
 			s.setName(missing_str_name);
 			s.setBaseType(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
