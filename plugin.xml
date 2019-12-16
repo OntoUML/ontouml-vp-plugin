@@ -32,6 +32,17 @@
 					toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
 				<actionController class="it.unibz.inf.ontouml.vp.controllers.ActivateDefaultStereotypes" />
 			</action>
+			<action 
+					id="it.unibz.inf.ontouml.vp.actions.OpenOntoUMLMenuAction3"
+					actionType="generalAction"
+					description="Validate the OntoUML Model."
+					style="normal"
+					tooltip="Validate model" 
+					icon="icons/menu.png"
+					label="Validate Model"
+					toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ValidateOntoUMLModel" />
+			</action>
 		</actionSet>
 	</actionSets>
 </plugin>

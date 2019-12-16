@@ -13,6 +13,7 @@ public class OntoUMLPluginForVP implements VPPlugin {
 	public static final String PLUGIN_ID = "it.unibz.inf.ontouml.vp";
 	public static final String PLUGIN_NAME = "OntoUML Plugin";
 	public static IModelElement[] allModelElements;
+	public static boolean isPluginActive;
 
 	@Override
 	public void loaded(VPPluginInfo arg0) {
