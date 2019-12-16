@@ -45,8 +45,8 @@ public class Property {
 		return URI;
 	}
 
-	public void setURI(String uRI) {
-		URI = uRI;
+	public void setURI(String URI) {
+		this.URI = URI;
 	}
 	
 	public String getName() {

@@ -14,8 +14,8 @@ public class ActivateOntoUMLPlugin implements VPActionController {
 
 		if (!OntoUMLPluginForVP.isPluginActive) {
 			
-			StereotypeUtils.removeAllModelSteryotypesButOntoUML(IModelElementFactory.MODEL_TYPE_CLASS);
-			StereotypeUtils.removeAllModelSteryotypesButOntoUML(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
+			StereotypeUtils.removeAllModelStereotypesButOntoUML(IModelElementFactory.MODEL_TYPE_CLASS);
+			StereotypeUtils.removeAllModelStereotypesButOntoUML(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
 			StereotypeUtils.setUpOntoUMLStereotypes();
 			OntoUMLPluginForVP.isPluginActive = true;
 			

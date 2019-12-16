@@ -1,6 +1,6 @@
 package it.unibz.inf.ontouml.vp.ontoumlschema;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.annotations.Expose;
@@ -20,13 +20,18 @@ public class Relation implements StructuralElement {
     @Expose
 	private String name;
 	
+	@SerializedName("stereotypes")
+    @Expose
+	private List<String> stereotypes;
+	
 	@SerializedName("properties")
     @Expose
-	private List<String> properties;
+	private List<Property> properties;
 	
 	public Relation(){
 		this.type = "Relation";
-		this.properties = new LinkedList<String>();
+		this.stereotypes = new ArrayList<String>();
+		this.properties = new ArrayList<Property>();
 	}
 	
 	@Override
@@ -52,12 +57,48 @@ public class Relation implements StructuralElement {
 		this.name = name;
 	}
 	
-	public List<String> getProperties() {
+	public List<String> getStereotypes() {
+		return this.stereotypes;
+	}
+
+	public void setStereotypes(List<String> stereotypes) {
+		this.stereotypes = stereotypes;
+	}
+
+	public String getStereotype(int position) {
+		return this.stereotypes.get(position);
+	}
+	
+	public void addStereotype(String name) {
+		this.stereotypes.add(name);
+	}
+	
+	public void removeStereotype(String name) {
+		
+		if(this.stereotypes.contains(name))
+			this.stereotypes.remove(name);
+	}
+
+	public List<Property> getProperties() {
 		return properties;
 	}
 
-	public void setProperties(List<String> properties) {
+	public void setProperties(List<Property> properties) {
 		this.properties = properties;
+	}
+	
+	public Property getProperty(int position) {
+		return this.properties.get(position);
+	}
+	
+	public void addProperty(Property property) {
+		this.properties.add(property);
+	}
+	
+	public void removeProperty(Property property) {
+		
+		if(this.properties.contains(property))
+			this.properties.remove(property);
 	}
 
 }

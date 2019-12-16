@@ -36,7 +36,7 @@ public class StereotypeUtils {
 	public static final String STR_CHARACTERIZATION = "characterization";
 	public static final String STR_EXTERNAL_DEPENDENCE = "external dependence";
 
-	public static void removeAllModelSteryotypes(String modelType) {
+	public static void removeAllModelStereotypes(String modelType) {
 
 		ProjectManager projectManager = ApplicationManager.instance().getProjectManager();
 		IProject project = projectManager.getProject();
@@ -44,11 +44,11 @@ public class StereotypeUtils {
 
 		for (IModelElement model : allModels)
 			model.delete();
-
+	
 		return;
 	}
 
-	public static void removeAllModelSteryotypesButOntoUML(String modelType) {
+	public static void removeAllModelStereotypesButOntoUML(String modelType) {
 
 		ProjectManager projectManager = ApplicationManager.instance().getProjectManager();
 		IProject project = projectManager.getProject();
@@ -56,10 +56,10 @@ public class StereotypeUtils {
 
 		final Set<String> classStereotypes = getOntoUMLClassStereotypeNames();
 		final Set<String> associationStereotypes = getOntoUMLAssociationStereotypeNames();
-
+	
 		for (IModelElement model : allModels) {
-
-			if (!classStereotypes.contains(model.getName()) || !associationStereotypes.contains(model.getName()))
+			
+			if(!(classStereotypes.contains(model.getName()) || associationStereotypes.contains(model.getName())))
 				model.delete();
 		}
 

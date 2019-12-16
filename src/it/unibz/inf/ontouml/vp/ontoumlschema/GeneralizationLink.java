@@ -59,5 +59,9 @@ public class GeneralizationLink implements StructuralElement {
 	public void setTuple(List<String> tuple) {
 		this.tuple = tuple;
 	}
+	
+	public void addTuple(String str) {
+		this.tuple.add(str);
+	}
 
 }

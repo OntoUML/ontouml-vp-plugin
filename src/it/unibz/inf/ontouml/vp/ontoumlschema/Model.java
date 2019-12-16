@@ -1,17 +1,12 @@
 package it.unibz.inf.ontouml.vp.ontoumlschema;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Model {
-
-	@SerializedName("@schema")
-	@Expose
-	private final String schema;
 	
 	@SerializedName("name")
 	@Expose
@@ -35,12 +30,12 @@ public class Model {
 
 	@SerializedName("structuralElements")
 	@Expose
-	private Package root;
+	private List<Package> structuralElements;
 
 	public Model() {
-		this.schema = "http://json-schema.org/draft-07/schema#";
 		this.type = "Model";
 		this.authors = new ArrayList<String>();
+		this.structuralElements = new ArrayList<Package>();
 	}
 	
 	public String getName() {
@@ -68,7 +63,7 @@ public class Model {
 	}
 
 	public List<String> getAuthors() {
-		return authors;
+		return this.authors;
 	}
 
 	public void setAuthors(List<String> authors) {
@@ -89,12 +84,22 @@ public class Model {
 			this.authors.remove(name);
 	}
 	
-	public Package getRoot() {
-		return root;
+	public List<Package> getStructuralElements() {
+		return structuralElements;
 	}
 
-	public void setRoot(Package root) {
-		this.root = root;
+	public void setStructuralElements(List<Package> newPackage) {
+		this.structuralElements = newPackage;
+	}
+	
+	public void addStructuralElement(Package newPackage) {
+		this.structuralElements.add(newPackage);
+	}
+	
+	public void removeStructuralElement(Package newPackage) {
+		
+		if(this.structuralElements.contains(newPackage))
+			this.structuralElements.remove(newPackage);
 	}
 
 }

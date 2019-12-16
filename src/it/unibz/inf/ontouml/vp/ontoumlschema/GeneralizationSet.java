@@ -9,45 +9,66 @@ import com.google.gson.annotations.SerializedName;
 public class GeneralizationSet implements StructuralElement {
 
 	@SerializedName("@type")
-    @Expose
+	@Expose
 	private final String type;
-	
+
+	@SerializedName("name")
+	@Expose
+	private String name;
+
+	@SerializedName("url")
+	@Expose
+	private String URL;
+
 	@SerializedName("uri")
-    @Expose
+	@Expose
 	private String URI;
-	
+
 	@SerializedName("isDisjoint")
-    @Expose
+	@Expose
 	private boolean isDisjoint;
-	
+
 	@SerializedName("isComplete")
-    @Expose
+	@Expose
 	private boolean isComplete;
-	
+
 	@SerializedName("tuple")
-    @Expose
+	@Expose
 	private List<String> tuple;
 
-	GeneralizationSet(){
+	public GeneralizationSet() {
 		this.type = "GeneralizationSet";
 		this.tuple = new LinkedList<String>();
 	}
 	
-	@Override
 	public String getType() {
-		return null;
+		return type;
 	}
 
-	@Override
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getURL() {
+		return URL;
+	}
+
+	public void setURL(String uRL) {
+		URL = uRL;
+	}
+
 	public String getURI() {
 		return URI;
 	}
-	
-	@Override
+
 	public void setURI(String uRI) {
 		URI = uRI;
 	}
-	
+
 	public boolean isDisjoint() {
 		return isDisjoint;
 	}
@@ -64,14 +85,16 @@ public class GeneralizationSet implements StructuralElement {
 		this.isComplete = isComplete;
 	}
 
-	
-
 	public List<String> getTuple() {
 		return tuple;
 	}
 
 	public void setTuple(List<String> tuple) {
 		this.tuple = tuple;
+	}
+	
+	public void addTuple(String str) {
+		this.tuple.add(str);
 	}
 
 }

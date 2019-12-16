@@ -1,6 +1,8 @@
 package it.unibz.inf.ontouml.vp.ontoumlschema;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.google.gson.annotations.Expose;
@@ -23,7 +25,7 @@ public class Class implements StructuralElement {
 	
 	@SerializedName("stereotypes")
     @Expose
-	private Set<String> stereotypes;
+	private List<String> stereotypes;
 	
 	@SerializedName("properties")
     @Expose
@@ -31,7 +33,7 @@ public class Class implements StructuralElement {
 	
 	public Class(){
 		this.type  = "Class";
-		this.stereotypes = new HashSet<String>();
+		this.stereotypes = new ArrayList<String>();
 		this.properties = new HashSet<Property>();
 	}
 	
@@ -58,12 +60,26 @@ public class Class implements StructuralElement {
 		this.name = name;
 	}
 	
-	public Set<String> getStereotypes() {
-		return stereotypes;
+	public List<String> getStereotypes() {
+		return this.stereotypes;
 	}
 
-	public void setStereotypes(Set<String> stereotypes) {
+	public void setStereotypes(List<String> stereotypes) {
 		this.stereotypes = stereotypes;
+	}
+
+	public String getStereotype(int position) {
+		return this.stereotypes.get(position);
+	}
+	
+	public void addStereotype(String name) {
+		this.stereotypes.add(name);
+	}
+	
+	public void removeStereotype(String name) {
+		
+		if(this.stereotypes.contains(name))
+			this.stereotypes.remove(name);
 	}
 
 	public Set<Property> getProperties() {
@@ -72,10 +88,6 @@ public class Class implements StructuralElement {
 
 	public void setProperties(Set<Property> properties) {
 		this.properties = properties;
-	}
-	
-	public void addStereotype(String stereotype) {
-		this.stereotypes.add(stereotype);
 	}
 
 }

@@ -12,8 +12,8 @@ public class ActivateDefaultStereotypes implements VPActionController {
 	@Override
 	public void performAction(VPAction arg0) {
 		
-		StereotypeUtils.removeAllModelSteryotypesButOntoUML(IModelElementFactory.MODEL_TYPE_CLASS);
-		StereotypeUtils.removeAllModelSteryotypesButOntoUML(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
+		StereotypeUtils.removeAllModelStereotypesButOntoUML(IModelElementFactory.MODEL_TYPE_CLASS);
+		StereotypeUtils.removeAllModelStereotypesButOntoUML(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
 		StereotypeUtils.setDefaultStereotypes(OntoUMLPluginForVP.allModelElements);
 		OntoUMLPluginForVP.isPluginActive = false;
 		
