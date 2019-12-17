@@ -9,39 +9,40 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Class implements StructuralElement {
-	
 
+	public static final String baseURI = "model:#/class/";
+	
 	@SerializedName("@type")
-    @Expose
+	@Expose
 	private final String type;
-	
+
 	@SerializedName("uri")
-    @Expose
+	@Expose
 	private String URI;
-	
+
 	@SerializedName("name")
-    @Expose
+	@Expose
 	private String name;
-	
+
 	@SerializedName("stereotypes")
-    @Expose
+	@Expose
 	private List<String> stereotypes;
-	
+
 	@SerializedName("properties")
-    @Expose
+	@Expose
 	private Set<Property> properties;
-	
-	public Class(){
-		this.type  = "Class";
+
+	public Class() {
+		this.type = "Class";
 		this.stereotypes = new ArrayList<String>();
 		this.properties = new HashSet<Property>();
 	}
-	
+
 	@Override
 	public String getType() {
 		return this.type;
 	}
-	
+
 	@Override
 	public String getURI() {
 		return URI;
@@ -49,17 +50,17 @@ public class Class implements StructuralElement {
 
 	@Override
 	public void setURI(String URI) {
-		this.URI = URI;
+		this.URI = Class.baseURI + URI;
 	}
 
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public List<String> getStereotypes() {
 		return this.stereotypes;
 	}
@@ -71,14 +72,14 @@ public class Class implements StructuralElement {
 	public String getStereotype(int position) {
 		return this.stereotypes.get(position);
 	}
-	
+
 	public void addStereotype(String name) {
 		this.stereotypes.add(name);
 	}
-	
+
 	public void removeStereotype(String name) {
-		
-		if(this.stereotypes.contains(name))
+
+		if (this.stereotypes.contains(name))
 			this.stereotypes.remove(name);
 	}
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
@@ -24,6 +25,7 @@ import it.unibz.inf.ontouml.vp.ontoumlschema.Model;
 import it.unibz.inf.ontouml.vp.ontoumlschema.Package;
 import it.unibz.inf.ontouml.vp.ontoumlschema.Property;
 import it.unibz.inf.ontouml.vp.ontoumlschema.Relation;
+import it.unibz.inf.ontouml.vp.ontoumlschema.Stereotypes;
 import it.unibz.inf.ontouml.vp.ontoumlschema.StructuralElement;
 
 public class ValidateOntoUMLModel implements VPActionController {
@@ -69,7 +71,7 @@ public class ValidateOntoUMLModel implements VPActionController {
 					IStereotype[] stereotypes = modelElement.toStereotypeModelArray();
 
 					for (IStereotype stereotype : stereotypes)
-						newClass.addStereotype(stereotype.getName());
+						newClass.addStereotype(Stereotypes.getBaseURI(stereotype.getName()));
 				}
 
 			}
@@ -102,8 +104,8 @@ public class ValidateOntoUMLModel implements VPActionController {
 			//	stringList.add(gen.getFrom().getId());
 			//	newGeneralization.setTuple(stringList);
 				
-				newGeneralization.addTuple(gen.getTo().getId());
-				newGeneralization.addTuple(gen.getFrom().getId());
+				newGeneralization.addTuple(Class.baseURI + gen.getTo().getId());
+				newGeneralization.addTuple(Class.baseURI + gen.getFrom().getId());
 
 			}
 			
@@ -126,8 +128,36 @@ public class ValidateOntoUMLModel implements VPActionController {
 				Property propertyFrom = new Property();
 				Property propertyTo = new Property();
 				
-				propertyFrom.setPropertyType(association.getFrom().getId());
-				propertyTo.setPropertyType(association.getTo().getId());
+				propertyFrom.setURI(association.getFrom().getId());
+				propertyTo.setURI(association.getTo().getId());
+				
+				
+				
+				if(association.getFrom().getModelType().equals("Class"))
+					propertyFrom.setPropertyType(Class.baseURI + association.getFrom().getId());
+				if(association.getFrom().getModelType().equals("Model"))
+					propertyFrom.setPropertyType(Model.baseURI + association.getFrom().getId());
+				if(association.getFrom().getModelType().equals("Package"))
+					propertyFrom.setPropertyType(Package.baseURI + association.getFrom().getId());
+				if(association.getFrom().getModelType().equals("Generalization"))
+					propertyFrom.setPropertyType(GeneralizationLink.baseURI + association.getFrom().getId());
+				if(association.getFrom().getModelType().equals("Association"))
+					propertyFrom.setPropertyType(Relation.baseURI + association.getFrom().getId());
+				if(association.getFrom().getModelType().equals("GeneralizationSet"))
+					propertyFrom.setPropertyType(GeneralizationSet.baseURI + association.getFrom().getId());
+				
+				if(association.getTo().getModelType().equals("Class"))
+					propertyFrom.setPropertyType(Class.baseURI + association.getTo().getId());
+				if(association.getTo().getModelType().equals("Model"))
+					propertyFrom.setPropertyType(Model.baseURI + association.getTo().getId());
+				if(association.getTo().getModelType().equals("Package"))
+					propertyFrom.setPropertyType(Package.baseURI + association.getTo().getId());
+				if(association.getTo().getModelType().equals("Generalization"))
+					propertyFrom.setPropertyType(GeneralizationLink.baseURI + association.getTo().getId());
+				if(association.getTo().getModelType().equals("Association"))
+					propertyFrom.setPropertyType(Relation.baseURI + association.getTo().getId());
+				if(association.getTo().getModelType().equals("GeneralizationSet"))
+					propertyFrom.setPropertyType(GeneralizationSet.baseURI + association.getTo().getId());
 			
 				String fromEndMult = ((IAssociationEnd) association.getFromEnd()).getMultiplicity();
 				int firstDotFrom = fromEndMult.indexOf(".");
@@ -166,7 +196,7 @@ public class ValidateOntoUMLModel implements VPActionController {
 				IGeneralization[] generalizations = generalizationSet.toGeneralizationArray();
 				
 				for(IGeneralization generalization : generalizations)
-					newGeneralizationSet.addTuple(generalization.getId());
+					newGeneralizationSet.addTuple(GeneralizationLink.baseURI + generalization.getId());
 
 			}
 
@@ -194,7 +224,8 @@ public class ValidateOntoUMLModel implements VPActionController {
 
 			// TODO: COLOCAR GENERALIZATION DENTRO DO PACOTE DO SUBTIPO(STUDENT NO NOSSO
 			// EXEMPLO)
-			if (modelElement.getModelType().equals("Generalization") || modelElement.getModelType().contentEquals("Association") || modelElement.getModelType().equals("GeneralizationSet")) {
+			if (modelElement.getModelType().equals("Generalization") || modelElement.getModelType().contentEquals("Association")
+					|| modelElement.getModelType().equals("GeneralizationSet")) {
 				parent = packageRoot;
 
 				StructuralElement newElement = newElements.get(id);
@@ -208,7 +239,11 @@ public class ValidateOntoUMLModel implements VPActionController {
 
 		modelSchema.addStructuralElement(packageRoot);
 
-		Gson gson = new Gson();
+		GsonBuilder builder = new GsonBuilder(); 
+		
+		builder.excludeFieldsWithoutExposeAnnotation();
+		
+		Gson gson = builder.create();
 		String json = gson.toJson(modelSchema);
 		System.out.println(json);
 
