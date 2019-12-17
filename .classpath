@@ -6,5 +6,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Visual Paradigm Plugin Development"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Visual Paradigm Plug-in Library"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gson"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Visual Paradigm Plug-in Dependencies"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
