@@ -49,7 +49,7 @@ public class Stereotypes {
 				return BASE_URI_QUALITY_KIND;
 			case "modeKind":
 				return BASE_URI_MODE_KIND;
-			case "subKind":
+			case "subkind":
 				return BASE_URI_SUBKIND;
 			case "role":
 				return BASE_URI_ROLE;

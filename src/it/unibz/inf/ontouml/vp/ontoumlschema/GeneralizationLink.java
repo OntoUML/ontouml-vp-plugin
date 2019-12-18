@@ -5,10 +5,15 @@ import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.vp.plugin.ApplicationManager;
+import com.vp.plugin.model.IGeneralization;
+import com.vp.plugin.model.IModelElement;
 
 public class GeneralizationLink implements StructuralElement {
 	
 	public static final String baseURI = "model:#/generalization/";
+	
+	private final IGeneralization sourceModelElement;
 
 	@SerializedName("@type")
 	@Expose
@@ -26,9 +31,26 @@ public class GeneralizationLink implements StructuralElement {
 	@Expose
 	private List<String> tuple;
 
-	public GeneralizationLink() {
-		this.type = "GeneralizationLink";
+	public GeneralizationLink(IGeneralization source) {
+		this.sourceModelElement = source;
+		this.type = StructuralElement.TYPE_GENERALIZATION_LINK;
+		this.name = source.getName();
+		this.URI = StructuralElement.getModelElementURI(source);
+				
+		// Add's first the superclass URI and then subclass URI. Here the order is mandatory.
 		this.tuple = new LinkedList<String>();
+		tuple.add(StructuralElement.getModelElementURI(source.getFrom()));
+		tuple.add(StructuralElement.getModelElementURI(source.getTo()));
+	}
+	
+	@Override
+	public String getId() {
+		return getSourceModelElement() != null ? getSourceModelElement().getId() : null;
+	}
+	
+	@Override
+	public IGeneralization getSourceModelElement() {
+		return this.sourceModelElement;
 	}
 
 	@Override

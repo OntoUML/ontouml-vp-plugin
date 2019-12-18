@@ -23,7 +23,7 @@ public class StereotypeUtils {
 	public static final String STR_RELATOR_KIND = "relatorKind";
 	public static final String STR_QUALITY_KIND = "qualityKind";
 	public static final String STR_MODE_KIND = "modeKind";
-	public static final String STR_SUBKIND = "subKind";
+	public static final String STR_SUBKIND = "subkind";
 
 	public static final String STR_ROLE = "role";
 	public static final String STR_PHASE = "phase";

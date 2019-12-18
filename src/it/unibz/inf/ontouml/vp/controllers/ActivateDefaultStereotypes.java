@@ -14,6 +14,7 @@ public class ActivateDefaultStereotypes implements VPActionController {
 		
 		StereotypeUtils.removeAllModelStereotypesButOntoUML(IModelElementFactory.MODEL_TYPE_CLASS);
 		StereotypeUtils.removeAllModelStereotypesButOntoUML(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
+		// TODO This won't help returning to the original set of stereotypes 
 		StereotypeUtils.setDefaultStereotypes(OntoUMLPluginForVP.allModelElements);
 		OntoUMLPluginForVP.isPluginActive = false;
 		

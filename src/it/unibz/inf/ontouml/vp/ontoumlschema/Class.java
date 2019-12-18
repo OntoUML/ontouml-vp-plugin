@@ -7,10 +7,14 @@ import java.util.Set;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.vp.plugin.ApplicationManager;
+import com.vp.plugin.model.IClass;
 
 public class Class implements StructuralElement {
 
 	public static final String baseURI = "model:#/class/";
+	
+	private final IClass sourceModelElement;
 	
 	@SerializedName("@type")
 	@Expose
@@ -32,10 +36,35 @@ public class Class implements StructuralElement {
 	@Expose
 	private Set<Property> properties;
 
-	public Class() {
-		this.type = "Class";
+	public Class(IClass source) {
+		this.sourceModelElement = source;
+		this.type = StructuralElement.TYPE_CLASS;
+		this.name = source.getName();
+		this.URI = StructuralElement.getModelElementURI(source);
+		
+		String[] stereotypes = source.toStereotypeArray();
 		this.stereotypes = new ArrayList<String>();
-		this.properties = new HashSet<Property>();
+		
+		for (int i=0; stereotypes!=null && i<stereotypes.length; i++) {
+			this.stereotypes.add(Stereotypes.getBaseURI(stereotypes[i]));
+		}
+		
+		if(this.stereotypes.isEmpty()) {
+			this.stereotypes = null;
+		}
+		
+		
+//		this.properties = new HashSet<Property>();
+	}
+	
+	@Override
+	public IClass getSourceModelElement() {
+		return this.sourceModelElement;
+	}
+	
+	@Override
+	public String getId() {
+		return getSourceModelElement().getId();
 	}
 
 	@Override
@@ -50,7 +79,7 @@ public class Class implements StructuralElement {
 
 	@Override
 	public void setURI(String URI) {
-		this.URI = Class.baseURI + URI;
+		this.URI = URI;
 	}
 
 	public String getName() {

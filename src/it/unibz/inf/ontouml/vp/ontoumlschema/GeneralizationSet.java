@@ -5,10 +5,14 @@ import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.vp.plugin.model.IGeneralizationSet;
+import com.vp.plugin.model.IModelElement;
 
 public class GeneralizationSet implements StructuralElement {
 
 	public static final String baseURI = "model:#/generalizationset/";
+	
+	private final IGeneralizationSet sourceModelElement;
 
 	@SerializedName("@type")
 	@Expose
@@ -38,9 +42,20 @@ public class GeneralizationSet implements StructuralElement {
 	@Expose
 	private List<String> tuple;
 
-	public GeneralizationSet() {
+	public GeneralizationSet(IGeneralizationSet source) {
+		this.sourceModelElement = source;
 		this.type = "GeneralizationSet";
 		this.tuple = new LinkedList<String>();
+	}
+	
+	@Override
+	public String getId() {
+		return getSourceModelElement().getId();
+	}
+	
+	@Override
+	public IModelElement getSourceModelElement() {
+		return this.sourceModelElement;
 	}
 
 	@Override

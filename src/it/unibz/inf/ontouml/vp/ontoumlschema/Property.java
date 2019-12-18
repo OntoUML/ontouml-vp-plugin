@@ -2,10 +2,14 @@ package it.unibz.inf.ontouml.vp.ontoumlschema;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.IRelationshipEnd;
 
 public class Property implements StructuralElement {
 	
 	public static final String baseURI = "model:#/property/";
+	
+	private final IRelationshipEnd sourceModelElement;
 
 	@SerializedName("@type")
 	@Expose
@@ -35,8 +39,19 @@ public class Property implements StructuralElement {
 	@Expose
 	private String upperbound;
 
-	public Property() {
+	public Property(IRelationshipEnd source) {
+		this.sourceModelElement = source;
 		this.type = "Property";
+	}
+	
+	@Override
+	public String getId() {
+		return getSourceModelElement().getId();
+	}
+	
+	@Override
+	public IModelElement getSourceModelElement() {
+		return this.sourceModelElement;
 	}
 
 	@Override
