@@ -8,9 +8,15 @@ import com.google.gson.annotations.SerializedName;
 
 public class GeneralizationSet implements StructuralElement {
 
+	public static final String baseURI = "model:#/generalizationset/";
+
 	@SerializedName("@type")
 	@Expose
 	private final String type;
+
+	@SerializedName("uri")
+	@Expose
+	private String URI;
 
 	@SerializedName("name")
 	@Expose
@@ -19,10 +25,6 @@ public class GeneralizationSet implements StructuralElement {
 	@SerializedName("url")
 	@Expose
 	private String URL;
-
-	@SerializedName("uri")
-	@Expose
-	private String URI;
 
 	@SerializedName("isDisjoint")
 	@Expose
@@ -40,9 +42,20 @@ public class GeneralizationSet implements StructuralElement {
 		this.type = "GeneralizationSet";
 		this.tuple = new LinkedList<String>();
 	}
-	
+
+	@Override
 	public String getType() {
 		return type;
+	}
+
+	@Override
+	public String getURI() {
+		return URI;
+	}
+
+	@Override
+	public void setURI(String URI) {
+		this.URI = GeneralizationSet.baseURI + URI;
 	}
 
 	public String getName() {
@@ -59,14 +72,6 @@ public class GeneralizationSet implements StructuralElement {
 
 	public void setURL(String uRL) {
 		URL = uRL;
-	}
-
-	public String getURI() {
-		return URI;
-	}
-
-	public void setURI(String uRI) {
-		URI = uRI;
 	}
 
 	public boolean isDisjoint() {
@@ -92,7 +97,7 @@ public class GeneralizationSet implements StructuralElement {
 	public void setTuple(List<String> tuple) {
 		this.tuple = tuple;
 	}
-	
+
 	public void addTuple(String str) {
 		this.tuple.add(str);
 	}

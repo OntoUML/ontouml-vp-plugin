@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class Package implements StructuralElement {
 
+	public static final String baseURI = "model:#/package/";
+	
 	@SerializedName("@type")
 	@Expose
 	private final String type;
@@ -13,9 +15,9 @@ public class Package implements StructuralElement {
 	@SerializedName("uri")
 	@Expose
 	private String URI;
-	
+
 	@SerializedName("url")
-    @Expose
+	@Expose
 	private String URL;
 
 	@SerializedName("name")
@@ -26,8 +28,8 @@ public class Package implements StructuralElement {
 	@Expose
 	private LinkedList<StructuralElement> structuralElements;
 
-	public Package(){
-		this.type  = "Package";
+	public Package() {
+		this.type = "Package";
 		this.structuralElements = new LinkedList<StructuralElement>();
 	}
 
@@ -43,15 +45,15 @@ public class Package implements StructuralElement {
 
 	@Override
 	public void setURI(String URI) {
-		this.URI = URI;
+		this.URI = Package.baseURI + URI;
 	}
-	
+
 	public String getURL() {
 		return URL;
 	}
 
-	public void setURL(String uRL) {
-		URL = uRL;
+	public void setURL(String URL) {
+		this.URL = URL;
 	}
 
 	public String getName() {
@@ -61,7 +63,7 @@ public class Package implements StructuralElement {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public LinkedList<StructuralElement> getStructuralElements() {
 		return structuralElements;
 	}

@@ -3,52 +3,57 @@ package it.unibz.inf.ontouml.vp.ontoumlschema;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Property {
+public class Property implements StructuralElement {
 	
+	public static final String baseURI = "model:#/property/";
+
 	@SerializedName("@type")
-    @Expose
+	@Expose
 	private final String type;
 
 	@SerializedName("uri")
-    @Expose
+	@Expose
 	private String URI;
-	
+
 	@SerializedName("name")
-    @Expose
+	@Expose
 	private String name;
-	
+
 	@SerializedName("url")
-    @Expose
+	@Expose
 	private String URL;
-	
+
 	@SerializedName("propertyType")
-    @Expose
+	@Expose
 	private String propertyType;
-	
+
 	@SerializedName("lowerbound")
-    @Expose
+	@Expose
 	private String lowerbound;
-	
+
 	@SerializedName("upperbound")
-    @Expose
+	@Expose
 	private String upperbound;
-	
+
 	public Property() {
 		this.type = "Property";
 	}
-	
+
+	@Override
 	public String getType() {
 		return this.type;
 	}
-	
+
+	@Override
 	public String getURI() {
 		return URI;
 	}
 
+	@Override
 	public void setURI(String URI) {
-		this.URI = URI;
+		this.URI = Property.baseURI + URI;
 	}
-	
+
 	public String getName() {
 		return name;
 	}

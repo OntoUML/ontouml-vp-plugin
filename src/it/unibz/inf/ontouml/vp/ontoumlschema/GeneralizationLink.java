@@ -8,27 +8,29 @@ import com.google.gson.annotations.SerializedName;
 
 public class GeneralizationLink implements StructuralElement {
 	
+	public static final String baseURI = "model:#/generalization/";
+
 	@SerializedName("@type")
-    @Expose
+	@Expose
 	private final String type;
-	
+
 	@SerializedName("uri")
-    @Expose
+	@Expose
 	private String URI;
-	
+
 	@SerializedName("name")
-    @Expose
+	@Expose
 	private String name;
-	
+
 	@SerializedName("tuple")
-    @Expose
+	@Expose
 	private List<String> tuple;
-	
-	public GeneralizationLink(){
+
+	public GeneralizationLink() {
 		this.type = "GeneralizationLink";
 		this.tuple = new LinkedList<String>();
 	}
-	
+
 	@Override
 	public String getType() {
 		return this.type;
@@ -41,17 +43,17 @@ public class GeneralizationLink implements StructuralElement {
 
 	@Override
 	public void setURI(String URI) {
-		this.URI = URI;
+		this.URI = GeneralizationLink.baseURI + URI;
 	}
 	
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public List<String> getTuple() {
 		return tuple;
 	}
@@ -59,7 +61,7 @@ public class GeneralizationLink implements StructuralElement {
 	public void setTuple(List<String> tuple) {
 		this.tuple = tuple;
 	}
-	
+
 	public void addTuple(String str) {
 		this.tuple.add(str);
 	}
