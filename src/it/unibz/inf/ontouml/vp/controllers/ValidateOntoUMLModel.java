@@ -20,6 +20,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.ViewManager;
 import com.vp.plugin.action.VPAction;
@@ -62,10 +63,22 @@ public class ValidateOntoUMLModel implements VPActionController {
 	private void performVerification() {
 		ViewManager vm = ApplicationManager.instance().getViewManager();
 		vm.clearMessages(VERIFICATION_LOG);
-		vm.showMessage("[" + (new Timestamp(System.currentTimeMillis())) + "] Initiating verification.",VERIFICATION_LOG);
+		vm.showMessage("[" + (new Timestamp(System.currentTimeMillis())) + "] Initiating verification.",
+				VERIFICATION_LOG);
 
+		try {
+			verifyModel(generateModel());
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		vm.showMessage("[" + (new Timestamp(System.currentTimeMillis())) + "] Verification terminated.",
+				VERIFICATION_LOG);
+	}
+	
+	private Model generateModel() {
 		IProject project = ApplicationManager.instance().getProjectManager().getProject();
-
 		IModelElement[] allElements = project.toAllLevelModelElementArray();
 
 		HashMap<String, StructuralElement> newElements = new HashMap<String, StructuralElement>();
@@ -95,118 +108,33 @@ public class ValidateOntoUMLModel implements VPActionController {
 					newElements.put(modelElement.getId(), newClass);
 					break;
 					
-					/*
-				case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
-					Relation newRelation = new Relation((IRelationship) modelElement);
-					newElements.put(modelElement.getId(), newRelation);
-					
-					
-					if (modelElement.getModelType().equals("Association")) {
-						Relation newRelation = new Relation();
-						
-						IAssociation association = (IAssociation) modelElement;
-						
-						Property propertyFrom = new Property();
-						Property propertyTo = new Property();
-						
-						propertyFrom.setURI(association.getFrom().getId());
-						propertyTo.setURI(association.getTo().getId());
-						
-						
-						
-						if(association.getFrom().getModelType().equals("Class"))
-							propertyFrom.setPropertyType(Class.baseURI + association.getFrom().getId());
-						if(association.getFrom().getModelType().equals("Model"))
-							propertyFrom.setPropertyType(Model.baseURI + association.getFrom().getId());
-						if(association.getFrom().getModelType().equals("Package"))
-							propertyFrom.setPropertyType(Package.baseURI + association.getFrom().getId());
-						if(association.getFrom().getModelType().equals("Generalization"))
-							propertyFrom.setPropertyType(GeneralizationLink.baseURI + association.getFrom().getId());
-						if(association.getFrom().getModelType().equals("Association"))
-							propertyFrom.setPropertyType(Relation.baseURI + association.getFrom().getId());
-						if(association.getFrom().getModelType().equals("GeneralizationSet"))
-							propertyFrom.setPropertyType(GeneralizationSet.baseURI + association.getFrom().getId());
-						
-						if(association.getTo().getModelType().equals("Class"))
-							propertyFrom.setPropertyType(Class.baseURI + association.getTo().getId());
-						if(association.getTo().getModelType().equals("Model"))
-							propertyFrom.setPropertyType(Model.baseURI + association.getTo().getId());
-						if(association.getTo().getModelType().equals("Package"))
-							propertyFrom.setPropertyType(Package.baseURI + association.getTo().getId());
-						if(association.getTo().getModelType().equals("Generalization"))
-							propertyFrom.setPropertyType(GeneralizationLink.baseURI + association.getTo().getId());
-						if(association.getTo().getModelType().equals("Association"))
-							propertyFrom.setPropertyType(Relation.baseURI + association.getTo().getId());
-						if(association.getTo().getModelType().equals("GeneralizationSet"))
-							propertyFrom.setPropertyType(GeneralizationSet.baseURI + association.getTo().getId());
-					
-						String fromEndMult = ((IAssociationEnd) association.getFromEnd()).getMultiplicity();
-						int firstDotFrom = fromEndMult.indexOf(".");
-						int lastDotFrom = fromEndMult.lastIndexOf(".");
-						
-						if(firstDotFrom >= 1 && lastDotFrom == 2) {
-							propertyFrom.setLowerbound(fromEndMult.substring(0,firstDotFrom));
-							propertyFrom.setUpperbound(fromEndMult.substring(lastDotFrom + 1,fromEndMult.length()));
-						}else {
-							propertyFrom.setLowerbound(fromEndMult);
-						}
-						
-						String toEndMult = ((IAssociationEnd) association.getToEnd()).getMultiplicity();
-						int firstDotTo = toEndMult.indexOf(".");
-						int lastDotTo = toEndMult.lastIndexOf(".");
-						
-						if(firstDotTo >= 1 && lastDotTo == 2) {
-							propertyFrom.setLowerbound(toEndMult.substring(0,firstDotTo));
-							propertyFrom.setUpperbound(fromEndMult.substring(lastDotFrom + 1,toEndMult.length()));
-						}else {
-							propertyFrom.setLowerbound(toEndMult);
-						}
-						
-						newRelation.addProperty(propertyFrom);
-						newRelation.addProperty(propertyTo);
-					}
-					break;
-					
-				case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
-					break;
-					*/
 					
 				case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
 					GeneralizationLink newGeneralization = new GeneralizationLink((IGeneralization) modelElement);
 					newElements.put(modelElement.getId(), newGeneralization);
 					break;
 					
-				case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
-//					if (modelElement.getModelType().equals("GeneralizationSet")) {
-//						GeneralizationSet newGeneralizationSet = new GeneralizationSet();
-//						newGeneralizationSet.setName(modelElement.getName());
-//						newGeneralizationSet.setURI(modelElement.getId());
-//						newElements.put(modelElement.getId(), newGeneralizationSet);
-//		
-//						IGeneralizationSet generalizationSet = (IGeneralizationSet) modelElement;
-//						
-//						IGeneralization[] generalizations = generalizationSet.toGeneralizationArray();
-//						
-//						for(IGeneralization generalization : generalizations)
-//							newGeneralizationSet.addTuple(GeneralizationLink.baseURI + generalization.getId());
-//		
-//					}
-					break;
+//				TODO Add remaining elements
+//				case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
+//				case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
+//				case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
 			}
 			
 
 		}
 		
-
-		for (IModelElement modelElement : allElements) {
-
+//		TODO Transport this loop to Package constructor
+		for (StructuralElement elem : newElements.values()) {
+			IModelElement modelElement = elem.getSourceModelElement();
 			String id = modelElement.getId();
-
 			Package parent = null;
-
-			if (modelElement.getModelType().equals("Model") || modelElement.getModelType().equals("Package")
-					|| modelElement.getModelType().equals("Class")) {
-
+			
+			System.out.println("Adding " + modelElement.getName());
+			
+			switch (modelElement.getModelType()) {
+			case IModelElementFactory.MODEL_TYPE_MODEL:
+			case IModelElementFactory.MODEL_TYPE_PACKAGE:
+			case IModelElementFactory.MODEL_TYPE_CLASS:
 				if (modelElement.getParent() == null) {
 					parent = packageRoot;
 				} else {
@@ -216,35 +144,23 @@ public class ValidateOntoUMLModel implements VPActionController {
 
 				StructuralElement newElement = newElements.get(id);
 				parent.addStructuralElement(newElement);
+				break;
+			case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
+			case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
+				parent = packageRoot;
+				parent.addStructuralElement(newElements.get(id));
+				break ;
 			}
-
-			// TODO: COLOCAR GENERALIZATION DENTRO DO PACOTE DO SUBTIPO(STUDENT NO NOSSO
-			// EXEMPLO)
-//			if (modelElement.getModelType().equals("Generalization") || modelElement.getModelType().contentEquals("Association")
-//					|| modelElement.getModelType().equals("GeneralizationSet")) {
-//				parent = packageRoot;
-//
-//				StructuralElement newElement = newElements.get(id);
-//				parent.addStructuralElement(newElement);
-//			}
-
-//			if (modelElement.getModelType().equals("Association"))
-//				parent = packageRoot;
 
 		}
 
 		modelSchema.addStructuralElement(packageRoot);
-		try {
-			validateModel(modelSchema);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		
-		vm.showMessage("[" + (new Timestamp(System.currentTimeMillis())) + "] Verification terminated.",VERIFICATION_LOG);
+		return modelSchema;
 		
 	}
 	
-	private void validateModel(Model modelSchema) throws MalformedURLException, IOException {
+	private void verifyModel(Model modelSchema) throws MalformedURLException, IOException {
 		GsonBuilder builder = new GsonBuilder(); 
 		builder.excludeFieldsWithoutExposeAnnotation();
 		Gson gson = builder.create();
@@ -294,25 +210,32 @@ public class ValidateOntoUMLModel implements VPActionController {
 
 	private void displayVerificationResponse(String responseMessage) {
 		ViewManager vm = ApplicationManager.instance().getViewManager();
-		
-		JsonObject response = (JsonObject) new JsonParser().parse(responseMessage).getAsJsonObject();
-		StringBuilder logMessage = new StringBuilder();
-		
-		if(response.has("valid") && response.get("valid").getAsBoolean()) {
-			String line = "The model was verified and no syntactical errors were found.\n";
-			vm.showMessage(line.trim(),VERIFICATION_LOG);
-		}
-		else {
-			JsonArray errors = response.get("meta").getAsJsonArray();
-			for (JsonElement elem : errors) {
-				JsonObject error = elem.getAsJsonObject();
-				String line = '[' 
-						+ error.get("title").getAsString()
-						+ "]\t " 
-						+ error.get("detail").getAsString().replaceAll("ontouml/1.0/", "").replaceAll("ontouml/2.0/", "");
-				vm.showMessage(line.trim(),VERIFICATION_LOG);
+
+		try {
+			JsonObject response = (JsonObject) new JsonParser().parse(responseMessage).getAsJsonObject();
+
+			if (response.has("valid") && response.get("valid").getAsBoolean()) {
+				String line = "The model was verified and no syntactical errors were found.\n";
+				vm.showMessage(line.trim(), VERIFICATION_LOG);
+			} else {
+				JsonArray errors = response.get("meta").getAsJsonArray();
+				for (JsonElement elem : errors) {
+					JsonObject error = elem.getAsJsonObject();
+					String line = '[' + error.get("title").getAsString() + "]\t " + error.get("detail").getAsString()
+							.replaceAll("ontouml/1.0/", "").replaceAll("ontouml/2.0/", "");
+					vm.showMessage(line.trim(), VERIFICATION_LOG);
+				}
 			}
-		}		
+		} catch (JsonSyntaxException e) {
+			vm.showMessage(
+					"Remote verification error."
+							+ " Please submit your Visual Paradigm's log and the time of the error our developers",
+					VERIFICATION_LOG);
+			vm.showMessage(
+					"Your Visual Paradigm's can be exported through the menu 'Help' > 'About' > 'Export Log File...'.",
+					VERIFICATION_LOG);
+			e.printStackTrace();
+		}
 	}
 
 }

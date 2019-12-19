@@ -13,7 +13,7 @@ public class Stereotypes {
 	public static final String BASE_URI_RELATOR_KIND = "ontouml/2.0/relatorKind";
 	public static final String BASE_URI_QUALITY_KIND = "ontouml/2.0/qualityKind";
 	public static final String BASE_URI_MODE_KIND = "ontouml/2.0/modeKind";
-	public static final String BASE_URI_SUBKIND = "ontouml/2.0/subKind";
+	public static final String BASE_URI_SUBKIND = "ontouml/2.0/subkind";
 
 	public static final String BASE_URI_ROLE = "ontouml/1.0/role";
 	public static final String BASE_URI_PHASE = "ontouml/1.0/phase";
