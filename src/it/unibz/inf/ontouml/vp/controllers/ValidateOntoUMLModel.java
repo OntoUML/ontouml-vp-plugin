@@ -40,6 +40,9 @@ import it.unibz.inf.ontouml.vp.ontoumlschema.StructuralElement;
 
 public class ValidateOntoUMLModel implements VPActionController {
 
+//	private static final String VERIFICATION_SERVICE_URL = "http://localhost:3000/v1/verification";
+	private static final String VERIFICATION_SERVICE_URL = "https://ontouml.herokuapp.com/v1/verification";
+
 	Model modelSchema;
 	
 	private static String VERIFICATION_LOG = "Verification Log";
@@ -170,9 +173,15 @@ public class ValidateOntoUMLModel implements VPActionController {
 		System.out.println(json);
 		
 		try {
-			URL url = new URL ("https://ontouml.herokuapp.com/v1/verification");
+			URL url = new URL (VERIFICATION_SERVICE_URL);
 			
-			HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+			HttpURLConnection con;
+			try{
+				con = (HttpsURLConnection) url.openConnection();
+			}
+			catch (ClassCastException e) {
+				con = (HttpURLConnection) url.openConnection();
+			};
 			
 			con.setRequestMethod("POST");
 			con.setRequestProperty("Content-Type", "application/json");

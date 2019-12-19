@@ -2,12 +2,12 @@ package it.unibz.inf.ontouml.vp.ontoumlschema;
 
 public class Stereotypes {
 	
-	public static final String BASE_URI_CATEGORY = "ontouml/1.0/category";
-	public static final String BASE_URI_MIXIN = "ontouml/1.0/mixin";
-	public static final String BASE_URI_ROLE_MIXIN = "ontouml/1.0/roleMixin";
-	public static final String BASE_URI_PHASE_MIXIN = "ontouml/1.0/phaseMixin";
+	public static final String BASE_URI_CATEGORY = "ontouml/2.0/category";
+	public static final String BASE_URI_MIXIN = "ontouml/2.0/mixin";
+	public static final String BASE_URI_ROLE_MIXIN = "ontouml/2.0/roleMixin";
+	public static final String BASE_URI_PHASE_MIXIN = "ontouml/2.0/phaseMixin";
 
-	public static final String BASE_URI_KIND = "ontouml/1.0/kind";
+	public static final String BASE_URI_KIND = "ontouml/2.0/kind";
 	public static final String BASE_URI_COLLECTIVE_KIND = "ontouml/2.0/collectiveKind";
 	public static final String BASE_URI_QUANTITY_KIND = "ontouml/2.0/quantityKind";
 	public static final String BASE_URI_RELATOR_KIND = "ontouml/2.0/relatorKind";
@@ -15,11 +15,11 @@ public class Stereotypes {
 	public static final String BASE_URI_MODE_KIND = "ontouml/2.0/modeKind";
 	public static final String BASE_URI_SUBKIND = "ontouml/2.0/subkind";
 
-	public static final String BASE_URI_ROLE = "ontouml/1.0/role";
-	public static final String BASE_URI_PHASE = "ontouml/1.0/phase";
+	public static final String BASE_URI_ROLE = "ontouml/2.0/role";
+	public static final String BASE_URI_PHASE = "ontouml/2.0/phase";
 
 	/* OntoUML Association Stereotypes for Relation Types */
-	public static final String BASE_URI_MATERIAL = "ontouml/1.0/material";
+	public static final String BASE_URI_MATERIAL = "ontouml/2.0/material";
 	public static final String BASE_URI_COMPARATIVE = "ontouml/2.0/comparative";
 	public static final String BASE_URI_HISTORICAL = "ontouml/2.0/historical";
 	public static final String BASE_URI_MEDIATION = "ontouml/2.0/mediation";
