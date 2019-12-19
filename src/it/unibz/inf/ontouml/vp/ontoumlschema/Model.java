@@ -32,12 +32,12 @@ public class Model {
 
 	@SerializedName("structuralElements")
 	@Expose
-	private List<Package> structuralElements;
+	private List<StructuralElement> structuralElements;
 
 	public Model() {
 		this.type = "Model";
 		this.authors = new ArrayList<String>();
-		this.structuralElements = new ArrayList<Package>();
+		this.structuralElements = new ArrayList<StructuralElement>();
 	}
 
 	public String getType() {
@@ -90,22 +90,20 @@ public class Model {
 			this.authors.remove(name);
 	}
 
-	public List<Package> getStructuralElements() {
+	public List<StructuralElement> getStructuralElements() {
 		return structuralElements;
 	}
 
-	public void setStructuralElements(List<Package> newPackage) {
-		this.structuralElements = newPackage;
+	public void setStructuralElements(List<StructuralElement> elementsList) {
+		this.structuralElements = elementsList;
 	}
 
-	public void addStructuralElement(Package newPackage) {
-		this.structuralElements.add(newPackage);
+	public void addStructuralElement(StructuralElement element) {
+		this.structuralElements.add(element);
 	}
 
-	public void removeStructuralElement(Package newPackage) {
-
-		if (this.structuralElements.contains(newPackage))
-			this.structuralElements.remove(newPackage);
+	public boolean removeStructuralElement(StructuralElement element) {
+		return this.structuralElements.remove(element);
 	}
 
 }

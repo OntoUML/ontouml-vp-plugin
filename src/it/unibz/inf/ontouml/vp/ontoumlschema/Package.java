@@ -5,7 +5,11 @@ import java.util.LinkedList;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.ApplicationManager;
+import com.vp.plugin.model.IClass;
+import com.vp.plugin.model.IGeneralization;
+import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IPackage;
+import com.vp.plugin.model.factory.IModelElementFactory;
 
 public class Package implements StructuralElement {
 
@@ -40,6 +44,38 @@ public class Package implements StructuralElement {
 		this.URI = StructuralElement.getModelElementURI(source);
 		
 		this.structuralElements = new LinkedList<StructuralElement>();
+
+		IModelElement[] children = source.toChildArray();
+		for (int i = 0; children != null && i < children.length; i++) {
+			IModelElement child = children[i];
+
+			switch (child.getModelType()) {
+			case IModelElementFactory.MODEL_TYPE_PACKAGE:
+				Package newModelPackage = new Package((IPackage) child);
+				this.addStructuralElement(newModelPackage);
+				break;
+
+			case IModelElementFactory.MODEL_TYPE_MODEL:
+				Package newPackage = new Package((IPackage) child);
+				this.addStructuralElement(newPackage);
+				break;
+
+			case IModelElementFactory.MODEL_TYPE_CLASS:
+				Class newClass = new Class((IClass) child);
+				this.addStructuralElement(newClass);
+				break;
+
+			case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
+				Generalization newGeneralization = new Generalization((IGeneralization) child);
+				this.addStructuralElement(newGeneralization);
+				break;
+
+//			TODO Add remaining elements
+//			case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
+//			case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
+//			case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
+			}
+		}
 	}
 	
 	public Package(String name, String URI) {

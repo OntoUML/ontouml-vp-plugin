@@ -9,7 +9,7 @@ import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IGeneralization;
 import com.vp.plugin.model.IModelElement;
 
-public class GeneralizationLink implements StructuralElement {
+public class Generalization implements StructuralElement {
 	
 	public static final String baseURI = "model:#/generalization/";
 	
@@ -31,7 +31,7 @@ public class GeneralizationLink implements StructuralElement {
 	@Expose
 	private List<String> tuple;
 
-	public GeneralizationLink(IGeneralization source) {
+	public Generalization(IGeneralization source) {
 		this.sourceModelElement = source;
 		this.type = StructuralElement.TYPE_GENERALIZATION_LINK;
 		this.name = source.getName();
@@ -65,7 +65,7 @@ public class GeneralizationLink implements StructuralElement {
 
 	@Override
 	public void setURI(String URI) {
-		this.URI = GeneralizationLink.baseURI + URI;
+		this.URI = Generalization.baseURI + URI;
 	}
 	
 	public String getName() {

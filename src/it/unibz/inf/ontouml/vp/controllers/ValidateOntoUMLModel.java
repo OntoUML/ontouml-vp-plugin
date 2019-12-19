@@ -1,5 +1,8 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -25,15 +28,19 @@ import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.ViewManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
+import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IGeneralization;
+import com.vp.plugin.model.IGeneralizationSet;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IPackage;
 import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
+import it.unibz.inf.ontouml.vp.ontoumlschema.Association;
 import it.unibz.inf.ontouml.vp.ontoumlschema.Class;
-import it.unibz.inf.ontouml.vp.ontoumlschema.GeneralizationLink;
+import it.unibz.inf.ontouml.vp.ontoumlschema.Generalization;
+import it.unibz.inf.ontouml.vp.ontoumlschema.GeneralizationSet;
 import it.unibz.inf.ontouml.vp.ontoumlschema.Model;
 import it.unibz.inf.ontouml.vp.ontoumlschema.Package;
 import it.unibz.inf.ontouml.vp.ontoumlschema.StructuralElement;
@@ -82,85 +89,70 @@ public class ValidateOntoUMLModel implements VPActionController {
 	
 	private Model generateModel() {
 		IProject project = ApplicationManager.instance().getProjectManager().getProject();
-		IModelElement[] allElements = project.toAllLevelModelElementArray();
-
-		HashMap<String, StructuralElement> newElements = new HashMap<String, StructuralElement>();
+		String[] rootLevelElements = {
+				IModelElementFactory.MODEL_TYPE_PACKAGE,
+				IModelElementFactory.MODEL_TYPE_MODEL,
+				IModelElementFactory.MODEL_TYPE_CLASS
+		};
+		IModelElement[] projectElements = project.toModelElementArray(rootLevelElements);
 
 		modelSchema = new Model();
-		
-		Package packageRoot = new Package(project.getName(),"vpp://root");
 		modelSchema.addAuthor(project.getProjectProperties().getAuthor());
 		modelSchema.setURI("https://ontouml.org/archive/" + project.getId());
 		modelSchema.setName("Test Schema");
 		
-		for (IModelElement modelElement : allElements) {
+		for (int i=0; projectElements!=null && i<projectElements.length; i++) {
+			IModelElement projectElement = projectElements[i];
 			
-			switch(modelElement.getModelType()) {
+			switch(projectElement.getModelType()) {
 				case IModelElementFactory.MODEL_TYPE_PACKAGE:
-					Package newModelPackage = new Package((IPackage) modelElement);
-					newElements.put(modelElement.getId(), newModelPackage);
+					Package newModelPackage = new Package((IPackage) projectElement);
+					modelSchema.addStructuralElement(newModelPackage);
 					break;
 					
 				case IModelElementFactory.MODEL_TYPE_MODEL:
-					Package newPackage = new Package((IPackage) modelElement);
-					newElements.put(modelElement.getId(), newPackage);
+					Package newPackage = new Package((IPackage) projectElement);
+					modelSchema.addStructuralElement(newPackage);
 					break;
 					
 				case IModelElementFactory.MODEL_TYPE_CLASS:
-					Class newClass = new Class((IClass) modelElement);
-					newElements.put(modelElement.getId(), newClass);
+					Class newClass = new Class((IClass) projectElement);
+					modelSchema.addStructuralElement(newClass);
 					break;
-					
-					
+			}
+		}
+		
+		String[] anyLevelElements = {
+				IModelElementFactory.MODEL_TYPE_GENERALIZATION,
+				IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET,
+				IModelElementFactory.MODEL_TYPE_ASSOCIATION,
+				IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS
+		};
+		projectElements = project.toAllLevelModelElementArray(anyLevelElements);
+		
+		for (int i=0; projectElements!=null && i<projectElements.length; i++) {
+			IModelElement projectElement = projectElements[i];
+			
+			switch(projectElement.getModelType()) {
 				case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
-					GeneralizationLink newGeneralization = new GeneralizationLink((IGeneralization) modelElement);
-					newElements.put(modelElement.getId(), newGeneralization);
+					Generalization newGeneralization = new Generalization((IGeneralization) projectElement);
+					modelSchema.addStructuralElement(newGeneralization);
+					break;
+				case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
+					Association newAssociation = new Association((IAssociation) projectElement);
+					modelSchema.addStructuralElement(newAssociation);
+					break;
+				case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
+					GeneralizationSet newGeneralizationSet = new GeneralizationSet((IGeneralizationSet) projectElement);
+					modelSchema.addStructuralElement(newGeneralizationSet);
 					break;
 					
 //				TODO Add remaining elements
-//				case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
 //				case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
-//				case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
 			}
-			
-
 		}
-		
-//		TODO Transport this loop to Package constructor
-		for (StructuralElement elem : newElements.values()) {
-			IModelElement modelElement = elem.getSourceModelElement();
-			String id = modelElement.getId();
-			Package parent = null;
-			
-			System.out.println("Adding " + modelElement.getName());
-			
-			switch (modelElement.getModelType()) {
-			case IModelElementFactory.MODEL_TYPE_MODEL:
-			case IModelElementFactory.MODEL_TYPE_PACKAGE:
-			case IModelElementFactory.MODEL_TYPE_CLASS:
-				if (modelElement.getParent() == null) {
-					parent = packageRoot;
-				} else {
-					String idParent = modelElement.getParent().getId();
-					parent = (Package) newElements.get(idParent);
-				}
-
-				StructuralElement newElement = newElements.get(id);
-				parent.addStructuralElement(newElement);
-				break;
-			case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
-			case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
-				parent = packageRoot;
-				parent.addStructuralElement(newElements.get(id));
-				break ;
-			}
-
-		}
-
-		modelSchema.addStructuralElement(packageRoot);
 		
 		return modelSchema;
-		
 	}
 	
 	private void verifyModel(Model modelSchema) throws MalformedURLException, IOException {
@@ -168,6 +160,12 @@ public class ValidateOntoUMLModel implements VPActionController {
 		builder.excludeFieldsWithoutExposeAnnotation();
 		Gson gson = builder.create();
 		String json = gson.toJson(modelSchema);
+		
+		// Send json model to clipboard
+		Clipboard c = Toolkit.getDefaultToolkit().getSystemClipboard();
+		StringSelection sl = new StringSelection(json);
+		c.setContents(sl, sl);
+		System.out.println("Generated JSON copied to clipboard ;)");
 		
 		System.out.println("[" + (new Timestamp(System.currentTimeMillis())) + "] Validating model: ");
 		System.out.println(json);

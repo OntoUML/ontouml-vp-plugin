@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.vp.plugin.model.IGeneralization;
 import com.vp.plugin.model.IGeneralizationSet;
 import com.vp.plugin.model.IModelElement;
 
@@ -41,11 +42,28 @@ public class GeneralizationSet implements StructuralElement {
 	@SerializedName("tuple")
 	@Expose
 	private List<String> tuple;
+	
+	@SerializedName("categorizer")
+	@Expose
+	private String categorizer;
 
 	public GeneralizationSet(IGeneralizationSet source) {
 		this.sourceModelElement = source;
-		this.type = "GeneralizationSet";
-		this.tuple = new LinkedList<String>();
+		this.type = StructuralElement.TYPE_GENERALIZATION_SET;
+		this.name = source.getName();
+		this.URI = StructuralElement.getModelElementURI(source);
+		this.isComplete = source.isCovering();
+		this.isDisjoint = source.isDisjoint();
+		
+		IGeneralization[] generalizations = source.toGeneralizationArray();
+		this.tuple = new LinkedList<String>();		
+		for (int i = 0; generalizations != null && i < generalizations.length; i++) {
+			IGeneralization gen = generalizations[i];
+			this.tuple.add(StructuralElement.getModelElementURI(gen));
+		}
+		
+//		TODO Update GSON to ignore this field on the serialization whenever it is null.
+//		this.categorizer = StructuralElement.getModelElementURI(source.getPowerType());
 	}
 	
 	@Override

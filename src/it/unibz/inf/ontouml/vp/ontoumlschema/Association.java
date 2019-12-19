@@ -6,14 +6,16 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IAssociation;
+import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IRelationship;
+import com.vp.plugin.model.IRelationshipEnd;
 
-public class Relation implements StructuralElement {
+public class Association implements StructuralElement {
 	
 	public static final String baseURI = "model:#/relation/";
 	
-	private final IRelationship sourceModelElement;
+	private final IAssociation sourceModelElement;
 
 	@SerializedName("@type")
 	@Expose
@@ -33,24 +35,24 @@ public class Relation implements StructuralElement {
 
 	@SerializedName("properties")
 	@Expose
-	private List<Property> properties;
+	private List<AssociationEnd> properties;
 
-	public Relation(IRelationship source) {
+	public Association(IAssociation source) {
 		this.sourceModelElement = source;
 		this.type = StructuralElement.TYPE_RELATION;
 		this.name = source.getName();
 		this.URI = StructuralElement.getModelElementURI(source);
 		
-		if(source instanceof IAssociation) {
-			String[] stereotypes = ((IAssociation) source).toStereotypeArray();
-			this.stereotypes = new ArrayList<String>();
-			
-			for (int i=0; stereotypes!=null && i<stereotypes.length; i++) {
-				this.stereotypes.add(Stereotypes.getBaseURI(stereotypes[i]));
-			}			
+		String[] stereotypes = source.toStereotypeArray();
+		this.stereotypes = stereotypes!=null ? new ArrayList<String>() : null;
+		
+		for (int i=0; stereotypes!=null && i<stereotypes.length; i++) {
+			this.stereotypes.add(Stereotypes.getBaseURI(stereotypes[i]));
 		}
 		
-//		this.properties = new ArrayList<Property>();
+		this.properties = new ArrayList<AssociationEnd>();
+		this.properties.add(new AssociationEnd((IAssociationEnd) source.getFromEnd()));
+		this.properties.add(new AssociationEnd((IAssociationEnd) source.getToEnd()));	
 	}
 
 	@Override
@@ -59,7 +61,7 @@ public class Relation implements StructuralElement {
 	}
 	
 	@Override
-	public IModelElement getSourceModelElement() {
+	public IAssociation getSourceModelElement() {
 		return this.sourceModelElement;
 	}
 	
@@ -75,7 +77,7 @@ public class Relation implements StructuralElement {
 
 	@Override
 	public void setURI(String URI) {
-		this.URI = Relation.baseURI + URI;
+		this.URI = Association.baseURI + URI;
 	}
 
 	public String getName() {
@@ -108,23 +110,23 @@ public class Relation implements StructuralElement {
 			this.stereotypes.remove(name);
 	}
 
-	public List<Property> getProperties() {
+	public List<AssociationEnd> getProperties() {
 		return properties;
 	}
 
-	public void setProperties(List<Property> properties) {
+	public void setProperties(List<AssociationEnd> properties) {
 		this.properties = properties;
 	}
 
-	public Property getProperty(int position) {
+	public AssociationEnd getProperty(int position) {
 		return this.properties.get(position);
 	}
 
-	public void addProperty(Property property) {
+	public void addProperty(AssociationEnd property) {
 		this.properties.add(property);
 	}
 
-	public void removeProperty(Property property) {
+	public void removeProperty(AssociationEnd property) {
 
 		if (this.properties.contains(property))
 			this.properties.remove(property);

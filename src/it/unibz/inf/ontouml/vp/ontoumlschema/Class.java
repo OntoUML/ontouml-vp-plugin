@@ -8,6 +8,7 @@ import java.util.Set;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.ApplicationManager;
+import com.vp.plugin.model.IAttribute;
 import com.vp.plugin.model.IClass;
 
 public class Class implements StructuralElement {
@@ -34,7 +35,7 @@ public class Class implements StructuralElement {
 
 	@SerializedName("properties")
 	@Expose
-	private Set<Property> properties;
+	private Set<Attribute> properties;
 
 	public Class(IClass source) {
 		this.sourceModelElement = source;
@@ -43,7 +44,7 @@ public class Class implements StructuralElement {
 		this.URI = StructuralElement.getModelElementURI(source);
 		
 		String[] stereotypes = source.toStereotypeArray();
-		this.stereotypes = new ArrayList<String>();
+		this.stereotypes = stereotypes!=null ? new ArrayList<String>() : null;
 		
 		for (int i=0; stereotypes!=null && i<stereotypes.length; i++) {
 			this.stereotypes.add(Stereotypes.getBaseURI(stereotypes[i]));
@@ -53,8 +54,17 @@ public class Class implements StructuralElement {
 			this.stereotypes = null;
 		}
 		
-		
-//		this.properties = new HashSet<Property>();
+//		TODO Update to make GSON ignore this field we set as null.
+//		IAttribute[] attributes = source.toAttributeArray();
+//		if(attributes != null) {			
+//			this.properties = new HashSet<Attribute>();
+//			for (int i = 0; attributes != null && i < attributes.length; i++) {
+//				this.properties.add(new Attribute(attributes[i]));
+//			}
+//		}
+//		else {
+//			this.properties = null;
+//		}
 	}
 	
 	@Override
@@ -112,11 +122,11 @@ public class Class implements StructuralElement {
 			this.stereotypes.remove(name);
 	}
 
-	public Set<Property> getProperties() {
+	public Set<Attribute> getProperties() {
 		return properties;
 	}
 
-	public void setProperties(Set<Property> properties) {
+	public void setProperties(Set<Attribute> properties) {
 		this.properties = properties;
 	}
 
