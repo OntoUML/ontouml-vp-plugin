@@ -1,62 +1,68 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.ViewManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
-import com.vp.plugin.model.IAssociation;
-import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IGeneralization;
-import com.vp.plugin.model.IGeneralizationSet;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IPackage;
 import com.vp.plugin.model.IProject;
-import com.vp.plugin.model.IRelationship;
-import com.vp.plugin.model.IRelationshipEnd;
-import com.vp.plugin.model.IStereotype;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.ontoumlschema.Class;
 import it.unibz.inf.ontouml.vp.ontoumlschema.GeneralizationLink;
-import it.unibz.inf.ontouml.vp.ontoumlschema.GeneralizationSet;
 import it.unibz.inf.ontouml.vp.ontoumlschema.Model;
 import it.unibz.inf.ontouml.vp.ontoumlschema.Package;
-import it.unibz.inf.ontouml.vp.ontoumlschema.Property;
-import it.unibz.inf.ontouml.vp.ontoumlschema.Relation;
-import it.unibz.inf.ontouml.vp.ontoumlschema.Stereotypes;
 import it.unibz.inf.ontouml.vp.ontoumlschema.StructuralElement;
 
 public class ValidateOntoUMLModel implements VPActionController {
 
 	Model modelSchema;
+	
+	private static String VERIFICATION_LOG = "Verification Log";
 
-	/**
-	 *
-	 */
-	/**
-	 *
-	 */
 	@Override
 	public void performAction(VPAction arg0) {
+		// TODO Verify memory leak
+		ExecutorService executor = Executors.newFixedThreadPool(10);
+		executor.execute(new Runnable() {
+			@Override public void run() { 
+				performVerification();
+			}
+		});
+	}
+
+	@Override
+	public void update(VPAction arg0) {
+		
+	}
+	
+	private void performVerification() {
+		ViewManager vm = ApplicationManager.instance().getViewManager();
+		vm.clearMessages(VERIFICATION_LOG);
+		vm.showMessage("[" + (new Timestamp(System.currentTimeMillis())) + "] Initiating verification.",VERIFICATION_LOG);
 
 		IProject project = ApplicationManager.instance().getProjectManager().getProject();
 
@@ -234,10 +240,7 @@ public class ValidateOntoUMLModel implements VPActionController {
 			e.printStackTrace();
 		}
 		
-	}
-
-	@Override
-	public void update(VPAction arg0) {
+		vm.showMessage("[" + (new Timestamp(System.currentTimeMillis())) + "] Verification terminated.",VERIFICATION_LOG);
 		
 	}
 	
@@ -250,52 +253,66 @@ public class ValidateOntoUMLModel implements VPActionController {
 		System.out.println("[" + (new Timestamp(System.currentTimeMillis())) + "] Validating model: ");
 		System.out.println(json);
 		
-		String url = "https://ontouml.herokuapp.com/v1/verification";
-		HttpsURLConnection httpsClient = (HttpsURLConnection) new URL(url).openConnection();
-		httpsClient.setRequestMethod("POST");
-		httpsClient.setRequestProperty("Content-Type", "application/json");
-//		httpsClient.setRequestProperty("Accept", "*/*");
-//		httpsClient.setRequestProperty("Cache-Control", "no-cache");
-//		httpsClient.setRequestProperty("Connection", "keepAlive");
-//		httpsClient.setRequestProperty("Host", "ontouml.herokuapp.com");
-//		httpsClient.setRequestProperty("My-Token", "aa187df6-5f6c-47e5-81e2-7e0ba8715a3b,c6c2b720-6b9f-481a-bc8a-1f736c3eab3a");
-//		httpsClient.setRequestProperty("User-Agent", "PostmanRuntime/7.20.1");
-//		httpsClient.setRequestProperty("cache-control", "no-cache");		
-//		  -H 'Accept-Encoding: gzip, deflate' \
-//		  -H 'Content-Length: 2727' \
+		try {
+			URL url = new URL ("https://ontouml.herokuapp.com/v1/verification");
+			
+			HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+			
+			con.setRequestMethod("POST");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setDoOutput(true);
+			
+			OutputStream os = con.getOutputStream();
+			byte[] input = json.getBytes();
+			os.write(input, 0, input.length);
+			os.flush();
+			os.close();
+			
+			StringBuilder response = new StringBuilder();
+			String responseLine = null;
+			BufferedReader br;
+			
+			if (con.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST) {
+				br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			} else {
+				br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+			}
+			
+			while ((responseLine = br.readLine()) != null) {
+				response.append(responseLine.trim());
+			}
+			br.close();
+					    
+			System.out.println(response.toString());
+			displayVerificationResponse(response.toString());
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+	}
+
+	private void displayVerificationResponse(String responseMessage) {
+		ViewManager vm = ApplicationManager.instance().getViewManager();
 		
-		// Send post request
-		httpsClient.setDoOutput(true);
-        try (DataOutputStream wr = new DataOutputStream(httpsClient.getOutputStream())) {
-        	wr.writeBytes(json);
-            wr.flush();
-        }
-        
-        int responseCode = httpsClient.getResponseCode();
-        System.out.println("\nSending 'POST' request to URL : " + url);
-//        System.out.println("Post parameters : " + urlParameters);
-        System.out.println("Response Code : " + responseCode);
-
-        try (BufferedReader in = new BufferedReader(
-            new InputStreamReader(httpsClient.getInputStream()))) {
-
-            String line;
-            StringBuilder response = new StringBuilder();
-
-            while ((line = in.readLine()) != null) {
-                response.append(line);
-            }
-
-            //print result
-            System.out.println("[" + (new Timestamp(System.currentTimeMillis())) + "] Validation terminated.");
-            
-            ViewManager vm = ApplicationManager.instance().getViewManager();
-            vm.clearMessages("OntoUML Issues");
-            vm.showMessage(response.toString(),"OntoUML Issues");
-//            System.out.println(response.toString());
-
-        }
-        
+		JsonObject response = (JsonObject) new JsonParser().parse(responseMessage).getAsJsonObject();
+		StringBuilder logMessage = new StringBuilder();
+		
+		if(response.has("valid") && response.get("valid").getAsBoolean()) {
+			String line = "The model was verified and no syntactical errors were found.\n";
+			vm.showMessage(line.trim(),VERIFICATION_LOG);
+		}
+		else {
+			JsonArray errors = response.get("meta").getAsJsonArray();
+			for (JsonElement elem : errors) {
+				JsonObject error = elem.getAsJsonObject();
+				String line = '[' 
+						+ error.get("title").getAsString()
+						+ "]\t " 
+						+ error.get("detail").getAsString().replaceAll("ontouml/1.0/", "").replaceAll("ontouml/2.0/", "");
+				vm.showMessage(line.trim(),VERIFICATION_LOG);
+			}
+		}		
 	}
 
 }
