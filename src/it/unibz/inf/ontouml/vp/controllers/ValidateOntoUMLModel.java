@@ -11,7 +11,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Timestamp;
-import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -43,8 +42,7 @@ import it.unibz.inf.ontouml.vp.ontoumlschema.Class;
 import it.unibz.inf.ontouml.vp.ontoumlschema.Generalization;
 import it.unibz.inf.ontouml.vp.ontoumlschema.GeneralizationSet;
 import it.unibz.inf.ontouml.vp.ontoumlschema.Model;
-import it.unibz.inf.ontouml.vp.ontoumlschema.Container;
-import it.unibz.inf.ontouml.vp.ontoumlschema.StructuralElement;
+import it.unibz.inf.ontouml.vp.ontoumlschema.Package;
 
 public class ValidateOntoUMLModel implements VPActionController {
 
@@ -82,7 +80,7 @@ public class ValidateOntoUMLModel implements VPActionController {
 			vm.showMessage("[" + (new Timestamp(System.currentTimeMillis())) + "] Verification terminated.",
 					VERIFICATION_LOG);
 		} 
-		catch (IOException e) {
+		catch (Exception e) {
 			e.printStackTrace();
 			vm.showMessage("[" + (new Timestamp(System.currentTimeMillis())) + "] Verification terminated with error.",
 					VERIFICATION_LOG);
@@ -111,13 +109,13 @@ public class ValidateOntoUMLModel implements VPActionController {
 			
 			switch(projectElement.getModelType()) {
 				case IModelElementFactory.MODEL_TYPE_PACKAGE:
-					Container newModelPackage = new Container((IPackage) projectElement);
-					modelSchema.addStructuralElement(newModelPackage);
+					Package newPackage = new Package((IPackage) projectElement);
+					modelSchema.addStructuralElement(newPackage);
 					break;
 					
 				case IModelElementFactory.MODEL_TYPE_MODEL:
-					Container newPackage = new Container((IModel) projectElement);
-					modelSchema.addStructuralElement(newPackage);
+					Model newModelPackage = new Model((IModel) projectElement);
+					modelSchema.addStructuralElement(newModelPackage);
 					break;
 					
 				case IModelElementFactory.MODEL_TYPE_CLASS:
