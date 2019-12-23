@@ -50,7 +50,7 @@
 			<include type="Class"/>
 			
 			<menu
-				id="ontoUMLMenu1" label="OntoUML Stereotypes" mnemonic="M" menuPath="#" icon="icons/cropped-ontuml.png"/>
+				id="ontoUMLMenu1" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/cropped-ontuml.png"/>
 				
 			<separator
 				id="it.unibz.inf.ontouml.vp.separator0" menuPath="ontoUMLMenu1" />
@@ -119,7 +119,7 @@
 			<include type="Association"/>
 			
 			<menu
-				id="ontoUMLMenu2" label="OntoUML Stereotypes" mnemonic="M" menuPath="#" icon="icons/cropped-ontuml.png"/>
+				id="ontoUMLMenu2" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/cropped-ontuml.png"/>
 				
 			<separator
 				id="it.unibz.inf.ontouml.vp.AssociationSeparator0" menuPath="ontoUMLMenu2" />

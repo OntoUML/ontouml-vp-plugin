@@ -23,8 +23,8 @@ public class StereotypeUtils {
 	public static final String STR_RELATOR_KIND = "relatorKind";
 	public static final String STR_QUALITY_KIND = "qualityKind";
 	public static final String STR_MODE_KIND = "modeKind";
+	
 	public static final String STR_SUBKIND = "subkind";
-
 	public static final String STR_ROLE = "role";
 	public static final String STR_PHASE = "phase";
 
@@ -32,9 +32,16 @@ public class StereotypeUtils {
 	public static final String STR_MATERIAL = "material";
 	public static final String STR_COMPARATIVE = "comparative";
 	public static final String STR_HISTORICAL = "historical";
+	
 	public static final String STR_MEDIATION = "mediation";
 	public static final String STR_CHARACTERIZATION = "characterization";
 	public static final String STR_EXTERNAL_DEPENDENCE = "external dependence";
+	
+	public static final String STR_COMPONENT_OF = "componentOf";
+	public static final String STR_MEMBER_OF = "memberOf";
+	public static final String STR_SUB_COLLECTION_OF = "subCollectionOf";
+	public static final String STR_SUB_QUANTITY_OF = "subQuantityOf";
+	public static final String STR_SUM = "sum";
 
 	public static void removeAllModelStereotypes(String modelType) {
 
@@ -87,7 +94,7 @@ public class StereotypeUtils {
 
 		for (String ontoUML_stereotype : classStereotypes) {
 
-			System.out.println("Generating stereotype «" + ontoUML_stereotype + "»");
+			System.out.println("Generating class stereotype «" + ontoUML_stereotype + "»");
 			final IStereotype s = IModelElementFactory.instance().createStereotype();
 			s.setName(ontoUML_stereotype);
 			s.setBaseType(IModelElementFactory.MODEL_TYPE_CLASS);
@@ -98,7 +105,7 @@ public class StereotypeUtils {
 
 		for (String missing_str_name : associationStereotypes) {
 
-			System.out.println("Generating stereotype «" + missing_str_name + "»");
+			System.out.println("Generating association stereotype «" + missing_str_name + "»");
 			final IStereotype s = IModelElementFactory.instance().createStereotype();
 			s.setName(missing_str_name);
 			s.setBaseType(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
@@ -135,9 +142,16 @@ public class StereotypeUtils {
 		str_names.add(STR_MATERIAL);
 		str_names.add(STR_COMPARATIVE);
 		str_names.add(STR_HISTORICAL);
+		
 		str_names.add(STR_MEDIATION);
 		str_names.add(STR_CHARACTERIZATION);
 		str_names.add(STR_EXTERNAL_DEPENDENCE);
+		
+		str_names.add(STR_COMPONENT_OF);
+		str_names.add(STR_MEMBER_OF);
+		str_names.add(STR_SUB_COLLECTION_OF);
+		str_names.add(STR_SUB_QUANTITY_OF);
+		str_names.add(STR_SUM);
 
 		return str_names;
 	}

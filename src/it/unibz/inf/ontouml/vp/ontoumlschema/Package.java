@@ -1,11 +1,10 @@
 package it.unibz.inf.ontouml.vp.ontoumlschema;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IGeneralization;
 import com.vp.plugin.model.IModel;
@@ -13,11 +12,11 @@ import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IPackage;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
-public class Model implements StructuralElement {
+public class Package implements StructuralElement {
 
-	public static final String baseURI = "https://ontouml.org/archive/";
+	public static final String baseURI = "model:#/package/";
 	
-	private final IModel sourceModelElement;
+	private final IPackage sourceModelElement;
 	
 	@SerializedName("@type")
 	@Expose
@@ -27,28 +26,19 @@ public class Model implements StructuralElement {
 	@Expose
 	private String URI;
 
-	@SerializedName("name")
-	@Expose
-	private String name;
-
 	@SerializedName("url")
 	@Expose
 	private String URL;
 
-	@SerializedName("authors")
+	@SerializedName("name")
 	@Expose
-	private List<String> authors;
+	private String name;
 
 	@SerializedName("structuralElements")
 	@Expose
-	private List<StructuralElement> structuralElements;
+	private LinkedList<StructuralElement> structuralElements;
 
-	public Model() {
-		this.sourceModelElement = null;
-		this.type = StructuralElement.TYPE_MODEL;
-	}
-	
-	public Model(IModel source) {
+	public Package(IPackage source) {
 		this.sourceModelElement = source;
 		this.type = StructuralElement.TYPE_PACKAGE;
 		this.name = source.getName();
@@ -91,35 +81,30 @@ public class Model implements StructuralElement {
 			}
 		}
 	}
+
+	@Override
+	public IPackage getSourceModelElement() {
+		return sourceModelElement;
+	}
 	
 	@Override
 	public String getId() {
-		return getSourceModelElement() != null ? getSourceModelElement().getId() : null;
+		return getSourceModelElement().getId();
 	}
 	
 	@Override
-	public IModel getSourceModelElement() {
-		return this.sourceModelElement;
-	}
-
 	public String getType() {
-		return type;
+		return this.type;
 	}
 
+	@Override
 	public String getURI() {
 		return URI;
 	}
 
+	@Override
 	public void setURI(String URI) {
-		this.URI = Model.baseURI + URI;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+		this.URI = Package.baseURI + URI;
 	}
 
 	public String getURL() {
@@ -130,47 +115,24 @@ public class Model implements StructuralElement {
 		this.URL = URL;
 	}
 
-	public List<String> getAuthors() {
-		return this.authors;
+	public String getName() {
+		return name;
 	}
 
-	public void setAuthors(List<String> authors) {
-		this.authors = authors;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getAuthor(int position) {
-		return this.authors.get(position);
-	}
-
-	public void addAuthor(String name) {
-		if(this.authors == null)
-			this.authors = new ArrayList<String>();
-		
-		this.authors.add(name);
-	}
-
-	public void removeAuthor(String name) {
-		if (this.authors.contains(name))
-			this.authors.remove(name);
-	}
-
-	public List<StructuralElement> getStructuralElements() {
+	public LinkedList<StructuralElement> getStructuralElements() {
 		return structuralElements;
 	}
 
-	public void setStructuralElements(List<StructuralElement> elementsList) {
-		this.structuralElements = elementsList;
+	public void setStructuralElements(LinkedList<StructuralElement> structuralElements) {
+		this.structuralElements = structuralElements;
 	}
 
 	public void addStructuralElement(StructuralElement element) {
-		if(this.structuralElements == null)
-			this.structuralElements = new ArrayList<StructuralElement>();
-		
 		this.structuralElements.add(element);
-	}
-
-	public boolean removeStructuralElement(StructuralElement element) {
-		return this.structuralElements.remove(element);
 	}
 
 }
