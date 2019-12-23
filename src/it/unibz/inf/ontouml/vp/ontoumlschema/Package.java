@@ -43,48 +43,43 @@ public class Package implements StructuralElement {
 		this.name = source.getName();
 		this.URI = StructuralElement.getModelElementURI(source);
 		
-		this.structuralElements = new LinkedList<StructuralElement>();
-
 		IModelElement[] children = source.toChildArray();
-		for (int i = 0; children != null && i < children.length; i++) {
-			IModelElement child = children[i];
 
-			switch (child.getModelType()) {
-			case IModelElementFactory.MODEL_TYPE_PACKAGE:
-				Package newModelPackage = new Package((IPackage) child);
-				this.addStructuralElement(newModelPackage);
-				break;
+		if(children != null) {
+			this.structuralElements = new LinkedList<StructuralElement>();
 
-			case IModelElementFactory.MODEL_TYPE_MODEL:
-				Package newPackage = new Package((IPackage) child);
-				this.addStructuralElement(newPackage);
-				break;
-
-			case IModelElementFactory.MODEL_TYPE_CLASS:
-				Class newClass = new Class((IClass) child);
-				this.addStructuralElement(newClass);
-				break;
-
-			case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
-				Generalization newGeneralization = new Generalization((IGeneralization) child);
-				this.addStructuralElement(newGeneralization);
-				break;
-
-//			TODO Add remaining elements
-//			case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
-//			case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
-//			case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
+			for (int i = 0; i < children.length; i++) {
+				IModelElement child = children[i];
+	
+				switch (child.getModelType()) {
+				case IModelElementFactory.MODEL_TYPE_PACKAGE:
+					Package newModelPackage = new Package((IPackage) child);
+					this.addStructuralElement(newModelPackage);
+					break;
+					
+	//			TODO Update when workaround to "GSON's default empty arrays" is found
+	//			case IModelElementFactory.MODEL_TYPE_MODEL:
+	//				Package newPackage = new Package((IPackage) child);
+	//				this.addStructuralElement(newPackage);
+	//				break;
+	
+				case IModelElementFactory.MODEL_TYPE_CLASS:
+					Class newClass = new Class((IClass) child);
+					this.addStructuralElement(newClass);
+					break;
+	
+				case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
+					Generalization newGeneralization = new Generalization((IGeneralization) child);
+					this.addStructuralElement(newGeneralization);
+					break;
+	
+	//			TODO Add remaining elements, maybe by adding these to relation's source's package.
+	//			case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
+	//			case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
+	//			case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
+				}
 			}
 		}
-	}
-	
-	public Package(String name, String URI) {
-		this.sourceModelElement = null;
-		this.type = StructuralElement.TYPE_PACKAGE;
-		this.name = name;
-		this.URI = URI;
-		
-		this.structuralElements = new LinkedList<StructuralElement>();
 	}
 
 	@Override

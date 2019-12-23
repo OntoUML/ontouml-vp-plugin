@@ -7,6 +7,7 @@ public interface StructuralElement {
 	
 	public static final String description = "This field contains entities present in OntoUML structural aspects (packages, classes, relations, generalizations and so on). Contained packages may have their on fields 'structuralElements'.";
 	
+	public static final String TYPE_MODEL = "Model";
 	public static final String TYPE_PACKAGE = "Package";
 	public static final String TYPE_CLASS = "Class";
 	public static final String TYPE_RELATION = "Relation";

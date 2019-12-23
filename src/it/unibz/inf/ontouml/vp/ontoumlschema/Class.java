@@ -44,27 +44,16 @@ public class Class implements StructuralElement {
 		this.URI = StructuralElement.getModelElementURI(source);
 		
 		String[] stereotypes = source.toStereotypeArray();
-		this.stereotypes = stereotypes!=null ? new ArrayList<String>() : null;
 		
-		for (int i=0; stereotypes!=null && i<stereotypes.length; i++) {
-			this.stereotypes.add(Stereotypes.getBaseURI(stereotypes[i]));
+		for (int i=0; stereotypes != null && i<stereotypes.length; i++) {
+			this.addStereotype(Stereotypes.getBaseURI(stereotypes[i]));
 		}
+
+		IAttribute[] attributes = source.toAttributeArray();
 		
-		if(this.stereotypes.isEmpty()) {
-			this.stereotypes = null;
+		for (int i = 0; attributes != null && i < attributes.length; i++) {
+			this.addProperties(new Attribute(attributes[i]));
 		}
-		
-//		TODO Update to make GSON ignore this field we set as null.
-//		IAttribute[] attributes = source.toAttributeArray();
-//		if(attributes != null) {			
-//			this.properties = new HashSet<Attribute>();
-//			for (int i = 0; attributes != null && i < attributes.length; i++) {
-//				this.properties.add(new Attribute(attributes[i]));
-//			}
-//		}
-//		else {
-//			this.properties = null;
-//		}
 	}
 	
 	@Override
@@ -113,12 +102,14 @@ public class Class implements StructuralElement {
 	}
 
 	public void addStereotype(String name) {
+		if(this.stereotypes == null)
+			this.stereotypes = new ArrayList<String>();
+		
 		this.stereotypes.add(name);
 	}
 
 	public void removeStereotype(String name) {
-
-		if (this.stereotypes.contains(name))
+		if(this.stereotypes != null && this.stereotypes.contains(name))
 			this.stereotypes.remove(name);
 	}
 
@@ -126,8 +117,16 @@ public class Class implements StructuralElement {
 		return properties;
 	}
 
-	public void setProperties(Set<Attribute> properties) {
-		this.properties = properties;
+	public void addProperties(Attribute attribute) {
+		if(this.properties == null)
+			this.properties = new HashSet<Attribute>();
+		
+		this.properties.add(attribute);
+	}
+	
+	public void removeProperties(Attribute attribute) {
+		if (this.properties != null && this.properties.contains(attribute))
+			this.properties.remove(attribute);
 	}
 
 }

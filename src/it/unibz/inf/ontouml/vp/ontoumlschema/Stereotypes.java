@@ -13,8 +13,8 @@ public class Stereotypes {
 	public static final String BASE_URI_RELATOR_KIND = "ontouml/2.0/relatorKind";
 	public static final String BASE_URI_QUALITY_KIND = "ontouml/2.0/qualityKind";
 	public static final String BASE_URI_MODE_KIND = "ontouml/2.0/modeKind";
+	
 	public static final String BASE_URI_SUBKIND = "ontouml/2.0/subkind";
-
 	public static final String BASE_URI_ROLE = "ontouml/2.0/role";
 	public static final String BASE_URI_PHASE = "ontouml/2.0/phase";
 
@@ -22,9 +22,18 @@ public class Stereotypes {
 	public static final String BASE_URI_MATERIAL = "ontouml/2.0/material";
 	public static final String BASE_URI_COMPARATIVE = "ontouml/2.0/comparative";
 	public static final String BASE_URI_HISTORICAL = "ontouml/2.0/historical";
+	
 	public static final String BASE_URI_MEDIATION = "ontouml/2.0/mediation";
 	public static final String BASE_URI_CHARACTERIZATION = "ontouml/2.0/characterization";
 	public static final String BASE_URI_EXTERNAL_DEPENDENCE = "ontouml/2.0/externalDependence";
+	
+	public static final String BASE_URI_COMPONENT_OF = "ontouml/2.0/componentOf";
+	public static final String BASE_URI_MEMBER_OF = "ontouml/2.0/memberOf";
+	public static final String BASE_URI_SUB_COLLECTION_OF = "ontouml/2.0/subCollectionOf";
+	public static final String BASE_URI_SUB_QUANTITY_OF = "ontouml/2.0/subQuantityOf";
+	public static final String BASE_URI_SUM = "ontouml/2.0/sum";
+	
+	public static final String BASE_URI_UNKOWN = "vp/custom/";
 	
 	public static String getBaseURI(String stereotype) {
 		
@@ -68,7 +77,7 @@ public class Stereotypes {
 			case "external dependence":
 				return BASE_URI_EXTERNAL_DEPENDENCE;
 			default:
-				return "";
+				return BASE_URI_UNKOWN + stereotype;
 		}
 		
 	}

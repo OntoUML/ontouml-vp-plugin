@@ -11,7 +11,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Timestamp;
-import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -32,6 +31,7 @@ import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IGeneralization;
 import com.vp.plugin.model.IGeneralizationSet;
+import com.vp.plugin.model.IModel;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IPackage;
 import com.vp.plugin.model.IProject;
@@ -43,7 +43,6 @@ import it.unibz.inf.ontouml.vp.ontoumlschema.Generalization;
 import it.unibz.inf.ontouml.vp.ontoumlschema.GeneralizationSet;
 import it.unibz.inf.ontouml.vp.ontoumlschema.Model;
 import it.unibz.inf.ontouml.vp.ontoumlschema.Package;
-import it.unibz.inf.ontouml.vp.ontoumlschema.StructuralElement;
 
 public class ValidateOntoUMLModel implements VPActionController {
 
@@ -78,13 +77,17 @@ public class ValidateOntoUMLModel implements VPActionController {
 
 		try {
 			verifyModel(generateModel());
+			vm.showMessage("[" + (new Timestamp(System.currentTimeMillis())) + "] Verification terminated.",
+					VERIFICATION_LOG);
 		} 
-		catch (IOException e) {
+		catch (Exception e) {
 			e.printStackTrace();
+			vm.showMessage("[" + (new Timestamp(System.currentTimeMillis())) + "] Verification terminated with error.",
+					VERIFICATION_LOG);
+			vm.showMessage("Please share your log (including your model, if possible) with our developers at <https://github.com/OntoUML/ontouml-vp-plugin>.",
+					VERIFICATION_LOG);
 		}
 
-		vm.showMessage("[" + (new Timestamp(System.currentTimeMillis())) + "] Verification terminated.",
-				VERIFICATION_LOG);
 	}
 	
 	private Model generateModel() {
@@ -106,13 +109,13 @@ public class ValidateOntoUMLModel implements VPActionController {
 			
 			switch(projectElement.getModelType()) {
 				case IModelElementFactory.MODEL_TYPE_PACKAGE:
-					Package newModelPackage = new Package((IPackage) projectElement);
-					modelSchema.addStructuralElement(newModelPackage);
+					Package newPackage = new Package((IPackage) projectElement);
+					modelSchema.addStructuralElement(newPackage);
 					break;
 					
 				case IModelElementFactory.MODEL_TYPE_MODEL:
-					Package newPackage = new Package((IPackage) projectElement);
-					modelSchema.addStructuralElement(newPackage);
+					Model newModelPackage = new Model((IModel) projectElement);
+					modelSchema.addStructuralElement(newModelPackage);
 					break;
 					
 				case IModelElementFactory.MODEL_TYPE_CLASS:
