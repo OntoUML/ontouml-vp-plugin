@@ -7,15 +7,25 @@ import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IGeneralization;
+import com.vp.plugin.model.IHasChildrenBaseModelElement;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IPackage;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
-public class Package implements StructuralElement {
+/**
+ * 
+ * The Container class applies to both IModel, IPackage and a number of other interfaces.
+ * In OntoUML Schema, both IPackage and IModel translate to the concept of Package.
+ * 
+ * TODO Decide whether not to use two classes for capturing IModel and IPackage, or
+ * 		to prevent the usage of IModel altogether.
+ *
+ */
+public class Container implements StructuralElement {
 
 	public static final String baseURI = "model:#/package/";
 	
-	private final IPackage sourceModelElement;
+	private final IHasChildrenBaseModelElement sourceModelElement;
 	
 	@SerializedName("@type")
 	@Expose
@@ -37,7 +47,7 @@ public class Package implements StructuralElement {
 	@Expose
 	private LinkedList<StructuralElement> structuralElements;
 
-	public Package(IPackage source) {
+	public Container(IHasChildrenBaseModelElement source) {
 		this.sourceModelElement = source;
 		this.type = StructuralElement.TYPE_PACKAGE;
 		this.name = source.getName();
@@ -51,12 +61,12 @@ public class Package implements StructuralElement {
 
 			switch (child.getModelType()) {
 			case IModelElementFactory.MODEL_TYPE_PACKAGE:
-				Package newModelPackage = new Package((IPackage) child);
+				Container newModelPackage = new Container((IPackage) child);
 				this.addStructuralElement(newModelPackage);
 				break;
 
 			case IModelElementFactory.MODEL_TYPE_MODEL:
-				Package newPackage = new Package((IPackage) child);
+				Container newPackage = new Container((IPackage) child);
 				this.addStructuralElement(newPackage);
 				break;
 
@@ -78,7 +88,7 @@ public class Package implements StructuralElement {
 		}
 	}
 	
-	public Package(String name, String URI) {
+	public Container(String name, String URI) {
 		this.sourceModelElement = null;
 		this.type = StructuralElement.TYPE_PACKAGE;
 		this.name = name;
@@ -88,7 +98,7 @@ public class Package implements StructuralElement {
 	}
 
 	@Override
-	public IPackage getSourceModelElement() {
+	public IHasChildrenBaseModelElement getSourceModelElement() {
 		return sourceModelElement;
 	}
 	
@@ -109,7 +119,7 @@ public class Package implements StructuralElement {
 
 	@Override
 	public void setURI(String URI) {
-		this.URI = Package.baseURI + URI;
+		this.URI = Container.baseURI + URI;
 	}
 
 	public String getURL() {

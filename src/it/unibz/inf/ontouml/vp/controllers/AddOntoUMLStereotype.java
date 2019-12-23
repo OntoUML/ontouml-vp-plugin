@@ -4,8 +4,10 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 
 import com.vp.plugin.action.VPAction;
+import com.vp.plugin.action.VPActionController;
 import com.vp.plugin.action.VPContext;
 import com.vp.plugin.action.VPContextActionController;
+import com.vp.plugin.diagram.IShapeUIModel;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IStereotype;
 
@@ -60,27 +62,27 @@ public class AddOntoUMLStereotype implements VPContextActionController {
 		switch(action.getActionId()) {
 		case ACTION_ADD_STEREOTYPE_KIND :
 			element.addStereotype(StereotypeUtils.STR_KIND);
-			context.getDiagramElement().setBackground(new Color(204,255,153));
+			((IShapeUIModel) context.getDiagramElement()).getFillColor().setColor1(new Color(204,255,153));
 			break;
 		case ACTION_ADD_STEREOTYPE_COLLECTIVE_KIND :
 			element.addStereotype(StereotypeUtils.STR_COLLECTIVE_KIND);
-			context.getDiagramElement().setBackground(new Color(204,255,153));
+			((IShapeUIModel) context.getDiagramElement()).getFillColor().setColor1(new Color(204,255,153));
 			break;
 		case ACTION_ADD_STEREOTYPE_QUANTITY_KIND :
 			element.addStereotype(StereotypeUtils.STR_QUANTITY_KIND);
-			context.getDiagramElement().setBackground(new Color(204,255,153));
+			((IShapeUIModel) context.getDiagramElement()).getFillColor().setColor1(new Color(204,255,153));
 			break;
 		case ACTION_ADD_STEREOTYPE_RELATOR_KIND :
 			element.addStereotype(StereotypeUtils.STR_RELATOR_KIND);
-			context.getDiagramElement().setBackground(new Color(255,255,153));
+			((IShapeUIModel) context.getDiagramElement()).getFillColor().setColor1(new Color(255,255,153));
 			break;
 		case ACTION_ADD_STEREOTYPE_MODE_KIND :
 			element.addStereotype(StereotypeUtils.STR_MODE_KIND);
-			context.getDiagramElement().setBackground(new Color(255,204,153));
+			((IShapeUIModel) context.getDiagramElement()).getFillColor().setColor1(new Color(255,204,153));
 			break;
 		case ACTION_ADD_STEREOTYPE_QUALITY_KIND :
 			element.addStereotype(StereotypeUtils.STR_QUALITY_KIND);
-			context.getDiagramElement().setBackground(new Color(255,153,153));
+			((IShapeUIModel) context.getDiagramElement()).getFillColor().setColor1(new Color(255,153,153));
 			break;
 		case ACTION_ADD_STEREOTYPE_SUBKIND :
 			element.addStereotype(StereotypeUtils.STR_SUBKIND);
@@ -93,19 +95,19 @@ public class AddOntoUMLStereotype implements VPContextActionController {
 			break;
 		case ACTION_ADD_STEREOTYPE_CATEGORY :
 			element.addStereotype(StereotypeUtils.STR_CATEGORY);
-			context.getDiagramElement().setBackground(new Color(224,224,224));
+			((IShapeUIModel) context.getDiagramElement()).getFillColor().setColor1(new Color(224,224,224));
 			break;
 		case ACTION_ADD_STEREOTYPE_ROLE_MIXIN :
 			element.addStereotype(StereotypeUtils.STR_ROLE_MIXIN);
-			context.getDiagramElement().setBackground(new Color(224,224,224));
+			((IShapeUIModel) context.getDiagramElement()).getFillColor().setColor1(new Color(224,224,224));
 			break;
 		case ACTION_ADD_STEREOTYPE_PHASE_MIXIN :
 			element.addStereotype(StereotypeUtils.STR_PHASE_MIXIN);
-			context.getDiagramElement().setBackground(new Color(224,224,224));
+			((IShapeUIModel) context.getDiagramElement()).getFillColor().setColor1(new Color(224,224,224));
 			break;
 		case ACTION_ADD_STEREOTYPE_MIXIN :
 			element.addStereotype(StereotypeUtils.STR_MIXIN);
-			context.getDiagramElement().setBackground(new Color(224,224,224));
+			((IShapeUIModel) context.getDiagramElement()).getFillColor().setColor1(new Color(224,224,224));
 			break;
 		case ACTION_ADD_STEREOTYPE_MATERIAL :
 			element.addStereotype(StereotypeUtils.STR_MATERIAL);
@@ -146,9 +148,9 @@ public class AddOntoUMLStereotype implements VPContextActionController {
 	}
 
 	@Override
-	public void update(VPAction arg0, VPContext arg1) {
-		// TODO Auto-generated method stub
-
+	public void update(VPAction action, VPContext context) {
+		action.setSelected(!action.isSelected());
+		action.setMnemonic('O');
 	}
 
 }
