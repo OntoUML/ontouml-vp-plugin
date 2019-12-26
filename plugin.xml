@@ -43,6 +43,17 @@
 					toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
 				<actionController class="it.unibz.inf.ontouml.vp.controllers.ValidateOntoUMLModel" />
 			</action>
+			<action 
+					id="it.unibz.inf.ontouml.vp.actions.OpenOntoUMLMenuAction4"
+					actionType="generalAction"
+					description="Configurations menu."
+					style="normal"
+					tooltip="Opens configurations menu"
+					icon="icons/menu.png"
+					label="Configurations"
+					toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ConfigurationsMenu" />
+			</action>
 		</actionSet>
 	</actionSets>
 </plugin>
