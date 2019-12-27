@@ -16,13 +16,13 @@ public class ProjectListener implements IProjectListener {
 
 	@Override
 	public void projectNewed(IProject project) {
-		checkProjectConfigurations(project);
+		OntoUMLPluginForVP.checkProjectConfigurations(project);
 
 	}
 
 	@Override
 	public void projectOpened(IProject project) {
-		checkProjectConfigurations(project);
+		OntoUMLPluginForVP.checkProjectConfigurations(project);
 	}
 
 	@Override
@@ -40,14 +40,6 @@ public class ProjectListener implements IProjectListener {
 	public void projectSaved(IProject project) {
 		// TODO Auto-generated method stub
 
-	}
-	
-	public void checkProjectConfigurations(IProject source) {
-		ProjectConfigurations project = OntoUMLPluginForVP.getConfigurations().getProject(source.getId());
-		
-		if(project == null) {
-			OntoUMLPluginForVP.getConfigurations().addProject(new ProjectConfigurations(source));
-		}
 	}
 
 }

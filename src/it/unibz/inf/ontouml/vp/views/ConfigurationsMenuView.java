@@ -4,14 +4,25 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import it.unibz.inf.ontouml.vp.OntoUMLPluginForVP;
 import it.unibz.inf.ontouml.vp.ProjectConfigurations;
+import javafx.stage.FileChooser;
+
 import javax.swing.event.ChangeListener;
+
+import com.vp.plugin.ApplicationManager;
+import com.vp.plugin.view.IDialog;
+
 import javax.swing.event.ChangeEvent;
 
 public class ConfigurationsMenuView extends JPanel {
@@ -29,6 +40,8 @@ public class ConfigurationsMenuView extends JPanel {
 	
 	private JButton _btnApply;
 	private JButton _btnResetDefaults;
+	
+	private IDialog _dialog;
 
 	/**
 	 * Create the panel.
@@ -36,7 +49,7 @@ public class ConfigurationsMenuView extends JPanel {
 	public ConfigurationsMenuView(ProjectConfigurations project) {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] {670};
-		gridBagLayout.rowHeights = new int[]{26, 97, 25, 0};
+		gridBagLayout.rowHeights = new int[]{26, 82, 25, 0};
 		gridBagLayout.columnWeights = new double[]{1.0};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
@@ -131,6 +144,20 @@ public class ConfigurationsMenuView extends JPanel {
 		_txtExportFolder.setColumns(10);
 		
 		_btnSelectExportFolder = new JButton("Select folder");
+		_btnSelectExportFolder.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser jfc = ApplicationManager.instance().getViewManager().createJFileChooser();
+				jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				
+				int returnValue = jfc.showOpenDialog(null);
+
+				if (returnValue == JFileChooser.APPROVE_OPTION) {
+					File selectedFile = jfc.getSelectedFile();
+					_txtExportFolder.setText(selectedFile.getAbsolutePath());
+				}
+			}
+		});
 		GridBagConstraints gbc__btnSelectExportFolder = new GridBagConstraints();
 		gbc__btnSelectExportFolder.fill = GridBagConstraints.HORIZONTAL;
 		gbc__btnSelectExportFolder.gridx = 2;
@@ -154,6 +181,15 @@ public class ConfigurationsMenuView extends JPanel {
 		_controlButtonsPanel.setLayout(gbl__controlButtonsPanel);
 		
 		_btnApply = new JButton("Apply");
+		_btnApply.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				updateProjectConfigurations(project);
+				OntoUMLPluginForVP.saveConfigurations();
+				_dialog.close();
+			}
+			
+		});
 		GridBagConstraints gbc__btnApply = new GridBagConstraints();
 		gbc__btnApply.fill = GridBagConstraints.HORIZONTAL;
 		gbc__btnApply.insets = new Insets(0, 0, 0, 5);
@@ -162,12 +198,53 @@ public class ConfigurationsMenuView extends JPanel {
 		_controlButtonsPanel.add(_btnApply, gbc__btnApply);
 		
 		_btnResetDefaults = new JButton("Reset Defaults");
+		_btnResetDefaults.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				_dialog.close();
+			}
+		});
 		GridBagConstraints gbc__btnResetDefaults = new GridBagConstraints();
 		gbc__btnResetDefaults.fill = GridBagConstraints.HORIZONTAL;
 		gbc__btnResetDefaults.gridx = 1;
 		gbc__btnResetDefaults.gridy = 0;
 		_controlButtonsPanel.add(_btnResetDefaults, gbc__btnResetDefaults);
 
+		setAndEnableComponents(project);
+	}
+
+	private void setAndEnableComponents(ProjectConfigurations project) {
+		_chckbxEnableOntoumlFeatures.setSelected(project.isOntoUMLPluginEnabled());
+		
+		_chckbxEnableCustomServer.setSelected(project.isCustomServerEnabled());
+		_chckbxEnableCustomServer.setEnabled(project.isOntoUMLPluginEnabled());
+		_txtServerAddress.setEnabled(project.isOntoUMLPluginEnabled() && _chckbxEnableCustomServer.isSelected());
+		_txtServerAddress.setText(project.getServerURL());
+		
+		_chckbxEnableAutomaticExport.setEnabled(project.isOntoUMLPluginEnabled());
+		_chckbxEnableAutomaticExport.setSelected(project.isAutomaticExportEnabled());
+		_txtExportFolder.setEnabled(project.isOntoUMLPluginEnabled() && _chckbxEnableAutomaticExport.isSelected());
+		_txtExportFolder.setText(project.getExportFolderPath());
+		_btnSelectExportFolder.setEnabled(project.isOntoUMLPluginEnabled() && _chckbxEnableAutomaticExport.isSelected());
+		
+		_chckbxEnableAutoColoring.setEnabled(project.isOntoUMLPluginEnabled() && _chckbxEnableAutomaticExport.isSelected());
+		_chckbxEnableAutoColoring.setSelected(project.isAutomaticColoringEnabled());
+	}
+	
+	public void setContainerDialog(IDialog dialog) {
+		this._dialog = dialog;
+	}
+	
+	private void updateProjectConfigurations(ProjectConfigurations project) {
+		project.setOntoUMLPluginEnabled(_chckbxEnableOntoumlFeatures.isSelected());
+		
+		project.setCustomServerEnabled(_chckbxEnableCustomServer.isSelected());
+		project.setServerURL(_txtServerAddress.getText());
+		
+		project.setAutomaticExportEnabled(_chckbxEnableAutomaticExport.isSelected());
+		project.setExportFolderPath(_txtExportFolder.getText());
+		
+		project.setAutomaticColoringEnabled(_chckbxEnableAutoColoring.isSelected());
 	}
 
 }

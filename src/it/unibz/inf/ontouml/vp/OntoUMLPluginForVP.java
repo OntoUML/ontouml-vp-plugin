@@ -48,7 +48,27 @@ public class OntoUMLPluginForVP implements VPPlugin {
 	}
 	
 	public static Configurations getConfigurations() {
+		if(config == null) {
+			config = new Configurations();
+		}
+		
 		return config;
+	}
+	
+	public static ProjectConfigurations checkProjectConfigurations(IProject source) {
+		ProjectConfigurations project = OntoUMLPluginForVP.getConfigurations().getProject(source.getId());
+		
+		if(project == null) {
+			project = new ProjectConfigurations(source);
+			OntoUMLPluginForVP.getConfigurations().addProject(project);
+		}
+		
+		return project;
+	}
+	
+	public static ProjectConfigurations getCurrentPorjectConfigurations() {
+		IProject p = ApplicationManager.instance().getProjectManager().getProject();
+		return checkProjectConfigurations(p);
 	}
 	
 	public static Configurations loadConfigurations() {
@@ -57,6 +77,9 @@ public class OntoUMLPluginForVP implements VPPlugin {
 		String json = "";
 		
 		try {
+			if(!configurationsFile.exists()) {
+				configurationsFile.createNewFile();
+			}
 			json = new String(Files.readAllBytes(configurationsFile.toPath()));
 		}
 		catch (IOException e) {
