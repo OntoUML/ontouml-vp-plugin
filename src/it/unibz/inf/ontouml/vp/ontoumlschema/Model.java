@@ -64,13 +64,13 @@ public class Model implements StructuralElement {
 	
 				switch (child.getModelType()) {
 				case IModelElementFactory.MODEL_TYPE_PACKAGE:
-					Package newModelPackage = new Package((IPackage) child);
-					this.addStructuralElement(newModelPackage);
+					Package newPackage = new Package((IPackage) child);
+					this.addStructuralElement(newPackage);
 					break;
 					
 				case IModelElementFactory.MODEL_TYPE_MODEL:
-					Package newPackage = new Package((IPackage) child);
-					this.addStructuralElement(newPackage);
+					Model newModel = new Model((IModel) child);
+					this.addStructuralElement(newModel);
 					break;
 	
 				case IModelElementFactory.MODEL_TYPE_CLASS:

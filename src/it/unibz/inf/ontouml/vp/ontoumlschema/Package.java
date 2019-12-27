@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IGeneralization;
+import com.vp.plugin.model.IModel;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IPackage;
 import com.vp.plugin.model.factory.IModelElementFactory;
@@ -53,15 +54,14 @@ public class Package implements StructuralElement {
 	
 				switch (child.getModelType()) {
 				case IModelElementFactory.MODEL_TYPE_PACKAGE:
-					Package newModelPackage = new Package((IPackage) child);
-					this.addStructuralElement(newModelPackage);
+					Package newPackage = new Package((IPackage) child);
+					this.addStructuralElement(newPackage);
 					break;
 					
-	//			TODO Update when workaround to "GSON's default empty arrays" is found
-	//			case IModelElementFactory.MODEL_TYPE_MODEL:
-	//				Package newPackage = new Package((IPackage) child);
-	//				this.addStructuralElement(newPackage);
-	//				break;
+				case IModelElementFactory.MODEL_TYPE_MODEL:
+					Model newModel = new Model((IModel) child);
+					this.addStructuralElement(newModel);
+					break;
 	
 				case IModelElementFactory.MODEL_TYPE_CLASS:
 					Class newClass = new Class((IClass) child);
