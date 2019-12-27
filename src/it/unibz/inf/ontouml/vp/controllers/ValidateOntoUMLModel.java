@@ -55,7 +55,7 @@ public class ValidateOntoUMLModel implements VPActionController {
 
 	@Override
 	public void performAction(VPAction arg0) {
-		// TODO Verify memory leak
+		System.out.println("--------------------------------------------------- Load");
 		ExecutorService executor = Executors.newFixedThreadPool(10);
 		executor.execute(new Runnable() {
 			@Override public void run() { 
@@ -66,7 +66,7 @@ public class ValidateOntoUMLModel implements VPActionController {
 
 	@Override
 	public void update(VPAction arg0) {
-		
+		System.out.println("--------------------------------------------------- Unoad");
 	}
 	
 	private void performVerification() {

@@ -1,5 +1,7 @@
 package it.unibz.inf.ontouml.vp.views;
 
+import java.awt.Dialog;
+import java.awt.FileDialog;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -7,6 +9,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FilenameFilter;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -24,6 +27,7 @@ import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.view.IDialog;
 
 import javax.swing.event.ChangeEvent;
+import java.awt.Dimension;
 
 public class ConfigurationsMenuView extends JPanel {
 	
@@ -47,6 +51,7 @@ public class ConfigurationsMenuView extends JPanel {
 	 * Create the panel.
 	 */
 	public ConfigurationsMenuView(ProjectConfigurations project) {
+		setSize(new Dimension(670, 150));
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] {670};
 		gridBagLayout.rowHeights = new int[]{26, 82, 25, 0};

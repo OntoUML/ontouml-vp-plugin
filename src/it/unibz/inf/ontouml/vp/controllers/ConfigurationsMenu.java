@@ -1,6 +1,7 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
 import java.awt.Component;
+import java.awt.Dimension;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
@@ -45,7 +46,7 @@ public class ConfigurationsMenu implements VPActionController {
 			_dialog.setTitle(OntoUMLPluginForVP.PLUGIN_NAME + " Configurations");
 			_dialog.setModal(false);
 			_dialog.setResizable(true);
-			_dialog.setSize(_configurationsMenuView.getSize());
+			_dialog.setSize(_configurationsMenuView.getWidth(),_configurationsMenuView.getHeight()+20);
 			_configurationsMenuView.setContainerDialog(_dialog);
 		}
 		

@@ -99,9 +99,7 @@ public class OntoUMLPluginForVP implements VPPlugin {
 	}
 	
 	public static void saveConfigurations() {
-		GsonBuilder builder = new GsonBuilder(); 
-		builder.excludeFieldsWithoutExposeAnnotation();
-		Gson gson = builder.create();
+		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
 		String json = gson.toJson(getConfigurations());
 		
 		ViewManager vm = ApplicationManager.instance().getViewManager();
