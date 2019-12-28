@@ -1,0 +1,226 @@
+package it.unibz.inf.ontouml.vp.utils;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
+
+/**
+ * 
+ * Class that captures user preferences for a given project and enables JSON serialization.
+ * 
+ * @author Claudenir Fonseca
+ *
+ */
+public class ProjectConfigurations {
+	
+	@SerializedName("projectId")
+	@Expose()
+	final private String id;
+	
+	@SerializedName("isOntoUMLPluginEnabled")
+	@Expose()
+	private boolean isOntoUMLPluginEnabled;
+
+	@SerializedName("serverURL")
+	@Expose()
+	private String serverURL = OntoUMLPlugin.DEFAULT_SERVER_URL;
+	
+	@SerializedName("isCustomServerEnabled")
+	@Expose()
+	private boolean isCustomServerEnabled;
+	
+	@SerializedName("exportFolderPath")
+	@Expose()
+	private String exportFolderPath;
+	
+	@SerializedName("isAutomaticExportEnabled")
+	@Expose()
+	private boolean isAutomaticExportEnabled;
+	
+	@SerializedName("isAutomaticColoringEnabled")
+	@Expose()
+	private boolean isAutomaticColoringEnabled;
+	
+	/**
+	 * 
+	 * Initializes an instance of ProjectConfigurations with default settings.
+	 * 
+	 * @param projectId - String containing the ID of the project related to initialized configuration.
+	 * 
+	 */
+	public ProjectConfigurations(String projectId) {
+		this.id = projectId;
+		this.resetDefaults();
+	}
+	
+	/** 
+	 * 
+	 * Resets default project configurations.
+	 * By default, none of the options are enabled and the server's URL is the plugin's defaults.
+	 * 
+	 */
+	public void resetDefaults() {
+		this.isOntoUMLPluginEnabled = false;
+		
+		this.isCustomServerEnabled = false;
+		this.serverURL = OntoUMLPlugin.DEFAULT_SERVER_URL;
+		
+		this.isAutomaticExportEnabled = false;
+		this.exportFolderPath = "";
+		
+		this.isAutomaticColoringEnabled = false;
+	}
+	
+	/**
+	 * 
+	 * Returns the related project's ID.
+	 * 
+	 * @return project's ID.
+	 * 
+	 */
+	public String getId() {
+		return id;
+	}
+	
+	/**
+	 * 
+	 * Checks if OntoUMLPlugin is enabled for the related project.
+	 * 
+	 * @return <code>true</code> if plugin is enabled.
+	 * 
+	 */
+	public boolean isOntoUMLPluginEnabled() {
+		return isCustomServerEnabled;
+	}
+	
+	/**
+	 * 
+	 * Sets if OntoUMLPlugin is enabled for the related project.
+	 * 
+	 * @param isOntoUMLPluginEnabled
+	 * 
+	 */
+	public void setOntoUMLPluginEnabled(boolean isOntoUMLPluginEnabled) {
+		this.isOntoUMLPluginEnabled = isOntoUMLPluginEnabled;
+	}
+	
+	/**
+	 * 
+	 * Returns OntoUML Server URL.
+	 * 
+	 * @return serverURL
+	 * 
+	 */
+	public String getServerURL() {
+		return serverURL;
+	}
+	
+	/**
+	 * 
+	 * Sets OntoUML Server URL.
+	 * 
+	 * @param serverURL
+	 * 
+	 */
+	public void setServerURL(String serverURL) {
+		this.serverURL = serverURL;
+	}
+	
+	/**
+	 * 
+	 * Checks if a custom server URL must be used.
+	 * 
+	 * @return <code>true</code> if plugin is enabled <b>and</b> a custom server is enabled.
+	 * 
+	 * @see <code>{@link #isOntoUMLPluginEnabled()}</code>
+	 * 
+	 */
+	public boolean isCustomServerEnabled() {
+		return isOntoUMLPluginEnabled() && isCustomServerEnabled;
+	}
+	
+	/**
+	 * 
+	 * Sets if a custom server URL must be used.
+	 * 
+	 * @param isCustomServerEnabled
+	 * 
+	 */
+	public void setCustomServerEnabled(boolean isCustomServerEnabled) {
+		this.isCustomServerEnabled = isCustomServerEnabled;
+	}
+	
+	/**
+	 * 
+	 * Returns automatic export folders path as a String.
+	 * 
+	 * @return exportFolderPath
+	 * 
+	 */
+	public String getExportFolderPath() {
+		return exportFolderPath;
+	}
+	
+
+	/**
+	 * 
+	 * Sets automatic export folders path from a String.
+	 * 
+	 * @param exportFolderPath
+	 * 
+	 */
+	public void setExportFolderPath(String exportFolderPath) {
+		this.exportFolderPath = exportFolderPath;
+	}
+	
+	/**
+	 * 
+	 * Checks if an export folder is set for automatic model export.
+	 * 
+	 * @return <code>true</code> if plugin is enabled <b>and</b> automatic model export is enabled.
+	 * 
+	 * @see <code>{@link #isOntoUMLPluginEnabled()}</code>
+	 * 
+	 */
+	public boolean isAutomaticExportEnabled() {
+		return isOntoUMLPluginEnabled() && isAutomaticExportEnabled;
+	}
+	
+	/**
+	 * 
+	 * Sets if automatic model export is enabled.
+	 * 
+	 * param isAutomaticExportEnabled
+	 * 
+	 */
+	public void setAutomaticExportEnabled(boolean isAutomaticExportEnabled) {
+		this.isAutomaticExportEnabled = isAutomaticExportEnabled;
+	}
+	
+	/**
+	 * 
+	 * Checks if model elements should be automatically painted with the default color profile.
+	 * 
+	 * @return <code>true</code> if plugin is enabled <b>and</b> automatic model element coloring is enabled.
+	 * 
+	 * @see <code>{@link #isOntoUMLPluginEnabled()}</code>
+	 * 
+	 */
+	public boolean isAutomaticColoringEnabled() {
+		return isOntoUMLPluginEnabled() && isAutomaticColoringEnabled;
+	}
+	
+	/**
+	 * 
+	 * Sets if model elements should be automatically painted with the default color profile.
+	 * 
+	 * @param isAutomaticColoringEnabled
+	 * 
+	 */
+	public void setAutomaticColoringEnabled(boolean isAutomaticColoringEnabled) {
+		this.isAutomaticColoringEnabled = isAutomaticColoringEnabled;
+	}
+	
+	
+}

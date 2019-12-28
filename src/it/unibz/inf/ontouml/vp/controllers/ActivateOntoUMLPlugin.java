@@ -4,7 +4,7 @@ import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
-import it.unibz.inf.ontouml.vp.OntoUMLPluginForVP;
+import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 public class ActivateOntoUMLPlugin implements VPActionController {
@@ -12,12 +12,12 @@ public class ActivateOntoUMLPlugin implements VPActionController {
 	@Override
 	public void performAction(VPAction arg0) {
 
-		if (!OntoUMLPluginForVP.isPluginActive) {
+		if (!OntoUMLPlugin.isPluginActive) {
 			
 //			StereotypeUtils.removeAllModelStereotypesButOntoUML(IModelElementFactory.MODEL_TYPE_CLASS);
 //			StereotypeUtils.removeAllModelStereotypesButOntoUML(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
 			StereotypeUtils.setUpOntoUMLStereotypes();
-			OntoUMLPluginForVP.isPluginActive = true;
+			OntoUMLPlugin.isPluginActive = true;
 			
 		}
 

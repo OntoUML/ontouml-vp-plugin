@@ -1,7 +1,6 @@
 package it.unibz.inf.ontouml.vp.views;
 
-import java.awt.Dialog;
-import java.awt.FileDialog;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -9,28 +8,33 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FilenameFilter;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
-import it.unibz.inf.ontouml.vp.OntoUMLPluginForVP;
-import it.unibz.inf.ontouml.vp.ProjectConfigurations;
-import javafx.stage.FileChooser;
-
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.view.IDialog;
 
-import javax.swing.event.ChangeEvent;
-import java.awt.Dimension;
+import it.unibz.inf.ontouml.vp.utils.Configurations;
+import it.unibz.inf.ontouml.vp.utils.ProjectConfigurations;
 
-public class ConfigurationsMenuView extends JPanel {
+/**
+ * 
+ * View for the configurations menu to be embedded on an instance
+ * of <code>ConfigurationsDialog</code>.
+ * 
+ * @author Claudenir Fonseca
+ *
+ */
+public class ConfigurationsView extends JPanel {
 	
+	private static final long serialVersionUID = 1L;
+
 	private JCheckBox _chckbxEnableOntoumlFeatures;
 	
 	private JCheckBox _chckbxEnableCustomServer;
@@ -48,9 +52,11 @@ public class ConfigurationsMenuView extends JPanel {
 	private IDialog _dialog;
 
 	/**
-	 * Create the panel.
+	 * 
+	 * ConfigurationsView constructor.
+	 * 
 	 */
-	public ConfigurationsMenuView(ProjectConfigurations project) {
+	public ConfigurationsView(ProjectConfigurations configurations) {
 		setSize(new Dimension(670, 150));
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] {670};
@@ -62,22 +68,7 @@ public class ConfigurationsMenuView extends JPanel {
 		_chckbxEnableOntoumlFeatures = new JCheckBox("Enable OntoUML features.");
 		_chckbxEnableOntoumlFeatures.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
-				if(_chckbxEnableOntoumlFeatures.isSelected()) {
-					_chckbxEnableCustomServer.setEnabled(true);
-					_txtServerAddress.setEnabled(true);
-					_chckbxEnableAutomaticExport.setEnabled(true);
-					_txtExportFolder.setEnabled(true);
-					_btnSelectExportFolder.setEnabled(true);
-					_chckbxEnableAutoColoring.setEnabled(true);
-				}
-				else {
-					_chckbxEnableCustomServer.setEnabled(false);
-					_txtServerAddress.setEnabled(false);
-					_chckbxEnableAutomaticExport.setEnabled(false);
-					_txtExportFolder.setEnabled(false);
-					_btnSelectExportFolder.setEnabled(false);
-					_chckbxEnableAutoColoring.setEnabled(false);
-				}
+				updateComponentsStatus();
 			}
 		});
 		GridBagConstraints gbc__chckbxEnableOntoumlFeatures = new GridBagConstraints();
@@ -104,6 +95,11 @@ public class ConfigurationsMenuView extends JPanel {
 		_ontoUMLServerPanel.setLayout(gbl__ontoUMLServerPanel);
 		
 		_chckbxEnableCustomServer = new JCheckBox("Use custom OntoUML Server instance.");
+		_chckbxEnableCustomServer.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				updateComponentsStatus();
+			}
+		});
 		GridBagConstraints gbc__chckbxEnableCustomServer = new GridBagConstraints();
 		gbc__chckbxEnableCustomServer.anchor = GridBagConstraints.WEST;
 		gbc__chckbxEnableCustomServer.insets = new Insets(0, 0, 0, 5);
@@ -131,6 +127,11 @@ public class ConfigurationsMenuView extends JPanel {
 		_exportPanel.setLayout(gbl__exportPanel);
 		
 		_chckbxEnableAutomaticExport = new JCheckBox("Enable automatic model export.");
+		_chckbxEnableAutomaticExport.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				updateComponentsStatus();
+			}
+		});
 		GridBagConstraints gbc__chckbxEnableAutomaticExport = new GridBagConstraints();
 		gbc__chckbxEnableAutomaticExport.anchor = GridBagConstraints.WEST;
 		gbc__chckbxEnableAutomaticExport.insets = new Insets(0, 0, 0, 5);
@@ -185,13 +186,12 @@ public class ConfigurationsMenuView extends JPanel {
 		gbl__controlButtonsPanel.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		_controlButtonsPanel.setLayout(gbl__controlButtonsPanel);
 		
-		_btnApply = new JButton("Apply");
+		_btnApply = new JButton("Apply and Close");
 		_btnApply.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				updateProjectConfigurations(project);
-				OntoUMLPluginForVP.saveConfigurations();
-				_dialog.close();
+				updateConfigurationsValues(configurations);
+				Configurations.getInstance().save();
 			}
 			
 		});
@@ -206,8 +206,11 @@ public class ConfigurationsMenuView extends JPanel {
 		_btnResetDefaults.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				_dialog.close();
+				configurations.resetDefaults();
+				updateComponentsValues(configurations);
+				updateComponentsStatus();
 			}
+			
 		});
 		GridBagConstraints gbc__btnResetDefaults = new GridBagConstraints();
 		gbc__btnResetDefaults.fill = GridBagConstraints.HORIZONTAL;
@@ -215,41 +218,88 @@ public class ConfigurationsMenuView extends JPanel {
 		gbc__btnResetDefaults.gridy = 0;
 		_controlButtonsPanel.add(_btnResetDefaults, gbc__btnResetDefaults);
 
-		setAndEnableComponents(project);
-	}
-
-	private void setAndEnableComponents(ProjectConfigurations project) {
-		_chckbxEnableOntoumlFeatures.setSelected(project.isOntoUMLPluginEnabled());
-		
-		_chckbxEnableCustomServer.setSelected(project.isCustomServerEnabled());
-		_chckbxEnableCustomServer.setEnabled(project.isOntoUMLPluginEnabled());
-		_txtServerAddress.setEnabled(project.isOntoUMLPluginEnabled() && _chckbxEnableCustomServer.isSelected());
-		_txtServerAddress.setText(project.getServerURL());
-		
-		_chckbxEnableAutomaticExport.setEnabled(project.isOntoUMLPluginEnabled());
-		_chckbxEnableAutomaticExport.setSelected(project.isAutomaticExportEnabled());
-		_txtExportFolder.setEnabled(project.isOntoUMLPluginEnabled() && _chckbxEnableAutomaticExport.isSelected());
-		_txtExportFolder.setText(project.getExportFolderPath());
-		_btnSelectExportFolder.setEnabled(project.isOntoUMLPluginEnabled() && _chckbxEnableAutomaticExport.isSelected());
-		
-		_chckbxEnableAutoColoring.setEnabled(project.isOntoUMLPluginEnabled() && _chckbxEnableAutomaticExport.isSelected());
-		_chckbxEnableAutoColoring.setSelected(project.isAutomaticColoringEnabled());
+		updateComponentsValues(configurations);
+		updateComponentsStatus();
 	}
 	
+	/**
+	 * 
+	 * Sets a direct reference to the container dialog after initialization.
+	 * 
+	 * @param dialog
+	 * 
+	 */
 	public void setContainerDialog(IDialog dialog) {
 		this._dialog = dialog;
 	}
 	
-	private void updateProjectConfigurations(ProjectConfigurations project) {
-		project.setOntoUMLPluginEnabled(_chckbxEnableOntoumlFeatures.isSelected());
+	/**
+	 * 
+	 * Updates project configurations with components' information.
+	 * 
+	 * @param configurations
+	 * 
+	 */
+	private void updateConfigurationsValues(ProjectConfigurations configurations) {
+		configurations.setOntoUMLPluginEnabled(_chckbxEnableOntoumlFeatures.isSelected());
 		
-		project.setCustomServerEnabled(_chckbxEnableCustomServer.isSelected());
-		project.setServerURL(_txtServerAddress.getText());
+		configurations.setCustomServerEnabled(_chckbxEnableCustomServer.isSelected());
+		configurations.setServerURL(_txtServerAddress.getText());
 		
-		project.setAutomaticExportEnabled(_chckbxEnableAutomaticExport.isSelected());
-		project.setExportFolderPath(_txtExportFolder.getText());
+		configurations.setAutomaticExportEnabled(_chckbxEnableAutomaticExport.isSelected());
+		configurations.setExportFolderPath(_txtExportFolder.getText());
 		
-		project.setAutomaticColoringEnabled(_chckbxEnableAutoColoring.isSelected());
+		configurations.setAutomaticColoringEnabled(_chckbxEnableAutoColoring.isSelected());
+	}
+	
+	/**
+	 * 
+	 * Updates components with project configurations' information.
+	 * 
+	 * @param configurations
+	 * 
+	 */
+	private void updateComponentsValues(ProjectConfigurations configurations) {
+		_chckbxEnableOntoumlFeatures.setSelected(configurations.isOntoUMLPluginEnabled());
+		
+		_chckbxEnableCustomServer.setSelected(configurations.isCustomServerEnabled());
+		_txtServerAddress.setText(configurations.getServerURL());
+		
+		_chckbxEnableAutomaticExport.setSelected(configurations.isAutomaticExportEnabled());
+		_txtExportFolder.setText(configurations.getExportFolderPath());
+		
+		_chckbxEnableAutoColoring.setSelected(configurations.isAutomaticColoringEnabled());
+	}
+	
+	/**
+	 * 
+	 * Updates enable/editable status of components based on their information.
+	 * 
+	 */
+	private void updateComponentsStatus() {
+		_chckbxEnableOntoumlFeatures.setEnabled(true);
+		
+		if(_chckbxEnableOntoumlFeatures.isSelected()) {
+			_chckbxEnableCustomServer.setEnabled(true);
+			_txtServerAddress.setEditable(_chckbxEnableCustomServer.isSelected());;
+			
+			_chckbxEnableAutomaticExport.setEnabled(true);
+			_txtExportFolder.setEditable(_chckbxEnableAutomaticExport.isSelected());
+			_btnSelectExportFolder.setEnabled(_chckbxEnableAutomaticExport.isSelected());
+			
+			_chckbxEnableAutoColoring.setEnabled(true);
+		}
+		else {
+			_chckbxEnableCustomServer.setEnabled(false);;
+			_txtServerAddress.setEditable(false);
+			
+			_chckbxEnableAutomaticExport.setEnabled(false);
+			_txtExportFolder.setEditable(false);
+			_btnSelectExportFolder.setEnabled(false);
+			
+			_chckbxEnableAutoColoring.setEnabled(false);
+		}
+		
 	}
 
 }

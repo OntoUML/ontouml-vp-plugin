@@ -8,6 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
+// TODO Check whether this class is indeed necessary. 
 public class CollectionAdapter implements JsonSerializer<Collection<?>> {
 	
 	@Override

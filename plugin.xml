@@ -3,7 +3,7 @@
 		name="OntoUML Plugin for Visual Paradigm"
 		description="OntoUML Plugin Visual Paradigm"
 		provider="University of Bolzano"
-		class="it.unibz.inf.ontouml.vp.OntoUMLPluginForVP">
+		class="it.unibz.inf.ontouml.vp.OntoUMLPlugin">
 	<actionSets>
 		<actionSet id="it.unibz.inf.ontouml.vp.actionset1">
 			<toolbar
@@ -33,26 +33,26 @@
 				<actionController class="it.unibz.inf.ontouml.vp.controllers.ActivateDefaultStereotypes" />
 			</action>
 			<action 
-					id="it.unibz.inf.ontouml.vp.actions.OpenOntoUMLMenuAction3"
+					id="it.unibz.inf.ontouml.vp.actions.VerifyModelAction"
 					actionType="generalAction"
-					description="Validate the OntoUML Model."
+					description="Verify OntoUML Model."
 					style="normal"
-					tooltip="Validate model" 
+					tooltip="Verify model" 
 					icon="icons/menu.png"
-					label="Validate Model"
+					label="Verify Model"
 					toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ValidateOntoUMLModel" />
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.VerifyModelAction" />
 			</action>
 			<action 
-					id="it.unibz.inf.ontouml.vp.actions.OpenOntoUMLMenuAction4"
+					id="it.unibz.inf.ontouml.vp.actions.OpenConfigurationsAction"
 					actionType="generalAction"
-					description="Configurations menu."
+					description="Opens configurations menu."
 					style="normal"
 					tooltip="Opens configurations menu"
 					icon="icons/menu.png"
 					label="Configurations"
 					toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ConfigurationsMenu" />
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.OpenConfigurationsAction" />
 			</action>
 		</actionSet>
 		
