@@ -1,4 +1,4 @@
-package it.unibz.inf.ontouml.vp.ontoumlschema;
+package it.unibz.inf.ontouml.vp.model;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

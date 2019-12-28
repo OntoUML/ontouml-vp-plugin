@@ -37,14 +37,14 @@ import com.vp.plugin.model.IPackage;
 import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
-import it.unibz.inf.ontouml.vp.ontoumlschema.Association;
-import it.unibz.inf.ontouml.vp.ontoumlschema.Class;
-import it.unibz.inf.ontouml.vp.ontoumlschema.Generalization;
-import it.unibz.inf.ontouml.vp.ontoumlschema.GeneralizationSet;
-import it.unibz.inf.ontouml.vp.ontoumlschema.Model;
-import it.unibz.inf.ontouml.vp.ontoumlschema.Package;
+import it.unibz.inf.ontouml.vp.model.Association;
+import it.unibz.inf.ontouml.vp.model.Class;
+import it.unibz.inf.ontouml.vp.model.Generalization;
+import it.unibz.inf.ontouml.vp.model.GeneralizationSet;
+import it.unibz.inf.ontouml.vp.model.Model;
+import it.unibz.inf.ontouml.vp.model.Package;
 
-public class ValidateOntoUMLModel implements VPActionController {
+public class VerifyModelAction implements VPActionController {
 
 //	private static final String VERIFICATION_SERVICE_URL = "http://localhost:3000/v1/verification";
 	private static final String VERIFICATION_SERVICE_URL = "https://ontouml.herokuapp.com/v1/verification";

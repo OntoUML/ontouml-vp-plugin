@@ -1,4 +1,4 @@
-package it.unibz.inf.ontouml.vp.ontoumlschema;
+package it.unibz.inf.ontouml.vp.model;
 
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IModelElement;

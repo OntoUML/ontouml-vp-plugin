@@ -1,4 +1,4 @@
-package it.unibz.inf.ontouml.vp.ontoumlschema;
+package it.unibz.inf.ontouml.vp.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
