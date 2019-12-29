@@ -4,9 +4,7 @@ import java.util.LinkedList;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IClass;
-import com.vp.plugin.model.IGeneralization;
 import com.vp.plugin.model.IModel;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IPackage;
@@ -14,8 +12,6 @@ import com.vp.plugin.model.factory.IModelElementFactory;
 
 public class Package implements ModelElement {
 
-	public static final String baseURI = "model:#/package/";
-	
 	private final IPackage sourceModelElement;
 	
 	@SerializedName("@type")
@@ -41,43 +37,28 @@ public class Package implements ModelElement {
 	public Package(IPackage source) {
 		this.sourceModelElement = source;
 		this.type = ModelElement.TYPE_PACKAGE;
-		this.name = source.getName();
-		this.URI = ModelElement.getModelElementURI(source);
+		setName(source.getName());
+		setURI(ModelElement.getModelElementURI(source));
 		
-		IModelElement[] children = source.toChildArray();
+		final IModelElement[] children = source.toChildArray();
+		for (int i = 0; children != null && i < children.length; i++) {
+			final IModelElement child = children[i];
 
-		if(children != null) {
-			this.structuralElements = new LinkedList<ModelElement>();
-
-			for (int i = 0; i < children.length; i++) {
-				IModelElement child = children[i];
-	
-				switch (child.getModelType()) {
-				case IModelElementFactory.MODEL_TYPE_PACKAGE:
-					Package newPackage = new Package((IPackage) child);
-					this.addStructuralElement(newPackage);
-					break;
-					
-				case IModelElementFactory.MODEL_TYPE_MODEL:
-					Model newModel = new Model((IModel) child);
-					this.addStructuralElement(newModel);
-					break;
-	
-				case IModelElementFactory.MODEL_TYPE_CLASS:
-					Class newClass = new Class((IClass) child);
-					this.addStructuralElement(newClass);
-					break;
-	
-				case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
-					Generalization newGeneralization = new Generalization((IGeneralization) child);
-					this.addStructuralElement(newGeneralization);
-					break;
-	
-	//			TODO Add remaining elements, maybe by adding these to relation's source's package.
-	//			case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
-	//			case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
-	//			case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
-				}
+			switch (child.getModelType()) {
+			case IModelElementFactory.MODEL_TYPE_PACKAGE:
+				addStructuralElement(new Package((IPackage) child));
+				break;
+			case IModelElementFactory.MODEL_TYPE_MODEL:
+				addStructuralElement(new Model((IModel) child));
+				break;
+			case IModelElementFactory.MODEL_TYPE_CLASS:
+				addStructuralElement(new Class((IClass) child));
+				break;
+//			TODO Add remaining elements, maybe by adding these to relation's source's package.
+//			case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
+//			case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
+//			case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
+//			case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
 			}
 		}
 	}
@@ -104,7 +85,7 @@ public class Package implements ModelElement {
 
 	@Override
 	public void setURI(String URI) {
-		this.URI = Package.baseURI + URI;
+		this.URI = URI;
 	}
 
 	public String getURL() {
@@ -132,6 +113,10 @@ public class Package implements ModelElement {
 	}
 
 	public void addStructuralElement(ModelElement element) {
+		if(getStructuralElements() == null) {
+			setStructuralElements(new LinkedList<ModelElement>());
+		}
+		
 		this.structuralElements.add(element);
 	}
 

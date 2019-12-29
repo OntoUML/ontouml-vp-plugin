@@ -1,8 +1,18 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
+import com.vp.plugin.model.IProject;
 
+import it.unibz.inf.ontouml.vp.model.ModelElement;
+import it.unibz.inf.ontouml.vp.utils.Configurations;
+import it.unibz.inf.ontouml.vp.utils.ProjectConfigurations;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 
 /**
@@ -24,8 +34,25 @@ public class ModelExportAction implements VPActionController {
 	 */
 	@Override
 	public void performAction(VPAction action) {
-		// TODO Auto-generated method stub
-		ViewUtils.log("Model Export feature yet not implemented", ViewUtils.SCOPE_DEVELOPMENT_LOG);
+		final ProjectConfigurations configurations = Configurations.getInstance().getProjectConfigurations();
+		
+		if(!configurations.isAutomaticExportEnabled()) {
+			ViewUtils.log("Model Export feature is not enabled.", ViewUtils.SCOPE_DEVELOPMENT_LOG);
+			return ;
+		}
+		
+		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
+		final String jsonModel = ModelElement.generateModel(true);
+		final File outputXMLFolder = new File(configurations.getExportFolderPath());
+		
+		try {
+            Files.write(Paths.get(configurations.getExportFolderPath(), project.getName() + ".json"), 
+            		jsonModel.getBytes());
+            ApplicationManager.instance().getModelConvertionManager().exportXML(outputXMLFolder);
+            ViewUtils.log("Model successfully exported.", ViewUtils.SCOPE_PLUGIN);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 	}
 
 	/**

@@ -7,14 +7,11 @@ import java.util.Set;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IAttribute;
 import com.vp.plugin.model.IClass;
 
 public class Class implements ModelElement {
 
-	public static final String baseURI = "model:#/class/";
-	
 	private final IClass sourceModelElement;
 	
 	@SerializedName("@type")
@@ -40,19 +37,17 @@ public class Class implements ModelElement {
 	public Class(IClass source) {
 		this.sourceModelElement = source;
 		this.type = ModelElement.TYPE_CLASS;
-		this.name = source.getName();
-		this.URI = ModelElement.getModelElementURI(source);
+		setName(source.getName());
+		setURI(ModelElement.getModelElementURI(source));
 		
-		String[] stereotypes = source.toStereotypeArray();
-		
+		final String[] stereotypes = source.toStereotypeArray();
 		for (int i=0; stereotypes != null && i<stereotypes.length; i++) {
-			this.addStereotype(Stereotypes.getBaseURI(stereotypes[i]));
+			addStereotype(Stereotypes.getBaseURI(stereotypes[i]));
 		}
 
-		IAttribute[] attributes = source.toAttributeArray();
-		
+		final IAttribute[] attributes = source.toAttributeArray();
 		for (int i = 0; attributes != null && i < attributes.length; i++) {
-			this.addProperties(new Attribute(attributes[i]));
+			addProperties(new Attribute(attributes[i]));
 		}
 	}
 	

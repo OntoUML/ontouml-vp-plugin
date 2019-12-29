@@ -46,7 +46,7 @@ public class ModelVerificationAction implements VPActionController {
 					ViewUtils.log("Initiating verification.", ViewUtils.SCOPE_VERIFICATION);
 
 					final String response = OntoUMLServerUtils
-							.requestModelVerification(ModelElement.serializeModel(true));
+							.requestModelVerification(ModelElement.generateModel(true));
 
 					ViewUtils.logVerificationResponse(response);
 					ViewUtils.log("Verification terminated.", ViewUtils.SCOPE_VERIFICATION);

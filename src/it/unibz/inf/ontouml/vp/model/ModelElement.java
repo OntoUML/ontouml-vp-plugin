@@ -1,6 +1,5 @@
 package it.unibz.inf.ontouml.vp.model;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IModelElement;
@@ -12,8 +11,6 @@ import com.vp.plugin.model.IModelElement;
  *
  */
 public interface ModelElement {
-
-	public static final String description = "This field contains entities present in OntoUML structural aspects (packages, classes, relations, generalizations and so on). Contained packages may have their on fields 'structuralElements'.";
 
 	public static final String TYPE_MODEL = "Model";
 	public static final String TYPE_PACKAGE = "Package";
@@ -93,17 +90,21 @@ public interface ModelElement {
 	 * 
 	 */
 	public static String getModelElementURI(IModelElement modelElement) {
-		String link = ApplicationManager.instance().getProjectManager().getLink(modelElement, false);
+		if (modelElement == null)
+			return null;
+
+		final String link = ApplicationManager.instance().getProjectManager().getLink(modelElement, false);
 
 		return link.substring(link.indexOf(".vpp:") + 1);
 	}
 
 	/**
 	 * 
-	 * Returns serialized JSON string of a <code>ModelElement</code> in OntoUML Schema.
+	 * Returns serialized JSON string of a <code>ModelElement</code> in OntoUML
+	 * Schema.
 	 * 
 	 * @param modelElement
-	 * @param pretty - <code>true</code> if return string should be indented.
+	 * @param pretty       - <code>true</code> if return string should be indented.
 	 * 
 	 * @return serialized version JSON of a <code>ModelElement</code>.
 	 * 
@@ -116,7 +117,7 @@ public interface ModelElement {
 			return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(modelElement);
 		}
 	}
-	
+
 	/**
 	 * 
 	 * Returns serialized JSON string of the whole project in OntoUML Schema.
@@ -126,12 +127,11 @@ public interface ModelElement {
 	 * @return serialized version JSON of whole project in OntoUML Schema.
 	 * 
 	 */
-	public static String serializeModel(boolean pretty) {
+	public static String generateModel(boolean pretty) {
 		final Model model = new Model();
-		
+
 		if (pretty) {
-			return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create()
-					.toJson(model);
+			return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create().toJson(model);
 		} else {
 			return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(model);
 		}

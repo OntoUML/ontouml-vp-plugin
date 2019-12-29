@@ -7,6 +7,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IAssociation;
+import com.vp.plugin.model.IAssociationClass;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IGeneralization;
 import com.vp.plugin.model.IGeneralizationSet;
@@ -18,7 +19,7 @@ import com.vp.plugin.model.factory.IModelElementFactory;
 
 public class Model implements ModelElement {
 
-	public static final String baseURI = "https://ontouml.org/archive/";
+	private static final String BASE_URI = "vpp://model/";
 
 	private final IModel sourceModelElement;
 
@@ -63,7 +64,7 @@ public class Model implements ModelElement {
 		this.sourceModelElement = null;
 		this.type = ModelElement.TYPE_MODEL;
 		this.addAuthor(project.getProjectProperties().getAuthor());
-		this.setURI(project.getId());
+		this.setURI(BASE_URI + project.getId());
 		this.setName(project.getName());
 		this.addModelElements(project.toModelElementArray(rootLevelElements));
 		this.addModelElements(project.toAllLevelModelElementArray(anyLevelElements));
@@ -103,7 +104,7 @@ public class Model implements ModelElement {
 	}
 
 	public void setURI(String URI) {
-		this.URI = Model.baseURI + URI;
+		this.URI = URI;
 	}
 
 	public String getName() {
@@ -167,36 +168,29 @@ public class Model implements ModelElement {
 	
 	private void addModelElements(IModelElement[] modelElements) {
 		for (int i = 0; modelElements != null && i < modelElements.length; i++) {
-			IModelElement projectElement = modelElements[i];
+			final IModelElement projectElement = modelElements[i];
 			
 			switch (projectElement.getModelType()) {
 			case IModelElementFactory.MODEL_TYPE_PACKAGE:
-				Package newPackage = new Package((IPackage) projectElement);
-				this.addStructuralElement(newPackage);
+				addStructuralElement(new Package((IPackage) projectElement));
 				break;
 			case IModelElementFactory.MODEL_TYPE_MODEL:
-				Model newModelPackage = new Model((IModel) projectElement);
-				this.addStructuralElement(newModelPackage);
+				addStructuralElement(new Model((IModel) projectElement));
 				break;
 			case IModelElementFactory.MODEL_TYPE_CLASS:
-				Class newClass = new Class((IClass) projectElement);
-				this.addStructuralElement(newClass);
+				addStructuralElement(new Class((IClass) projectElement));
 				break;
 			case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
-				Generalization newGeneralization = new Generalization((IGeneralization) projectElement);
-				this.addStructuralElement(newGeneralization);
+				addStructuralElement(new Generalization((IGeneralization) projectElement));
 				break;
 			case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
-				Association newAssociation = new Association((IAssociation) projectElement);
-				this.addStructuralElement(newAssociation);
+				addStructuralElement(new Association((IAssociation) projectElement));
 				break;
 			case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
-				GeneralizationSet newGeneralizationSet = new GeneralizationSet((IGeneralizationSet) projectElement);
-				this.addStructuralElement(newGeneralizationSet);
+				addStructuralElement(new GeneralizationSet((IGeneralizationSet) projectElement));
 				break;
-				
-//				TODO Add remaining elements
-//				case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
+			case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
+				addStructuralElement(new AssociationClass((IAssociationClass) projectElement));
 			}
 		}
 	}

@@ -11,8 +11,6 @@ import com.vp.plugin.model.IModelElement;
 
 public class GeneralizationSet implements ModelElement {
 
-	public static final String baseURI = "model:#/generalizationset/";
-	
 	private final IGeneralizationSet sourceModelElement;
 
 	@SerializedName("@type")
@@ -50,20 +48,16 @@ public class GeneralizationSet implements ModelElement {
 	public GeneralizationSet(IGeneralizationSet source) {
 		this.sourceModelElement = source;
 		this.type = ModelElement.TYPE_GENERALIZATION_SET;
-		this.name = source.getName();
-		this.URI = ModelElement.getModelElementURI(source);
-		this.isComplete = source.isCovering();
-		this.isDisjoint = source.isDisjoint();
+		setName(source.getName());
+		setURI(ModelElement.getModelElementURI(source));
+		setComplete(source.isCovering());
+		setDisjoint(source.isDisjoint());
+		setCategorizer(ModelElement.getModelElementURI(source.getPowerType()));
 		
-		IGeneralization[] generalizations = source.toGeneralizationArray();
-		this.tuple = new LinkedList<String>();		
+		final IGeneralization[] generalizations = source.toGeneralizationArray();
 		for (int i = 0; generalizations != null && i < generalizations.length; i++) {
-			IGeneralization gen = generalizations[i];
-			this.tuple.add(ModelElement.getModelElementURI(gen));
+			addTuple(ModelElement.getModelElementURI(generalizations[i]));
 		}
-		
-//		TODO Update GSON to ignore this field on the serialization whenever it is null.
-//		this.categorizer = StructuralElement.getModelElementURI(source.getPowerType());
 	}
 	
 	@Override
@@ -88,7 +82,7 @@ public class GeneralizationSet implements ModelElement {
 
 	@Override
 	public void setURI(String URI) {
-		this.URI = GeneralizationSet.baseURI + URI;
+		this.URI = URI;
 	}
 
 	public String getName() {
@@ -132,7 +126,18 @@ public class GeneralizationSet implements ModelElement {
 	}
 
 	public void addTuple(String str) {
+		if(getTuple() == null) {
+			setTuple(new LinkedList<String>());
+		}
 		this.tuple.add(str);
+	}
+	
+	public String getCategorizer() {
+		return this.categorizer;
+	}
+
+	public void setCategorizer(String categorizerURI) {
+		this.categorizer = categorizerURI;
 	}
 
 }

@@ -3,12 +3,8 @@ package it.unibz.inf.ontouml.vp.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IAssociationEnd;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IRelationshipEnd;
 
 public class AssociationEnd implements ModelElement {
-	
-	public static final String baseURI = "model:#/property/";
 	
 	private final IAssociationEnd sourceModelElement;
 
@@ -40,12 +36,20 @@ public class AssociationEnd implements ModelElement {
 	@Expose
 	private String upperbound;
 
+	public AssociationEnd(String name, String URI, String propertyTypeURI) {
+		this.sourceModelElement = null;
+		this.type = ModelElement.TYPE_PROPERTY;
+		setName(name);
+		setURI(URI);
+		setPropertyType(propertyTypeURI);
+	}
+	
 	public AssociationEnd(IAssociationEnd source) {
 		this.sourceModelElement = source;
 		this.type = ModelElement.TYPE_PROPERTY;
-		this.name = source.getName();
-		this.URI = ModelElement.getModelElementURI(source);
-		this.propertyType = ModelElement.getModelElementURI(source.getTypeAsElement());
+		setName(source.getName());
+		setURI(ModelElement.getModelElementURI(source));
+		setPropertyType(ModelElement.getModelElementURI(source.getTypeAsElement()));
 		
 		// TODO Update cardinalities
 		String multiplicity = source.getMultiplicity();
@@ -55,7 +59,7 @@ public class AssociationEnd implements ModelElement {
 		}
 		else if (multiplicity.contains("..")) {
 			String min = multiplicity.substring(0, multiplicity.indexOf(".."));
-			String max = multiplicity.substring(multiplicity.indexOf("..") + 2, multiplicity.length() - 1);
+//			String max = multiplicity.substring(multiplicity.indexOf("..") + 2, multiplicity.length() - 1);
 			this.lowerbound = Integer.parseInt(min);
 			this.upperbound = "*";
 //			TODO OntoUML Schema accepts either a number or the string "*". Discover how to do serialize that with GSON.
@@ -91,7 +95,7 @@ public class AssociationEnd implements ModelElement {
 
 	@Override
 	public void setURI(String URI) {
-		this.URI = AssociationEnd.baseURI + URI;
+		this.URI = URI;
 	}
 
 	public String getName() {

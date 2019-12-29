@@ -1,17 +1,13 @@
 package it.unibz.inf.ontouml.vp.model;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IGeneralization;
-import com.vp.plugin.model.IModelElement;
 
 public class Generalization implements ModelElement {
-	
-	public static final String baseURI = "model:#/generalization/";
 	
 	private final IGeneralization sourceModelElement;
 
@@ -34,13 +30,10 @@ public class Generalization implements ModelElement {
 	public Generalization(IGeneralization source) {
 		this.sourceModelElement = source;
 		this.type = ModelElement.TYPE_GENERALIZATION_LINK;
-		this.name = source.getName();
-		this.URI = ModelElement.getModelElementURI(source);
-				
-		// Add's first the superclass URI and then subclass URI. Here the order is mandatory.
-		this.tuple = new LinkedList<String>();
-		tuple.add(ModelElement.getModelElementURI(source.getFrom()));
-		tuple.add(ModelElement.getModelElementURI(source.getTo()));
+		setName(source.getName());
+		setURI(ModelElement.getModelElementURI(source));
+		addGeneric(ModelElement.getModelElementURI(source.getFrom()));
+		addSpecific(ModelElement.getModelElementURI(source.getTo()));
 	}
 	
 	@Override
@@ -65,7 +58,7 @@ public class Generalization implements ModelElement {
 
 	@Override
 	public void setURI(String URI) {
-		this.URI = Generalization.baseURI + URI;
+		this.URI = URI;
 	}
 	
 	public String getName() {
@@ -85,7 +78,27 @@ public class Generalization implements ModelElement {
 	}
 
 	public void addTuple(String str) {
+		if(getTuple() == null) {
+			setTuple(new ArrayList<String>(2));
+		}
+		
 		this.tuple.add(str);
+	}
+	
+	public void addGeneric(String genericURI) {
+		if(getTuple() == null) {
+			setTuple(new ArrayList<String>(2));
+		}
+		
+		this.tuple.add(0, genericURI);
+	}
+	
+	public void addSpecific(String specificURI) {
+		if(getTuple() == null) {
+			setTuple(new ArrayList<String>(2));
+		}
+		
+		this.tuple.add(1, specificURI);
 	}
 
 }

@@ -4,12 +4,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IAttribute;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IRelationshipEnd;
 
 public class Attribute implements ModelElement {
-	
-	public static final String baseURI = "model:#/property/";
 	
 	private final IAttribute sourceModelElement;
 
@@ -44,9 +40,9 @@ public class Attribute implements ModelElement {
 	public Attribute(IAttribute source) {
 		this.sourceModelElement = source;
 		this.type = ModelElement.TYPE_PROPERTY;
-		this.name = source.getName();
-		this.URI = ModelElement.getModelElementURI(source);
-		this.propertyType = ModelElement.getModelElementURI(source.getTypeAsElement());
+		setName(source.getName());
+		setURI(ModelElement.getModelElementURI(source));
+		setPropertyType(ModelElement.getModelElementURI(source.getTypeAsElement()));
 		
 		// TODO Update cardinalities
 		String multiplicity = source.getMultiplicity();
@@ -56,7 +52,7 @@ public class Attribute implements ModelElement {
 		}
 		else if (multiplicity.contains("..")) {
 			String min = multiplicity.substring(0, multiplicity.indexOf(".."));
-			String max = multiplicity.substring(multiplicity.indexOf("..") + 2, multiplicity.length() - 1);
+//			String max = multiplicity.substring(multiplicity.indexOf("..") + 2, multiplicity.length() - 1);
 			this.lowerbound = Integer.parseInt(min);
 			this.upperbound = "*";
 //			TODO OntoUML Schema accepts either a number or the string "*". Discover how to do serialize that with GSON.
@@ -92,7 +88,7 @@ public class Attribute implements ModelElement {
 
 	@Override
 	public void setURI(String URI) {
-		this.URI = Attribute.baseURI + URI;
+		this.URI = URI;
 	}
 
 	public String getName() {
