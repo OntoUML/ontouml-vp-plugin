@@ -9,7 +9,7 @@ import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IGeneralization;
 import com.vp.plugin.model.IModelElement;
 
-public class Generalization implements StructuralElement {
+public class Generalization implements ModelElement {
 	
 	public static final String baseURI = "model:#/generalization/";
 	
@@ -33,14 +33,14 @@ public class Generalization implements StructuralElement {
 
 	public Generalization(IGeneralization source) {
 		this.sourceModelElement = source;
-		this.type = StructuralElement.TYPE_GENERALIZATION_LINK;
+		this.type = ModelElement.TYPE_GENERALIZATION_LINK;
 		this.name = source.getName();
-		this.URI = StructuralElement.getModelElementURI(source);
+		this.URI = ModelElement.getModelElementURI(source);
 				
 		// Add's first the superclass URI and then subclass URI. Here the order is mandatory.
 		this.tuple = new LinkedList<String>();
-		tuple.add(StructuralElement.getModelElementURI(source.getFrom()));
-		tuple.add(StructuralElement.getModelElementURI(source.getTo()));
+		tuple.add(ModelElement.getModelElementURI(source.getFrom()));
+		tuple.add(ModelElement.getModelElementURI(source.getTo()));
 	}
 	
 	@Override
@@ -54,7 +54,7 @@ public class Generalization implements StructuralElement {
 	}
 
 	@Override
-	public String getType() {
+	public String getOntoUMLType() {
 		return this.type;
 	}
 

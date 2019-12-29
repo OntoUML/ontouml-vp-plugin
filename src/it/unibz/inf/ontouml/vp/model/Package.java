@@ -12,7 +12,7 @@ import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IPackage;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
-public class Package implements StructuralElement {
+public class Package implements ModelElement {
 
 	public static final String baseURI = "model:#/package/";
 	
@@ -36,18 +36,18 @@ public class Package implements StructuralElement {
 
 	@SerializedName("structuralElements")
 	@Expose
-	private LinkedList<StructuralElement> structuralElements;
+	private LinkedList<ModelElement> structuralElements;
 
 	public Package(IPackage source) {
 		this.sourceModelElement = source;
-		this.type = StructuralElement.TYPE_PACKAGE;
+		this.type = ModelElement.TYPE_PACKAGE;
 		this.name = source.getName();
-		this.URI = StructuralElement.getModelElementURI(source);
+		this.URI = ModelElement.getModelElementURI(source);
 		
 		IModelElement[] children = source.toChildArray();
 
 		if(children != null) {
-			this.structuralElements = new LinkedList<StructuralElement>();
+			this.structuralElements = new LinkedList<ModelElement>();
 
 			for (int i = 0; i < children.length; i++) {
 				IModelElement child = children[i];
@@ -93,7 +93,7 @@ public class Package implements StructuralElement {
 	}
 	
 	@Override
-	public String getType() {
+	public String getOntoUMLType() {
 		return this.type;
 	}
 
@@ -123,15 +123,15 @@ public class Package implements StructuralElement {
 		this.name = name;
 	}
 
-	public LinkedList<StructuralElement> getStructuralElements() {
+	public LinkedList<ModelElement> getStructuralElements() {
 		return structuralElements;
 	}
 
-	public void setStructuralElements(LinkedList<StructuralElement> structuralElements) {
+	public void setStructuralElements(LinkedList<ModelElement> structuralElements) {
 		this.structuralElements = structuralElements;
 	}
 
-	public void addStructuralElement(StructuralElement element) {
+	public void addStructuralElement(ModelElement element) {
 		this.structuralElements.add(element);
 	}
 

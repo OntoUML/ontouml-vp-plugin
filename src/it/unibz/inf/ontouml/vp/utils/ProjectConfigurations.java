@@ -3,8 +3,6 @@ package it.unibz.inf.ontouml.vp.utils;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
-
 /**
  * 
  * Class that captures user preferences for a given project and enables JSON serialization.
@@ -14,6 +12,13 @@ import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
  */
 public class ProjectConfigurations {
 	
+	public static final boolean DEFAULT_IS_PLUGIN_ENABLED = false;
+	public static final boolean DEFAULT_IS_CUSTOM_SERVER_ENABLED = false;
+	public static final boolean DEFAULT_IS_AUTOMATIC_EXPORT_ENABLED = false;
+	public static final boolean DEFAULT_IS_AUTOMATIC_COLORING_ENABLED = false;
+	public static final String DEFAULT_SERVER_URL = "https://ontouml.herokuapp.com";
+	public static final String DEFAULT_EXPORT_PATH = System.getProperty("user.home");
+
 	@SerializedName("projectId")
 	@Expose()
 	final private String id;
@@ -24,7 +29,7 @@ public class ProjectConfigurations {
 
 	@SerializedName("serverURL")
 	@Expose()
-	private String serverURL = OntoUMLPlugin.DEFAULT_SERVER_URL;
+	private String serverURL = DEFAULT_SERVER_URL;
 	
 	@SerializedName("isCustomServerEnabled")
 	@Expose()
@@ -61,15 +66,15 @@ public class ProjectConfigurations {
 	 * 
 	 */
 	public void resetDefaults() {
-		this.isOntoUMLPluginEnabled = false;
+		this.isOntoUMLPluginEnabled = ProjectConfigurations.DEFAULT_IS_PLUGIN_ENABLED;
 		
-		this.isCustomServerEnabled = false;
-		this.serverURL = OntoUMLPlugin.DEFAULT_SERVER_URL;
+		this.isCustomServerEnabled = ProjectConfigurations.DEFAULT_IS_CUSTOM_SERVER_ENABLED;
+		this.serverURL = ProjectConfigurations.DEFAULT_SERVER_URL;
 		
-		this.isAutomaticExportEnabled = false;
-		this.exportFolderPath = "";
+		this.isAutomaticExportEnabled = ProjectConfigurations.DEFAULT_IS_AUTOMATIC_EXPORT_ENABLED;
+		this.exportFolderPath = ProjectConfigurations.DEFAULT_EXPORT_PATH;
 		
-		this.isAutomaticColoringEnabled = false;
+		this.isAutomaticColoringEnabled = ProjectConfigurations.DEFAULT_IS_AUTOMATIC_COLORING_ENABLED;;
 	}
 	
 	/**
@@ -91,7 +96,7 @@ public class ProjectConfigurations {
 	 * 
 	 */
 	public boolean isOntoUMLPluginEnabled() {
-		return isCustomServerEnabled;
+		return isOntoUMLPluginEnabled;
 	}
 	
 	/**

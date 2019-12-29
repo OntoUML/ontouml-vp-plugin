@@ -9,7 +9,7 @@ import com.vp.plugin.model.IGeneralization;
 import com.vp.plugin.model.IGeneralizationSet;
 import com.vp.plugin.model.IModelElement;
 
-public class GeneralizationSet implements StructuralElement {
+public class GeneralizationSet implements ModelElement {
 
 	public static final String baseURI = "model:#/generalizationset/";
 	
@@ -49,9 +49,9 @@ public class GeneralizationSet implements StructuralElement {
 
 	public GeneralizationSet(IGeneralizationSet source) {
 		this.sourceModelElement = source;
-		this.type = StructuralElement.TYPE_GENERALIZATION_SET;
+		this.type = ModelElement.TYPE_GENERALIZATION_SET;
 		this.name = source.getName();
-		this.URI = StructuralElement.getModelElementURI(source);
+		this.URI = ModelElement.getModelElementURI(source);
 		this.isComplete = source.isCovering();
 		this.isDisjoint = source.isDisjoint();
 		
@@ -59,7 +59,7 @@ public class GeneralizationSet implements StructuralElement {
 		this.tuple = new LinkedList<String>();		
 		for (int i = 0; generalizations != null && i < generalizations.length; i++) {
 			IGeneralization gen = generalizations[i];
-			this.tuple.add(StructuralElement.getModelElementURI(gen));
+			this.tuple.add(ModelElement.getModelElementURI(gen));
 		}
 		
 //		TODO Update GSON to ignore this field on the serialization whenever it is null.
@@ -77,7 +77,7 @@ public class GeneralizationSet implements StructuralElement {
 	}
 
 	@Override
-	public String getType() {
+	public String getOntoUMLType() {
 		return type;
 	}
 

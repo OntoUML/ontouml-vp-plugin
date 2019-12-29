@@ -192,6 +192,7 @@ public class ConfigurationsView extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				updateConfigurationsValues(configurations);
 				Configurations.getInstance().save();
+				_dialog.close();
 			}
 			
 		});
@@ -206,8 +207,7 @@ public class ConfigurationsView extends JPanel {
 		_btnResetDefaults.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				configurations.resetDefaults();
-				updateComponentsValues(configurations);
+				resetComponentsValues();
 				updateComponentsStatus();
 			}
 			
@@ -273,6 +273,23 @@ public class ConfigurationsView extends JPanel {
 	
 	/**
 	 * 
+	 * Updates components with default values.
+	 * 
+	 */
+	private void resetComponentsValues() {
+		_chckbxEnableOntoumlFeatures.setSelected(ProjectConfigurations.DEFAULT_IS_PLUGIN_ENABLED);
+
+		_chckbxEnableCustomServer.setSelected(ProjectConfigurations.DEFAULT_IS_CUSTOM_SERVER_ENABLED);
+		_txtServerAddress.setText(ProjectConfigurations.DEFAULT_SERVER_URL);
+
+		_chckbxEnableAutomaticExport.setSelected(ProjectConfigurations.DEFAULT_IS_AUTOMATIC_EXPORT_ENABLED);
+		_txtExportFolder.setText(ProjectConfigurations.DEFAULT_EXPORT_PATH);
+
+		_chckbxEnableAutoColoring.setSelected(ProjectConfigurations.DEFAULT_IS_AUTOMATIC_COLORING_ENABLED);
+	}
+	
+	/**
+	 * 
 	 * Updates enable/editable status of components based on their information.
 	 * 
 	 */
@@ -281,20 +298,20 @@ public class ConfigurationsView extends JPanel {
 		
 		if(_chckbxEnableOntoumlFeatures.isSelected()) {
 			_chckbxEnableCustomServer.setEnabled(true);
-			_txtServerAddress.setEditable(_chckbxEnableCustomServer.isSelected());;
+			_txtServerAddress.setEnabled(_chckbxEnableCustomServer.isSelected());;
 			
 			_chckbxEnableAutomaticExport.setEnabled(true);
-			_txtExportFolder.setEditable(_chckbxEnableAutomaticExport.isSelected());
+			_txtExportFolder.setEnabled(_chckbxEnableAutomaticExport.isSelected());
 			_btnSelectExportFolder.setEnabled(_chckbxEnableAutomaticExport.isSelected());
 			
 			_chckbxEnableAutoColoring.setEnabled(true);
 		}
 		else {
 			_chckbxEnableCustomServer.setEnabled(false);;
-			_txtServerAddress.setEditable(false);
+			_txtServerAddress.setEnabled(false);
 			
 			_chckbxEnableAutomaticExport.setEnabled(false);
-			_txtExportFolder.setEditable(false);
+			_txtExportFolder.setEnabled(false);
 			_btnSelectExportFolder.setEnabled(false);
 			
 			_chckbxEnableAutoColoring.setEnabled(false);

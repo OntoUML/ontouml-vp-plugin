@@ -7,7 +7,7 @@ import com.vp.plugin.model.IAttribute;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IRelationshipEnd;
 
-public class Attribute implements StructuralElement {
+public class Attribute implements ModelElement {
 	
 	public static final String baseURI = "model:#/property/";
 	
@@ -43,10 +43,10 @@ public class Attribute implements StructuralElement {
 
 	public Attribute(IAttribute source) {
 		this.sourceModelElement = source;
-		this.type = StructuralElement.TYPE_PROPERTY;
+		this.type = ModelElement.TYPE_PROPERTY;
 		this.name = source.getName();
-		this.URI = StructuralElement.getModelElementURI(source);
-		this.propertyType = StructuralElement.getModelElementURI(source.getTypeAsElement());
+		this.URI = ModelElement.getModelElementURI(source);
+		this.propertyType = ModelElement.getModelElementURI(source.getTypeAsElement());
 		
 		// TODO Update cardinalities
 		String multiplicity = source.getMultiplicity();
@@ -81,7 +81,7 @@ public class Attribute implements StructuralElement {
 	}
 
 	@Override
-	public String getType() {
+	public String getOntoUMLType() {
 		return this.type;
 	}
 

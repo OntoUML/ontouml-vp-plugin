@@ -26,16 +26,6 @@ public class OpenConfigurationsAction implements VPActionController {
 	
 	private ConfigurationsView _configurationsMenuView;
 	private IDialog _dialog;
-
-	/**
-	 * 
-	 * OpenConfigurationsAction constructor. Declared to make explicit Open API 
-	 * requirements.
-	 * 
-	 */
-	public OpenConfigurationsAction() {
-		// The constructor of a VPActionController MUST NOT have parameters.
-	}
 	
 	/**
 	 * 

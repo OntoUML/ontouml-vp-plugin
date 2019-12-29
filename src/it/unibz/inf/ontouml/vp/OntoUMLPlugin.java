@@ -8,11 +8,19 @@ import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
+/**
+ * 
+ * Implementation of VPPlugin responsible for configuring OntoUML Plugin's
+ * behaviour when loading and unload.
+ * 
+ * @author Victor Viola
+ * @author Claudenir Fonseca
+ *
+ */
 public class OntoUMLPlugin implements VPPlugin {
 
 	public static final String PLUGIN_ID = "it.unibz.inf.ontouml.vp";
 	public static final String PLUGIN_NAME = "OntoUML Plugin";
-	public static final String DEFAULT_SERVER_URL = "https://ontouml.herokuapp.com/v1/verification";
 
 	public static IModelElement[] allModelElements;
 	public static boolean isPluginActive;
@@ -25,7 +33,7 @@ public class OntoUMLPlugin implements VPPlugin {
 	public OntoUMLPlugin() {
 		// The constructor of a VPPlugin MUST NOT have parameters.
 	}
-	
+
 	/**
 	 * 
 	 * Called by Visual Paradigm when the plugin is loaded.
@@ -38,7 +46,8 @@ public class OntoUMLPlugin implements VPPlugin {
 		// TODO Reevaluate the need for the following code
 		ProjectManager pm = ApplicationManager.instance().getProjectManager();
 		IProject p = pm.getProject();
-		OntoUMLPlugin.allModelElements = pm.getSelectableStereotypesForModelType(IModelElementFactory.MODEL_TYPE_CLASS, p, true);
+		OntoUMLPlugin.allModelElements = pm.getSelectableStereotypesForModelType(IModelElementFactory.MODEL_TYPE_CLASS,
+				p, true);
 	}
 
 	/**
@@ -50,6 +59,5 @@ public class OntoUMLPlugin implements VPPlugin {
 	@Override
 	public void unloaded() {
 	}
-	
-	
+
 }

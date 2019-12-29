@@ -11,7 +11,7 @@ import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IRelationship;
 import com.vp.plugin.model.IRelationshipEnd;
 
-public class Association implements StructuralElement {
+public class Association implements ModelElement {
 	
 	public static final String baseURI = "model:#/relation/";
 	
@@ -39,9 +39,9 @@ public class Association implements StructuralElement {
 
 	public Association(IAssociation source) {
 		this.sourceModelElement = source;
-		this.type = StructuralElement.TYPE_RELATION;
+		this.type = ModelElement.TYPE_RELATION;
 		this.name = source.getName();
-		this.URI = StructuralElement.getModelElementURI(source);
+		this.URI = ModelElement.getModelElementURI(source);
 		
 		String[] stereotypes = source.toStereotypeArray();
 		this.stereotypes = stereotypes!=null ? new ArrayList<String>() : null;
@@ -66,7 +66,7 @@ public class Association implements StructuralElement {
 	}
 	
 	@Override
-	public String getType() {
+	public String getOntoUMLType() {
 		return this.type;
 	}
 

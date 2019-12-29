@@ -11,7 +11,7 @@ import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IAttribute;
 import com.vp.plugin.model.IClass;
 
-public class Class implements StructuralElement {
+public class Class implements ModelElement {
 
 	public static final String baseURI = "model:#/class/";
 	
@@ -39,9 +39,9 @@ public class Class implements StructuralElement {
 
 	public Class(IClass source) {
 		this.sourceModelElement = source;
-		this.type = StructuralElement.TYPE_CLASS;
+		this.type = ModelElement.TYPE_CLASS;
 		this.name = source.getName();
-		this.URI = StructuralElement.getModelElementURI(source);
+		this.URI = ModelElement.getModelElementURI(source);
 		
 		String[] stereotypes = source.toStereotypeArray();
 		
@@ -67,7 +67,7 @@ public class Class implements StructuralElement {
 	}
 
 	@Override
-	public String getType() {
+	public String getOntoUMLType() {
 		return this.type;
 	}
 

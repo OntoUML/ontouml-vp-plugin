@@ -6,7 +6,7 @@ import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IRelationshipEnd;
 
-public class AssociationEnd implements StructuralElement {
+public class AssociationEnd implements ModelElement {
 	
 	public static final String baseURI = "model:#/property/";
 	
@@ -42,10 +42,10 @@ public class AssociationEnd implements StructuralElement {
 
 	public AssociationEnd(IAssociationEnd source) {
 		this.sourceModelElement = source;
-		this.type = StructuralElement.TYPE_PROPERTY;
+		this.type = ModelElement.TYPE_PROPERTY;
 		this.name = source.getName();
-		this.URI = StructuralElement.getModelElementURI(source);
-		this.propertyType = StructuralElement.getModelElementURI(source.getTypeAsElement());
+		this.URI = ModelElement.getModelElementURI(source);
+		this.propertyType = ModelElement.getModelElementURI(source.getTypeAsElement());
 		
 		// TODO Update cardinalities
 		String multiplicity = source.getMultiplicity();
@@ -80,7 +80,7 @@ public class AssociationEnd implements StructuralElement {
 	}
 
 	@Override
-	public String getType() {
+	public String getOntoUMLType() {
 		return this.type;
 	}
 

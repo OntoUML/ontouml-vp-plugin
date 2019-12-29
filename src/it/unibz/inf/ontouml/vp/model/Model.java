@@ -1,24 +1,27 @@
 package it.unibz.inf.ontouml.vp.model;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.vp.plugin.ApplicationManager;
+import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IGeneralization;
+import com.vp.plugin.model.IGeneralizationSet;
 import com.vp.plugin.model.IModel;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IPackage;
+import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
-public class Model implements StructuralElement {
+public class Model implements ModelElement {
 
 	public static final String baseURI = "https://ontouml.org/archive/";
-	
+
 	private final IModel sourceModelElement;
-	
+
 	@SerializedName("@type")
 	@Expose
 	private final String type;
@@ -41,68 +44,57 @@ public class Model implements StructuralElement {
 
 	@SerializedName("structuralElements")
 	@Expose
-	private List<StructuralElement> structuralElements;
+	private List<ModelElement> structuralElements;
 
+	/**
+	 * 
+	 * Constructs a model to contain all project's model elements independent of a
+	 * <code>IModelElement</code>.
+	 * 
+	 */
 	public Model() {
+		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
+		final String[] rootLevelElements = { IModelElementFactory.MODEL_TYPE_PACKAGE,
+				IModelElementFactory.MODEL_TYPE_MODEL, IModelElementFactory.MODEL_TYPE_CLASS };
+		final String[] anyLevelElements = { IModelElementFactory.MODEL_TYPE_GENERALIZATION,
+				IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET, IModelElementFactory.MODEL_TYPE_ASSOCIATION,
+				IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS };
+
 		this.sourceModelElement = null;
-		this.type = StructuralElement.TYPE_MODEL;
+		this.type = ModelElement.TYPE_MODEL;
+		this.addAuthor(project.getProjectProperties().getAuthor());
+		this.setURI(project.getId());
+		this.setName(project.getName());
+		this.addModelElements(project.toModelElementArray(rootLevelElements));
+		this.addModelElements(project.toAllLevelModelElementArray(anyLevelElements));
 	}
-	
+
+	/**
+	 * 
+	 * Constructs a model based on a <code>IModelElement</code> and which is
+	 * serialized as a Package in OntoUML Schema.
+	 * 
+	 */
 	public Model(IModel source) {
 		this.sourceModelElement = source;
-		this.type = StructuralElement.TYPE_PACKAGE;
-		this.name = source.getName();
-		this.URI = StructuralElement.getModelElementURI(source);
-		
-		IModelElement[] children = source.toChildArray();
-
-		if(children != null) {
-			this.structuralElements = new LinkedList<StructuralElement>();
-
-			for (int i = 0; i < children.length; i++) {
-				IModelElement child = children[i];
-	
-				switch (child.getModelType()) {
-				case IModelElementFactory.MODEL_TYPE_PACKAGE:
-					Package newPackage = new Package((IPackage) child);
-					this.addStructuralElement(newPackage);
-					break;
-					
-				case IModelElementFactory.MODEL_TYPE_MODEL:
-					Model newModel = new Model((IModel) child);
-					this.addStructuralElement(newModel);
-					break;
-	
-				case IModelElementFactory.MODEL_TYPE_CLASS:
-					Class newClass = new Class((IClass) child);
-					this.addStructuralElement(newClass);
-					break;
-	
-				case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
-					Generalization newGeneralization = new Generalization((IGeneralization) child);
-					this.addStructuralElement(newGeneralization);
-					break;
-	
-	//			TODO Add remaining elements, maybe by adding these to relation's source's package.
-	//			case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
-	//			case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
-	//			case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
-				}
-			}
-		}
+		this.type = ModelElement.TYPE_PACKAGE;
+		this.setName(source.getName());
+		;
+		this.setURI(ModelElement.getModelElementURI(source));
+		this.addModelElements(source.toChildArray());
 	}
-	
+
 	@Override
 	public String getId() {
 		return getSourceModelElement() != null ? getSourceModelElement().getId() : null;
 	}
-	
+
 	@Override
 	public IModel getSourceModelElement() {
 		return this.sourceModelElement;
 	}
 
-	public String getType() {
+	public String getOntoUMLType() {
 		return type;
 	}
 
@@ -143,9 +135,9 @@ public class Model implements StructuralElement {
 	}
 
 	public void addAuthor(String name) {
-		if(this.authors == null)
+		if (this.authors == null)
 			this.authors = new ArrayList<String>();
-		
+
 		this.authors.add(name);
 	}
 
@@ -154,23 +146,59 @@ public class Model implements StructuralElement {
 			this.authors.remove(name);
 	}
 
-	public List<StructuralElement> getStructuralElements() {
+	public List<ModelElement> getStructuralElements() {
 		return structuralElements;
 	}
 
-	public void setStructuralElements(List<StructuralElement> elementsList) {
+	public void setStructuralElements(List<ModelElement> elementsList) {
 		this.structuralElements = elementsList;
 	}
 
-	public void addStructuralElement(StructuralElement element) {
-		if(this.structuralElements == null)
-			this.structuralElements = new ArrayList<StructuralElement>();
-		
+	public void addStructuralElement(ModelElement element) {
+		if (this.structuralElements == null)
+			this.structuralElements = new ArrayList<ModelElement>();
+
 		this.structuralElements.add(element);
 	}
 
-	public boolean removeStructuralElement(StructuralElement element) {
+	public boolean removeStructuralElement(ModelElement element) {
 		return this.structuralElements.remove(element);
+	}
+	
+	private void addModelElements(IModelElement[] modelElements) {
+		for (int i = 0; modelElements != null && i < modelElements.length; i++) {
+			IModelElement projectElement = modelElements[i];
+			
+			switch (projectElement.getModelType()) {
+			case IModelElementFactory.MODEL_TYPE_PACKAGE:
+				Package newPackage = new Package((IPackage) projectElement);
+				this.addStructuralElement(newPackage);
+				break;
+			case IModelElementFactory.MODEL_TYPE_MODEL:
+				Model newModelPackage = new Model((IModel) projectElement);
+				this.addStructuralElement(newModelPackage);
+				break;
+			case IModelElementFactory.MODEL_TYPE_CLASS:
+				Class newClass = new Class((IClass) projectElement);
+				this.addStructuralElement(newClass);
+				break;
+			case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
+				Generalization newGeneralization = new Generalization((IGeneralization) projectElement);
+				this.addStructuralElement(newGeneralization);
+				break;
+			case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
+				Association newAssociation = new Association((IAssociation) projectElement);
+				this.addStructuralElement(newAssociation);
+				break;
+			case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
+				GeneralizationSet newGeneralizationSet = new GeneralizationSet((IGeneralizationSet) projectElement);
+				this.addStructuralElement(newGeneralizationSet);
+				break;
+				
+//				TODO Add remaining elements
+//				case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
+			}
+		}
 	}
 
 }
