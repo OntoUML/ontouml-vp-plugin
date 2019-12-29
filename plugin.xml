@@ -1,6 +1,5 @@
 <plugin
 		id="it.unibz.inf.ontouml.vp"
-		name="OntoUML Plugin for Visual Paradigm"
 		description="OntoUML Plugin Visual Paradigm"
 		provider="University of Bolzano"
 		class="it.unibz.inf.ontouml.vp.OntoUMLPlugin">
@@ -39,7 +38,7 @@
 					description="Verify OntoUML Model."
 					style="normal"
 					tooltip="Verify model" 
-					icon="icons/menu.png"
+					icon="icons/toolbar/magnifying-glass-with-check-mark-orange.png"
 					label="Verify Model"
 					toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
 				<actionController class="it.unibz.inf.ontouml.vp.controllers.ModelVerificationAction" />
@@ -50,8 +49,8 @@
 					description="Export OntoUML Model in both JSON and XMI."
 					style="normal"
 					tooltip="Export Model" 
-					icon="icons/menu.png"
-					label="Export OntoUML Model"
+					icon="icons/toolbar/share-blue.png"
+					label="Export Model"
 					toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
 				<actionController class="it.unibz.inf.ontouml.vp.controllers.ModelExportAction" />
 			</action>
@@ -61,7 +60,7 @@
 					description="Opens configurations menu."
 					style="normal"
 					tooltip="Opens configurations menu"
-					icon="icons/menu.png"
+					icon="icons/toolbar/list-orange.png"
 					label="Configurations"
 					toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
 				<actionController class="it.unibz.inf.ontouml.vp.controllers.OpenConfigurationsAction" />
@@ -73,7 +72,7 @@
 			<include type="Class"/>
 			
 			<menu
-				id="ontoUMLMenu1" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/cropped-ontuml.png"/>
+				id="ontoUMLMenu1" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontuml-simple-logo-small.png"/>
 				
 			<separator
 				id="it.unibz.inf.ontouml.vp.separator0" menuPath="ontoUMLMenu1" />
@@ -142,7 +141,7 @@
 			<include type="Association"/>
 			
 			<menu
-				id="ontoUMLMenu2" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/cropped-ontuml.png"/>
+				id="ontoUMLMenu2" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontuml-simple-logo-small.png"/>
 				
 			<separator
 				id="it.unibz.inf.ontouml.vp.AssociationSeparator0" menuPath="ontoUMLMenu2" />

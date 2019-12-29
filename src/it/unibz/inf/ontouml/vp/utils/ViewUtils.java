@@ -18,10 +18,10 @@ import com.vp.plugin.ApplicationManager;
  */
 public class ViewUtils {
 	
-	public static final String SCOPE_PLUGIN = "";
-	public static final String SCOPE_ALL_PLUGINS = "";
+	public static final String SCOPE_PLUGIN = "OntoUML Plugin";
+//	public static final String SCOPE_ALL_PLUGINS = "";
 	public static final String SCOPE_VERIFICATION = "Verification Log";
-	public static final String SCOPE_DEVELOPMENT_LOG = "Dev Log";
+	public static final String SCOPE_DEVELOPMENT_LOG = "DevLog";
 	
 	public static void log(String message) {
 		ApplicationManager.instance().getViewManager().showMessage(timestamp() + message);

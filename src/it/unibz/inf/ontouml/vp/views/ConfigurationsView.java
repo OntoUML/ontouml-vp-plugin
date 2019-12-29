@@ -126,7 +126,7 @@ public class ConfigurationsView extends JPanel {
 		gbl__exportPanel.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		_exportPanel.setLayout(gbl__exportPanel);
 		
-		_chckbxEnableAutomaticExport = new JCheckBox("Enable automatic model export.");
+		_chckbxEnableAutomaticExport = new JCheckBox("Enable model export.");
 		_chckbxEnableAutomaticExport.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				updateComponentsStatus();
@@ -246,7 +246,7 @@ public class ConfigurationsView extends JPanel {
 		configurations.setCustomServerEnabled(_chckbxEnableCustomServer.isSelected());
 		configurations.setServerURL(_txtServerAddress.getText());
 		
-		configurations.setAutomaticExportEnabled(_chckbxEnableAutomaticExport.isSelected());
+		configurations.setModelExportEnabled(_chckbxEnableAutomaticExport.isSelected());
 		configurations.setExportFolderPath(_txtExportFolder.getText());
 		
 		configurations.setAutomaticColoringEnabled(_chckbxEnableAutoColoring.isSelected());
@@ -265,7 +265,7 @@ public class ConfigurationsView extends JPanel {
 		_chckbxEnableCustomServer.setSelected(configurations.isCustomServerEnabled());
 		_txtServerAddress.setText(configurations.getServerURL());
 		
-		_chckbxEnableAutomaticExport.setSelected(configurations.isAutomaticExportEnabled());
+		_chckbxEnableAutomaticExport.setSelected(configurations.isModelExportEnabled());
 		_txtExportFolder.setText(configurations.getExportFolderPath());
 		
 		_chckbxEnableAutoColoring.setSelected(configurations.isAutomaticColoringEnabled());
@@ -282,7 +282,7 @@ public class ConfigurationsView extends JPanel {
 		_chckbxEnableCustomServer.setSelected(ProjectConfigurations.DEFAULT_IS_CUSTOM_SERVER_ENABLED);
 		_txtServerAddress.setText(ProjectConfigurations.DEFAULT_SERVER_URL);
 
-		_chckbxEnableAutomaticExport.setSelected(ProjectConfigurations.DEFAULT_IS_AUTOMATIC_EXPORT_ENABLED);
+		_chckbxEnableAutomaticExport.setSelected(ProjectConfigurations.DEFAULT_IS_EXPORT_ENABLED);
 		_txtExportFolder.setText(ProjectConfigurations.DEFAULT_EXPORT_PATH);
 
 		_chckbxEnableAutoColoring.setSelected(ProjectConfigurations.DEFAULT_IS_AUTOMATIC_COLORING_ENABLED);

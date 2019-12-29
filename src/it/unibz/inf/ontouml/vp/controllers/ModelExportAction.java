@@ -36,7 +36,7 @@ public class ModelExportAction implements VPActionController {
 	public void performAction(VPAction action) {
 		final ProjectConfigurations configurations = Configurations.getInstance().getProjectConfigurations();
 		
-		if(!configurations.isAutomaticExportEnabled()) {
+		if(!configurations.isModelExportEnabled()) {
 			ViewUtils.log("Model Export feature is not enabled.", ViewUtils.SCOPE_DEVELOPMENT_LOG);
 			return ;
 		}
@@ -46,10 +46,10 @@ public class ModelExportAction implements VPActionController {
 		final File outputXMLFolder = new File(configurations.getExportFolderPath());
 		
 		try {
+			ApplicationManager.instance().getModelConvertionManager().showExportXMLDialog(outputXMLFolder);
             Files.write(Paths.get(configurations.getExportFolderPath(), project.getName() + ".json"), 
             		jsonModel.getBytes());
-            ApplicationManager.instance().getModelConvertionManager().exportXML(outputXMLFolder);
-            ViewUtils.log("Model successfully exported.", ViewUtils.SCOPE_PLUGIN);
+            ViewUtils.log("JSON model successfully exported.", ViewUtils.SCOPE_PLUGIN);
         } catch (IOException e) {
             e.printStackTrace();
         }

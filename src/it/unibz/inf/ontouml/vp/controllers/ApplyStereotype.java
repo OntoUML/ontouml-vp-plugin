@@ -1,16 +1,20 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPContext;
 import com.vp.plugin.action.VPContextActionController;
+import com.vp.plugin.diagram.IDiagramElement;
+import com.vp.plugin.diagram.IShapeUIModel;
+import com.vp.plugin.model.IGeneralization;
 import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.ISimpleRelationship;
 import com.vp.plugin.model.IStereotype;
 
 import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
-import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 
 /**
  * 
@@ -52,6 +56,22 @@ public class ApplyStereotype implements VPContextActionController {
 	public static final String ACTION_ADD_STEREOTYPE_SUB_QUANTITY_OF = "it.unibz.inf.ontouml.vp.addSubQuantityStereotype";
 	public static final String ACTION_ADD_STEREOTYPE_SUM = "it.unibz.inf.ontouml.vp.addSumStereotype";
 
+	public static final Color COLOR_FUNCTIONAL_COMPLEX_KIND = new Color(255, 253, 146);
+	public static final Color COLOR_COLLECTIVE_KIND = new Color(255, 253, 146);
+	public static final Color COLOR_QUANTITY_KIND = new Color(255, 253, 146);
+	public static final Color COLOR_RELATOR_KIND = new Color(246, 194, 137);
+	public static final Color COLOR_MODE_KIND = new Color(176, 251, 162);
+	public static final Color COLOR_QUALITY_KIND = new Color(156, 160, 248);
+
+	public static final Color COLOR_FUNCTIONAL_COMPLEX_SORTAL = new Color(255, 254, 199);
+	public static final Color COLOR_COLLECTIVE_SORTAL = new Color(255, 254, 199);
+	public static final Color COLOR_QUANTITY_SORTAL = new Color(255, 254, 199);
+	public static final Color COLOR_RELATOR_SORTAL = new Color(251, 225, 197);
+	public static final Color COLOR_MODE_SORTAL = new Color(206, 252, 198);
+	public static final Color COLOR_QUALITY_SORTAL = new Color(205, 205, 249);
+
+	public static final Color COLOR_NON_SORTAL = new Color(224, 224, 224);
+
 	@Override
 	public void performAction(VPAction action, VPContext context, ActionEvent event) {
 		final IModelElement element = context.getModelElement();
@@ -61,59 +81,58 @@ public class ApplyStereotype implements VPContextActionController {
 			element.removeStereotype(stereotypes[i]);
 		}
 
-		if (Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled()) {
-			ViewUtils.log("Automatic coloring not implemented yet.", ViewUtils.SCOPE_DEVELOPMENT_LOG);
-		}
-
 		switch (action.getActionId()) {
 		case ACTION_ADD_STEREOTYPE_KIND:
 			element.addStereotype(StereotypeUtils.STR_KIND);
-//			((IShapeUIModel) context.getDiagramElement()).getFillColor().setColor1(new Color(204,255,153));
+			paint(context.getDiagramElement(), COLOR_FUNCTIONAL_COMPLEX_KIND);
 			break;
 		case ACTION_ADD_STEREOTYPE_COLLECTIVE_KIND:
 			element.addStereotype(StereotypeUtils.STR_COLLECTIVE_KIND);
-//			((IShapeUIModel) context.getDiagramElement()).getFillColor().setColor1(new Color(204,255,153));
+			paint(context.getDiagramElement(), COLOR_COLLECTIVE_KIND);
 			break;
 		case ACTION_ADD_STEREOTYPE_QUANTITY_KIND:
 			element.addStereotype(StereotypeUtils.STR_QUANTITY_KIND);
-//			((IShapeUIModel) context.getDiagramElement()).getFillColor().setColor1(new Color(204,255,153));
+			paint(context.getDiagramElement(), COLOR_QUANTITY_KIND);
 			break;
 		case ACTION_ADD_STEREOTYPE_RELATOR_KIND:
 			element.addStereotype(StereotypeUtils.STR_RELATOR_KIND);
-//			((IShapeUIModel) context.getDiagramElement()).getFillColor().setColor1(new Color(255,255,153));
+			paint(context.getDiagramElement(), COLOR_RELATOR_KIND);
 			break;
 		case ACTION_ADD_STEREOTYPE_MODE_KIND:
 			element.addStereotype(StereotypeUtils.STR_MODE_KIND);
-//			((IShapeUIModel) context.getDiagramElement()).getFillColor().setColor1(new Color(255,204,153));
+			paint(context.getDiagramElement(), COLOR_MODE_KIND);
 			break;
 		case ACTION_ADD_STEREOTYPE_QUALITY_KIND:
 			element.addStereotype(StereotypeUtils.STR_QUALITY_KIND);
-//			((IShapeUIModel) context.getDiagramElement()).getFillColor().setColor1(new Color(255,153,153));
+			paint(context.getDiagramElement(), COLOR_QUALITY_KIND);
 			break;
 		case ACTION_ADD_STEREOTYPE_SUBKIND:
 			element.addStereotype(StereotypeUtils.STR_SUBKIND);
+			paint(context.getDiagramElement(), getSpecializedColor(context));
 			break;
 		case ACTION_ADD_STEREOTYPE_ROLE:
 			element.addStereotype(StereotypeUtils.STR_ROLE);
+			paint(context.getDiagramElement(), getSpecializedColor(context));
 			break;
 		case ACTION_ADD_STEREOTYPE_PHASE:
 			element.addStereotype(StereotypeUtils.STR_PHASE);
+			paint(context.getDiagramElement(), getSpecializedColor(context));
 			break;
 		case ACTION_ADD_STEREOTYPE_CATEGORY:
 			element.addStereotype(StereotypeUtils.STR_CATEGORY);
-//			((IShapeUIModel) context.getDiagramElement()).getFillColor().setColor1(new Color(224,224,224));
+			paint(context.getDiagramElement(), COLOR_NON_SORTAL);
 			break;
 		case ACTION_ADD_STEREOTYPE_ROLE_MIXIN:
 			element.addStereotype(StereotypeUtils.STR_ROLE_MIXIN);
-//			((IShapeUIModel) context.getDiagramElement()).getFillColor().setColor1(new Color(224,224,224));
+			paint(context.getDiagramElement(), COLOR_NON_SORTAL);
 			break;
 		case ACTION_ADD_STEREOTYPE_PHASE_MIXIN:
 			element.addStereotype(StereotypeUtils.STR_PHASE_MIXIN);
-//			((IShapeUIModel) context.getDiagramElement()).getFillColor().setColor1(new Color(224,224,224));
+			paint(context.getDiagramElement(), COLOR_NON_SORTAL);
 			break;
 		case ACTION_ADD_STEREOTYPE_MIXIN:
 			element.addStereotype(StereotypeUtils.STR_MIXIN);
-//			((IShapeUIModel) context.getDiagramElement()).getFillColor().setColor1(new Color(224,224,224));
+			paint(context.getDiagramElement(), COLOR_NON_SORTAL);
 			break;
 		case ACTION_ADD_STEREOTYPE_MATERIAL:
 			element.addStereotype(StereotypeUtils.STR_MATERIAL);
@@ -153,6 +172,73 @@ public class ApplyStereotype implements VPContextActionController {
 
 	@Override
 	public void update(VPAction action, VPContext context) {
+	}
+
+	/**
+	 * 
+	 * Paints the assigned diagram element with the assigned color. No effect
+	 * whenever auto-coloring is disabled or color is <code>null</code>.
+	 * 
+	 * @param diagramElement
+	 * @param color
+	 */
+	private void paint(IDiagramElement diagramElement, Color color) {
+		if (!Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled() || color == null) {
+			return;
+		}
+
+		if (diagramElement instanceof IShapeUIModel) {
+			((IShapeUIModel) diagramElement).getFillColor().setColor1(color);
+		} else {
+			diagramElement.setForeground(color);
+		}
+	}
+
+	/**
+	 * 
+	 * Returns first sortal color occurring on one of the generalizations of this
+	 * class. If generalization with such color is found, returns <code>null</code>.
+	 * 
+	 * @param context
+	 * 
+	 */
+	private Color getSpecializedColor(VPContext context) {
+		final IModelElement sourceModelElement = context.getModelElement();
+		final ISimpleRelationship[] specializations = sourceModelElement.toToRelationshipArray();
+
+		for (int i = 0; specializations != null && i < specializations.length; i++) {
+			if (!(specializations[i] instanceof IGeneralization)) {
+				continue;
+			}
+
+			final IModelElement superClass = specializations[i].getFrom();
+			final IDiagramElement[] superDiagramElements = superClass.getDiagramElements();
+
+			for (int j = 0; j < superDiagramElements.length; j++) {
+				if (!(superDiagramElements[j] instanceof IShapeUIModel)) {
+					continue;
+				}
+
+				final Color superColor = ((IShapeUIModel) superDiagramElements[j]).getFillColor().getColor1();
+
+				if (superColor.equals(COLOR_FUNCTIONAL_COMPLEX_KIND)
+						|| superColor.equals(COLOR_FUNCTIONAL_COMPLEX_SORTAL)) {
+					return COLOR_FUNCTIONAL_COMPLEX_SORTAL;
+				} else if (superColor.equals(COLOR_COLLECTIVE_KIND) || superColor.equals(COLOR_COLLECTIVE_SORTAL)) {
+					return COLOR_COLLECTIVE_SORTAL;
+				} else if (superColor.equals(COLOR_QUANTITY_KIND) || superColor.equals(COLOR_QUANTITY_SORTAL)) {
+					return COLOR_QUANTITY_SORTAL;
+				} else if (superColor.equals(COLOR_RELATOR_KIND) || superColor.equals(COLOR_RELATOR_SORTAL)) {
+					return COLOR_RELATOR_SORTAL;
+				} else if (superColor.equals(COLOR_MODE_KIND) || superColor.equals(COLOR_MODE_SORTAL)) {
+					return COLOR_MODE_SORTAL;
+				} else if (superColor.equals(COLOR_QUALITY_KIND) || superColor.equals(COLOR_QUALITY_SORTAL)) {
+					return COLOR_QUALITY_SORTAL;
+				}
+			}
+		}
+
+		return null;
 	}
 
 }

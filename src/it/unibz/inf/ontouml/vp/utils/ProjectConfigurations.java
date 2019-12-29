@@ -14,7 +14,7 @@ public class ProjectConfigurations {
 	
 	public static final boolean DEFAULT_IS_PLUGIN_ENABLED = false;
 	public static final boolean DEFAULT_IS_CUSTOM_SERVER_ENABLED = false;
-	public static final boolean DEFAULT_IS_AUTOMATIC_EXPORT_ENABLED = false;
+	public static final boolean DEFAULT_IS_EXPORT_ENABLED = false;
 	public static final boolean DEFAULT_IS_AUTOMATIC_COLORING_ENABLED = false;
 	public static final String DEFAULT_SERVER_URL = "https://ontouml.herokuapp.com";
 	public static final String DEFAULT_EXPORT_PATH = System.getProperty("user.home");
@@ -39,9 +39,9 @@ public class ProjectConfigurations {
 	@Expose()
 	private String exportFolderPath;
 	
-	@SerializedName("isAutomaticExportEnabled")
+	@SerializedName("isExportEnabled")
 	@Expose()
-	private boolean isAutomaticExportEnabled;
+	private boolean isModelExportEnabled;
 	
 	@SerializedName("isAutomaticColoringEnabled")
 	@Expose()
@@ -71,7 +71,7 @@ public class ProjectConfigurations {
 		this.isCustomServerEnabled = ProjectConfigurations.DEFAULT_IS_CUSTOM_SERVER_ENABLED;
 		this.serverURL = ProjectConfigurations.DEFAULT_SERVER_URL;
 		
-		this.isAutomaticExportEnabled = ProjectConfigurations.DEFAULT_IS_AUTOMATIC_EXPORT_ENABLED;
+		this.isModelExportEnabled = ProjectConfigurations.DEFAULT_IS_EXPORT_ENABLED;
 		this.exportFolderPath = ProjectConfigurations.DEFAULT_EXPORT_PATH;
 		
 		this.isAutomaticColoringEnabled = ProjectConfigurations.DEFAULT_IS_AUTOMATIC_COLORING_ENABLED;;
@@ -188,19 +188,19 @@ public class ProjectConfigurations {
 	 * @see <code>{@link #isOntoUMLPluginEnabled()}</code>
 	 * 
 	 */
-	public boolean isAutomaticExportEnabled() {
-		return isOntoUMLPluginEnabled() && isAutomaticExportEnabled;
+	public boolean isModelExportEnabled() {
+		return isOntoUMLPluginEnabled() && isModelExportEnabled;
 	}
 	
 	/**
 	 * 
 	 * Sets if automatic model export is enabled.
 	 * 
-	 * param isAutomaticExportEnabled
+	 * param isModelExportEnabled
 	 * 
 	 */
-	public void setAutomaticExportEnabled(boolean isAutomaticExportEnabled) {
-		this.isAutomaticExportEnabled = isAutomaticExportEnabled;
+	public void setModelExportEnabled(boolean isModelExportEnabled) {
+		this.isModelExportEnabled = isModelExportEnabled;
 	}
 	
 	/**
