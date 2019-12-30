@@ -8,10 +8,13 @@ import com.vp.plugin.action.VPContext;
 import com.vp.plugin.action.VPContextActionController;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeUIModel;
+import com.vp.plugin.diagram.shape.IClassUIModel;
+import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IGeneralization;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.ISimpleRelationship;
 import com.vp.plugin.model.IStereotype;
+import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
@@ -84,55 +87,55 @@ public class ApplyStereotype implements VPContextActionController {
 		switch (action.getActionId()) {
 		case ACTION_ADD_STEREOTYPE_KIND:
 			element.addStereotype(StereotypeUtils.STR_KIND);
-			paint(context.getDiagramElement(), COLOR_FUNCTIONAL_COMPLEX_KIND);
+			paint(context, COLOR_FUNCTIONAL_COMPLEX_KIND);
 			break;
 		case ACTION_ADD_STEREOTYPE_COLLECTIVE_KIND:
 			element.addStereotype(StereotypeUtils.STR_COLLECTIVE_KIND);
-			paint(context.getDiagramElement(), COLOR_COLLECTIVE_KIND);
+			paint(context, COLOR_COLLECTIVE_KIND);
 			break;
 		case ACTION_ADD_STEREOTYPE_QUANTITY_KIND:
 			element.addStereotype(StereotypeUtils.STR_QUANTITY_KIND);
-			paint(context.getDiagramElement(), COLOR_QUANTITY_KIND);
+			paint(context, COLOR_QUANTITY_KIND);
 			break;
 		case ACTION_ADD_STEREOTYPE_RELATOR_KIND:
 			element.addStereotype(StereotypeUtils.STR_RELATOR_KIND);
-			paint(context.getDiagramElement(), COLOR_RELATOR_KIND);
+			paint(context, COLOR_RELATOR_KIND);
 			break;
 		case ACTION_ADD_STEREOTYPE_MODE_KIND:
 			element.addStereotype(StereotypeUtils.STR_MODE_KIND);
-			paint(context.getDiagramElement(), COLOR_MODE_KIND);
+			paint(context, COLOR_MODE_KIND);
 			break;
 		case ACTION_ADD_STEREOTYPE_QUALITY_KIND:
 			element.addStereotype(StereotypeUtils.STR_QUALITY_KIND);
-			paint(context.getDiagramElement(), COLOR_QUALITY_KIND);
+			paint(context, COLOR_QUALITY_KIND);
 			break;
 		case ACTION_ADD_STEREOTYPE_SUBKIND:
 			element.addStereotype(StereotypeUtils.STR_SUBKIND);
-			paint(context.getDiagramElement(), getSpecializedColor(context));
+			paint(context, getSpecializedColor(context));
 			break;
 		case ACTION_ADD_STEREOTYPE_ROLE:
 			element.addStereotype(StereotypeUtils.STR_ROLE);
-			paint(context.getDiagramElement(), getSpecializedColor(context));
+			paint(context, getSpecializedColor(context));
 			break;
 		case ACTION_ADD_STEREOTYPE_PHASE:
 			element.addStereotype(StereotypeUtils.STR_PHASE);
-			paint(context.getDiagramElement(), getSpecializedColor(context));
+			paint(context, getSpecializedColor(context));
 			break;
 		case ACTION_ADD_STEREOTYPE_CATEGORY:
 			element.addStereotype(StereotypeUtils.STR_CATEGORY);
-			paint(context.getDiagramElement(), COLOR_NON_SORTAL);
+			paint(context, COLOR_NON_SORTAL);
 			break;
 		case ACTION_ADD_STEREOTYPE_ROLE_MIXIN:
 			element.addStereotype(StereotypeUtils.STR_ROLE_MIXIN);
-			paint(context.getDiagramElement(), COLOR_NON_SORTAL);
+			paint(context, COLOR_NON_SORTAL);
 			break;
 		case ACTION_ADD_STEREOTYPE_PHASE_MIXIN:
 			element.addStereotype(StereotypeUtils.STR_PHASE_MIXIN);
-			paint(context.getDiagramElement(), COLOR_NON_SORTAL);
+			paint(context, COLOR_NON_SORTAL);
 			break;
 		case ACTION_ADD_STEREOTYPE_MIXIN:
 			element.addStereotype(StereotypeUtils.STR_MIXIN);
-			paint(context.getDiagramElement(), COLOR_NON_SORTAL);
+			paint(context, COLOR_NON_SORTAL);
 			break;
 		case ACTION_ADD_STEREOTYPE_MATERIAL:
 			element.addStereotype(StereotypeUtils.STR_MATERIAL);
@@ -182,16 +185,24 @@ public class ApplyStereotype implements VPContextActionController {
 	 * @param diagramElement
 	 * @param color
 	 */
-	private void paint(IDiagramElement diagramElement, Color color) {
+	private void paint(VPContext context, Color color) {
 		if (!Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled() || color == null) {
 			return;
 		}
-
-		if (diagramElement instanceof IShapeUIModel) {
-			((IShapeUIModel) diagramElement).getFillColor().setColor1(color);
-		} else {
-			diagramElement.setForeground(color);
+		
+		
+		final IModelElement _class = context.getModelElement();
+		final IDiagramElement[] diagramElements =  _class.getDiagramElements();
+		
+		for (int i = 0; diagramElements != null && i < diagramElements.length; i++) {
+			IDiagramElement diagramElement = diagramElements[i];
+			if (diagramElement instanceof IShapeUIModel) {
+				((IShapeUIModel) diagramElement).getFillColor().setColor1(color);
+			} else {
+				diagramElement.setForeground(color);
+			}
 		}
+
 	}
 
 	/**
