@@ -8,48 +8,14 @@
 	<property name="lib" location="lib" />
 	<property name="pluginxml" location="E:\workspaceGit\ontouml-server-vp-plugin\plugin.xml" />
 	<property name="openapi" location="E:\OntoUML\Visual Paradigm\Visual Paradigm CE 16.0\lib\openapi.jar" />
-	<property name="ant" location="E:\workspaceGit\ontouml-server-vp-plugin\lib\antlr-runtime-3.2.jar" />
-	<property name="aop" location="E:\workspaceGit\ontouml-server-vp-plugin\lib\aopalliance-1.0.jar" />
-	<property name="guava" location="E:\workspaceGit\ontouml-server-vp-plugin\lib\guava-19.0-rc3.jar" />
-	<property name="guice" location="E:\workspaceGit\ontouml-server-vp-plugin\lib\guice-3.0.jar" />
-	<property name="ontouml" location="E:\workspaceGit\ontouml-server-vp-plugin\lib\it.unibz.inf.ontouml.xtext-1.0.0-SNAPSHOT.jar" />
-	<property name="javax" location="E:\workspaceGit\ontouml-server-vp-plugin\lib\javax.inject-1.jar" />
-	<property name="json" location="E:\workspaceGit\ontouml-server-vp-plugin\lib\json-simple-1.1.1.jar" />
-	<property name="log4j" location="E:\workspaceGit\ontouml-server-vp-plugin\lib\log4j-1.2.16.jar" />
-	<property name="emfcommon" location="E:\workspaceGit\ontouml-server-vp-plugin\lib\org.eclipse.emf.common-2.12.0.jar" />
-	<property name="emfcore" location="E:\workspaceGit\ontouml-server-vp-plugin\lib\org.eclipse.emf.ecore.xmi-2.12.0.jar" />
-	<property name="emfcore2" location="E:\workspaceGit\ontouml-server-vp-plugin\lib\org.eclipse.emf.ecore-2.12.0.jar" />
-	<property name="equinox" location="E:\workspaceGit\ontouml-server-vp-plugin\lib\org.eclipse.equinox.common-3.8.0.jar" />
-	<property name="osgi" location="E:\workspaceGit\ontouml-server-vp-plugin\lib\org.eclipse.osgi-3.11.2.jar" />
-	<property name="xtend" location="E:\workspaceGit\ontouml-server-vp-plugin\lib\org.eclipse.xtend.lib.macro-2.13.0.jar" />
-	<property name="xtend2" location="E:\workspaceGit\ontouml-server-vp-plugin\lib\org.eclipse.xtend.lib-2.13.0.jar" />
-	<property name="xtext" location="E:\workspaceGit\ontouml-server-vp-plugin\lib\org.eclipse.xtext.util-2.13.0.jar" />
-	<property name="xtextbase" location="E:\workspaceGit\ontouml-server-vp-plugin\lib\org.eclipse.xtext.xbase.lib-2.13.0.jar" />
-	<property name="xtext2" location="E:\workspaceGit\ontouml-server-vp-plugin\lib\org.eclipse.xtext-2.13.0.jar" />
+	<property name="gson" location="E:\workspaceGit\ontouml-server-vp-plugin\lib\gson-2.8.6.jar" />
 	<property name="vp" location="C:\Users\Victor Viola\AppData\Roaming\VisualParadigm\plugins" />
 
 	<target name="build">
 		<javac srcdir="${src}" destdir="${build}" includeAntRuntime="no">
 			<classpath>
 				<pathelement path="${openapi}" />
-				<pathelement path="${ant}" />
-				<pathelement path="${aop}" />
-				<pathelement path="${guava}" />
-				<pathelement path="${guice}" />
-				<pathelement path="${ontouml}" />
-				<pathelement path="${javax}" />
-				<pathelement path="${json}" />
-				<pathelement path="${log4j}" />
-				<pathelement path="${emfcommon}" />
-				<pathelement path="${emfcore}" />
-				<pathelement path="${emfcore2}" />
-				<pathelement path="${equinox}" />
-				<pathelement path="${osgi}" />
-				<pathelement path="${xtend}" />
-				<pathelement path="${xtend2}" />
-				<pathelement path="${xtext}" />
-				<pathelement path="${xtextbase}" />
-				<pathelement path="${xtext2}" />
+				<pathelement path="${gson}" />
 			</classpath>
 		</javac>
 		<copy todir="${build}/classes">
