@@ -6,10 +6,8 @@
 	<name>OntoUML-2.0-for-Visual-Paradigm</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<lib.dir>${project.basedir}/lib</lib.dir>
+		<repo.dir>${project.basedir}/repo</repo.dir>
 		<classes.dir>${project.basedir}/classes</classes.dir>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -25,59 +23,6 @@
 	</dependencies>
 	<build>
 		<outputDirectory>${classes.dir}</outputDirectory>
-		<plugins>
-			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-				<version>3.1.0</version>
-				<executions>
-					<execution>
-						<id>clean-plugin</id>
-						<phase>clean</phase>
-						<goals>
-							<goal>clean</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-install-plugin</artifactId>
-				<version>2.5.2</version>
-				<executions>
-					<execution>
-						<phase>initialize</phase>
-						<goals>
-							<goal>install-file</goal>
-						</goals>
-						<configuration>
-							<file>${lib.dir}/openapi.jar</file>
-							<groupId>ontouml.vp.lib</groupId>
-							<artifactId>openapi</artifactId>
-							<version>1.0</version>
-							<packaging>jar</packaging>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<executions>
-					<execution>
-						<id>compiler-plugin</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-				</executions>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
-		</plugins>
 		<pluginManagement>
 			<plugins>
 				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
@@ -103,6 +48,56 @@
 								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+				<plugin>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>3.1.0</version>
+					<executions>
+						<execution>
+							<id>clean-plugin</id>
+							<phase>clean</phase>
+							<goals>
+								<goal>clean</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>2.5.2</version>
+					<executions>
+						<execution>
+							<phase>initialize</phase>
+							<goals>
+								<goal>install-file</goal>
+							</goals>
+							<configuration>
+								<file>${repo.dir}\openapi.jar</file>
+								<groupId>ontouml.vp.lib</groupId>
+								<artifactId>openapi</artifactId>
+								<version>1.0</version>
+								<packaging>jar</packaging>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<executions>
+						<execution>
+							<id>compiler-plugin</id>
+							<phase>compile</phase>
+							<goals>
+								<goal>compile</goal>
+							</goals>
+						</execution>
+					</executions>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.8.1</version>
+					<configuration>
+						<release>11</release>
 					</configuration>
 				</plugin>
 			</plugins>
