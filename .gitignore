@@ -13,4 +13,13 @@ target/
 #*.class
 #bin/
 *.DS_Store
-/target/
+
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Maven
+log/
+target/
