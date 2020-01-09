@@ -2,7 +2,6 @@ package it.unibz.inf.ontouml.vp.controllers;
 
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
-import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;

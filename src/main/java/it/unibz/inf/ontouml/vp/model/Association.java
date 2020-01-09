@@ -7,7 +7,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
-import com.vp.plugin.model.IModelElement;
 
 public class Association implements ModelElement {
 	
