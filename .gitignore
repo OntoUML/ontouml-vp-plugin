@@ -24,3 +24,6 @@ log/
 target/
 classes/
 repo/
+
+# Visual Studio Code
+.vscode/
