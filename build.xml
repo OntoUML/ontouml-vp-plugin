@@ -1,0 +1,35 @@
+<project name="OntoUML Editor" default="build">
+	<description>OntoUML Plugin for Visual Paradigm</description>
+
+	<property name="src" location="E:\workspaceGit\ontouml-server-vp-plugin\src" />
+	<property name="build" location="build" />
+	<property name="classes" location="classes" />
+	<property name="icons" location="icons" />
+	<property name="lib" location="lib" />
+	<property name="pluginxml" location="E:\workspaceGit\ontouml-server-vp-plugin\plugin.xml" />
+	<property name="openapi" location="E:\OntoUML\Visual Paradigm\Visual Paradigm CE 16.0\lib\openapi.jar" />
+	<property name="gson" location="E:\workspaceGit\ontouml-server-vp-plugin\lib\gson-2.8.6.jar" />
+	<property name="vp" location="C:\Users\Victor Viola\AppData\Roaming\VisualParadigm\plugins" />
+
+	<target name="build">
+		<javac srcdir="${src}" destdir="${build}" includeAntRuntime="no">
+			<classpath>
+				<pathelement path="${openapi}" />
+				<pathelement path="${gson}" />
+			</classpath>
+		</javac>
+		<copy todir="${build}/classes">
+			<fileset dir="${classes}" />
+		</copy>
+		<copy todir="${build}/icons">
+			<fileset dir="${icons}" />
+		</copy>
+		<copy todir="${build}/lib">
+			<fileset dir="${lib}" />
+		</copy>
+		<copy file="${pluginxml}" todir="${build}" />
+		<copy todir="${vp}/${ant.project.name}">
+			<fileset dir="${build}" />
+		</copy>
+	</target>
+</project>
