@@ -27,3 +27,4 @@ repo/
 
 # Visual Studio Code
 .vscode/
+/bin/
