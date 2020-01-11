@@ -13,3 +13,20 @@ target/
 #*.class
 #bin/
 *.DS_Store
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Maven
+log/
+target/
+classes/
+repo/
+
+# Visual Studio Code
+.vscode/
+/bin/
+
+ontouml-vp-plugin.zip
