@@ -11,28 +11,6 @@
 					orientation="north"
 					index="last"/>
 			<action 
-					id="it.unibz.inf.ontouml.vp.actions.OpenOntoUMLMenuAction"
-					actionType="generalAction"
-					description="Add OntoUML Stereotypes."
-					style="normal"
-					tooltip="Add OntoUML Stereotypes." 
-					icon="icons/menu.png"
-					label="Add OntoUML"
-					toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ActivateOntoUMLPlugin" />
-			</action>
-			<action 
-					id="it.unibz.inf.ontouml.vp.actions.OpenOntoUMLMenuAction2"
-					actionType="generalAction"
-					description="Default Stereotypes."
-					style="normal"
-					tooltip="Default Stereotypes." 
-					icon="icons/menu.png"
-					label="Default Stereotypes"
-					toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ActivateDefaultStereotypes" />
-			</action>
-			<action 
 					id="it.unibz.inf.ontouml.vp.actions.ModelVerificationAction"
 					actionType="generalAction"
 					description="Verify OntoUML Model."
@@ -196,6 +174,5 @@
 				id="it.unibz.inf.ontouml.vp.addMaterialStereotype" label="Material" style="normal" menuPath="ontoUMLMenu2/#">
 				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
 		</contextSensitiveActionSet>
-		
 	</actionSets>
 </plugin>

@@ -18,7 +18,7 @@ import com.vp.plugin.ApplicationManager;
  */
 public class ViewUtils {
 	
-	public static final String SCOPE_PLUGIN = "OntoUML Plugin";
+	public static final String SCOPE_PLUGIN = "OntoUML";
 //	public static final String SCOPE_ALL_PLUGINS = "";
 	public static final String SCOPE_VERIFICATION = "Verification Log";
 	public static final String SCOPE_DEVELOPMENT_LOG = "DevLog";
@@ -52,7 +52,7 @@ public class ViewUtils {
 			JsonObject response = (JsonObject) new JsonParser().parse(responseMessage).getAsJsonObject();
 
 			if (response.has("valid") && response.get("valid").getAsBoolean()) {
-				ViewUtils.simpleLog("The model was verified and no syntactical errors were found.\n", SCOPE_VERIFICATION);
+				ViewUtils.simpleLog("The model was verified and no syntactical errors were found.\n", SCOPE_PLUGIN);
 			} 
 			else {
 				final JsonArray errors = response.get("meta").getAsJsonArray();
@@ -62,11 +62,11 @@ public class ViewUtils {
 					final String line = '[' + error.get("title").getAsString() + "]\t " + error.get("detail").getAsString()
 							.replaceAll("ontouml/1.0/", "").replaceAll("ontouml/2.0/", "");
 					
-					ViewUtils.simpleLog(line.trim(), SCOPE_VERIFICATION);
+					ViewUtils.simpleLog(line.trim(), SCOPE_PLUGIN);
 				}
 			}
 		} catch (JsonSyntaxException e) {
-			ViewUtils.log("Remote verification error. Please submit your Visual Paradigm's log and the time of the error our developers", SCOPE_VERIFICATION);
+			ViewUtils.log("Remote verification error. Please submit your Visual Paradigm's log and the time of the error our developers", SCOPE_PLUGIN);
 			e.printStackTrace();
 		}
 	}

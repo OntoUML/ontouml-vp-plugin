@@ -36,10 +36,10 @@ public class ModelExportAction implements VPActionController {
 	public void performAction(VPAction action) {
 		final ProjectConfigurations configurations = Configurations.getInstance().getProjectConfigurations();
 		
-		if(!configurations.isModelExportEnabled()) {
+		/*1if(!configurations.isModelExportEnabled()) {
 			ViewUtils.log("Model Export feature is not enabled.", ViewUtils.SCOPE_DEVELOPMENT_LOG);
 			return ;
-		}
+		} */
 		
 		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
 		final String jsonModel = ModelElement.generateModel(true);

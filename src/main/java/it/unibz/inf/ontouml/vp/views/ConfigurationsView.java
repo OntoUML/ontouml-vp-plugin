@@ -34,15 +34,9 @@ import it.unibz.inf.ontouml.vp.utils.ProjectConfigurations;
 public class ConfigurationsView extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
-
-	private JCheckBox _chckbxEnableOntoumlFeatures;
 	
 	private JCheckBox _chckbxEnableCustomServer;
 	private JTextField _txtServerAddress;
-	
-	private JCheckBox _chckbxEnableAutomaticExport;
-	private JTextField _txtExportFolder;
-	private JButton _btnSelectExportFolder;
 	
 	private JCheckBox _chckbxEnableAutoColoring;
 	
@@ -57,25 +51,13 @@ public class ConfigurationsView extends JPanel {
 	 * 
 	 */
 	public ConfigurationsView(ProjectConfigurations configurations) {
-		setSize(new Dimension(670, 150));
+		setSize(new Dimension(670, 180));
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] {670};
 		gridBagLayout.rowHeights = new int[]{26, 82, 25, 0};
 		gridBagLayout.columnWeights = new double[]{1.0};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
-		
-		_chckbxEnableOntoumlFeatures = new JCheckBox("Enable OntoUML features.");
-		_chckbxEnableOntoumlFeatures.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				updateComponentsStatus();
-			}
-		});
-		GridBagConstraints gbc__chckbxEnableOntoumlFeatures = new GridBagConstraints();
-		gbc__chckbxEnableOntoumlFeatures.fill = GridBagConstraints.BOTH;
-		gbc__chckbxEnableOntoumlFeatures.gridx = 0;
-		gbc__chckbxEnableOntoumlFeatures.gridy = 0;
-		add(_chckbxEnableOntoumlFeatures, gbc__chckbxEnableOntoumlFeatures);
 		
 		JPanel _optionsPanel = new JPanel();
 		GridBagConstraints gbc__optionsPanel = new GridBagConstraints();
@@ -125,50 +107,6 @@ public class ConfigurationsView extends JPanel {
 		gbl__exportPanel.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl__exportPanel.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		_exportPanel.setLayout(gbl__exportPanel);
-		
-		_chckbxEnableAutomaticExport = new JCheckBox("Enable model export.");
-		_chckbxEnableAutomaticExport.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				updateComponentsStatus();
-			}
-		});
-		GridBagConstraints gbc__chckbxEnableAutomaticExport = new GridBagConstraints();
-		gbc__chckbxEnableAutomaticExport.anchor = GridBagConstraints.WEST;
-		gbc__chckbxEnableAutomaticExport.insets = new Insets(0, 0, 0, 5);
-		gbc__chckbxEnableAutomaticExport.gridx = 0;
-		gbc__chckbxEnableAutomaticExport.gridy = 0;
-		_exportPanel.add(_chckbxEnableAutomaticExport, gbc__chckbxEnableAutomaticExport);
-		_chckbxEnableAutomaticExport.setToolTipText("Enables the selection of a folder to export XMI and OntoUML Schema version of the project, facilitating archive and collaboration through CVS tools.");
-		
-		_txtExportFolder = new JTextField();
-		GridBagConstraints gbc__txtExportFolder = new GridBagConstraints();
-		gbc__txtExportFolder.fill = GridBagConstraints.HORIZONTAL;
-		gbc__txtExportFolder.insets = new Insets(0, 0, 0, 5);
-		gbc__txtExportFolder.gridx = 1;
-		gbc__txtExportFolder.gridy = 0;
-		_exportPanel.add(_txtExportFolder, gbc__txtExportFolder);
-		_txtExportFolder.setColumns(10);
-		
-		_btnSelectExportFolder = new JButton("Select folder");
-		_btnSelectExportFolder.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JFileChooser jfc = ApplicationManager.instance().getViewManager().createJFileChooser();
-				jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				
-				int returnValue = jfc.showOpenDialog(null);
-
-				if (returnValue == JFileChooser.APPROVE_OPTION) {
-					File selectedFile = jfc.getSelectedFile();
-					_txtExportFolder.setText(selectedFile.getAbsolutePath());
-				}
-			}
-		});
-		GridBagConstraints gbc__btnSelectExportFolder = new GridBagConstraints();
-		gbc__btnSelectExportFolder.fill = GridBagConstraints.HORIZONTAL;
-		gbc__btnSelectExportFolder.gridx = 2;
-		gbc__btnSelectExportFolder.gridy = 0;
-		_exportPanel.add(_btnSelectExportFolder, gbc__btnSelectExportFolder);
 		
 		_chckbxEnableAutoColoring = new JCheckBox("Enable automatic coloring");
 		_optionsPanel.add(_chckbxEnableAutoColoring);
@@ -240,14 +178,9 @@ public class ConfigurationsView extends JPanel {
 	 * @param configurations
 	 * 
 	 */
-	private void updateConfigurationsValues(ProjectConfigurations configurations) {
-		configurations.setOntoUMLPluginEnabled(_chckbxEnableOntoumlFeatures.isSelected());
-		
+	private void updateConfigurationsValues(ProjectConfigurations configurations) {		
 		configurations.setCustomServerEnabled(_chckbxEnableCustomServer.isSelected());
 		configurations.setServerURL(_txtServerAddress.getText());
-		
-		configurations.setModelExportEnabled(_chckbxEnableAutomaticExport.isSelected());
-		configurations.setExportFolderPath(_txtExportFolder.getText());
 		
 		configurations.setAutomaticColoringEnabled(_chckbxEnableAutoColoring.isSelected());
 	}
@@ -260,13 +193,8 @@ public class ConfigurationsView extends JPanel {
 	 * 
 	 */
 	private void updateComponentsValues(ProjectConfigurations configurations) {
-		_chckbxEnableOntoumlFeatures.setSelected(configurations.isOntoUMLPluginEnabled());
-		
 		_chckbxEnableCustomServer.setSelected(configurations.isCustomServerEnabled());
 		_txtServerAddress.setText(configurations.getServerURL());
-		
-		_chckbxEnableAutomaticExport.setSelected(configurations.isModelExportEnabled());
-		_txtExportFolder.setText(configurations.getExportFolderPath());
 		
 		_chckbxEnableAutoColoring.setSelected(configurations.isAutomaticColoringEnabled());
 	}
@@ -277,13 +205,8 @@ public class ConfigurationsView extends JPanel {
 	 * 
 	 */
 	private void resetComponentsValues() {
-		_chckbxEnableOntoumlFeatures.setSelected(ProjectConfigurations.DEFAULT_IS_PLUGIN_ENABLED);
-
 		_chckbxEnableCustomServer.setSelected(ProjectConfigurations.DEFAULT_IS_CUSTOM_SERVER_ENABLED);
 		_txtServerAddress.setText(ProjectConfigurations.DEFAULT_SERVER_URL);
-
-		_chckbxEnableAutomaticExport.setSelected(ProjectConfigurations.DEFAULT_IS_EXPORT_ENABLED);
-		_txtExportFolder.setText(ProjectConfigurations.DEFAULT_EXPORT_PATH);
 
 		_chckbxEnableAutoColoring.setSelected(ProjectConfigurations.DEFAULT_IS_AUTOMATIC_COLORING_ENABLED);
 	}
@@ -294,29 +217,9 @@ public class ConfigurationsView extends JPanel {
 	 * 
 	 */
 	private void updateComponentsStatus() {
-		_chckbxEnableOntoumlFeatures.setEnabled(true);
-		
-		if(_chckbxEnableOntoumlFeatures.isSelected()) {
-			_chckbxEnableCustomServer.setEnabled(true);
-			_txtServerAddress.setEnabled(_chckbxEnableCustomServer.isSelected());;
-			
-			_chckbxEnableAutomaticExport.setEnabled(true);
-			_txtExportFolder.setEnabled(_chckbxEnableAutomaticExport.isSelected());
-			_btnSelectExportFolder.setEnabled(_chckbxEnableAutomaticExport.isSelected());
-			
-			_chckbxEnableAutoColoring.setEnabled(true);
-		}
-		else {
-			_chckbxEnableCustomServer.setEnabled(false);;
-			_txtServerAddress.setEnabled(false);
-			
-			_chckbxEnableAutomaticExport.setEnabled(false);
-			_txtExportFolder.setEnabled(false);
-			_btnSelectExportFolder.setEnabled(false);
-			
-			_chckbxEnableAutoColoring.setEnabled(false);
-		}
-		
+		_chckbxEnableCustomServer.setEnabled(true);
+		_txtServerAddress.setEnabled(_chckbxEnableCustomServer.isSelected());
+		_chckbxEnableAutoColoring.setEnabled(true);	
 	}
 
 }
