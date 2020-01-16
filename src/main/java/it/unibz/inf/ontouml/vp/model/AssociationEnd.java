@@ -53,7 +53,6 @@ public class AssociationEnd implements ModelElement {
 		
 		String multiplicity = source.getMultiplicity();
 		
-		System.out.println("MULTIPLICIDADE " + multiplicity);
 		if(multiplicity.equals(IAssociationEnd.MULTIPLICITY_UNSPECIFIED)) {
 			this.lowerbound = "0";
 			this.upperbound = "*";
@@ -61,7 +60,6 @@ public class AssociationEnd implements ModelElement {
 		else if (multiplicity.matches("^\\w+\\.{2}\\w+$")) {
 			this.lowerbound = multiplicity.substring(0, multiplicity.indexOf(".."));
 			this.upperbound = multiplicity.substring(multiplicity.indexOf("..") + 2, multiplicity.length());
-
 		}
 		else {			
 			this.lowerbound = multiplicity;
