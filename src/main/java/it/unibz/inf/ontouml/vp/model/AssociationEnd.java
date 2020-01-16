@@ -30,7 +30,7 @@ public class AssociationEnd implements ModelElement {
 
 	@SerializedName("lowerbound")
 	@Expose
-	private int lowerbound;
+	private String lowerbound;
 
 	@SerializedName("upperbound")
 	@Expose
@@ -51,25 +51,21 @@ public class AssociationEnd implements ModelElement {
 		setURI(ModelElement.getModelElementURI(source));
 		setPropertyType(ModelElement.getModelElementURI(source.getTypeAsElement()));
 		
-		// TODO Update cardinalities
 		String multiplicity = source.getMultiplicity();
+		
+		System.out.println("MULTIPLICIDADE " + multiplicity);
 		if(multiplicity.equals(IAssociationEnd.MULTIPLICITY_UNSPECIFIED)) {
-			this.lowerbound = 0;
+			this.lowerbound = "0";
 			this.upperbound = "*";
 		}
-		else if (multiplicity.contains("..")) {
-			String min = multiplicity.substring(0, multiplicity.indexOf(".."));
-//			String max = multiplicity.substring(multiplicity.indexOf("..") + 2, multiplicity.length() - 1);
-			this.lowerbound = Integer.parseInt(min);
-			this.upperbound = "*";
-//			TODO OntoUML Schema accepts either a number or the string "*". Discover how to do serialize that with GSON.
-//			this.upperbound = max.equals("*") ? max : Integer.parseInt(max);
+		else if (multiplicity.matches("^\\w+\\.{2}\\w+$")) {
+			this.lowerbound = multiplicity.substring(0, multiplicity.indexOf(".."));
+			this.upperbound = multiplicity.substring(multiplicity.indexOf("..") + 2, multiplicity.length());
+
 		}
 		else {			
-			this.lowerbound = multiplicity.equals("*") ? 0 : Integer.parseInt(multiplicity);
+			this.lowerbound = multiplicity;
 			this.upperbound = "*";
-//			TODO OntoUML Schema accepts either a number or the string "*". Discover how to do serialize that with GSON.
-//			this.upperbound = multiplicity.equals("*") ? multiplicity : Integer.parseInt(multiplicity);
 		}
 	}
 	
@@ -122,11 +118,11 @@ public class AssociationEnd implements ModelElement {
 		this.propertyType = propertyType;
 	}
 
-	public int getLowerbound() {
+	public String getLowerbound() {
 		return lowerbound;
 	}
 
-	public void setLowerbound(int lowerbound) {
+	public void setLowerbound(String lowerbound) {
 		this.lowerbound = lowerbound;
 	}
 
