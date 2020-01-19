@@ -66,6 +66,8 @@ public class ViewUtils {
 				}
 			}
 		} catch (JsonSyntaxException e) {
+			ViewUtils.log("The requested server might be down. See response below:", SCOPE_PLUGIN);
+			ViewUtils.log(responseMessage, SCOPE_PLUGIN);
 			ViewUtils.log("Remote verification error. Please submit your Visual Paradigm's log and the time of the error our developers", SCOPE_PLUGIN);
 			e.printStackTrace();
 		}
