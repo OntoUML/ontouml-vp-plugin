@@ -12,9 +12,9 @@ import com.google.gson.annotations.SerializedName;
  */
 public class ProjectConfigurations {
 	
-	public static final boolean DEFAULT_IS_PLUGIN_ENABLED = false;
+	public static final boolean DEFAULT_IS_PLUGIN_ENABLED = true;
 	public static final boolean DEFAULT_IS_CUSTOM_SERVER_ENABLED = false;
-	public static final boolean DEFAULT_IS_EXPORT_ENABLED = false;
+	public static final boolean DEFAULT_IS_EXPORT_ENABLED = true;
 	public static final boolean DEFAULT_IS_AUTOMATIC_COLORING_ENABLED = false;
 	public static final String DEFAULT_SERVER_URL = "https://ontouml.herokuapp.com/";
 	public static final String DEFAULT_EXPORT_PATH = System.getProperty("user.home");

@@ -37,11 +37,6 @@ public class ModelVerificationAction implements VPActionController {
 			public void run() {
 				ViewUtils.clearLog(ViewUtils.SCOPE_PLUGIN);
 
-				if (!Configurations.getInstance().getProjectConfigurations().isOntoUMLPluginEnabled()) {
-					ViewUtils.log("Model Verification is disabled.", ViewUtils.SCOPE_PLUGIN);
-					return;
-				}
-
 				try {
 					ViewUtils.log("Initiating verification.", ViewUtils.SCOPE_PLUGIN);
 
