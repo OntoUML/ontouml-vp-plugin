@@ -57,7 +57,7 @@ public class AssociationEnd implements ModelElement {
 			this.lowerbound = "0";
 			this.upperbound = "*";
 		}
-		else if (multiplicity.matches("^\\w+\\.{2}\\w+$")) {
+		else if (multiplicity.matches("^\\w+\\.{2}[\\w+|\\*]$")) {
 			this.lowerbound = multiplicity.substring(0, multiplicity.indexOf(".."));
 			this.upperbound = multiplicity.substring(multiplicity.indexOf("..") + 2, multiplicity.length());
 		}
