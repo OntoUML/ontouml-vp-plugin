@@ -27,6 +27,7 @@ public class OntoUMLServerUtils {
 
 		request.setRequestMethod("POST");
 		request.setRequestProperty("Content-Type", "application/json");
+		request.setReadTimeout(60000);
 		request.setDoOutput(true);
 
 		final OutputStream requestStream = request.getOutputStream();
@@ -51,6 +52,7 @@ public class OntoUMLServerUtils {
 			reader.close();
 
 		} catch (IOException e) {
+			ViewUtils.log("Error occurred during model verification request.", ViewUtils.SCOPE_PLUGIN);
 			System.err.println("Error occurred during model verification request.");
 			e.printStackTrace();
 		}
