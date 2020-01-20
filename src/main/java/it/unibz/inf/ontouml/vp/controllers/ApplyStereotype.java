@@ -26,49 +26,78 @@ import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
  */
 public class ApplyStereotype implements VPContextActionController {
 
-	public static final String ACTION_ADD_STEREOTYPE_KIND = "it.unibz.inf.ontouml.vp.addKindStereotype";
-	public static final String ACTION_ADD_STEREOTYPE_COLLECTIVE_KIND = "it.unibz.inf.ontouml.vp.addCollectiveKindStereotype";
-	public static final String ACTION_ADD_STEREOTYPE_QUANTITY_KIND = "it.unibz.inf.ontouml.vp.addQuantityKindStereotype";
-	public static final String ACTION_ADD_STEREOTYPE_RELATOR_KIND = "it.unibz.inf.ontouml.vp.addRelatorKindStereotype";
-	public static final String ACTION_ADD_STEREOTYPE_MODE_KIND = "it.unibz.inf.ontouml.vp.addModeKindStereotype";
-	public static final String ACTION_ADD_STEREOTYPE_QUALITY_KIND = "it.unibz.inf.ontouml.vp.addQualityKindStereotype";
-
+	//Class stereotypes (ordered as in plugin.xml)
+	public static final String ACTION_ADD_STEREOTYPE_TYPE = "it.unibz.inf.ontouml.vp.addTypeStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_POWERTYPE = "it.unibz.inf.ontouml.vp.addPowertypeStereotype";
+	
+	public static final String ACTION_ADD_STEREOTYPE_HISTORICAL_ROLE = "it.unibz.inf.ontouml.vp.addHistoricalRoleStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_EVENT = "it.unibz.inf.ontouml.vp.addEventStereotype";
+	
+	public static final String ACTION_ADD_STEREOTYPE_ENUMERATION = "it.unibz.inf.ontouml.vp.addEnumerationStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_DATATYPE = "it.unibz.inf.ontouml.vp.addDatatypeStereotype";
+	
 	public static final String ACTION_ADD_STEREOTYPE_SUBKIND = "it.unibz.inf.ontouml.vp.addSubkindStereotype";
-	public static final String ACTION_ADD_STEREOTYPE_PHASE = "it.unibz.inf.ontouml.vp.addPhaseStereotype";
-	public static final String ACTION_ADD_STEREOTYPE_ROLE = "it.unibz.inf.ontouml.vp.addRoleStereotype";
-
-	public static final String ACTION_ADD_STEREOTYPE_CATEGORY = "it.unibz.inf.ontouml.vp.addCategoryStereotype";
 	public static final String ACTION_ADD_STEREOTYPE_ROLE_MIXIN = "it.unibz.inf.ontouml.vp.addRoleMixinStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_ROLE = "it.unibz.inf.ontouml.vp.addRoleStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_RELATOR_KIND = "it.unibz.inf.ontouml.vp.addRelatorKindStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_QUANTITY = "it.unibz.inf.ontouml.vp.addQuantityStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_QUALITY_KIND = "it.unibz.inf.ontouml.vp.addQualityKindStereotype";
 	public static final String ACTION_ADD_STEREOTYPE_PHASE_MIXIN = "it.unibz.inf.ontouml.vp.addPhaseMixinStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_PHASE = "it.unibz.inf.ontouml.vp.addPhaseStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_MODE_KIND = "it.unibz.inf.ontouml.vp.addModeKindStereotype";
 	public static final String ACTION_ADD_STEREOTYPE_MIXIN = "it.unibz.inf.ontouml.vp.addMixinStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_KIND = "it.unibz.inf.ontouml.vp.addKindStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_COLLECTIVE = "it.unibz.inf.ontouml.vp.addCollectiveStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_CATEGORY = "it.unibz.inf.ontouml.vp.addCategoryStereotype";
+	
+	//Association stereotypes (ordered as in plugin.xml)
 
-	public static final String ACTION_ADD_STEREOTYPE_MATERIAL = "it.unibz.inf.ontouml.vp.addMaterialStereotype";
-	public static final String ACTION_ADD_STEREOTYPE_COMPARATIVE = "it.unibz.inf.ontouml.vp.addComparativeStereotype";
-	public static final String ACTION_ADD_STEREOTYPE_HISTORICAL = "it.unibz.inf.ontouml.vp.addHistoricalStereotype";
-
-	public static final String ACTION_ADD_STEREOTYPE_MEDIATION = "it.unibz.inf.ontouml.vp.addMediationStereotype";
-	public static final String ACTION_ADD_STEREOTYPE_CHARACTERIZATION = "it.unibz.inf.ontouml.vp.addCharacterizationStereotype";
-	public static final String ACTION_ADD_STEREOTYPE_EXTERNAL_DEPENDENCE = "it.unibz.inf.ontouml.vp.addExternalDependenceStereotype";
-
-	public static final String ACTION_ADD_STEREOTYPE_COMPONENT_OF = "it.unibz.inf.ontouml.vp.addComponentOfStereotype";
-	public static final String ACTION_ADD_STEREOTYPE_MEMBER_OF = "it.unibz.inf.ontouml.vp.addMemberOfStereotype";
-	public static final String ACTION_ADD_STEREOTYPE_SUB_COLLECTION_OF = "it.unibz.inf.ontouml.vp.addSubCollectionStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_INSTANTIATION = "it.unibz.inf.ontouml.vp.addInstantiationStereotype";
+	
+	public static final String ACTION_ADD_STEREOTYPE_TERMINATION = "it.unibz.inf.ontouml.vp.addTerminationStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_PARTICIPATIONAL = "it.unibz.inf.ontouml.vp.addParticipationalStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_PARTICIPATION = "it.unibz.inf.ontouml.vp.addParticipationStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_HISTORICAL_DEPENDENCE = "it.unibz.inf.ontouml.vp.addHistoricalDependenceStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_CREATION = "it.unibz.inf.ontouml.vp.addCreationStereotype";
+	
 	public static final String ACTION_ADD_STEREOTYPE_SUB_QUANTITY_OF = "it.unibz.inf.ontouml.vp.addSubQuantityStereotype";
-	public static final String ACTION_ADD_STEREOTYPE_SUM = "it.unibz.inf.ontouml.vp.addSumStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_SUB_COLLECTION_OF = "it.unibz.inf.ontouml.vp.addSubCollectionStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_MEMBER_OF = "it.unibz.inf.ontouml.vp.addMemberOfStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_MEDIATION = "it.unibz.inf.ontouml.vp.addMediationStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_MATERIAL = "it.unibz.inf.ontouml.vp.addMaterialStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_HISTORICAL = "it.unibz.inf.ontouml.vp.addHistoricalStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_EXTERNAL_DEPENDENCE = "it.unibz.inf.ontouml.vp.addExternalDependenceStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_COMPONENT_OF = "it.unibz.inf.ontouml.vp.addComponentOfStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_COMPARATIVE = "it.unibz.inf.ontouml.vp.addComparativeStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_CHARACTERIZATION = "it.unibz.inf.ontouml.vp.addCharacterizationStereotype";
 
-	public static final Color COLOR_FUNCTIONAL_COMPLEX_KIND = new Color(255, 253, 146);
-	public static final Color COLOR_COLLECTIVE_KIND = new Color(255, 253, 146);
-	public static final Color COLOR_QUANTITY_KIND = new Color(255, 253, 146);
-	public static final Color COLOR_RELATOR_KIND = new Color(246, 194, 137);
-	public static final Color COLOR_MODE_KIND = new Color(176, 251, 162);
-	public static final Color COLOR_QUALITY_KIND = new Color(156, 160, 248);
+	//Attribute stereotypes (ordered as in plugin.xml)
+	public static final String ACTION_ADD_STEREOTYPE_END = "it.unibz.inf.ontouml.vp.addEndStereotype";
+	public static final String ACTION_ADD_STEREOTYPE_BEGIN = "it.unibz.inf.ontouml.vp.addBeginStereotype";
 
-	public static final Color COLOR_FUNCTIONAL_COMPLEX_SORTAL = new Color(255, 254, 199);
-	public static final Color COLOR_COLLECTIVE_SORTAL = new Color(255, 254, 199);
-	public static final Color COLOR_QUANTITY_SORTAL = new Color(255, 254, 199);
-	public static final Color COLOR_RELATOR_SORTAL = new Color(251, 225, 197);
-	public static final Color COLOR_MODE_SORTAL = new Color(206, 252, 198);
-	public static final Color COLOR_QUALITY_SORTAL = new Color(205, 205, 249);
+
+	// Default colors
+	public static final Color COLOR_TYPE = new Color(211, 211, 252);
+	public static final Color COLOR_POWERTYPE = new Color(211, 211, 252);
+	
+	public static final Color COLOR_EVENT = new Color(252, 252, 212);
+	
+	public static final Color COLOR_ENUMERATION = new Color(255, 255, 255);
+	public static final Color COLOR_DATATYPE = new Color(255, 255, 255);
+	
+	public static final Color COLOR_FUNCTIONAL_COMPLEX_KIND = new Color(255, 218, 221);
+	public static final Color COLOR_COLLECTIVE = new Color(255, 218, 221);
+	public static final Color COLOR_QUANTITY = new Color(255, 218, 221);
+	public static final Color COLOR_RELATOR_KIND = new Color(211, 255, 211);
+	public static final Color COLOR_MODE_KIND = new Color(192, 237, 255);
+	public static final Color COLOR_QUALITY_KIND = new Color(192, 237, 255);
+	
+	public static final Color COLOR_FUNCTIONAL_COMPLEX_SORTAL = new Color(255, 218, 221);
+	public static final Color COLOR_COLLECTIVE_SORTAL = new Color(255, 218, 221);
+	public static final Color COLOR_QUANTITY_SORTAL = new Color(255, 218, 221);
+	public static final Color COLOR_RELATOR_SORTAL = new Color(211, 255, 211);
+	public static final Color COLOR_MODE_SORTAL = new Color(192, 237, 255);
+	public static final Color COLOR_QUALITY_SORTAL = new Color(192, 237, 255);
 
 	public static final Color COLOR_NON_SORTAL = new Color(224, 224, 224);
 
@@ -82,57 +111,101 @@ public class ApplyStereotype implements VPContextActionController {
 		}
 
 		switch (action.getActionId()) {
-		case ACTION_ADD_STEREOTYPE_KIND:
-			element.addStereotype(StereotypeUtils.STR_KIND);
-			paint(context, COLOR_FUNCTIONAL_COMPLEX_KIND);
+		case ACTION_ADD_STEREOTYPE_TYPE:
+			element.addStereotype(StereotypeUtils.STR_TYPE);
+			paint(context, COLOR_TYPE);
 			break;
-		case ACTION_ADD_STEREOTYPE_COLLECTIVE_KIND:
-			element.addStereotype(StereotypeUtils.STR_COLLECTIVE_KIND);
-			paint(context, COLOR_COLLECTIVE_KIND);
+		case ACTION_ADD_STEREOTYPE_POWERTYPE:
+			element.addStereotype(StereotypeUtils.STR_POWERTYPE);
+			paint(context, COLOR_POWERTYPE);
 			break;
-		case ACTION_ADD_STEREOTYPE_QUANTITY_KIND:
-			element.addStereotype(StereotypeUtils.STR_QUANTITY_KIND);
-			paint(context, COLOR_QUANTITY_KIND);
+		case ACTION_ADD_STEREOTYPE_HISTORICAL_ROLE:
+			element.addStereotype(StereotypeUtils.STR_HISTORICAL_ROLE);
+			paint(context, getSpecializedColor(context));
 			break;
-		case ACTION_ADD_STEREOTYPE_RELATOR_KIND:
-			element.addStereotype(StereotypeUtils.STR_RELATOR_KIND);
-			paint(context, COLOR_RELATOR_KIND);
+		case ACTION_ADD_STEREOTYPE_EVENT:
+			element.addStereotype(StereotypeUtils.STR_EVENT);
+			paint(context, COLOR_EVENT);
 			break;
-		case ACTION_ADD_STEREOTYPE_MODE_KIND:
-			element.addStereotype(StereotypeUtils.STR_MODE_KIND);
-			paint(context, COLOR_MODE_KIND);
+		case ACTION_ADD_STEREOTYPE_ENUMERATION:
+			element.addStereotype(StereotypeUtils.STR_ENUMERATION);
+			paint(context, COLOR_ENUMERATION);
 			break;
-		case ACTION_ADD_STEREOTYPE_QUALITY_KIND:
-			element.addStereotype(StereotypeUtils.STR_QUALITY_KIND);
-			paint(context, COLOR_QUALITY_KIND);
+		case ACTION_ADD_STEREOTYPE_DATATYPE:
+			element.addStereotype(StereotypeUtils.STR_DATATYPE);
+			paint(context, COLOR_DATATYPE);
 			break;
 		case ACTION_ADD_STEREOTYPE_SUBKIND:
 			element.addStereotype(StereotypeUtils.STR_SUBKIND);
 			paint(context, getSpecializedColor(context));
 			break;
+		case ACTION_ADD_STEREOTYPE_ROLE_MIXIN:
+			element.addStereotype(StereotypeUtils.STR_ROLE_MIXIN);
+			paint(context, COLOR_NON_SORTAL);
+			break;
 		case ACTION_ADD_STEREOTYPE_ROLE:
 			element.addStereotype(StereotypeUtils.STR_ROLE);
 			paint(context, getSpecializedColor(context));
 			break;
-		case ACTION_ADD_STEREOTYPE_PHASE:
-			element.addStereotype(StereotypeUtils.STR_PHASE);
-			paint(context, getSpecializedColor(context));
+		case ACTION_ADD_STEREOTYPE_RELATOR_KIND:
+			element.addStereotype(StereotypeUtils.STR_RELATOR_KIND);
+			paint(context, COLOR_RELATOR_KIND);
+			break;			
+		case ACTION_ADD_STEREOTYPE_QUANTITY:
+			element.addStereotype(StereotypeUtils.STR_QUANTITY);
+			paint(context, COLOR_QUANTITY);
 			break;
-		case ACTION_ADD_STEREOTYPE_CATEGORY:
-			element.addStereotype(StereotypeUtils.STR_CATEGORY);
-			paint(context, COLOR_NON_SORTAL);
-			break;
-		case ACTION_ADD_STEREOTYPE_ROLE_MIXIN:
-			element.addStereotype(StereotypeUtils.STR_ROLE_MIXIN);
-			paint(context, COLOR_NON_SORTAL);
+		case ACTION_ADD_STEREOTYPE_QUALITY_KIND:
+			element.addStereotype(StereotypeUtils.STR_QUALITY_KIND);
+			paint(context, COLOR_QUALITY_KIND);
 			break;
 		case ACTION_ADD_STEREOTYPE_PHASE_MIXIN:
 			element.addStereotype(StereotypeUtils.STR_PHASE_MIXIN);
 			paint(context, COLOR_NON_SORTAL);
 			break;
+		case ACTION_ADD_STEREOTYPE_PHASE:
+			element.addStereotype(StereotypeUtils.STR_PHASE);
+			paint(context, getSpecializedColor(context));
+			break;
+		case ACTION_ADD_STEREOTYPE_MODE_KIND:
+			element.addStereotype(StereotypeUtils.STR_MODE_KIND);
+			paint(context, COLOR_MODE_KIND);
+			break;
 		case ACTION_ADD_STEREOTYPE_MIXIN:
 			element.addStereotype(StereotypeUtils.STR_MIXIN);
 			paint(context, COLOR_NON_SORTAL);
+			break;
+		case ACTION_ADD_STEREOTYPE_KIND:
+			element.addStereotype(StereotypeUtils.STR_KIND);
+			paint(context, COLOR_FUNCTIONAL_COMPLEX_KIND);
+			break;
+		case ACTION_ADD_STEREOTYPE_COLLECTIVE:
+			element.addStereotype(StereotypeUtils.STR_COLLECTIVE);
+			paint(context, COLOR_COLLECTIVE);
+			break;
+		case ACTION_ADD_STEREOTYPE_CATEGORY:
+			element.addStereotype(StereotypeUtils.STR_CATEGORY);
+			paint(context, COLOR_NON_SORTAL);
+			break;
+		
+		
+		case ACTION_ADD_STEREOTYPE_INSTANTIATION:
+			element.addStereotype(StereotypeUtils.STR_INSTANTIATION);
+			break;
+		case ACTION_ADD_STEREOTYPE_TERMINATION:
+			element.addStereotype(StereotypeUtils.STR_TERMINATION);
+			break;
+		case ACTION_ADD_STEREOTYPE_PARTICIPATIONAL:
+			element.addStereotype(StereotypeUtils.STR_PARTICIPATIONAL);
+			break;
+		case ACTION_ADD_STEREOTYPE_PARTICIPATION:
+			element.addStereotype(StereotypeUtils.STR_PARTICIPATION);
+			break;
+		case ACTION_ADD_STEREOTYPE_HISTORICAL_DEPENDENCE:
+			element.addStereotype(StereotypeUtils.STR_HISTORICAL_DEPENDENCE);
+			break;
+		case ACTION_ADD_STEREOTYPE_CREATION:
+			element.addStereotype(StereotypeUtils.STR_CREATION);
 			break;
 		case ACTION_ADD_STEREOTYPE_MATERIAL:
 			element.addStereotype(StereotypeUtils.STR_MATERIAL);
@@ -164,8 +237,12 @@ public class ApplyStereotype implements VPContextActionController {
 		case ACTION_ADD_STEREOTYPE_SUB_QUANTITY_OF:
 			element.addStereotype(StereotypeUtils.STR_SUB_QUANTITY_OF);
 			break;
-		case ACTION_ADD_STEREOTYPE_SUM:
-			element.addStereotype(StereotypeUtils.STR_SUM);
+		
+		case ACTION_ADD_STEREOTYPE_BEGIN:
+			element.addStereotype(StereotypeUtils.STR_BEGIN);
+			break;
+		case ACTION_ADD_STEREOTYPE_END:
+			element.addStereotype(StereotypeUtils.STR_END);
 			break;
 		}
 	}
@@ -232,9 +309,9 @@ public class ApplyStereotype implements VPContextActionController {
 				if (superColor.equals(COLOR_FUNCTIONAL_COMPLEX_KIND)
 						|| superColor.equals(COLOR_FUNCTIONAL_COMPLEX_SORTAL)) {
 					return COLOR_FUNCTIONAL_COMPLEX_SORTAL;
-				} else if (superColor.equals(COLOR_COLLECTIVE_KIND) || superColor.equals(COLOR_COLLECTIVE_SORTAL)) {
+				} else if (superColor.equals(COLOR_COLLECTIVE) || superColor.equals(COLOR_COLLECTIVE_SORTAL)) {
 					return COLOR_COLLECTIVE_SORTAL;
-				} else if (superColor.equals(COLOR_QUANTITY_KIND) || superColor.equals(COLOR_QUANTITY_SORTAL)) {
+				} else if (superColor.equals(COLOR_QUANTITY) || superColor.equals(COLOR_QUANTITY_SORTAL)) {
 					return COLOR_QUANTITY_SORTAL;
 				} else if (superColor.equals(COLOR_RELATOR_KIND) || superColor.equals(COLOR_RELATOR_SORTAL)) {
 					return COLOR_RELATOR_SORTAL;

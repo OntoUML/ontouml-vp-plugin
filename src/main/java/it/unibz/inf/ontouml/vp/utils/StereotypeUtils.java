@@ -12,23 +12,31 @@ import com.vp.plugin.model.factory.IModelElementFactory;
 
 public class StereotypeUtils {
 
+	// Class stereotypes
+	public static final String STR_POWERTYPE = "powertype";
+	public static final String STR_TYPE = "type";
+
+	public static final String STR_HISTORICAL_ROLE = "historicalRole";
+	public static final String STR_EVENT = "event";
+	
 	public static final String STR_CATEGORY = "category";
 	public static final String STR_MIXIN = "mixin";
 	public static final String STR_ROLE_MIXIN = "roleMixin";
 	public static final String STR_PHASE_MIXIN = "phaseMixin";
-
 	public static final String STR_KIND = "kind";
-	public static final String STR_COLLECTIVE_KIND = "collectiveKind";
-	public static final String STR_QUANTITY_KIND = "quantityKind";
+	public static final String STR_COLLECTIVE = "collective";
+	public static final String STR_QUANTITY = "quantity";
 	public static final String STR_RELATOR_KIND = "relatorKind";
 	public static final String STR_QUALITY_KIND = "qualityKind";
 	public static final String STR_MODE_KIND = "modeKind";
-	
 	public static final String STR_SUBKIND = "subkind";
 	public static final String STR_ROLE = "role";
 	public static final String STR_PHASE = "phase";
+	
+	public static final String STR_ENUMERATION = "enumeration";
+	public static final String STR_DATATYPE = "datatype";
 
-	/* OntoUML Association Stereotypes for Relation Types */
+	// Association stereotypes
 	public static final String STR_MATERIAL = "material";
 	public static final String STR_COMPARATIVE = "comparative";
 	public static final String STR_HISTORICAL = "historical";
@@ -41,7 +49,18 @@ public class StereotypeUtils {
 	public static final String STR_MEMBER_OF = "memberOf";
 	public static final String STR_SUB_COLLECTION_OF = "subCollectionOf";
 	public static final String STR_SUB_QUANTITY_OF = "subQuantityOf";
-	public static final String STR_SUM = "sum";
+	
+	public static final String STR_INSTANTIATION = "instantiation";
+	
+	public static final String STR_TERMINATION = "termination";
+	public static final String STR_PARTICIPATIONAL = "participational";
+	public static final String STR_PARTICIPATION = "participation";
+	public static final String STR_HISTORICAL_DEPENDENCE = "historicalDependence";
+	public static final String STR_CREATION = "creation";
+	
+	// Attribute stereotypes
+	public static final String STR_BEGIN = "begin";
+	public static final String STR_END = "end";
 
 	public static void removeAllModelStereotypes(String modelType) {
 
@@ -118,18 +137,25 @@ public class StereotypeUtils {
 	public static Set<String> getOntoUMLClassStereotypeNames() {
 		final Set<String> str_names = new HashSet<String>();
 
+		str_names.add(STR_POWERTYPE);
+		str_names.add(STR_TYPE);
+		
+		str_names.add(STR_HISTORICAL_ROLE);
+		str_names.add(STR_EVENT);
+
+		str_names.add(STR_ENUMERATION);
+		str_names.add(STR_DATATYPE);
+
 		str_names.add(STR_CATEGORY);
 		str_names.add(STR_MIXIN);
 		str_names.add(STR_ROLE_MIXIN);
 		str_names.add(STR_PHASE_MIXIN);
-
 		str_names.add(STR_KIND);
-		str_names.add(STR_QUANTITY_KIND);
+		str_names.add(STR_QUANTITY);
 		str_names.add(STR_RELATOR_KIND);
 		str_names.add(STR_QUALITY_KIND);
 		str_names.add(STR_MODE_KIND);
 		str_names.add(STR_SUBKIND);
-
 		str_names.add(STR_ROLE);
 		str_names.add(STR_PHASE);
 
@@ -139,19 +165,23 @@ public class StereotypeUtils {
 	public static Set<String> getOntoUMLAssociationStereotypeNames() {
 		final Set<String> str_names = new HashSet<String>();
 
-		str_names.add(STR_MATERIAL);
+		str_names.add(STR_INSTANTIATION);
+		
+		str_names.add(STR_TERMINATION);
+		str_names.add(STR_PARTICIPATIONAL);
+		str_names.add(STR_PARTICIPATION);
+		str_names.add(STR_HISTORICAL_DEPENDENCE);
+		str_names.add(STR_CREATION);
+		
 		str_names.add(STR_COMPARATIVE);
 		str_names.add(STR_HISTORICAL);
-		
 		str_names.add(STR_MEDIATION);
 		str_names.add(STR_CHARACTERIZATION);
 		str_names.add(STR_EXTERNAL_DEPENDENCE);
-		
 		str_names.add(STR_COMPONENT_OF);
 		str_names.add(STR_MEMBER_OF);
 		str_names.add(STR_SUB_COLLECTION_OF);
 		str_names.add(STR_SUB_QUANTITY_OF);
-		str_names.add(STR_SUM);
 
 		return str_names;
 	}

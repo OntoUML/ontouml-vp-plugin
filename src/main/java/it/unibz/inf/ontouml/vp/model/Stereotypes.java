@@ -8,8 +8,8 @@ public class Stereotypes {
 	public static final String BASE_URI_PHASE_MIXIN = "ontouml/2.0/phaseMixin";
 
 	public static final String BASE_URI_KIND = "ontouml/2.0/kind";
-	public static final String BASE_URI_COLLECTIVE_KIND = "ontouml/2.0/collectiveKind";
-	public static final String BASE_URI_QUANTITY_KIND = "ontouml/2.0/quantityKind";
+	public static final String BASE_URI_COLLECTIVE = "ontouml/2.0/collective";
+	public static final String BASE_URI_QUANTITY = "ontouml/2.0/quantity";
 	public static final String BASE_URI_RELATOR_KIND = "ontouml/2.0/relatorKind";
 	public static final String BASE_URI_QUALITY_KIND = "ontouml/2.0/qualityKind";
 	public static final String BASE_URI_MODE_KIND = "ontouml/2.0/modeKind";
@@ -48,10 +48,10 @@ public class Stereotypes {
 				return BASE_URI_PHASE_MIXIN;
 			case "kind":
 				return BASE_URI_KIND;
-			case "collectiveKind":
-				return BASE_URI_COLLECTIVE_KIND;
-			case "quantityKind":
-				return BASE_URI_QUANTITY_KIND;
+			case "collective":
+				return BASE_URI_COLLECTIVE;
+			case "quantity":
+				return BASE_URI_QUANTITY;
 			case "relatorKind":
 				return BASE_URI_RELATOR_KIND;
 			case "qualityKind":
