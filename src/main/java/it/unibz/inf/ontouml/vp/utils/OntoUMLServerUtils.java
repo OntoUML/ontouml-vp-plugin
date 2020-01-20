@@ -22,11 +22,20 @@ public class OntoUMLServerUtils {
 
 	public static String requestModelVerification(String serializedModel) throws MalformedURLException, IOException {
 		final ProjectConfigurations configurations = Configurations.getInstance().getProjectConfigurations();
-		final URL url = new URL(configurations.getServerURL() + VERIFICATION_SERVICE_ENDPOINT);
+		final URL url;	
+		
+		if(configurations.isCustomServerEnabled()) {
+			url = new URL(configurations.getServerURL());
+		}else {
+			url = new URL(ProjectConfigurations.DEFAULT_SERVER_URL + VERIFICATION_SERVICE_ENDPOINT);
+		}
+		
+		
 		final HttpURLConnection request = (HttpURLConnection) url.openConnection();
 
 		request.setRequestMethod("POST");
 		request.setRequestProperty("Content-Type", "application/json");
+		request.setReadTimeout(60000);
 		request.setDoOutput(true);
 
 		final OutputStream requestStream = request.getOutputStream();
@@ -36,6 +45,9 @@ public class OntoUMLServerUtils {
 		final BufferedReader reader;
 
 		try {
+			ViewUtils.log("Sending model to the server: " + url, ViewUtils.SCOPE_PLUGIN);		
+			ViewUtils.log("Please wait. This might take a while.", ViewUtils.SCOPE_PLUGIN);
+
 			requestStream.write(requestBody, 0, requestBody.length);
 			requestStream.flush();
 			requestStream.close();
@@ -51,6 +63,7 @@ public class OntoUMLServerUtils {
 			reader.close();
 
 		} catch (IOException e) {
+			ViewUtils.log("Error receiving model verification response.", ViewUtils.SCOPE_PLUGIN);
 			System.err.println("Error occurred during model verification request.");
 			e.printStackTrace();
 		}
