@@ -4,14 +4,12 @@ import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 public class Stereotypes {
 	
-	public static final String BASE_URI_UNKOWN = "vp/custom/";
-	
 	public static String getBaseURI(String stereotype) {
 		
 		if(StereotypeUtils.STEREOTYPES.contains(stereotype))
 			return "ontouml/2.0/"+stereotype;
 		
-		return "vps/custom/"+stereotype;
+		return "vp/custom/"+stereotype;
 
 	}
 
