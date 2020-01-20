@@ -50,6 +50,17 @@
 			<include type="Class"/>
 			<menu id="ontoUMLMenu1" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontuml-simple-logo-small.png"/>
 			
+
+			<action id="it.unibz.inf.ontouml.vp.addEnumerationStereotype" label="Enumeration" style="normal" menuPath="ontoUMLMenu1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+			
+			<action id="it.unibz.inf.ontouml.vp.addDatatypeStereotype" label="Datatype" style="normal" menuPath="ontoUMLMenu1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+			
+			<separator id="it.unibz.inf.ontouml.vp.separator0" menuPath="ontoUMLMenu1/#" />
+
 			<action id="it.unibz.inf.ontouml.vp.addTypeStereotype" label="Type" style="normal" menuPath="ontoUMLMenu1/#">
 				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
 			</action>
@@ -69,16 +80,6 @@
 			</action>
 			
 			<separator id="it.unibz.inf.ontouml.vp.separator1" menuPath="ontoUMLMenu1/#" />
-
-			<action id="it.unibz.inf.ontouml.vp.addEnumerationStereotype" label="Enumeration" style="normal" menuPath="ontoUMLMenu1/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
-			</action>
-			
-			<action id="it.unibz.inf.ontouml.vp.addDatatypeStereotype" label="Datatype" style="normal" menuPath="ontoUMLMenu1/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
-			</action>
-			
-			<separator id="it.unibz.inf.ontouml.vp.separator0" menuPath="ontoUMLMenu1/#" />
 			
 			<action id="it.unibz.inf.ontouml.vp.addSubkindStereotype" label="Subkind" style="normal" menuPath="ontoUMLMenu1/#">
 				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
