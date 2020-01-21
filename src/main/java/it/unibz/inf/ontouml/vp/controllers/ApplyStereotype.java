@@ -8,6 +8,9 @@ import com.vp.plugin.action.VPContext;
 import com.vp.plugin.action.VPContextActionController;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeUIModel;
+import com.vp.plugin.model.IAssociation;
+import com.vp.plugin.model.IAssociationEnd;
+import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IGeneralization;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.ISimpleRelationship;
@@ -141,6 +144,7 @@ public class ApplyStereotype implements VPContextActionController {
 			break;
 		case ACTION_ADD_STEREOTYPE_ROLE_MIXIN:
 			element.addStereotype(StereotypeUtils.STR_ROLE_MIXIN);
+			setAbstract(element);
 			paint(context, COLOR_NON_SORTAL);
 			break;
 		case ACTION_ADD_STEREOTYPE_ROLE:
@@ -161,6 +165,7 @@ public class ApplyStereotype implements VPContextActionController {
 			break;
 		case ACTION_ADD_STEREOTYPE_PHASE_MIXIN:
 			element.addStereotype(StereotypeUtils.STR_PHASE_MIXIN);
+			setAbstract(element);
 			paint(context, COLOR_NON_SORTAL);
 			break;
 		case ACTION_ADD_STEREOTYPE_PHASE:
@@ -173,6 +178,7 @@ public class ApplyStereotype implements VPContextActionController {
 			break;
 		case ACTION_ADD_STEREOTYPE_MIXIN:
 			element.addStereotype(StereotypeUtils.STR_MIXIN);
+			setAbstract(element);
 			paint(context, COLOR_NON_SORTAL);
 			break;
 		case ACTION_ADD_STEREOTYPE_KIND:
@@ -185,57 +191,74 @@ public class ApplyStereotype implements VPContextActionController {
 			break;
 		case ACTION_ADD_STEREOTYPE_CATEGORY:
 			element.addStereotype(StereotypeUtils.STR_CATEGORY);
+			setAbstract(element);
 			paint(context, COLOR_NON_SORTAL);
 			break;
 		
 		
 		case ACTION_ADD_STEREOTYPE_INSTANTIATION:
 			element.addStereotype(StereotypeUtils.STR_INSTANTIATION);
+			removeAggregationKind(element);
 			break;
 		case ACTION_ADD_STEREOTYPE_TERMINATION:
 			element.addStereotype(StereotypeUtils.STR_TERMINATION);
+			removeAggregationKind(element);
 			break;
 		case ACTION_ADD_STEREOTYPE_PARTICIPATIONAL:
 			element.addStereotype(StereotypeUtils.STR_PARTICIPATIONAL);
+			setAggregationKind(element);
 			break;
 		case ACTION_ADD_STEREOTYPE_PARTICIPATION:
 			element.addStereotype(StereotypeUtils.STR_PARTICIPATION);
+			removeAggregationKind(element);
 			break;
 		case ACTION_ADD_STEREOTYPE_HISTORICAL_DEPENDENCE:
 			element.addStereotype(StereotypeUtils.STR_HISTORICAL_DEPENDENCE);
+			removeAggregationKind(element);
 			break;
 		case ACTION_ADD_STEREOTYPE_CREATION:
 			element.addStereotype(StereotypeUtils.STR_CREATION);
+			removeAggregationKind(element);
 			break;
 		case ACTION_ADD_STEREOTYPE_MATERIAL:
 			element.addStereotype(StereotypeUtils.STR_MATERIAL);
+			removeAggregationKind(element);
 			break;
 		case ACTION_ADD_STEREOTYPE_COMPARATIVE:
 			element.addStereotype(StereotypeUtils.STR_COMPARATIVE);
+			removeAggregationKind(element);
 			break;
 		case ACTION_ADD_STEREOTYPE_HISTORICAL:
 			element.addStereotype(StereotypeUtils.STR_HISTORICAL);
+			removeAggregationKind(element);
 			break;
 		case ACTION_ADD_STEREOTYPE_MEDIATION:
 			element.addStereotype(StereotypeUtils.STR_MEDIATION);
+			removeAggregationKind(element);
 			break;
 		case ACTION_ADD_STEREOTYPE_CHARACTERIZATION:
 			element.addStereotype(StereotypeUtils.STR_CHARACTERIZATION);
+			removeAggregationKind(element);
 			break;
 		case ACTION_ADD_STEREOTYPE_EXTERNAL_DEPENDENCE:
 			element.addStereotype(StereotypeUtils.STR_EXTERNAL_DEPENDENCE);
+			removeAggregationKind(element);
 			break;
 		case ACTION_ADD_STEREOTYPE_COMPONENT_OF:
 			element.addStereotype(StereotypeUtils.STR_COMPONENT_OF);
+			setAggregationKind(element);
 			break;
 		case ACTION_ADD_STEREOTYPE_MEMBER_OF:
 			element.addStereotype(StereotypeUtils.STR_MEMBER_OF);
+			setAggregationKind(element);
 			break;
 		case ACTION_ADD_STEREOTYPE_SUB_COLLECTION_OF:
 			element.addStereotype(StereotypeUtils.STR_SUB_COLLECTION_OF);
+			setAggregationKind(element);
 			break;
 		case ACTION_ADD_STEREOTYPE_SUB_QUANTITY_OF:
 			element.addStereotype(StereotypeUtils.STR_SUB_QUANTITY_OF);
+			setAggregationKind(element);
 			break;
 		
 		case ACTION_ADD_STEREOTYPE_BEGIN:
@@ -325,5 +348,33 @@ public class ApplyStereotype implements VPContextActionController {
 
 		return null;
 	}
-
+	
+	private void setAggregationKind(IModelElement element){
+		IAssociation association = (IAssociation) element;
+		IAssociationEnd compositionFromEnd = (IAssociationEnd) association.getFromEnd();
+		IAssociationEnd compositionToEnd = (IAssociationEnd) association.getToEnd();
+		
+		if(compositionToEnd.getAggregationKind().equals(IAssociationEnd.AGGREGATION_KIND_NONE)){
+			compositionToEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
+			compositionFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
+		}
+		
+		return;
+	}
+	
+	private void removeAggregationKind(IModelElement element){ 
+		IAssociationEnd compositionFromEnd = (IAssociationEnd) ((IAssociation)element).getFromEnd();
+		IAssociationEnd compositionToEnd = (IAssociationEnd) ((IAssociation)element).getToEnd();
+		
+		compositionFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
+		compositionToEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
+		
+		return;
+	}
+	
+	private void setAbstract(IModelElement element){
+		((IClass)element).setAbstract(true);
+		
+		return;
+	}
 }
