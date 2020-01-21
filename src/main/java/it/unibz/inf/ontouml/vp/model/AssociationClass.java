@@ -47,7 +47,7 @@ public class AssociationClass implements ModelElement {
 		final IModelElement _class = source.getTo();
 		
 		addProperty(new AssociationEnd(association.getName(),
-				getURI() + "/assoaciation", 
+				getURI() + "/association", 
 				ModelElement.getModelElementURI(association)));
 		addProperty(new AssociationEnd(_class.getName(),
 				getURI() + "/class", 

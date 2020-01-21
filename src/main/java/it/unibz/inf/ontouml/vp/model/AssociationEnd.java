@@ -28,13 +28,9 @@ public class AssociationEnd implements ModelElement {
 	@Expose
 	private String propertyType;
 
-	@SerializedName("lowerbound")
+	@SerializedName("cardinality")
 	@Expose
-	private String lowerbound;
-
-	@SerializedName("upperbound")
-	@Expose
-	private String upperbound;
+	private String cardinality;
 
 	public AssociationEnd(String name, String URI, String propertyTypeURI) {
 		this.sourceModelElement = null;
@@ -51,20 +47,8 @@ public class AssociationEnd implements ModelElement {
 		setURI(ModelElement.getModelElementURI(source));
 		setPropertyType(ModelElement.getModelElementURI(source.getTypeAsElement()));
 		
-		String multiplicity = source.getMultiplicity();
-		
-		if(multiplicity.equals(IAssociationEnd.MULTIPLICITY_UNSPECIFIED)) {
-			this.lowerbound = "0";
-			this.upperbound = "*";
-		}
-		else if (multiplicity.matches("^\\w+\\.{2}[\\w+|\\*]$")) {
-			this.lowerbound = multiplicity.substring(0, multiplicity.indexOf(".."));
-			this.upperbound = multiplicity.substring(multiplicity.indexOf("..") + 2, multiplicity.length());
-		}
-		else {			
-			this.lowerbound = multiplicity;
-			this.upperbound = "*";
-		}
+		if(!((source.getMultiplicity()).equals(IAssociationEnd.MULTIPLICITY_UNSPECIFIED)))
+			this.cardinality = source.getMultiplicity();
 	}
 	
 	@Override
@@ -116,20 +100,11 @@ public class AssociationEnd implements ModelElement {
 		this.propertyType = propertyType;
 	}
 
-	public String getLowerbound() {
-		return lowerbound;
+	public String getCardinality() {
+		return cardinality;
 	}
 
-	public void setLowerbound(String lowerbound) {
-		this.lowerbound = lowerbound;
+	public void setCardinality(String cardinality) {
+		this.cardinality = cardinality;
 	}
-
-	public String getUpperbound() {
-		return upperbound;
-	}
-
-	public void setUpperbound(String upperbound) {
-		this.upperbound = upperbound;
-	}
-
 }

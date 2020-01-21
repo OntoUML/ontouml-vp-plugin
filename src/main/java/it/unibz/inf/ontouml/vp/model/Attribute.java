@@ -29,13 +29,9 @@ public class Attribute implements ModelElement {
 	@Expose
 	private String propertyType;
 
-	@SerializedName("lowerbound")
+	@SerializedName("cardinality")
 	@Expose
-	private int lowerbound;
-
-	@SerializedName("upperbound")
-	@Expose
-	private String upperbound;
+	private String cardinality;
 
 	public Attribute(IAttribute source) {
 		this.sourceModelElement = source;
@@ -44,26 +40,8 @@ public class Attribute implements ModelElement {
 		setURI(ModelElement.getModelElementURI(source));
 		setPropertyType(ModelElement.getModelElementURI(source.getTypeAsElement()));
 		
-		// TODO Update cardinalities
-		String multiplicity = source.getMultiplicity();
-		if(multiplicity.equals(IAssociationEnd.MULTIPLICITY_UNSPECIFIED)) {
-			this.lowerbound = 0;
-			this.upperbound = "*";
-		}
-		else if (multiplicity.contains("..")) {
-			String min = multiplicity.substring(0, multiplicity.indexOf(".."));
-//			String max = multiplicity.substring(multiplicity.indexOf("..") + 2, multiplicity.length() - 1);
-			this.lowerbound = Integer.parseInt(min);
-			this.upperbound = "*";
-//			TODO OntoUML Schema accepts either a number or the string "*". Discover how to do serialize that with GSON.
-//			this.upperbound = max.equals("*") ? max : Integer.parseInt(max);
-		}
-		else {			
-			this.lowerbound = multiplicity.equals("*") ? 0 : Integer.parseInt(multiplicity);
-			this.upperbound = "*";
-//			TODO OntoUML Schema accepts either a number or the string "*". Discover how to do serialize that with GSON.
-//			this.upperbound = multiplicity.equals("*") ? multiplicity : Integer.parseInt(multiplicity);
-		}
+		if(!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED)))
+			this.cardinality = source.getMultiplicity();
 	}
 	
 	@Override
@@ -115,20 +93,12 @@ public class Attribute implements ModelElement {
 		this.propertyType = propertyType;
 	}
 
-	public int getLowerbound() {
-		return lowerbound;
+	public String getCardinality() {
+		return cardinality;
 	}
 
-	public void setLowerbound(int lowerbound) {
-		this.lowerbound = lowerbound;
-	}
-
-	public String getUpperbound() {
-		return upperbound;
-	}
-
-	public void setUpperbound(String upperbound) {
-		this.upperbound = upperbound;
+	public void setCardinality(String cardinality) {
+		this.cardinality = cardinality;
 	}
 
 }
