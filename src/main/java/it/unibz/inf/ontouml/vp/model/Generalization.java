@@ -31,7 +31,6 @@ public class Generalization implements ModelElement {
 		this.sourceModelElement = source;
 		this.type = ModelElement.TYPE_GENERALIZATION_LINK;
 		setName(source.getName());
-		setURI(ModelElement.getModelElementURI(source));
 		addGeneric(ModelElement.getModelElementURI(source.getFrom()));
 		addSpecific(ModelElement.getModelElementURI(source.getTo()));
 	}
@@ -49,16 +48,6 @@ public class Generalization implements ModelElement {
 	@Override
 	public String getOntoUMLType() {
 		return this.type;
-	}
-
-	@Override
-	public String getURI() {
-		return URI;
-	}
-
-	@Override
-	public void setURI(String URI) {
-		this.URI = URI;
 	}
 	
 	public String getName() {

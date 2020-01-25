@@ -1,6 +1,8 @@
 package it.unibz.inf.ontouml.vp.model;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IModelElement;
 
@@ -44,27 +46,12 @@ public interface ModelElement {
 
 	/**
 	 * 
-	 * @return object's URI.
-	 * 
-	 */
-	public String getURI();
-
-	/**
-	 * 
-	 * Sets object's URI.
-	 * 
-	 * @param uri
-	 * 
-	 */
-	public void setURI(String uri);
-
-	/**
-	 * 
 	 * Returns Visual Paradigm's link to the related model element. This method
 	 * removes the project's name which originally start the link returned.
 	 * 
-	 * @param modelElement - Instance of <code>ModelElement</code> based on a
-	 *                     <code>IModelElement</code>.
+	 * @param modelElement
+	 *            - Instance of <code>ModelElement</code> based on a
+	 *            <code>IModelElement</code>.
 	 * 
 	 * @return a link identify a <code>IModelElement</code> in Visual Paradigm
 	 *         following the pattern
@@ -72,8 +59,8 @@ public interface ModelElement {
 	 * 
 	 */
 	public static String getLink(ModelElement modelElement) {
-		return modelElement.getSourceModelElement() != null
-				? ModelElement.getModelElementURI(modelElement.getSourceModelElement())
+		return modelElement.getSourceModelElement() != null ? ModelElement
+				.getModelElementURI(modelElement.getSourceModelElement())
 				: null;
 	}
 
@@ -93,7 +80,8 @@ public interface ModelElement {
 		if (modelElement == null)
 			return null;
 
-		final String link = ApplicationManager.instance().getProjectManager().getLink(modelElement, false);
+		final String link = ApplicationManager.instance().getProjectManager()
+				.getLink(modelElement, false);
 
 		return link.substring(link.indexOf(".vpp:") + 1);
 	}
@@ -104,17 +92,19 @@ public interface ModelElement {
 	 * Schema.
 	 * 
 	 * @param modelElement
-	 * @param pretty       - <code>true</code> if return string should be indented.
+	 * @param pretty
+	 *            - <code>true</code> if return string should be indented.
 	 * 
 	 * @return serialized version JSON of a <code>ModelElement</code>.
 	 * 
 	 */
 	public static String serialize(ModelElement modelElement, boolean pretty) {
 		if (pretty) {
-			return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create()
-					.toJson(modelElement);
+			return new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
+					.serializeNulls().setPrettyPrinting().create().toJson(modelElement);
 		} else {
-			return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(modelElement);
+			return new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
+					.serializeNulls().create().toJson(modelElement);
 		}
 	}
 
@@ -122,7 +112,8 @@ public interface ModelElement {
 	 * 
 	 * Returns serialized JSON string of the whole project in OntoUML Schema.
 	 * 
-	 * @param pretty - <code>true</code> if return string should be indented.
+	 * @param pretty
+	 *            - <code>true</code> if return string should be indented.
 	 * 
 	 * @return serialized version JSON of whole project in OntoUML Schema.
 	 * 
@@ -131,10 +122,35 @@ public interface ModelElement {
 		final Model model = new Model();
 
 		if (pretty) {
-			return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create().toJson(model);
+			return new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
+					.serializeNulls().setPrettyPrinting().create().toJson(model);
 		} else {
-			return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(model);
+			return new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
+					.serializeNulls().create().toJson(model);
 		}
 	}
+	
+	class Reference {
 
+		@SerializedName("@type")
+		@Expose
+		private final String type;
+		
+		@SerializedName("id")
+		@Expose
+		private final String id;
+
+		public Reference(String type, String id) {
+			this.type = type;
+			this.id = id;
+		}
+
+		public String getType() {
+			return type;
+		}
+
+		public String getId() {
+			return id;
+		}
+	}
 }

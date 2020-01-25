@@ -43,6 +43,17 @@
 					toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
 				<actionController class="it.unibz.inf.ontouml.vp.controllers.OpenConfigurationsAction" />
 			</action>
+			<action 
+                    id="it.unibz.inf.ontouml.vp.actions.ReloadPlugin"
+                    actionType="generalAction"
+                    description="Reload Plugin."
+                    style="normal"
+                    tooltip="Reload plugin" 
+                    icon="icons/toolbar/magnifying-glass-with-check-mark-orange.png"
+                    label="Reload Plugin"
+                    toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ReloadPlugin" />
+            </action>
 		</actionSet>
 		
 		<contextSensitiveActionSet id="it.unibz.inf.ontouml.vp.ClassStereotypes">

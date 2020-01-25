@@ -38,7 +38,6 @@ public class Package implements ModelElement {
 		this.sourceModelElement = source;
 		this.type = ModelElement.TYPE_PACKAGE;
 		setName(source.getName());
-		setURI(ModelElement.getModelElementURI(source));
 		
 		final IModelElement[] children = source.toChildArray();
 		for (int i = 0; children != null && i < children.length; i++) {
@@ -76,16 +75,6 @@ public class Package implements ModelElement {
 	@Override
 	public String getOntoUMLType() {
 		return this.type;
-	}
-
-	@Override
-	public String getURI() {
-		return URI;
-	}
-
-	@Override
-	public void setURI(String URI) {
-		this.URI = URI;
 	}
 
 	public String getURL() {

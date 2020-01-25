@@ -1,11 +1,16 @@
 package it.unibz.inf.ontouml.vp.model;
 
+import it.unibz.inf.ontouml.vp.model.ModelElement.Reference;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationClass;
+import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IModelElement;
 
 public class AssociationClass implements ModelElement {
@@ -16,42 +21,32 @@ public class AssociationClass implements ModelElement {
 	@Expose
 	private final String type;
 
-	@SerializedName("uri")
+	@SerializedName("id")
 	@Expose
-	private String URI;
+	private final String id;
 
 	@SerializedName("name")
 	@Expose
 	private String name;
-
-	@SerializedName("stereotypes")
-	@Expose
-	private List<String> stereotypes;
-
+	
 	@SerializedName("properties")
 	@Expose
-	private List<AssociationEnd> properties;
-
+	private List<Reference> properties;
+	
 	public AssociationClass(IAssociationClass source) {
 		this.sourceModelElement = source;
-		this.type = ModelElement.TYPE_RELATION;
-		setName(source.getName());
-		setURI(ModelElement.getModelElementURI(source));
 		
-		final String[] stereotypes = source.toStereotypeArray();
-		for (int i=0; stereotypes!=null && i<stereotypes.length; i++) {
-			addStereotype(Stereotypes.getBaseURI(stereotypes[i]));
-		}
+		this.type = ModelElement.TYPE_RELATION;
+		this.id = source.getId();
+		setName(source.getName());
 		
 		final IModelElement association = source.getFrom();
 		final IModelElement _class = source.getTo();
 		
-		addProperty(new AssociationEnd(association.getName(),
-				getURI() + "/association", 
-				ModelElement.getModelElementURI(association)));
-		addProperty(new AssociationEnd(_class.getName(),
-				getURI() + "/class", 
-				ModelElement.getModelElementURI(_class)));
+		this.properties = new ArrayList<Reference>();
+		this.properties.add(new Reference(association.getName(),association.getId()));
+		this.properties.add(new Reference(_class.getName(),_class.getId()));
+
 	}
 
 	@Override
@@ -69,16 +64,6 @@ public class AssociationClass implements ModelElement {
 		return this.type;
 	}
 
-	@Override
-	public String getURI() {
-		return URI;
-	}
-
-	@Override
-	public void setURI(String URI) {
-		this.URI = URI;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -87,44 +72,23 @@ public class AssociationClass implements ModelElement {
 		this.name = name;
 	}
 
-	public List<String> getStereotypes() {
-		return this.stereotypes;
-	}
-
-	public void setStereotypes(List<String> stereotypes) {
-		this.stereotypes = stereotypes;
-	}
-
-	public String getStereotype(int position) {
-		return this.stereotypes.get(position);
-	}
-
-	public void addStereotype(String name) {
-		if(getStereotypes() == null) {
-			setStereotypes(new LinkedList<String>());
-		}
-		
-		this.stereotypes.add(name);
-	}
-
-	public List<AssociationEnd> getProperties() {
+	public List<Reference> getProperties() {
 		return properties;
 	}
 
-	public void setProperties(List<AssociationEnd> properties) {
+	public void setProperties(List<Reference> properties) {
 		this.properties = properties;
 	}
 
-	public AssociationEnd getProperty(int position) {
+	public Reference getProperty(int position) {
 		return this.properties.get(position);
 	}
 
-	public void addProperty(AssociationEnd property) {
+	public void addProperty(Reference property) {
 		if(getProperties() == null) {
-			setProperties(new LinkedList<AssociationEnd>());
+			setProperties(new LinkedList<Reference>());
 		}
 		
 		this.properties.add(property);
 	}
-
 }

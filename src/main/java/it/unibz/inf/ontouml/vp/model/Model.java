@@ -43,9 +43,9 @@ public class Model implements ModelElement {
 	@Expose
 	private List<String> authors;
 
-	@SerializedName("structuralElements")
+	@SerializedName("elements")
 	@Expose
-	private List<ModelElement> structuralElements;
+	private List<ModelElement> elements;
 
 	/**
 	 * 
@@ -147,23 +147,23 @@ public class Model implements ModelElement {
 			this.authors.remove(name);
 	}
 
-	public List<ModelElement> getStructuralElements() {
-		return structuralElements;
+	public List<ModelElement> getelements() {
+		return elements;
 	}
 
-	public void setStructuralElements(List<ModelElement> elementsList) {
-		this.structuralElements = elementsList;
+	public void setelements(List<ModelElement> elementsList) {
+		this.elements = elementsList;
 	}
 
-	public void addStructuralElement(ModelElement element) {
-		if (this.structuralElements == null)
-			this.structuralElements = new ArrayList<ModelElement>();
+	public void addElement(ModelElement element) {
+		if (this.elements == null)
+			this.elements = new ArrayList<ModelElement>();
 
-		this.structuralElements.add(element);
+		this.elements.add(element);
 	}
 
-	public boolean removeStructuralElement(ModelElement element) {
-		return this.structuralElements.remove(element);
+	public boolean removeElement(ModelElement element) {
+		return this.elements.remove(element);
 	}
 	
 	private void addModelElements(IModelElement[] modelElements) {
@@ -172,25 +172,25 @@ public class Model implements ModelElement {
 			
 			switch (projectElement.getModelType()) {
 			case IModelElementFactory.MODEL_TYPE_PACKAGE:
-				addStructuralElement(new Package((IPackage) projectElement));
+				addElement(new Package((IPackage) projectElement));
 				break;
 			case IModelElementFactory.MODEL_TYPE_MODEL:
-				addStructuralElement(new Model((IModel) projectElement));
+				addElement(new Model((IModel) projectElement));
 				break;
 			case IModelElementFactory.MODEL_TYPE_CLASS:
-				addStructuralElement(new Class((IClass) projectElement));
+				addElement(new Class((IClass) projectElement));
 				break;
 			case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
-				addStructuralElement(new Generalization((IGeneralization) projectElement));
+				addElement(new Generalization((IGeneralization) projectElement));
 				break;
 			case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
-				addStructuralElement(new Association((IAssociation) projectElement));
+				addElement(new Association((IAssociation) projectElement));
 				break;
 			case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
-				addStructuralElement(new GeneralizationSet((IGeneralizationSet) projectElement));
+				addElement(new GeneralizationSet((IGeneralizationSet) projectElement));
 				break;
 			case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
-				addStructuralElement(new AssociationClass((IAssociationClass) projectElement));
+				addElement(new AssociationClass((IAssociationClass) projectElement));
 			}
 		}
 	}

@@ -49,7 +49,7 @@ public class GeneralizationSet implements ModelElement {
 		this.sourceModelElement = source;
 		this.type = ModelElement.TYPE_GENERALIZATION_SET;
 		setName(source.getName());
-		setURI(ModelElement.getModelElementURI(source));
+		
 		setComplete(source.isCovering());
 		setDisjoint(source.isDisjoint());
 		setCategorizer(ModelElement.getModelElementURI(source.getPowerType()));
@@ -73,16 +73,6 @@ public class GeneralizationSet implements ModelElement {
 	@Override
 	public String getOntoUMLType() {
 		return type;
-	}
-
-	@Override
-	public String getURI() {
-		return URI;
-	}
-
-	@Override
-	public void setURI(String URI) {
-		this.URI = URI;
 	}
 
 	public String getName() {

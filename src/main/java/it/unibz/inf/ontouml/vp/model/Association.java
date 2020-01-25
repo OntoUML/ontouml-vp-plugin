@@ -16,27 +16,41 @@ public class Association implements ModelElement {
 	@Expose
 	private final String type;
 
-	@SerializedName("uri")
+	@SerializedName("id")
 	@Expose
-	private String URI;
+	private final String id;
 
 	@SerializedName("name")
 	@Expose
 	private String name;
-
-	@SerializedName("stereotypes")
-	@Expose
-	private List<String> stereotypes;
-
+	
 	@SerializedName("properties")
 	@Expose
 	private List<AssociationEnd> properties;
 
+	@SerializedName("stereotypes")
+	@Expose
+	private List<String> stereotypes;
+	
+	@SerializedName("isAbstract")
+	@Expose
+	private boolean isAbstract;
+	
+	@SerializedName("isDerived")
+	@Expose
+	private boolean isDerived;
+
 	public Association(IAssociation source) {
 		this.sourceModelElement = source;
+		
 		this.type = ModelElement.TYPE_RELATION;
-		this.name = source.getName();
-		this.URI = ModelElement.getModelElementURI(source);
+		this.id = source.getId();
+		setName(source.getName());
+		
+		this.properties = new ArrayList<AssociationEnd>();
+		this.properties.add(new AssociationEnd((IAssociationEnd) source.getFromEnd()));
+		this.properties.add(new AssociationEnd((IAssociationEnd) source.getToEnd()));
+
 		
 		String[] stereotypes = source.toStereotypeArray();
 		this.stereotypes = stereotypes!=null ? new ArrayList<String>() : null;
@@ -45,9 +59,8 @@ public class Association implements ModelElement {
 			this.stereotypes.add(Stereotypes.getBaseURI(stereotypes[i]));
 		}
 		
-		this.properties = new ArrayList<AssociationEnd>();
-		this.properties.add(new AssociationEnd((IAssociationEnd) source.getFromEnd()));
-		this.properties.add(new AssociationEnd((IAssociationEnd) source.getToEnd()));	
+		setAbstract(source.isAbstract());
+		setDerived(source.isDerived());	
 	}
 
 	@Override
@@ -65,22 +78,13 @@ public class Association implements ModelElement {
 		return this.type;
 	}
 
-	@Override
-	public String getURI() {
-		return URI;
-	}
-
-	@Override
-	public void setURI(String URI) {
-		this.URI = URI;
-	}
-
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		if(name.length()!=0)
+			this.name = name;
 	}
 
 	public List<String> getStereotypes() {
@@ -125,6 +129,22 @@ public class Association implements ModelElement {
 
 		if (this.properties.contains(property))
 			this.properties.remove(property);
+	}
+	
+	public boolean isAbstract(){
+		return this.isAbstract;
+	}
+	
+	public void setAbstract(boolean isAbstract) {
+		this.isAbstract = isAbstract;
+	}
+	
+	public boolean isDerived(){
+		return this.isDerived;
+	}
+	
+	public void setDerived(boolean isDerived) {
+		this.isDerived = isDerived;
 	}
 
 }

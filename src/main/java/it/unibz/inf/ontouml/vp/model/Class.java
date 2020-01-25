@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IAttribute;
@@ -17,40 +18,59 @@ public class Class implements ModelElement {
 	@SerializedName("@type")
 	@Expose
 	private final String type;
-
-	@SerializedName("uri")
+	
+	@SerializedName("id")
 	@Expose
-	private String URI;
-
+	private final String id;
+	
 	@SerializedName("name")
 	@Expose
 	private String name;
+	
+	@SerializedName("properties")
+	@Expose
+	private Set<Attribute> properties;
+	
+	@SerializedName("propertyAssignments")
+	@Expose
+	private String propertyAssignments;
 
 	@SerializedName("stereotypes")
 	@Expose
 	private List<String> stereotypes;
-
-	@SerializedName("properties")
+	
+	@SerializedName("isAbstract")
 	@Expose
-	private Set<Attribute> properties;
+	private boolean isAbstract;
+	
+	@SerializedName("isDerived")
+	@Expose
+	private boolean isDerived;
 
 	public Class(IClass source) {
 		this.sourceModelElement = source;
 		this.type = ModelElement.TYPE_CLASS;
+		this.id = source.getId();
 		setName(source.getName());
-		setURI(ModelElement.getModelElementURI(source));
+		
+		final IAttribute[] attributes = source.toAttributeArray();
+		for (int i = 0; attributes != null && i < attributes.length; i++) {
+			addProperties(new Attribute(attributes[i]));
+		}
 		
 		final String[] stereotypes = source.toStereotypeArray();
 		for (int i=0; stereotypes != null && i<stereotypes.length; i++) {
 			addStereotype(Stereotypes.getBaseURI(stereotypes[i]));
 		}
-
-		final IAttribute[] attributes = source.toAttributeArray();
-		for (int i = 0; attributes != null && i < attributes.length; i++) {
-			addProperties(new Attribute(attributes[i]));
-		}
+		
+		setAbstract(source.isAbstract());
+		
+		//TODO:HOW WE KNOW IS DERIVED
+		//TODO:PROPERTY ASSIGNMENTS
+		this.isDerived = false;
+		
 	}
-	
+
 	@Override
 	public IClass getSourceModelElement() {
 		return this.sourceModelElement;
@@ -66,22 +86,37 @@ public class Class implements ModelElement {
 		return this.type;
 	}
 
-	@Override
-	public String getURI() {
-		return URI;
-	}
-
-	@Override
-	public void setURI(String URI) {
-		this.URI = URI;
-	}
-
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		if(name.length()!=0)
+			this.name = name;
+	}
+	
+	public Set<Attribute> getProperties() {
+		return properties;
+	}
+
+	public void addProperties(Attribute attribute) {
+		if(this.properties == null)
+			this.properties = new HashSet<Attribute>();
+		
+		this.properties.add(attribute);
+	}
+	
+	public void removeProperties(Attribute attribute) {
+		if (this.properties != null && this.properties.contains(attribute))
+			this.properties.remove(attribute);
+	}
+	
+	public String getPropertyAssignments() {
+		return propertyAssignments;
+	}
+
+	public void setPropertyAssignments(String propertyAssignments) {
+		this.propertyAssignments = propertyAssignments;
 	}
 
 	public List<String> getStereotypes() {
@@ -107,21 +142,20 @@ public class Class implements ModelElement {
 		if(this.stereotypes != null && this.stereotypes.contains(name))
 			this.stereotypes.remove(name);
 	}
-
-	public Set<Attribute> getProperties() {
-		return properties;
-	}
-
-	public void addProperties(Attribute attribute) {
-		if(this.properties == null)
-			this.properties = new HashSet<Attribute>();
-		
-		this.properties.add(attribute);
+	
+	public boolean isAbstract(){
+		return this.isAbstract;
 	}
 	
-	public void removeProperties(Attribute attribute) {
-		if (this.properties != null && this.properties.contains(attribute))
-			this.properties.remove(attribute);
+	public void setAbstract(boolean isAbstract) {
+		this.isAbstract = isAbstract;
 	}
-
+	
+	public boolean isDerived(){
+		return this.isDerived;
+	}
+	
+	public void setDerived(boolean isDerived) {
+		this.isDerived = isDerived;
+	}
 }
