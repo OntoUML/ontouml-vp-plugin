@@ -1,28 +1,31 @@
 package it.unibz.inf.ontouml.vp.model;
 
-import it.unibz.inf.ontouml.vp.model.ModelElement.Reference;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IAttribute;
 import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.ITaggedValue;
+import com.vp.plugin.model.ITaggedValueContainer;
 
 public class AssociationEnd implements ModelElement {
 	
 	private final IAssociationEnd sourceModelElement;
 
-	@SerializedName("@type")
+	@SerializedName("type")
 	@Expose
 	private final String type;
 
 	@SerializedName("id")
 	@Expose
-	private String id;
+	private final String id;
 
 	@SerializedName("name")
 	@Expose
@@ -54,7 +57,7 @@ public class AssociationEnd implements ModelElement {
 	
 	@SerializedName("propertyAssignments")
 	@Expose
-	private String propertyAssignments;
+	private List<JsonObject> propertyAssignments;
 	
 	@SerializedName("subsettedProperties")
 	@Expose
@@ -78,10 +81,10 @@ public class AssociationEnd implements ModelElement {
 		IModelElement reference = source.getTypeAsElement();
 		
 		if(reference!=null)
-			propertyType = new ModelElement.Reference(reference.getModelType(), reference.getId());
+			setPropertyType(new Reference(reference.getModelType(), reference.getId()));		
 		
 		if(!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED)))
-			this.cardinality = source.getMultiplicity();
+			setCardinality(source.getMultiplicity());
 		
 		setDerived(source.isDerived());
 		//TODO:isOrdered
@@ -89,23 +92,38 @@ public class AssociationEnd implements ModelElement {
 		
 		final String[] stereotypes = source.toStereotypeArray();
 		for (int i=0; stereotypes != null && i<stereotypes.length; i++) {
-			this.addStereotype(Stereotypes.getBaseURI(stereotypes[i]));
+			addStereotype(Stereotypes.getBaseURI(stereotypes[i]));
 		}
 		
 		//TODO:Property Assignments
+		JsonObject obj = new JsonObject();
+		
+		obj.add("nonStandardProperty", JsonNull.INSTANCE);
+		
+		addPropertyAssignment(obj);
+		
+//		ITaggedValueContainer lContainer = source.getTaggedValues();
+		
+//		if(lContainer!=null){
+//		ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
+//		
+//		for (int i=0; lTaggedValues != null && i<lTaggedValues.length; i++)
+//			addPropertyAssignment(obj);
+//		
+//		}
 		
 		Iterator<?> subsettedIterator = source.subsettedPropertyIterator();
 		
 		while(subsettedIterator.hasNext()){
-			IAttribute atr = (IAttribute) subsettedIterator.next();
-			this.subsettedProperties.add(new Reference(atr.getModelType(),atr.getId()));
+			IAssociationEnd sub = (IAssociationEnd) subsettedIterator.next();
+			addSubsettedProperty(new Reference(sub.getModelType(),sub.getId()));
 		}
 		
 		Iterator<?> redefinedProperties = source.redefinedPropertyIterator();
 		
 		while(redefinedProperties.hasNext()){
-			IAssociationEnd atr = (IAssociationEnd) redefinedProperties.next();
-			this.redefinedProperties.add(new Reference(atr.getModelType(),atr.getId()));
+			IAssociationEnd rdp = (IAssociationEnd) redefinedProperties.next();
+			addRedefinedProperty(new Reference(rdp.getModelType(),rdp.getId()));
 		}
 		
 		setAggregationKind(source.getAggregationKind());
@@ -113,7 +131,7 @@ public class AssociationEnd implements ModelElement {
 	
 	@Override
 	public String getId() {
-		return getSourceModelElement().getId();
+		return id;
 	}
 	
 	@Override
@@ -133,6 +151,14 @@ public class AssociationEnd implements ModelElement {
 	public void setName(String name) {
 		if(name.length()!=0)
 			this.name = name;
+	}
+
+	public Reference getPropertyType() {
+		return propertyType;
+	}
+
+	public void setPropertyType(Reference propertyType) {
+		this.propertyType = propertyType;
 	}
 
 	public boolean isDerived() {
@@ -183,12 +209,24 @@ public class AssociationEnd implements ModelElement {
 			this.stereotypes.remove(name);
 	}
 	
-	public String getPropertyAssignments() {
+	public List<JsonObject> getPropertyAssignments() {
 		return propertyAssignments;
 	}
 
-	public void setPropertyAssignments(String propertyAssignments) {
+	public void setPropertyAssignments(List<JsonObject> propertyAssignments) {
 		this.propertyAssignments = propertyAssignments;
+	}
+	
+	public void addPropertyAssignment(JsonObject prop){
+		if(this.propertyAssignments == null)
+			this.propertyAssignments = new ArrayList<JsonObject>();
+		
+		this.propertyAssignments.add(prop);
+	}
+	
+	public void removePropertyAssignment(JsonObject prop){
+		if(this.propertyAssignments != null && this.propertyAssignments.contains(prop))
+			this.propertyAssignments.remove(prop);
 	}
 
 	public List<Reference> getSubsettedProperties() {
@@ -241,9 +279,5 @@ public class AssociationEnd implements ModelElement {
 
 	public String getType() {
 		return type;
-	}
-
-	public void setId(String id) {
-		this.id = id;
 	}
 }

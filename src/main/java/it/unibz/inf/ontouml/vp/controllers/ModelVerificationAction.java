@@ -31,7 +31,6 @@ public class ModelVerificationAction implements VPActionController {
 	public void performAction(VPAction action) {
 		
 		final String modelo = ModelElement.generateModel(true);
-		
 		System.out.println(modelo);
 		
 //		ExecutorService executor = Executors.newFixedThreadPool(10);

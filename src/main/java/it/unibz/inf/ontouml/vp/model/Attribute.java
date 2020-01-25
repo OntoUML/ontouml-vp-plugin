@@ -3,6 +3,9 @@ package it.unibz.inf.ontouml.vp.model;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IAttribute;
@@ -12,13 +15,13 @@ public class Attribute implements ModelElement {
 	
 	private final IAttribute sourceModelElement;
 
-	@SerializedName("@type")
+	@SerializedName("type")
 	@Expose
 	private final String type;
 
 	@SerializedName("id")
 	@Expose
-	private String id;
+	private final String id;
 
 	@SerializedName("name")
 	@Expose
@@ -50,7 +53,7 @@ public class Attribute implements ModelElement {
 	
 	@SerializedName("propertyAssignments")
 	@Expose
-	private String propertyAssignments;
+	private List<JsonObject> propertyAssignments;
 	
 	@SerializedName("subsettedProperties")
 	@Expose
@@ -74,10 +77,10 @@ public class Attribute implements ModelElement {
 		IModelElement reference = source.getTypeAsElement();
 		
 		if(reference!=null)
-			propertyType = new ModelElement.Reference(reference.getModelType(), reference.getId());
+			setPropertyType(new ModelElement.Reference(reference.getModelType(), reference.getId()));
 		
 		if(!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED)))
-			this.cardinality = source.getMultiplicity();
+			setCardinality(source.getMultiplicity());
 		
 		setDerived(source.isDerived());
 		//TODO:isOrdered
@@ -85,23 +88,29 @@ public class Attribute implements ModelElement {
 		
 		final String[] stereotypes = source.toStereotypeArray();
 		for (int i=0; stereotypes != null && i<stereotypes.length; i++) {
-			this.addStereotype(Stereotypes.getBaseURI(stereotypes[i]));
+			addStereotype(Stereotypes.getBaseURI(stereotypes[i]));
 		}
 		
 		//TODO:Property Assignments
+		JsonObject obj = new JsonObject();
+		
+		obj.add("nonStandardProperty", JsonNull.INSTANCE);
+		
+		addPropertyAssignment(obj);
+		
 		
 		Iterator<?> subsettedIterator = source.subsettedPropertyIterator();
 		
 		while(subsettedIterator.hasNext()){
 			IAttribute atr = (IAttribute) subsettedIterator.next();
-			this.subsettedProperties.add(new Reference(atr.getModelType(),atr.getId()));
+			addSubsettedProperty(new Reference(atr.getModelType(),atr.getId()));
 		}
 		
 		Iterator<?> redefinedProperties = source.redefinedPropertyIterator();
 		
 		while(redefinedProperties.hasNext()){
-			IAttribute atr = (IAttribute) redefinedProperties.next();
-			this.redefinedProperties.add(new Reference(atr.getModelType(),atr.getId()));
+			IAttribute rdp = (IAttribute) redefinedProperties.next();
+			addRedefinedProperty(new Reference(rdp.getModelType(),rdp.getId()));
 		}
 		
 		switch(source.getAggregation()){
@@ -206,12 +215,19 @@ public class Attribute implements ModelElement {
 			this.stereotypes.remove(name);
 	}
 
-	public String getPropertyAssignments() {
+	public List<JsonObject> getPropertyAssignments() {
 		return propertyAssignments;
 	}
 
-	public void setPropertyAssignments(String propertyAssignments) {
+	public void setPropertyAssignments(List<JsonObject> propertyAssignments) {
 		this.propertyAssignments = propertyAssignments;
+	}
+	
+	public void addPropertyAssignment(JsonObject prop){
+		if(this.propertyAssignments == null)
+			this.propertyAssignments = new ArrayList<JsonObject>();
+		
+		this.propertyAssignments.add(prop);
 	}
 
 	public List<Reference> getSubsettedProperties() {
@@ -265,9 +281,4 @@ public class Attribute implements ModelElement {
 	public String getType() {
 		return type;
 	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
 }

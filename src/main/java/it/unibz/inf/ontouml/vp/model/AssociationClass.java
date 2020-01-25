@@ -1,23 +1,17 @@
 package it.unibz.inf.ontouml.vp.model;
 
-import it.unibz.inf.ontouml.vp.model.ModelElement.Reference;
-
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationClass;
-import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IModelElement;
 
 public class AssociationClass implements ModelElement {
 
 	private final IAssociationClass sourceModelElement;
 
-	@SerializedName("@type")
+	@SerializedName("type")
 	@Expose
 	private final String type;
 
@@ -43,10 +37,8 @@ public class AssociationClass implements ModelElement {
 		final IModelElement association = source.getFrom();
 		final IModelElement _class = source.getTo();
 		
-		this.properties = new ArrayList<Reference>();
-		this.properties.add(new Reference(association.getName(),association.getId()));
-		this.properties.add(new Reference(_class.getName(),_class.getId()));
-
+		addProperty(new Reference(association.getName(),association.getId()));
+		addProperty(new Reference(_class.getName(),_class.getId()));
 	}
 
 	@Override

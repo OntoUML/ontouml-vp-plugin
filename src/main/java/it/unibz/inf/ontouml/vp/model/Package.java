@@ -14,25 +14,21 @@ public class Package implements ModelElement {
 
 	private final IPackage sourceModelElement;
 	
-	@SerializedName("@type")
+	@SerializedName("type")
 	@Expose
 	private final String type;
 
-	@SerializedName("uri")
+	@SerializedName("id")
 	@Expose
-	private String URI;
-
-	@SerializedName("url")
-	@Expose
-	private String URL;
+	private String id;
 
 	@SerializedName("name")
 	@Expose
 	private String name;
 
-	@SerializedName("structuralElements")
+	@SerializedName("elements")
 	@Expose
-	private LinkedList<ModelElement> structuralElements;
+	private LinkedList<ModelElement> elements;
 
 	public Package(IPackage source) {
 		this.sourceModelElement = source;
@@ -45,13 +41,13 @@ public class Package implements ModelElement {
 
 			switch (child.getModelType()) {
 			case IModelElementFactory.MODEL_TYPE_PACKAGE:
-				addStructuralElement(new Package((IPackage) child));
+				addElement(new Package((IPackage) child));
 				break;
 			case IModelElementFactory.MODEL_TYPE_MODEL:
-				addStructuralElement(new Model((IModel) child));
+				addElement(new Model((IModel) child));
 				break;
 			case IModelElementFactory.MODEL_TYPE_CLASS:
-				addStructuralElement(new Class((IClass) child));
+				addElement(new Class((IClass) child));
 				break;
 //			TODO Add remaining elements, maybe by adding these to relation's source's package.
 //			case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
@@ -77,14 +73,6 @@ public class Package implements ModelElement {
 		return this.type;
 	}
 
-	public String getURL() {
-		return URL;
-	}
-
-	public void setURL(String URL) {
-		this.URL = URL;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -93,20 +81,20 @@ public class Package implements ModelElement {
 		this.name = name;
 	}
 
-	public LinkedList<ModelElement> getStructuralElements() {
-		return structuralElements;
+	public LinkedList<ModelElement> getElements() {
+		return elements;
 	}
 
-	public void setStructuralElements(LinkedList<ModelElement> structuralElements) {
-		this.structuralElements = structuralElements;
+	public void setElements(LinkedList<ModelElement> elements) {
+		this.elements = elements;
 	}
 
-	public void addStructuralElement(ModelElement element) {
-		if(getStructuralElements() == null) {
-			setStructuralElements(new LinkedList<ModelElement>());
+	public void addElement(ModelElement element) {
+		if(getElements() == null) {
+			setElements(new LinkedList<ModelElement>());
 		}
 		
-		this.structuralElements.add(element);
+		this.elements.add(element);
 	}
 
 }

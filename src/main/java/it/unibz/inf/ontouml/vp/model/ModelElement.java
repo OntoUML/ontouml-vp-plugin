@@ -1,6 +1,7 @@
 package it.unibz.inf.ontouml.vp.model;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.ApplicationManager;
@@ -19,7 +20,7 @@ public interface ModelElement {
 	public static final String TYPE_CLASS = "Class";
 	public static final String TYPE_RELATION = "Relation";
 	public static final String TYPE_ASSOCIATION_CLASS = "Relation";
-	public static final String TYPE_GENERALIZATION_LINK = "GeneralizationLink";
+	public static final String TYPE_GENERALIZATION = "Generalization";
 	public static final String TYPE_GENERALIZATION_SET = "GeneralizationSet";
 	public static final String TYPE_PROPERTY = "Property";
 
@@ -151,6 +152,21 @@ public interface ModelElement {
 
 		public String getId() {
 			return id;
+		}
+	}
+	
+	class PropertyAssignment {
+		
+		@Expose
+		private final JsonObject object;
+
+		public PropertyAssignment(String key, String value) {
+			object = new JsonObject();
+			object.addProperty(key, value);
+		}
+
+		public JsonObject object() {
+			return object;
 		}
 	}
 }

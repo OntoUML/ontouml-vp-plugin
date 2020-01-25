@@ -1,8 +1,5 @@
 package it.unibz.inf.ontouml.vp.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IGeneralization;
@@ -11,28 +8,37 @@ public class Generalization implements ModelElement {
 	
 	private final IGeneralization sourceModelElement;
 
-	@SerializedName("@type")
+	@SerializedName("type")
 	@Expose
 	private final String type;
 
-	@SerializedName("uri")
+	@SerializedName("id")
 	@Expose
-	private String URI;
+	private final String id;
 
 	@SerializedName("name")
 	@Expose
 	private String name;
-
-	@SerializedName("tuple")
+	
+	@SerializedName("general")
 	@Expose
-	private List<String> tuple;
+	private Reference general;
+	
+	@SerializedName("specific")
+	@Expose
+	private Reference specific;
+	
+	//TODO:property assignments
+	
 
 	public Generalization(IGeneralization source) {
 		this.sourceModelElement = source;
-		this.type = ModelElement.TYPE_GENERALIZATION_LINK;
+		
+		this.type = ModelElement.TYPE_GENERALIZATION;
+		this.id = source.getId();
 		setName(source.getName());
-		addGeneric(ModelElement.getModelElementURI(source.getFrom()));
-		addSpecific(ModelElement.getModelElementURI(source.getTo()));
+		setGeneral(new Reference(source.getFrom().getModelType(),source.getFrom().getId()));
+		setSpecific(new Reference(source.getTo().getModelType(),source.getTo().getId()));
 	}
 	
 	@Override
@@ -58,36 +64,19 @@ public class Generalization implements ModelElement {
 		this.name = name;
 	}
 
-	public List<String> getTuple() {
-		return tuple;
+	public Reference getGeneral() {
+		return general;
 	}
 
-	public void setTuple(List<String> tuple) {
-		this.tuple = tuple;
-	}
-
-	public void addTuple(String str) {
-		if(getTuple() == null) {
-			setTuple(new ArrayList<String>(2));
-		}
-		
-		this.tuple.add(str);
+	public void setGeneral(Reference general) {
+		this.general = general;
 	}
 	
-	public void addGeneric(String genericURI) {
-		if(getTuple() == null) {
-			setTuple(new ArrayList<String>(2));
-		}
-		
-		this.tuple.add(0, genericURI);
-	}
-	
-	public void addSpecific(String specificURI) {
-		if(getTuple() == null) {
-			setTuple(new ArrayList<String>(2));
-		}
-		
-		this.tuple.add(1, specificURI);
+	public Reference getSpecific() {
+		return specific;
 	}
 
+	public void setSpecific(Reference specific) {
+		this.specific = specific;
+	}
 }

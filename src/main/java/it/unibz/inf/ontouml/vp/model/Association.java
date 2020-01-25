@@ -2,7 +2,6 @@ package it.unibz.inf.ontouml.vp.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IAssociation;
@@ -12,7 +11,7 @@ public class Association implements ModelElement {
 	
 	private final IAssociation sourceModelElement;
 
-	@SerializedName("@type")
+	@SerializedName("type")
 	@Expose
 	private final String type;
 
@@ -47,16 +46,15 @@ public class Association implements ModelElement {
 		this.id = source.getId();
 		setName(source.getName());
 		
-		this.properties = new ArrayList<AssociationEnd>();
-		this.properties.add(new AssociationEnd((IAssociationEnd) source.getFromEnd()));
-		this.properties.add(new AssociationEnd((IAssociationEnd) source.getToEnd()));
+		addProperty(new AssociationEnd((IAssociationEnd) source.getFromEnd()));
+		addProperty(new AssociationEnd((IAssociationEnd) source.getToEnd()));
 
 		
 		String[] stereotypes = source.toStereotypeArray();
 		this.stereotypes = stereotypes!=null ? new ArrayList<String>() : null;
 		
 		for (int i=0; stereotypes!=null && i<stereotypes.length; i++) {
-			this.stereotypes.add(Stereotypes.getBaseURI(stereotypes[i]));
+			addStereotype(Stereotypes.getBaseURI(stereotypes[i]));
 		}
 		
 		setAbstract(source.isAbstract());
@@ -122,6 +120,9 @@ public class Association implements ModelElement {
 	}
 
 	public void addProperty(AssociationEnd property) {
+		if(this.properties == null)
+			this.properties = new ArrayList<AssociationEnd>();
+		
 		this.properties.add(property);
 	}
 

@@ -19,25 +19,19 @@ import com.vp.plugin.model.factory.IModelElementFactory;
 
 public class Model implements ModelElement {
 
-	private static final String BASE_URI = "vpp://model/";
-
 	private final IModel sourceModelElement;
 
-	@SerializedName("@type")
+	@SerializedName("type")
 	@Expose
 	private final String type;
 
-	@SerializedName("uri")
+	@SerializedName("id")
 	@Expose
-	private String URI;
+	private final String id;
 
 	@SerializedName("name")
 	@Expose
 	private String name;
-
-	@SerializedName("url")
-	@Expose
-	private String URL;
 
 	@SerializedName("authors")
 	@Expose
@@ -64,7 +58,7 @@ public class Model implements ModelElement {
 		this.sourceModelElement = null;
 		this.type = ModelElement.TYPE_MODEL;
 		this.addAuthor(project.getProjectProperties().getAuthor());
-		this.setURI(BASE_URI + project.getId());
+		this.id = project.getId();
 		this.setName(project.getName());
 		this.addModelElements(project.toModelElementArray(rootLevelElements));
 		this.addModelElements(project.toAllLevelModelElementArray(anyLevelElements));
@@ -80,8 +74,7 @@ public class Model implements ModelElement {
 		this.sourceModelElement = source;
 		this.type = ModelElement.TYPE_PACKAGE;
 		this.setName(source.getName());
-		;
-		this.setURI(ModelElement.getModelElementURI(source));
+		this.id = source.getId();
 		this.addModelElements(source.toChildArray());
 	}
 
@@ -99,28 +92,12 @@ public class Model implements ModelElement {
 		return type;
 	}
 
-	public String getURI() {
-		return URI;
-	}
-
-	public void setURI(String URI) {
-		this.URI = URI;
-	}
-
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getURL() {
-		return URL;
-	}
-
-	public void setURL(String URL) {
-		this.URL = URL;
 	}
 
 	public List<String> getAuthors() {

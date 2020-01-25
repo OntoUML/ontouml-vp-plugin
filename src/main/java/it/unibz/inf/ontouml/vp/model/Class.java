@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IAttribute;
@@ -15,7 +13,7 @@ public class Class implements ModelElement {
 
 	private final IClass sourceModelElement;
 	
-	@SerializedName("@type")
+	@SerializedName("type")
 	@Expose
 	private final String type;
 	
