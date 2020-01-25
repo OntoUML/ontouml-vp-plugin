@@ -154,19 +154,4 @@ public interface ModelElement {
 			return id;
 		}
 	}
-	
-	class PropertyAssignment {
-		
-		@Expose
-		private final JsonObject object;
-
-		public PropertyAssignment(String key, String value) {
-			object = new JsonObject();
-			object.addProperty(key, value);
-		}
-
-		public JsonObject object() {
-			return object;
-		}
-	}
 }
