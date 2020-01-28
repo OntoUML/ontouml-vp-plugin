@@ -53,7 +53,7 @@ public class AssociationEnd implements ModelElement {
 
 	@SerializedName("propertyAssignments")
 	@Expose
-	private List<JsonObject> propertyAssignments;
+	private JsonObject propertyAssignments;
 
 	@SerializedName("subsettedProperties")
 	@Expose
@@ -74,7 +74,8 @@ public class AssociationEnd implements ModelElement {
 		this.id = source.getId();
 		setName(source.getName());
 
-		IModelElement reference = source.getTypeAsElement();
+		//TODO: is this correct?
+		IModelElement reference = source.getParent();
 
 		if (reference != null)
 			setPropertyType(new Reference(reference.getModelType(),
@@ -98,7 +99,7 @@ public class AssociationEnd implements ModelElement {
 
 		obj.add("nonStandardProperty", JsonNull.INSTANCE);
 
-		addPropertyAssignment(obj);
+		setPropertyAssignments(obj);
 
 		// ITaggedValueContainer lContainer = source.getTaggedValues();
 
@@ -207,25 +208,12 @@ public class AssociationEnd implements ModelElement {
 			this.stereotypes.remove(name);
 	}
 
-	public List<JsonObject> getPropertyAssignments() {
+	public JsonObject getPropertyAssignments() {
 		return propertyAssignments;
 	}
 
-	public void setPropertyAssignments(List<JsonObject> propertyAssignments) {
+	public void setPropertyAssignments(JsonObject propertyAssignments) {
 		this.propertyAssignments = propertyAssignments;
-	}
-
-	public void addPropertyAssignment(JsonObject prop) {
-		if (this.propertyAssignments == null)
-			this.propertyAssignments = new ArrayList<JsonObject>();
-
-		this.propertyAssignments.add(prop);
-	}
-
-	public void removePropertyAssignment(JsonObject prop) {
-		if (this.propertyAssignments != null
-				&& this.propertyAssignments.contains(prop))
-			this.propertyAssignments.remove(prop);
 	}
 
 	public List<Reference> getSubsettedProperties() {

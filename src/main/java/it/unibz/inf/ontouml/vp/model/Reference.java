@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Reference {
 
-	@SerializedName("@type")
+	@SerializedName("type")
 	@Expose
 	private final String type;
 	

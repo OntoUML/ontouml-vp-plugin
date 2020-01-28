@@ -52,7 +52,7 @@ public class Attribute implements ModelElement {
 	
 	@SerializedName("propertyAssignments")
 	@Expose
-	private List<JsonObject> propertyAssignments;
+	private JsonObject propertyAssignments;
 	
 	@SerializedName("subsettedProperties")
 	@Expose
@@ -73,7 +73,8 @@ public class Attribute implements ModelElement {
 		this.id = source.getId();
 		setName(source.getName());
 		
-		IModelElement reference = source.getTypeAsElement();
+		//TODO:is this correct?
+		IModelElement reference = source.getParent();
 		
 		if(reference!=null)
 			setPropertyType(new Reference(reference.getModelType(), reference.getId()));
@@ -91,11 +92,10 @@ public class Attribute implements ModelElement {
 		}
 		
 		//TODO:Property Assignments
-		JsonObject obj = new JsonObject();
-		
+		JsonObject obj = new JsonObject();		
 		obj.add("nonStandardProperty", JsonNull.INSTANCE);
 		
-		addPropertyAssignment(obj);
+		setPropertyAssignments(obj);
 		
 		
 		Iterator<?> subsettedIterator = source.subsettedPropertyIterator();
@@ -203,19 +203,12 @@ public class Attribute implements ModelElement {
 			this.stereotypes.remove(name);
 	}
 
-	public List<JsonObject> getPropertyAssignments() {
+	public JsonObject getPropertyAssignments() {
 		return propertyAssignments;
 	}
 
-	public void setPropertyAssignments(List<JsonObject> propertyAssignments) {
+	public void setPropertyAssignments(JsonObject propertyAssignments) {
 		this.propertyAssignments = propertyAssignments;
-	}
-	
-	public void addPropertyAssignment(JsonObject prop){
-		if(this.propertyAssignments == null)
-			this.propertyAssignments = new ArrayList<JsonObject>();
-		
-		this.propertyAssignments.add(prop);
 	}
 
 	public List<Reference> getSubsettedProperties() {
