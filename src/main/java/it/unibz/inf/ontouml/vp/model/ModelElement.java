@@ -1,9 +1,6 @@
 package it.unibz.inf.ontouml.vp.model;
 
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IModelElement;
 
@@ -128,30 +125,6 @@ public interface ModelElement {
 		} else {
 			return new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
 					.serializeNulls().create().toJson(model);
-		}
-	}
-	
-	class Reference {
-
-		@SerializedName("@type")
-		@Expose
-		private final String type;
-		
-		@SerializedName("id")
-		@Expose
-		private final String id;
-
-		public Reference(String type, String id) {
-			this.type = type;
-			this.id = id;
-		}
-
-		public String getType() {
-			return type;
-		}
-
-		public String getId() {
-			return id;
 		}
 	}
 }

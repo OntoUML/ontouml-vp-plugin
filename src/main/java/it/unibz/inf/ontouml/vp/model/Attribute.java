@@ -3,7 +3,6 @@ package it.unibz.inf.ontouml.vp.model;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
@@ -77,7 +76,7 @@ public class Attribute implements ModelElement {
 		IModelElement reference = source.getTypeAsElement();
 		
 		if(reference!=null)
-			setPropertyType(new ModelElement.Reference(reference.getModelType(), reference.getId()));
+			setPropertyType(new Reference(reference.getModelType(), reference.getId()));
 		
 		if(!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED)))
 			setCardinality(source.getMultiplicity());
@@ -113,18 +112,7 @@ public class Attribute implements ModelElement {
 			addRedefinedProperty(new Reference(rdp.getModelType(),rdp.getId()));
 		}
 		
-		switch(source.getAggregation()){
-		case 0:
-			setAggregationKind("NONE");
-			break;
-		case 1:
-			setAggregationKind("SHARED");
-			break;
-		case 2:
-			setAggregationKind("COMPOSITED");
-			break;
-		default:
-		}
+		setAggregationKind(source.getAggregation());
 	}
 	
 	@Override
@@ -274,8 +262,19 @@ public class Attribute implements ModelElement {
 		return aggregationKind;
 	}
 
-	public void setAggregationKind(String aggregationKind) {
-		this.aggregationKind = aggregationKind;
+	public void setAggregationKind(int aggregation) {
+		switch(aggregation){
+		case 0:
+			this.aggregationKind = "NONE";
+			break;
+		case 1:
+			this.aggregationKind = "SHARED";
+			break;
+		case 2:
+			this.aggregationKind = "COMPOSITE";
+			break;
+		default:
+		}
 	}
 
 	public String getType() {
