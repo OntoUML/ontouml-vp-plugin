@@ -75,7 +75,7 @@ public class AssociationEnd implements ModelElement {
 		setName(source.getName());
 
 		//TODO: is this correct?
-		IModelElement reference = source.getParent();
+		IModelElement reference = source.getTypeAsModel();
 
 		if (reference != null)
 			setPropertyType(new Reference(reference.getModelType(),
