@@ -3,6 +3,7 @@ package it.unibz.inf.ontouml.vp.model;
 import com.google.gson.GsonBuilder;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.factory.IModelElementFactory;
 
 /**
  * 
@@ -15,10 +16,12 @@ public interface ModelElement {
 	public static final String TYPE_MODEL = "Model";
 	public static final String TYPE_PACKAGE = "Package";
 	public static final String TYPE_CLASS = "Class";
+	// TODO Change "Relation" to "Association"
 	public static final String TYPE_RELATION = "Relation";
 	public static final String TYPE_ASSOCIATION_CLASS = "Relation";
 	public static final String TYPE_GENERALIZATION = "Generalization";
 	public static final String TYPE_GENERALIZATION_SET = "GeneralizationSet";
+	// TODO Change "Property" to "Attrbitue" if there is no Property class
 	public static final String TYPE_PROPERTY = "Property";
 
 	/**
@@ -126,5 +129,28 @@ public interface ModelElement {
 			return new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
 					.serializeNulls().create().toJson(model);
 		}
+	}
+
+	public static String toOntoUMLSchemaType(IModelElement element) {
+		switch (element.getModelType()) {
+			case IModelElementFactory.MODEL_TYPE_MODEL:
+				return TYPE_MODEL;
+			case IModelElementFactory.MODEL_TYPE_PACKAGE:
+				return TYPE_PACKAGE;
+			case IModelElementFactory.MODEL_TYPE_CLASS:
+				return TYPE_CLASS;
+			case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
+				return TYPE_RELATION;
+			case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
+				return TYPE_ASSOCIATION_CLASS;
+			case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
+				return TYPE_GENERALIZATION;
+			case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
+				return TYPE_GENERALIZATION_SET;
+			case IModelElementFactory.MODEL_TYPE_ATTRIBUTE:
+				return TYPE_PROPERTY;
+		}
+
+		return null;
 	}
 }

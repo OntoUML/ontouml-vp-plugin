@@ -73,11 +73,16 @@ public class Attribute implements ModelElement {
 		this.id = source.getId();
 		setName(source.getName());
 		
-		//TODO:is this correct?
-		IModelElement reference = source.getTypeAsModel();
-		
-		if(reference!=null)
-			setPropertyType(new Reference(reference.getModelType(), reference.getId()));
+		IModelElement reference = source.getTypeAsElement();
+		if(reference!=null) {
+			setPropertyType(new Reference(reference));
+		}
+		else {
+			// TODO Enhance processment of exceptions
+			// Exception e = new NullPointerException("Property type is a non-standard string: "+source.getTypeAsString());
+			// e.printStackTrace();
+			System.out.println("Property type is a non-standard string: "+source.getTypeAsString());
+		}
 		
 		if(!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED)))
 			setCardinality(source.getMultiplicity());

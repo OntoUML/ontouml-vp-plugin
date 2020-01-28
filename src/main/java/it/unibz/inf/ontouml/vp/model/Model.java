@@ -50,7 +50,7 @@ public class Model implements ModelElement {
 	public Model() {
 		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
 		final String[] rootLevelElements = { IModelElementFactory.MODEL_TYPE_PACKAGE,
-				IModelElementFactory.MODEL_TYPE_MODEL, IModelElementFactory.MODEL_TYPE_CLASS };
+				IModelElementFactory.MODEL_TYPE_MODEL, IModelElementFactory.MODEL_TYPE_CLASS, IModelElementFactory.MODEL_TYPE_DATA_TYPE };
 		final String[] anyLevelElements = { IModelElementFactory.MODEL_TYPE_GENERALIZATION,
 				IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET, IModelElementFactory.MODEL_TYPE_ASSOCIATION,
 				IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS };
@@ -156,6 +156,10 @@ public class Model implements ModelElement {
 				break;
 			case IModelElementFactory.MODEL_TYPE_CLASS:
 				addElement(new Class((IClass) projectElement));
+				break;
+			case IModelElementFactory.MODEL_TYPE_DATA_TYPE:
+				System.out.println("Datatype name: "+projectElement.getName());
+				System.out.println("Datatype id: "+projectElement.getId());
 				break;
 			case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
 				addElement(new Generalization((IGeneralization) projectElement));
