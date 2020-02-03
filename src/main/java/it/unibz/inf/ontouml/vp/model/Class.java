@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IAttribute;
 import com.vp.plugin.model.IClass;
+import com.vp.plugin.model.ITaggedValue;
+import com.vp.plugin.model.ITaggedValueContainer;
 
 public class Class implements ModelElement {
 
@@ -31,7 +35,7 @@ public class Class implements ModelElement {
 	
 	@SerializedName("propertyAssignments")
 	@Expose
-	private String propertyAssignments;
+	private JsonObject propertyAssignments;
 
 	@SerializedName("stereotypes")
 	@Expose
@@ -63,8 +67,21 @@ public class Class implements ModelElement {
 		
 		setAbstract(source.isAbstract());
 		
+		
+		
+		ITaggedValueContainer lContainer = source.getTaggedValues();
+		if (lContainer != null) {
+			JsonObject obj = new JsonObject();
+			ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
+
+			for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++)
+				obj.addProperty(lTaggedValues[i].getName(),
+						lTaggedValues[i].getValueAsString());
+			
+			setPropertyAssignments(obj);
+		}
+		
 		//TODO:HOW WE KNOW IS DERIVED
-		//TODO:PROPERTY ASSIGNMENTS
 		this.isDerived = false;
 		
 	}
@@ -109,14 +126,14 @@ public class Class implements ModelElement {
 			this.properties.remove(attribute);
 	}
 	
-	public String getPropertyAssignments() {
+	public JsonObject getPropertyAssignments() {
 		return propertyAssignments;
 	}
 
-	public void setPropertyAssignments(String propertyAssignments) {
+	public void setPropertyAssignments(JsonObject propertyAssignments) {
 		this.propertyAssignments = propertyAssignments;
 	}
-
+	
 	public List<String> getStereotypes() {
 		return this.stereotypes;
 	}

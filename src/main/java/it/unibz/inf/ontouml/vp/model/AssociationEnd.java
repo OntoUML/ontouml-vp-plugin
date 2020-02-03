@@ -3,6 +3,7 @@ package it.unibz.inf.ontouml.vp.model;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
@@ -10,6 +11,8 @@ import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IAttribute;
 import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.ITaggedValue;
+import com.vp.plugin.model.ITaggedValueContainer;
 
 public class AssociationEnd implements ModelElement {
 
@@ -74,7 +77,7 @@ public class AssociationEnd implements ModelElement {
 		this.id = source.getId();
 		setName(source.getName());
 
-		//TODO: is this correct?
+		// TODO: is this correct?
 		IModelElement reference = source.getTypeAsModel();
 
 		if (reference != null)
@@ -92,24 +95,19 @@ public class AssociationEnd implements ModelElement {
 		final String[] stereotypes = source.toStereotypeArray();
 		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
 			addStereotype(Stereotypes.getBaseURI(stereotypes[i]));
+		}		
+
+		ITaggedValueContainer lContainer = source.getTaggedValues();
+		if (lContainer != null) {
+			JsonObject obj = new JsonObject();
+			ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
+
+			for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++)
+				obj.addProperty(lTaggedValues[i].getName(),
+						lTaggedValues[i].getValueAsString());
+			
+			setPropertyAssignments(obj);
 		}
-
-		// TODO:Property Assignments
-		JsonObject obj = new JsonObject();
-
-		obj.add("nonStandardProperty", JsonNull.INSTANCE);
-
-		setPropertyAssignments(obj);
-
-		// ITaggedValueContainer lContainer = source.getTaggedValues();
-
-		// if(lContainer!=null){
-		// ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
-		//
-		// for (int i=0; lTaggedValues != null && i<lTaggedValues.length; i++)
-		// addPropertyAssignment(obj);
-		//
-		// }
 
 		Iterator<?> subsettedIterator = source.subsettedPropertyIterator();
 

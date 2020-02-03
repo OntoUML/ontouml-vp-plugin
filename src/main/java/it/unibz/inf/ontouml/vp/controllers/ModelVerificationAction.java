@@ -35,7 +35,7 @@ public class ModelVerificationAction implements VPActionController {
 	public void performAction(VPAction action) {
 		
 		final String modelo = ModelElement.generateModel(true);
-		// System.out.println(modelo);
+		System.out.println(modelo);
 
 		// Send json model to clipboard
 		Clipboard c = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -43,7 +43,7 @@ public class ModelVerificationAction implements VPActionController {
 		c.setContents(sl, sl);
 		System.out.println("Generated JSON copied to clipboard ;)");
 		
-		ExecutorService executor = Executors.newFixedThreadPool(10);
+	/*	ExecutorService executor = Executors.newFixedThreadPool(10);
 		executor.execute(new Runnable() {
 
 			@Override
@@ -67,7 +67,7 @@ public class ModelVerificationAction implements VPActionController {
 				}
 			}
 
-		});
+		});*/
 	}
 
 	/**
