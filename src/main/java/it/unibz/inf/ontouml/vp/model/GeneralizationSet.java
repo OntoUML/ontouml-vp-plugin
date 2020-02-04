@@ -2,11 +2,15 @@ package it.unibz.inf.ontouml.vp.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IGeneralization;
 import com.vp.plugin.model.IGeneralizationSet;
 import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.ITaggedValue;
+import com.vp.plugin.model.ITaggedValueContainer;
 
 public class GeneralizationSet implements ModelElement {
 
@@ -23,7 +27,11 @@ public class GeneralizationSet implements ModelElement {
 	@SerializedName("name")
 	@Expose
 	private String name;
-	
+
+	@SerializedName("propertyAssignments")
+	@Expose
+	private JsonObject propertyAssignments;
+
 	@SerializedName("categorizer")
 	@Expose
 	private Reference categorizer;
@@ -39,31 +47,60 @@ public class GeneralizationSet implements ModelElement {
 	@SerializedName("isComplete")
 	@Expose
 	private boolean isComplete;
-	
+
 	public GeneralizationSet(IGeneralizationSet source) {
 		this.sourceModelElement = source;
-		
+
 		this.type = ModelElement.TYPE_GENERALIZATION_SET;
 		this.id = source.getId();
 		setName(source.getName());
-		
+
 		setComplete(source.isCovering());
 		setDisjoint(source.isDisjoint());
-		
-		if(source.getPowerType()!=null)
+
+		if (source.getPowerType() != null)
 			setCategorizer(new Reference(source.getPowerType().getName(), source.getPowerType().getId()));
-		
+
 		final IGeneralization[] generalizations = source.toGeneralizationArray();
 		for (int i = 0; generalizations != null && i < generalizations.length; i++) {
 			addGeneralization(new Reference(generalizations[i].getName(), generalizations[i].getId()));
 		}
+
+		ITaggedValueContainer lContainer = source.getTaggedValues();
+		if (lContainer != null) {
+			JsonObject obj = new JsonObject();
+			ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
+
+			for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++) {
+				switch (lTaggedValues[i].getType()) {
+				case 1:
+					JsonObject reference = new JsonObject();
+					reference.addProperty("type", ModelElement.toOntoUMLSchemaType(lTaggedValues[i].getValueAsElement()));
+					reference.addProperty("id", lTaggedValues[i].getValueAsElement().getId());
+					obj.add(lTaggedValues[i].getName(), reference);
+					break;
+				case 5:
+					obj.addProperty(lTaggedValues[i].getName(), Integer.parseInt((String) lTaggedValues[i].getValue()));
+					break;
+				case 6:
+					obj.addProperty(lTaggedValues[i].getName(), Float.parseFloat((String) lTaggedValues[i].getValue()));
+					break;
+				case 7:
+					obj.addProperty(lTaggedValues[i].getName(), Boolean.parseBoolean((String) lTaggedValues[i].getValue()));
+					break;
+				default:
+					obj.addProperty(lTaggedValues[i].getName(), (String) lTaggedValues[i].getValueAsString());
+				}
+			}
+			setPropertyAssignments(obj);
+		}
 	}
-	
+
 	@Override
 	public String getId() {
 		return getSourceModelElement().getId();
 	}
-	
+
 	@Override
 	public IModelElement getSourceModelElement() {
 		return this.sourceModelElement;
@@ -82,6 +119,14 @@ public class GeneralizationSet implements ModelElement {
 		this.name = name;
 	}
 
+	public JsonObject getPropertyAssignments() {
+		return propertyAssignments;
+	}
+
+	public void setPropertyAssignments(JsonObject propertyAssignments) {
+		this.propertyAssignments = propertyAssignments;
+	}
+
 	public boolean isDisjoint() {
 		return isDisjoint;
 	}
@@ -97,7 +142,7 @@ public class GeneralizationSet implements ModelElement {
 	public void setComplete(boolean isComplete) {
 		this.isComplete = isComplete;
 	}
-	
+
 	public Reference getCategorizer() {
 		return this.categorizer;
 	}
@@ -105,7 +150,7 @@ public class GeneralizationSet implements ModelElement {
 	public void setCategorizer(Reference categorizer) {
 		this.categorizer = categorizer;
 	}
-	
+
 	public List<Reference> getGeneralizations() {
 		return generalizations;
 	}
@@ -113,16 +158,16 @@ public class GeneralizationSet implements ModelElement {
 	public void setGeneralizations(List<Reference> generalizations) {
 		this.generalizations = generalizations;
 	}
-	
-	public void addGeneralization(Reference ref){
-		if(this.generalizations == null)
+
+	public void addGeneralization(Reference ref) {
+		if (this.generalizations == null)
 			this.generalizations = new ArrayList<Reference>();
-		
+
 		this.generalizations.add(ref);
 	}
-	
-	public void removeGeneralization(Reference ref){
-		if(this.generalizations != null && this.generalizations.contains(ref))
+
+	public void removeGeneralization(Reference ref) {
+		if (this.generalizations != null && this.generalizations.contains(ref))
 			this.generalizations.remove(ref);
 	}
 

@@ -1,11 +1,14 @@
 package it.unibz.inf.ontouml.vp.model;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IGeneralization;
+import com.vp.plugin.model.ITaggedValue;
+import com.vp.plugin.model.ITaggedValueContainer;
 
 public class Generalization implements ModelElement {
-	
+
 	private final IGeneralization sourceModelElement;
 
 	@SerializedName("type")
@@ -19,33 +22,65 @@ public class Generalization implements ModelElement {
 	@SerializedName("name")
 	@Expose
 	private String name;
-	
+
+	@SerializedName("propertyAssignments")
+	@Expose
+	private JsonObject propertyAssignments;
+
 	@SerializedName("general")
 	@Expose
 	private Reference general;
-	
+
 	@SerializedName("specific")
 	@Expose
 	private Reference specific;
-	
-	//TODO:property assignments
-	
+
+	// TODO:property assignments
 
 	public Generalization(IGeneralization source) {
 		this.sourceModelElement = source;
-		
+
 		this.type = ModelElement.TYPE_GENERALIZATION;
 		this.id = source.getId();
 		setName(source.getName());
-		setGeneral(new Reference(source.getFrom().getModelType(),source.getFrom().getId()));
-		setSpecific(new Reference(source.getTo().getModelType(),source.getTo().getId()));
+		setGeneral(new Reference(source.getFrom().getModelType(), source.getFrom().getId()));
+		setSpecific(new Reference(source.getTo().getModelType(), source.getTo().getId()));
+
+		ITaggedValueContainer lContainer = source.getTaggedValues();
+		if (lContainer != null) {
+			JsonObject obj = new JsonObject();
+			ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
+
+			for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++) {
+				switch (lTaggedValues[i].getType()) {
+				case 1:
+					JsonObject reference = new JsonObject();
+					reference.addProperty("type", ModelElement.toOntoUMLSchemaType(lTaggedValues[i].getValueAsElement()));
+					reference.addProperty("id", lTaggedValues[i].getValueAsElement().getId());
+					obj.add(lTaggedValues[i].getName(), reference);
+					break;
+				case 5:
+					obj.addProperty(lTaggedValues[i].getName(), Integer.parseInt((String) lTaggedValues[i].getValue()));
+					break;
+				case 6:
+					obj.addProperty(lTaggedValues[i].getName(), Float.parseFloat((String) lTaggedValues[i].getValue()));
+					break;
+				case 7:
+					obj.addProperty(lTaggedValues[i].getName(), Boolean.parseBoolean((String) lTaggedValues[i].getValue()));
+					break;
+				default:
+					obj.addProperty(lTaggedValues[i].getName(), (String) lTaggedValues[i].getValueAsString());
+				}
+			}
+			setPropertyAssignments(obj);
+		}
 	}
-	
+
 	@Override
 	public String getId() {
 		return getSourceModelElement() != null ? getSourceModelElement().getId() : null;
 	}
-	
+
 	@Override
 	public IGeneralization getSourceModelElement() {
 		return this.sourceModelElement;
@@ -55,13 +90,21 @@ public class Generalization implements ModelElement {
 	public String getOntoUMLType() {
 		return this.type;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public JsonObject getPropertyAssignments() {
+		return propertyAssignments;
+	}
+
+	public void setPropertyAssignments(JsonObject propertyAssignments) {
+		this.propertyAssignments = propertyAssignments;
 	}
 
 	public Reference getGeneral() {
@@ -71,7 +114,7 @@ public class Generalization implements ModelElement {
 	public void setGeneral(Reference general) {
 		this.general = general;
 	}
-	
+
 	public Reference getSpecific() {
 		return specific;
 	}

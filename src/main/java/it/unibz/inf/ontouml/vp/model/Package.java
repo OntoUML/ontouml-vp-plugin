@@ -2,12 +2,15 @@ package it.unibz.inf.ontouml.vp.model;
 
 import java.util.LinkedList;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IModel;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IPackage;
+import com.vp.plugin.model.ITaggedValue;
+import com.vp.plugin.model.ITaggedValueContainer;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 public class Package implements ModelElement {
@@ -25,6 +28,10 @@ public class Package implements ModelElement {
 	@SerializedName("name")
 	@Expose
 	private String name;
+	
+	@SerializedName("propertyAssignments")
+	@Expose
+	private JsonObject propertyAssignments;
 
 	@SerializedName("elements")
 	@Expose
@@ -56,6 +63,35 @@ public class Package implements ModelElement {
 //			case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
 			}
 		}
+		
+		ITaggedValueContainer lContainer = source.getTaggedValues();
+		if (lContainer != null) {
+			JsonObject obj = new JsonObject();
+			ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
+
+			for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++) {
+				switch (lTaggedValues[i].getType()) {
+				case 1:
+					JsonObject reference = new JsonObject();
+					reference.addProperty("type", ModelElement.toOntoUMLSchemaType(lTaggedValues[i].getValueAsElement()));
+					reference.addProperty("id", lTaggedValues[i].getValueAsElement().getId());
+					obj.add(lTaggedValues[i].getName(), reference);
+					break;
+				case 5:
+					obj.addProperty(lTaggedValues[i].getName(), Integer.parseInt((String) lTaggedValues[i].getValue()));
+					break;
+				case 6:
+					obj.addProperty(lTaggedValues[i].getName(), Float.parseFloat((String) lTaggedValues[i].getValue()));
+					break;
+				case 7:
+					obj.addProperty(lTaggedValues[i].getName(), Boolean.parseBoolean((String) lTaggedValues[i].getValue()));
+					break;
+				default:
+					obj.addProperty(lTaggedValues[i].getName(), (String) lTaggedValues[i].getValueAsString());
+				}
+			}
+			setPropertyAssignments(obj);
+		}
 	}
 
 	@Override
@@ -79,6 +115,14 @@ public class Package implements ModelElement {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public JsonObject getPropertyAssignments() {
+		return propertyAssignments;
+	}
+
+	public void setPropertyAssignments(JsonObject propertyAssignments) {
+		this.propertyAssignments = propertyAssignments;
 	}
 
 	public LinkedList<ModelElement> getElements() {

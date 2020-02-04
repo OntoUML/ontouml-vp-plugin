@@ -2,10 +2,14 @@ package it.unibz.inf.ontouml.vp.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
+import com.vp.plugin.model.ITaggedValue;
+import com.vp.plugin.model.ITaggedValueContainer;
 
 public class Association implements ModelElement {
 
@@ -26,6 +30,10 @@ public class Association implements ModelElement {
 	@SerializedName("properties")
 	@Expose
 	private List<Property> properties;
+	
+	@SerializedName("propertyAssignments")
+	@Expose
+	private JsonObject propertyAssignments;
 
 	@SerializedName("stereotypes")
 	@Expose
@@ -55,6 +63,35 @@ public class Association implements ModelElement {
 			addStereotype(stereotypes[i]);
 		}
 
+		ITaggedValueContainer lContainer = source.getTaggedValues();
+		if (lContainer != null) {
+			JsonObject obj = new JsonObject();
+			ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
+
+			for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++) {
+				switch (lTaggedValues[i].getType()) {
+				case 1:
+					JsonObject reference = new JsonObject();
+					reference.addProperty("type", ModelElement.toOntoUMLSchemaType(lTaggedValues[i].getValueAsElement()));
+					reference.addProperty("id", lTaggedValues[i].getValueAsElement().getId());
+					obj.add(lTaggedValues[i].getName(), reference);
+					break;
+				case 5:
+					obj.addProperty(lTaggedValues[i].getName(), Integer.parseInt((String) lTaggedValues[i].getValue()));
+					break;
+				case 6:
+					obj.addProperty(lTaggedValues[i].getName(), Float.parseFloat((String) lTaggedValues[i].getValue()));
+					break;
+				case 7:
+					obj.addProperty(lTaggedValues[i].getName(), Boolean.parseBoolean((String) lTaggedValues[i].getValue()));
+					break;
+				default:
+					obj.addProperty(lTaggedValues[i].getName(), (String) lTaggedValues[i].getValueAsString());
+				}
+			}
+			setPropertyAssignments(obj);
+		}
+
 		setName(source.getName());
 		setAbstract(source.isAbstract());
 		setDerived(source.isDerived());
@@ -81,6 +118,14 @@ public class Association implements ModelElement {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public JsonObject getPropertyAssignments() {
+		return propertyAssignments;
+	}
+
+	public void setPropertyAssignments(JsonObject propertyAssignments) {
+		this.propertyAssignments = propertyAssignments;
 	}
 
 	public List<String> getStereotypes() {
