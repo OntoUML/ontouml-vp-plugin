@@ -34,11 +34,8 @@ public class AssociationClass implements ModelElement {
 		this.id = source.getId();
 		setName(source.getName());
 		
-		final IModelElement association = source.getFrom();
-		final IModelElement _class = source.getTo();
-		
-		addProperty(new Reference(association.getName(),association.getId()));
-		addProperty(new Reference(_class.getName(),_class.getId()));
+		addProperty(new Reference(source.getFrom()));
+		addProperty(new Reference(source.getTo()));
 	}
 
 	@Override
