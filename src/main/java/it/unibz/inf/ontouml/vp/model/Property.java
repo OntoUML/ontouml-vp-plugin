@@ -211,8 +211,7 @@ public class Property implements ModelElement {
 	}
 
 	public void setName(String name) {
-		if (name.length() != 0)
-			this.name = name;
+		this.name = name;
 	}
 
 	public Reference getPropertyType() {

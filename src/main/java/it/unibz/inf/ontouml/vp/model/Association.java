@@ -55,14 +55,9 @@ public class Association implements ModelElement {
 			addStereotype(stereotypes[i]);
 		}
 
+		setName(source.getName());
 		setAbstract(source.isAbstract());
-
-		if (source.getName().trim().startsWith("/")) {
-			setName(source.getName().substring(1));
-			this.isDerived = true;
-		} else {
-			setName(source.getName().trim());
-		}
+		setDerived(source.isDerived());
 	}
 
 	@Override
@@ -85,8 +80,7 @@ public class Association implements ModelElement {
 	}
 
 	public void setName(String name) {
-		if (name.length() != 0)
-			this.name = name;
+		this.name = name;
 	}
 
 	public List<String> getStereotypes() {
