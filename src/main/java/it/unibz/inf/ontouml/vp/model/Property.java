@@ -95,7 +95,7 @@ public class Property implements ModelElement {
 
 		final String[] stereotypes = source.toStereotypeArray();
 		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
-			addStereotype(Stereotypes.getBaseURI(stereotypes[i]));
+			addStereotype(stereotypes[i]);
 		}
 
 		ITaggedValueContainer lContainer = source.getTaggedValues();
@@ -160,7 +160,7 @@ public class Property implements ModelElement {
 
 		final String[] stereotypes = source.toStereotypeArray();
 		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
-			addStereotype(Stereotypes.getBaseURI(stereotypes[i]));
+			addStereotype(stereotypes[i]);
 		}
 
 		ITaggedValueContainer lContainer = source.getTaggedValues();

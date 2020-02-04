@@ -52,7 +52,7 @@ public class Association implements ModelElement {
 		this.stereotypes = stereotypes != null ? new ArrayList<String>() : null;
 
 		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
-			addStereotype(Stereotypes.getBaseURI(stereotypes[i]));
+			addStereotype(stereotypes[i]);
 		}
 
 		setAbstract(source.isAbstract());

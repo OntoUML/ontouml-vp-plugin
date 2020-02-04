@@ -57,7 +57,7 @@ public class DataType implements ModelElement {
 
 		this.properties = null;
 
-		addStereotype(Stereotypes.getBaseURI(StereotypeUtils.STR_DATATYPE));
+		addStereotype(StereotypeUtils.STR_DATATYPE);
 
 		setAbstract(false);
 		setDerived(false);
