@@ -75,7 +75,6 @@ public class AssociationEnd implements ModelElement {
 
 		this.type = ModelElement.TYPE_PROPERTY;
 		this.id = source.getId();
-		setName(source.getName());
 
 		// TODO: is this correct?
 		IModelElement reference = source.getTypeAsModel();
@@ -121,6 +120,12 @@ public class AssociationEnd implements ModelElement {
 		}
 
 		setAggregationKind(source.getAggregationKind());
+		if (source.getName().trim().startsWith("/")) {
+			setName(source.getName().substring(1));
+			this.isDerived = true;
+		} else {
+			setName(source.getName().trim());
+		}
 	}
 
 	@Override

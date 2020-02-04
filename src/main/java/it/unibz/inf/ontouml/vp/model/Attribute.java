@@ -14,7 +14,7 @@ import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
 
 public class Attribute implements ModelElement {
-	
+
 	private final IAttribute sourceModelElement;
 
 	@SerializedName("type")
@@ -36,103 +36,107 @@ public class Attribute implements ModelElement {
 	@SerializedName("cardinality")
 	@Expose
 	private String cardinality;
-	
+
 	@SerializedName("isDerived")
 	@Expose
 	private boolean isDerived;
-	
+
 	@SerializedName("isOrdered")
 	@Expose
 	private boolean isOrdered;
-	
+
 	@SerializedName("isReadOnly")
 	@Expose
 	private boolean isReadOnly;
-	
+
 	@SerializedName("stereotypes")
 	@Expose
 	private List<String> stereotypes;
-	
+
 	@SerializedName("propertyAssignments")
 	@Expose
 	private JsonObject propertyAssignments;
-	
+
 	@SerializedName("subsettedProperties")
 	@Expose
 	private List<Reference> subsettedProperties;
-	
+
 	@SerializedName("redefinedProperties")
 	@Expose
 	private List<Reference> redefinedProperties;
-	
+
 	@SerializedName("aggregationKind")
 	@Expose
 	private String aggregationKind;
 
 	public Attribute(IAttribute source) {
 		this.sourceModelElement = source;
-		
+
 		this.type = ModelElement.TYPE_PROPERTY;
 		this.id = source.getId();
-		setName(source.getName());
-		
+
 		IModelElement reference = source.getTypeAsElement();
-		if(reference!=null) {
+		if (reference != null) {
 			setPropertyType(new Reference(reference));
-		}
-		else {
+		} else {
 			// TODO Enhance processment of exceptions
-			// Exception e = new NullPointerException("Property type is a non-standard string: "+source.getTypeAsString());
+			// Exception e = new
+			// NullPointerException("Property type is a non-standard string: "+source.getTypeAsString());
 			// e.printStackTrace();
-			System.out.println("Property type is a non-standard string: "+source.getTypeAsString());
+			System.out.println("Property type is a non-standard string: " + source.getTypeAsString());
 		}
-		
-		if(!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED)))
+
+		if (!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED)))
 			setCardinality(source.getMultiplicity());
-		
+
 		setDerived(source.isDerived());
-		//TODO:isOrdered
+		// TODO:isOrdered
 		setReadOnly(source.isReadOnly());
-		
+
 		final String[] stereotypes = source.toStereotypeArray();
-		for (int i=0; stereotypes != null && i<stereotypes.length; i++) {
+		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
 			addStereotype(Stereotypes.getBaseURI(stereotypes[i]));
 		}
-		
+
 		ITaggedValueContainer lContainer = source.getTaggedValues();
 		if (lContainer != null) {
 			JsonObject obj = new JsonObject();
 			ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
 
 			for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++)
-				obj.addProperty(lTaggedValues[i].getName(),
-						lTaggedValues[i].getValueAsString());
-			
+				obj.addProperty(lTaggedValues[i].getName(), lTaggedValues[i].getValueAsString());
+
 			setPropertyAssignments(obj);
 		}
-		
+
 		Iterator<?> subsettedIterator = source.subsettedPropertyIterator();
-		
-		while(subsettedIterator.hasNext()){
+
+		while (subsettedIterator.hasNext()) {
 			IAttribute atr = (IAttribute) subsettedIterator.next();
-			addSubsettedProperty(new Reference(atr.getModelType(),atr.getId()));
+			addSubsettedProperty(new Reference(atr.getModelType(), atr.getId()));
 		}
-		
+
 		Iterator<?> redefinedProperties = source.redefinedPropertyIterator();
-		
-		while(redefinedProperties.hasNext()){
+
+		while (redefinedProperties.hasNext()) {
 			IAttribute rdp = (IAttribute) redefinedProperties.next();
-			addRedefinedProperty(new Reference(rdp.getModelType(),rdp.getId()));
+			addRedefinedProperty(new Reference(rdp.getModelType(), rdp.getId()));
 		}
-		
+
 		setAggregationKind(source.getAggregation());
+		if (source.getName().trim().startsWith("/")) {
+			setName(source.getName().substring(1));
+			this.isDerived = true;
+		} else {
+			setName(source.getName().trim());
+		}
 	}
-	
+
 	@Override
 	public String getId() {
 		return getSourceModelElement().getId();
 	}
-	
+
 	@Override
 	public IAttribute getSourceModelElement() {
 		return this.sourceModelElement;
@@ -148,7 +152,7 @@ public class Attribute implements ModelElement {
 	}
 
 	public void setName(String name) {
-		if(name.length()!=0)
+		if (name.length() != 0)
 			this.name = name;
 	}
 
@@ -167,7 +171,7 @@ public class Attribute implements ModelElement {
 	public void setCardinality(String cardinality) {
 		this.cardinality = cardinality;
 	}
-	
+
 	public boolean isDerived() {
 		return isDerived;
 	}
@@ -175,7 +179,7 @@ public class Attribute implements ModelElement {
 	public void setDerived(boolean isDerived) {
 		this.isDerived = isDerived;
 	}
-	
+
 	public boolean isOrdered() {
 		return isOrdered;
 	}
@@ -205,14 +209,14 @@ public class Attribute implements ModelElement {
 	}
 
 	public void addStereotype(String name) {
-		if(this.stereotypes == null)
+		if (this.stereotypes == null)
 			this.stereotypes = new ArrayList<String>();
-		
+
 		this.stereotypes.add(name);
 	}
 
 	public void removeStereotype(String name) {
-		if(this.stereotypes != null && this.stereotypes.contains(name))
+		if (this.stereotypes != null && this.stereotypes.contains(name))
 			this.stereotypes.remove(name);
 	}
 
@@ -231,16 +235,16 @@ public class Attribute implements ModelElement {
 	public void setSubsettedProperties(List<Reference> subsettedProperties) {
 		this.subsettedProperties = subsettedProperties;
 	}
-	
-	public void addSubsettedProperty(Reference ref){
-		if(this.subsettedProperties == null)
+
+	public void addSubsettedProperty(Reference ref) {
+		if (this.subsettedProperties == null)
 			this.subsettedProperties = new ArrayList<Reference>();
-		
+
 		this.subsettedProperties.add(ref);
 	}
-	
-	public void removeSubsettedProperty(Reference ref){
-		if(this.subsettedProperties != null && this.subsettedProperties.contains(ref))
+
+	public void removeSubsettedProperty(Reference ref) {
+		if (this.subsettedProperties != null && this.subsettedProperties.contains(ref))
 			this.stereotypes.remove(ref);
 	}
 
@@ -251,16 +255,16 @@ public class Attribute implements ModelElement {
 	public void setRedefinedProperties(List<Reference> redefinedPropeties) {
 		this.redefinedProperties = redefinedPropeties;
 	}
-	
-	public void addRedefinedProperty(Reference ref){
-		if(this.redefinedProperties == null)
+
+	public void addRedefinedProperty(Reference ref) {
+		if (this.redefinedProperties == null)
 			this.redefinedProperties = new ArrayList<Reference>();
-		
+
 		this.redefinedProperties.add(ref);
 	}
-	
-	public void removeRedefinedProperty(Reference ref){
-		if(this.redefinedProperties != null && this.redefinedProperties.contains(ref))
+
+	public void removeRedefinedProperty(Reference ref) {
+		if (this.redefinedProperties != null && this.redefinedProperties.contains(ref))
 			this.redefinedProperties.remove(ref);
 	}
 
@@ -269,7 +273,7 @@ public class Attribute implements ModelElement {
 	}
 
 	public void setAggregationKind(int aggregation) {
-		switch(aggregation){
+		switch (aggregation) {
 		case 0:
 			this.aggregationKind = "NONE";
 			break;
