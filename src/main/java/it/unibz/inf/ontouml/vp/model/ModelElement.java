@@ -16,12 +16,10 @@ public interface ModelElement {
 	public static final String TYPE_MODEL = "Model";
 	public static final String TYPE_PACKAGE = "Package";
 	public static final String TYPE_CLASS = "Class";
-	// TODO Change "Relation" to "Association"
-	public static final String TYPE_RELATION = "Relation";
-	public static final String TYPE_ASSOCIATION_CLASS = "Relation";
+	public static final String TYPE_RELATION = "Association";
+	public static final String TYPE_ASSOCIATION_CLASS = "Association";
 	public static final String TYPE_GENERALIZATION = "Generalization";
 	public static final String TYPE_GENERALIZATION_SET = "GeneralizationSet";
-	// TODO Change "Property" to "Attrbitue" if there is no Property class
 	public static final String TYPE_PROPERTY = "Property";
 
 	/**
@@ -149,6 +147,8 @@ public interface ModelElement {
 				return TYPE_GENERALIZATION_SET;
 			case IModelElementFactory.MODEL_TYPE_ATTRIBUTE:
 				return TYPE_PROPERTY;
+			case IModelElementFactory.MODEL_TYPE_DATA_TYPE:
+				return TYPE_CLASS;
 		}
 
 		return null;

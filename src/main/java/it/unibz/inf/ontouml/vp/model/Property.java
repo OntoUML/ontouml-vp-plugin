@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -14,9 +13,9 @@ import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
 
-public class AssociationEnd implements ModelElement {
+public class Property implements ModelElement{
 
-	private final IAssociationEnd sourceModelElement;
+	private final IModelElement sourceModelElement;
 
 	@SerializedName("type")
 	@Expose
@@ -37,53 +36,118 @@ public class AssociationEnd implements ModelElement {
 	@SerializedName("cardinality")
 	@Expose
 	private String cardinality;
-
+	
 	@SerializedName("isDerived")
 	@Expose
 	private boolean isDerived;
-
+	
 	@SerializedName("isOrdered")
 	@Expose
 	private boolean isOrdered;
-
+	
 	@SerializedName("isReadOnly")
 	@Expose
 	private boolean isReadOnly;
-
+	
 	@SerializedName("stereotypes")
 	@Expose
 	private List<String> stereotypes;
-
+	
 	@SerializedName("propertyAssignments")
 	@Expose
 	private JsonObject propertyAssignments;
-
+	
 	@SerializedName("subsettedProperties")
 	@Expose
 	private List<Reference> subsettedProperties;
-
+	
 	@SerializedName("redefinedProperties")
 	@Expose
 	private List<Reference> redefinedProperties;
-
+	
 	@SerializedName("aggregationKind")
 	@Expose
 	private String aggregationKind;
+	
+	public Property(IAttribute source) {
+		this.sourceModelElement = source;
+		
+		this.type = ModelElement.TYPE_PROPERTY;
+		this.id = source.getId();
+		setName(source.getName());
+		
+		IModelElement reference = source.getTypeAsElement();
+		if(reference!=null) {
+			setPropertyType(new Reference(reference));
+		}
+		else {
+			// TODO Enhance processment of exceptions
+			// Exception e = new NullPointerException("Property type is a non-standard string: "+source.getTypeAsString());
+			// e.printStackTrace();
+			System.out.println("Property type is a non-standard string: "+source.getTypeAsString());
+		}
+		
+		if(!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED)))
+			setCardinality(source.getMultiplicity());
+		
+		setDerived(source.isDerived());
+		//TODO:isOrdered
+		setReadOnly(source.isReadOnly());
+		
+		final String[] stereotypes = source.toStereotypeArray();
+		for (int i=0; stereotypes != null && i<stereotypes.length; i++) {
+			addStereotype(Stereotypes.getBaseURI(stereotypes[i]));
+		}
+		
+		ITaggedValueContainer lContainer = source.getTaggedValues();
+		if (lContainer != null) {
+			JsonObject obj = new JsonObject();
+			ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
 
-	public AssociationEnd(IAssociationEnd source) {
+			for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++)
+				obj.addProperty(lTaggedValues[i].getName(),
+						lTaggedValues[i].getValueAsString());
+			
+			setPropertyAssignments(obj);
+		}
+		
+		Iterator<?> subsettedIterator = source.subsettedPropertyIterator();
+		
+		while(subsettedIterator.hasNext()){
+			IAttribute atr = (IAttribute) subsettedIterator.next();
+			addSubsettedProperty(new Reference(atr.getModelType(),atr.getId()));
+		}
+		
+		Iterator<?> redefinedProperties = source.redefinedPropertyIterator();
+		
+		while(redefinedProperties.hasNext()){
+			IAttribute rdp = (IAttribute) redefinedProperties.next();
+			addRedefinedProperty(new Reference(rdp.getModelType(),rdp.getId()));
+		}
+		
+		setAggregationKind(source.getAggregation());
+	}
+	
+	public Property(IAssociationEnd source) {
 		this.sourceModelElement = source;
 
 		this.type = ModelElement.TYPE_PROPERTY;
 		this.id = source.getId();
 		setName(source.getName());
+		
+		IModelElement reference = source.getTypeAsElement();
+		if(reference!=null) {
+			setPropertyType(new Reference(reference));
+		}
+		else {
+			// TODO Enhance processing of exceptions
+			// Exception e = new NullPointerException("Property type is a non-standard string: "+source.getTypeAsString());
+			// e.printStackTrace();
+			System.out.println("Property type is a non-standard string: "+source.getTypeAsString());
+		}
 
-		// TODO: is this correct?
-		IModelElement reference = source.getTypeAsModel();
-
-		if (reference != null)
-			setPropertyType(new Reference(reference.getModelType(), reference.getId()));
-
-		if (!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED)))
+		if (!((source.getMultiplicity())
+				.equals(IAttribute.MULTIPLICITY_UNSPECIFIED)))
 			setCardinality(source.getMultiplicity());
 
 		setDerived(source.isDerived());
@@ -93,7 +157,7 @@ public class AssociationEnd implements ModelElement {
 		final String[] stereotypes = source.toStereotypeArray();
 		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
 			addStereotype(Stereotypes.getBaseURI(stereotypes[i]));
-		}
+		}		
 
 		ITaggedValueContainer lContainer = source.getTaggedValues();
 		if (lContainer != null) {
@@ -101,8 +165,9 @@ public class AssociationEnd implements ModelElement {
 			ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
 
 			for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++)
-				obj.addProperty(lTaggedValues[i].getName(), lTaggedValues[i].getValueAsString());
-
+				obj.addProperty(lTaggedValues[i].getName(),
+						lTaggedValues[i].getValueAsString());
+			
 			setPropertyAssignments(obj);
 		}
 
@@ -122,14 +187,14 @@ public class AssociationEnd implements ModelElement {
 
 		setAggregationKind(source.getAggregationKind());
 	}
-
+	
 	@Override
 	public String getId() {
-		return id;
+		return getSourceModelElement().getId();
 	}
-
+	
 	@Override
-	public IAssociationEnd getSourceModelElement() {
+	public IModelElement getSourceModelElement() {
 		return this.sourceModelElement;
 	}
 
@@ -143,7 +208,7 @@ public class AssociationEnd implements ModelElement {
 	}
 
 	public void setName(String name) {
-		if (name.length() != 0)
+		if(name.length()!=0)
 			this.name = name;
 	}
 
@@ -155,12 +220,28 @@ public class AssociationEnd implements ModelElement {
 		this.propertyType = propertyType;
 	}
 
+	public String getCardinality() {
+		return cardinality;
+	}
+
+	public void setCardinality(String cardinality) {
+		this.cardinality = cardinality;
+	}
+	
 	public boolean isDerived() {
 		return isDerived;
 	}
 
 	public void setDerived(boolean isDerived) {
 		this.isDerived = isDerived;
+	}
+	
+	public boolean isOrdered() {
+		return isOrdered;
+	}
+
+	public void setOrdered(boolean isOrdered) {
+		this.isOrdered = isOrdered;
 	}
 
 	public boolean isReadOnly() {
@@ -169,14 +250,6 @@ public class AssociationEnd implements ModelElement {
 
 	public void setReadOnly(boolean isReadOnly) {
 		this.isReadOnly = isReadOnly;
-	}
-
-	public String getCardinality() {
-		return cardinality;
-	}
-
-	public void setCardinality(String cardinality) {
-		this.cardinality = cardinality;
 	}
 
 	public List<String> getStereotypes() {
@@ -192,14 +265,14 @@ public class AssociationEnd implements ModelElement {
 	}
 
 	public void addStereotype(String name) {
-		if (this.stereotypes == null)
+		if(this.stereotypes == null)
 			this.stereotypes = new ArrayList<String>();
-
+		
 		this.stereotypes.add(name);
 	}
 
 	public void removeStereotype(String name) {
-		if (this.stereotypes != null && this.stereotypes.contains(name))
+		if(this.stereotypes != null && this.stereotypes.contains(name))
 			this.stereotypes.remove(name);
 	}
 
@@ -218,16 +291,16 @@ public class AssociationEnd implements ModelElement {
 	public void setSubsettedProperties(List<Reference> subsettedProperties) {
 		this.subsettedProperties = subsettedProperties;
 	}
-
-	public void addSubsettedProperty(Reference ref) {
-		if (this.subsettedProperties == null)
+	
+	public void addSubsettedProperty(Reference ref){
+		if(this.subsettedProperties == null)
 			this.subsettedProperties = new ArrayList<Reference>();
-
+		
 		this.subsettedProperties.add(ref);
 	}
-
-	public void removeSubsettedProperty(Reference ref) {
-		if (this.subsettedProperties != null && this.subsettedProperties.contains(ref))
+	
+	public void removeSubsettedProperty(Reference ref){
+		if(this.subsettedProperties != null && this.subsettedProperties.contains(ref))
 			this.stereotypes.remove(ref);
 	}
 
@@ -238,16 +311,16 @@ public class AssociationEnd implements ModelElement {
 	public void setRedefinedProperties(List<Reference> redefinedPropeties) {
 		this.redefinedProperties = redefinedPropeties;
 	}
-
-	public void addRedefinedProperty(Reference ref) {
-		if (this.redefinedProperties == null)
+	
+	public void addRedefinedProperty(Reference ref){
+		if(this.redefinedProperties == null)
 			this.redefinedProperties = new ArrayList<Reference>();
-
+		
 		this.redefinedProperties.add(ref);
 	}
-
-	public void removeRedefinedProperty(Reference ref) {
-		if (this.redefinedProperties != null && this.redefinedProperties.contains(ref))
+	
+	public void removeRedefinedProperty(Reference ref){
+		if(this.redefinedProperties != null && this.redefinedProperties.contains(ref))
 			this.redefinedProperties.remove(ref);
 	}
 
@@ -255,6 +328,21 @@ public class AssociationEnd implements ModelElement {
 		return aggregationKind;
 	}
 
+	public void setAggregationKind(int aggregation) {
+		switch(aggregation){
+		case 0:
+			this.aggregationKind = "NONE";
+			break;
+		case 1:
+			this.aggregationKind = "SHARED";
+			break;
+		case 2:
+			this.aggregationKind = "COMPOSITE";
+			break;
+		default:
+		}
+	}
+	
 	public void setAggregationKind(String aggregationKind) {
 		if (aggregationKind.equals("COMPOSITED")) {
 			this.aggregationKind = "COMPOSITE";
@@ -266,4 +354,5 @@ public class AssociationEnd implements ModelElement {
 	public String getType() {
 		return type;
 	}
+
 }

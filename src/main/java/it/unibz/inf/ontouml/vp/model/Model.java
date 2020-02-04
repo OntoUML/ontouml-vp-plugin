@@ -9,6 +9,7 @@ import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationClass;
 import com.vp.plugin.model.IClass;
+import com.vp.plugin.model.IDataType;
 import com.vp.plugin.model.IGeneralization;
 import com.vp.plugin.model.IGeneralizationSet;
 import com.vp.plugin.model.IModel;
@@ -158,8 +159,7 @@ public class Model implements ModelElement {
 				addElement(new Class((IClass) projectElement));
 				break;
 			case IModelElementFactory.MODEL_TYPE_DATA_TYPE:
-				System.out.println("Datatype name: "+projectElement.getName());
-				System.out.println("Datatype id: "+projectElement.getId());
+				addElement(new DataType((IDataType) projectElement));
 				break;
 			case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
 				addElement(new Generalization((IGeneralization) projectElement));

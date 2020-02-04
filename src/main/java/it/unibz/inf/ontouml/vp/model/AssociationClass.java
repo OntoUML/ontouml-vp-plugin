@@ -30,7 +30,7 @@ public class AssociationClass implements ModelElement {
 	public AssociationClass(IAssociationClass source) {
 		this.sourceModelElement = source;
 		
-		this.type = ModelElement.TYPE_RELATION;
+		this.type = ModelElement.TYPE_ASSOCIATION_CLASS;
 		this.id = source.getId();
 		setName(source.getName());
 		

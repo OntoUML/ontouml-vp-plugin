@@ -25,7 +25,7 @@ public class Association implements ModelElement {
 	
 	@SerializedName("properties")
 	@Expose
-	private List<AssociationEnd> properties;
+	private List<Property> properties;
 
 	@SerializedName("stereotypes")
 	@Expose
@@ -46,8 +46,8 @@ public class Association implements ModelElement {
 		this.id = source.getId();
 		setName(source.getName());
 		
-		addProperty(new AssociationEnd((IAssociationEnd) source.getFromEnd()));
-		addProperty(new AssociationEnd((IAssociationEnd) source.getToEnd()));
+		addProperty(new Property((IAssociationEnd) source.getFromEnd()));
+		addProperty(new Property((IAssociationEnd) source.getToEnd()));
 
 		
 		String[] stereotypes = source.toStereotypeArray();
@@ -107,21 +107,21 @@ public class Association implements ModelElement {
 			this.stereotypes.remove(name);
 	}
 
-	public List<AssociationEnd> getProperties() {
+	public List<Property> getProperties() {
 		return properties;
 	}
 
-	public void setProperties(List<AssociationEnd> properties) {
+	public void setProperties(List<Property> properties) {
 		this.properties = properties;
 	}
 
-	public AssociationEnd getProperty(int position) {
+	public Property getProperty(int position) {
 		return this.properties.get(position);
 	}
 
-	public void addProperty(AssociationEnd property) {
+	public void addProperty(Property property) {
 		if(this.properties == null)
-			this.properties = new ArrayList<AssociationEnd>();
+			this.properties = new ArrayList<Property>();
 		
 		this.properties.add(property);
 	}
