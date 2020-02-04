@@ -1,5 +1,7 @@
 package it.unibz.inf.ontouml.vp.model;
 
+import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,13 +12,14 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IAttribute;
 import com.vp.plugin.model.IClass;
+import com.vp.plugin.model.IDataType;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
 
 public class Class implements ModelElement {
 
-	private final IClass sourceModelElement;
+	private final IModelElement sourceModelElement;
 
 	@SerializedName("type")
 	@Expose
@@ -104,9 +107,42 @@ public class Class implements ModelElement {
 		}
 
 	}
+	
+	public Class(IDataType source) {
+		this.sourceModelElement = source;
+		this.type = ModelElement.TYPE_CLASS;
+		this.id = source.getId();
+
+		this.properties = null;
+
+		addStereotype(StereotypeUtils.STR_DATATYPE);
+
+		setAbstract(false);
+		setDerived(false);
+
+		ITaggedValueContainer lContainer = source.getTaggedValues();
+		if (lContainer != null) {
+			JsonObject obj = new JsonObject();
+			ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
+
+			for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++) {
+
+				obj.addProperty(lTaggedValues[i].getName(), lTaggedValues[i].getValueAsString());
+			}
+
+			setPropertyAssignments(obj);
+		}
+
+		if (source.getName().trim().startsWith("/")) {
+			setName(source.getName().substring(1));
+			this.isDerived = true;
+		} else {
+			setName(source.getName().trim());
+		}
+	}
 
 	@Override
-	public IClass getSourceModelElement() {
+	public IModelElement getSourceModelElement() {
 		return this.sourceModelElement;
 	}
 
@@ -133,16 +169,16 @@ public class Class implements ModelElement {
 		return properties;
 	}
 
-	public void addProperties(Property attribute) {
+	public void addProperties(Property property) {
 		if (this.properties == null)
 			this.properties = new HashSet<Property>();
 
-		this.properties.add(attribute);
+		this.properties.add(property);
 	}
 
-	public void removeProperties(Attribute attribute) {
-		if (this.properties != null && this.properties.contains(attribute))
-			this.properties.remove(attribute);
+	public void removeProperties(Property property) {
+		if (this.properties != null && this.properties.contains(property))
+			this.properties.remove(property);
 	}
 
 	public JsonObject getPropertyAssignments() {

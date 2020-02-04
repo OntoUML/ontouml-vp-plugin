@@ -124,7 +124,7 @@ public class Association implements ModelElement {
 		this.properties.add(property);
 	}
 
-	public void removeProperty(AssociationEnd property) {
+	public void removeProperty(Property property) {
 
 		if (this.properties.contains(property))
 			this.properties.remove(property);

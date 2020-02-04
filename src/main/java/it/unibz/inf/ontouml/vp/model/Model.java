@@ -159,7 +159,7 @@ public class Model implements ModelElement {
 				addElement(new Class((IClass) projectElement));
 				break;
 			case IModelElementFactory.MODEL_TYPE_DATA_TYPE:
-				addElement(new DataType((IDataType) projectElement));
+				addElement(new Class((IDataType) projectElement));
 				break;
 			case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
 				addElement(new Generalization((IGeneralization) projectElement));
