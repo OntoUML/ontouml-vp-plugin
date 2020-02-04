@@ -36,8 +36,6 @@ public class ModelExportAction implements VPActionController {
 	public void performAction(VPAction action) {
 		final ProjectConfigurations configurations = Configurations.getInstance().getProjectConfigurations();
 
-		final String jsonModel = ModelElement.generateModel(true);
-
 		FileDialog fd = new FileDialog((Frame) ApplicationManager.instance().getViewManager().getRootFrame(),
 				"Choose destination", FileDialog.SAVE);
 
@@ -46,11 +44,15 @@ public class ModelExportAction implements VPActionController {
 		fd.setVisible(true);
 
 		String fileDirectory = fd.getDirectory();
-		String filename = fd.getFile() + ".json";
+
+		String fileName = fd.getFile();
+		if(!fileName.endsWith(".json"))
+			fileName+=".json";
 
 		if (fileDirectory != null) {
 			try {
-				Files.write(Paths.get(fileDirectory, filename), jsonModel.getBytes());
+				final String jsonModel = ModelElement.generateModel(true);
+				Files.write(Paths.get(fileDirectory, fileName), jsonModel.getBytes());
 				configurations.setExportFolderPath(fileDirectory);
 			} catch (IOException e) {
 				ViewUtils.log(
