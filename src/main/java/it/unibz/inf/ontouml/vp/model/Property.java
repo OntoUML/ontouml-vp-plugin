@@ -181,9 +181,27 @@ public class Property implements ModelElement {
 			JsonObject obj = new JsonObject();
 			ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
 
-			for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++)
-				obj.addProperty(lTaggedValues[i].getName(), lTaggedValues[i].getValueAsString());
-
+			for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++) {
+				switch (lTaggedValues[i].getType()) {
+				case 1:
+					JsonObject referenceTag = new JsonObject();
+					referenceTag.addProperty("type", ModelElement.toOntoUMLSchemaType(lTaggedValues[i].getValueAsElement()));
+					referenceTag.addProperty("id", lTaggedValues[i].getValueAsElement().getId());
+					obj.add(lTaggedValues[i].getName(), referenceTag);
+					break;
+				case 5:
+					obj.addProperty(lTaggedValues[i].getName(), Integer.parseInt((String) lTaggedValues[i].getValue()));
+					break;
+				case 6:
+					obj.addProperty(lTaggedValues[i].getName(), Float.parseFloat((String) lTaggedValues[i].getValue()));
+					break;
+				case 7:
+					obj.addProperty(lTaggedValues[i].getName(), Boolean.parseBoolean((String) lTaggedValues[i].getValue()));
+					break;
+				default:
+					obj.addProperty(lTaggedValues[i].getName(), (String) lTaggedValues[i].getValueAsString());
+				}
+			}
 			setPropertyAssignments(obj);
 		}
 
