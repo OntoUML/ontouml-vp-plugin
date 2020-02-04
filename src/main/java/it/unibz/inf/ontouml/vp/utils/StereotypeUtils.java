@@ -41,8 +41,7 @@ public class StereotypeUtils {
 	// Association stereotypes
 	public static final String STR_MATERIAL = "material";
 	public static final String STR_COMPARATIVE = "comparative";
-	public static final String STR_HISTORICAL = "historical";
-	
+
 	public static final String STR_MEDIATION = "mediation";
 	public static final String STR_CHARACTERIZATION = "characterization";
 	public static final String STR_EXTERNAL_DEPENDENCE = "externalDependence";
@@ -66,7 +65,7 @@ public class StereotypeUtils {
 
 	public static final List<String> STEREOTYPES = Arrays.asList(STR_POWERTYPE, STR_TYPE, STR_HISTORICAL_ROLE, STR_EVENT, STR_CATEGORY,
 	STR_MIXIN, STR_ROLE_MIXIN, STR_PHASE_MIXIN, STR_KIND,	STR_COLLECTIVE,	STR_QUANTITY,	STR_RELATOR_KIND,	STR_QUALITY_KIND,	STR_MODE_KIND,
-	STR_SUBKIND,	STR_ROLE, STR_PHASE, STR_ENUMERATION, STR_DATATYPE, STR_MATERIAL, STR_COMPARATIVE, STR_HISTORICAL, STR_MEDIATION, 
+	STR_SUBKIND,	STR_ROLE, STR_PHASE, STR_ENUMERATION, STR_DATATYPE, STR_MATERIAL, STR_COMPARATIVE, STR_MEDIATION,
 	STR_CHARACTERIZATION, STR_EXTERNAL_DEPENDENCE, STR_COMPONENT_OF, STR_MEMBER_OF, STR_SUB_COLLECTION_OF, STR_SUB_QUANTITY_OF, 
 	STR_INSTANTIATION, STR_TERMINATION, STR_PARTICIPATIONAL, STR_PARTICIPATION, STR_HISTORICAL_DEPENDENCE, STR_CREATION, STR_BEGIN, STR_END);
 
@@ -180,10 +179,10 @@ public class StereotypeUtils {
 		str_names.add(STR_PARTICIPATION);
 		str_names.add(STR_HISTORICAL_DEPENDENCE);
 		str_names.add(STR_CREATION);
-		
-		str_names.add(STR_COMPARATIVE);
-		str_names.add(STR_HISTORICAL);
+
+		str_names.add(STR_MATERIAL);
 		str_names.add(STR_MEDIATION);
+		str_names.add(STR_COMPARATIVE);
 		str_names.add(STR_CHARACTERIZATION);
 		str_names.add(STR_EXTERNAL_DEPENDENCE);
 		str_names.add(STR_COMPONENT_OF);

@@ -200,10 +200,6 @@
 				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
 			</action>
 
-			<action id="it.unibz.inf.ontouml.vp.addHistoricalStereotype" label="Historical" style="normal" menuPath="ontoUMLMenu2/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
-			</action>
-
 			<action id="it.unibz.inf.ontouml.vp.addExternalDependenceStereotype" label="ExternalDependence" style="normal" menuPath="ontoUMLMenu2/#">
 				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
 			</action>

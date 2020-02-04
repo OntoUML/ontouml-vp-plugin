@@ -228,10 +228,6 @@ public class ApplyStereotype implements VPContextActionController {
 			element.addStereotype(StereotypeUtils.STR_COMPARATIVE);
 			removeAggregationKind(element);
 			break;
-		case ACTION_ADD_STEREOTYPE_HISTORICAL:
-			element.addStereotype(StereotypeUtils.STR_HISTORICAL);
-			removeAggregationKind(element);
-			break;
 		case ACTION_ADD_STEREOTYPE_MEDIATION:
 			element.addStereotype(StereotypeUtils.STR_MEDIATION);
 			removeAggregationKind(element);
