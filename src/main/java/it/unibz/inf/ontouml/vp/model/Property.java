@@ -74,12 +74,13 @@ public class Property implements ModelElement {
 
 		this.type = ModelElement.TYPE_PROPERTY;
 		this.id = source.getId();
+		setName(source.getName());
 
 		IModelElement reference = source.getTypeAsElement();
 		if (reference != null) {
 			setPropertyType(new Reference(reference));
 		} else {
-			// TODO Enhance processment of exceptions
+			// TODO Enhance processing of exceptions
 			// Exception e = new
 			// NullPointerException("Property type is a non-standard string: "+source.getTypeAsString());
 			// e.printStackTrace();
@@ -142,13 +143,7 @@ public class Property implements ModelElement {
 		}
 
 		setAggregationKind(source.getAggregation());
-
-		if (source.getName().trim().startsWith("/")) {
-			setName(source.getName().substring(1));
-			this.isDerived = true;
-		} else {
-			setName(source.getName().trim());
-		}
+		setDerived(source.isDerived());
 	}
 
 	public Property(IAssociationEnd source) {

@@ -52,6 +52,7 @@ public class Association implements ModelElement {
 
 		this.type = ModelElement.TYPE_RELATION;
 		this.id = source.getId();
+		setName(source.getName());
 
 		addProperty(new Property((IAssociationEnd) source.getFromEnd()));
 		addProperty(new Property((IAssociationEnd) source.getToEnd()));
@@ -92,7 +93,6 @@ public class Association implements ModelElement {
 			setPropertyAssignments(obj);
 		}
 
-		setName(source.getName());
 		setAbstract(source.isAbstract());
 		setDerived(source.isDerived());
 	}
