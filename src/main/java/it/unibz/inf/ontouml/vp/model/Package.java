@@ -33,7 +33,7 @@ public class Package implements ModelElement {
 
 	@SerializedName("id")
 	@Expose
-	private String id;
+	private final String id;
 
 	@SerializedName("name")
 	@Expose
@@ -50,6 +50,7 @@ public class Package implements ModelElement {
 	public Package(IPackage source) {
 		this.sourceModelElement = source;
 		this.type = ModelElement.TYPE_PACKAGE;
+		this.id = source.getId();
 		setName(source.getName());
 		
 		final IModelElement[] children = source.toChildArray();
