@@ -1,7 +1,6 @@
 package it.unibz.inf.ontouml.vp.model;
 
 import java.util.LinkedList;
-
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -12,6 +11,17 @@ import com.vp.plugin.model.IPackage;
 import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
 import com.vp.plugin.model.factory.IModelElementFactory;
+
+/**
+ * 
+ * Implementation of ModelElement to handle IPackage objects
+ * to be serialized as ontouml-schema/Package
+ * 
+ * @author Claudenir Fonseca
+ * @author Tiago Prince Sales
+ * @author Victor Viola
+ *
+ */
 
 public class Package implements ModelElement {
 

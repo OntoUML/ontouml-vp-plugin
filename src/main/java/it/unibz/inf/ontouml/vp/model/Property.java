@@ -3,7 +3,6 @@ package it.unibz.inf.ontouml.vp.model;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -12,6 +11,17 @@ import com.vp.plugin.model.IAttribute;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
+
+/**
+ * 
+ * Implementation of ModelElement to handle IAtrribute and IAssociationEnd objects
+ * to be serialized as ontouml-schema/Property
+ * 
+ * @author Claudenir Fonseca
+ * @author Tiago Prince Sales
+ * @author Victor Viola
+ *
+ */
 
 public class Property implements ModelElement {
 
@@ -80,10 +90,6 @@ public class Property implements ModelElement {
 		if (reference != null) {
 			setPropertyType(new Reference(reference));
 		} else {
-			// TODO Enhance processing of exceptions
-			// Exception e = new
-			// NullPointerException("Property type is a non-standard string: "+source.getTypeAsString());
-			// e.printStackTrace();
 			System.out.println("Property type is a non-standard string: " + source.getTypeAsString());
 		}
 
@@ -157,10 +163,6 @@ public class Property implements ModelElement {
 		if (reference != null) {
 			setPropertyType(new Reference(reference));
 		} else {
-			// TODO Enhance processing of exceptions
-			// Exception e = new
-			// NullPointerException("Property type is a non-standard string: "+source.getTypeAsString());
-			// e.printStackTrace();
 			System.out.println("Property type is a non-standard string: " + source.getTypeAsString());
 		}
 

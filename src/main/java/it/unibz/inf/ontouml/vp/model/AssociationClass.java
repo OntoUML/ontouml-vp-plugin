@@ -5,7 +5,17 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IAssociationClass;
-import com.vp.plugin.model.IModelElement;
+
+/**
+ * 
+ * Implementation of ModelElement to handle IAssociationClass objects
+ * to be serialized as ontouml-schema/Association
+ * 
+ * @author Claudenir Fonseca
+ * @author Tiago Prince Sales
+ * @author Victor Viola
+ *
+ */
 
 public class AssociationClass implements ModelElement {
 

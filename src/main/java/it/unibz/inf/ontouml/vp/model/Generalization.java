@@ -7,6 +7,17 @@ import com.vp.plugin.model.IGeneralization;
 import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
 
+/**
+ * 
+ * Implementation of ModelElement to handle IGeneralization objects
+ * to be serialized as ontouml-schema/Generalization
+ * 
+ * @author Claudenir Fonseca
+ * @author Tiago Prince Sales
+ * @author Victor Viola
+ *
+ */
+
 public class Generalization implements ModelElement {
 
 	private final IGeneralization sourceModelElement;
@@ -34,8 +45,6 @@ public class Generalization implements ModelElement {
 	@SerializedName("specific")
 	@Expose
 	private Reference specific;
-
-	// TODO:property assignments
 
 	public Generalization(IGeneralization source) {
 		this.sourceModelElement = source;

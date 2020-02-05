@@ -12,6 +12,17 @@ import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
 
+/**
+ * 
+ * Implementation of ModelElement to handle IGeneralizationSet objects
+ * to be serialized as ontouml-schema/GeneralizationSet
+ * 
+ * @author Claudenir Fonseca
+ * @author Tiago Prince Sales
+ * @author Victor Viola
+ *
+ */
+
 public class GeneralizationSet implements ModelElement {
 
 	private final IGeneralizationSet sourceModelElement;

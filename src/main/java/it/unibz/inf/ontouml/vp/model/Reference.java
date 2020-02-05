@@ -3,7 +3,18 @@ package it.unibz.inf.ontouml.vp.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.factory.IModelElementFactory;
+
+/**
+ * 
+ * Implementation of ModelElement to handle IModelElement objects
+ * which are referred by other elements in the model. 
+ * They are serialized as ontouml-schema/Reference.
+ * 
+ * @author Claudenir Fonseca
+ * @author Tiago Prince Sales
+ * @author Victor Viola
+ *
+ */
 
 public class Reference {
 
@@ -25,9 +36,6 @@ public class Reference {
 		this.type = ModelElement.toOntoUMLSchemaType(element);
 
 		if(this.type == null) {
-			// TODO Enhance processment of exceptions
-			// Exception e = new  NullPointerException("Broken reference on ModelElement.toOntoUMLSchemaType(element)");
-			// e.printStackTrace();
 			System.out.println("Broken reference on ModelElement.toOntoUMLSchemaType(element)");
 		}
 	}

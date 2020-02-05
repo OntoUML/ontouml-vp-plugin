@@ -1,12 +1,10 @@
 package it.unibz.inf.ontouml.vp.model;
 
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -16,6 +14,17 @@ import com.vp.plugin.model.IDataType;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
+
+/**
+ * 
+ * Implementation of ModelElement to handle IClass and IDataType objects
+ * to be serialized as ontouml-schema/Class
+ * 
+ * @author Claudenir Fonseca
+ * @author Tiago Prince Sales
+ * @author Victor Viola
+ *
+ */
 
 public class Class implements ModelElement {
 

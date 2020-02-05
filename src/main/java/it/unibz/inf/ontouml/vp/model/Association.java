@@ -2,7 +2,6 @@ package it.unibz.inf.ontouml.vp.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -10,6 +9,17 @@ import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
+
+/**
+ * 
+ * Implementation of ModelElement to handle IAssociation objects
+ * to be serialized as ontouml-schema/Association
+ * 
+ * @author Claudenir Fonseca
+ * @author Tiago Prince Sales
+ * @author Victor Viola
+ *
+ */
 
 public class Association implements ModelElement {
 

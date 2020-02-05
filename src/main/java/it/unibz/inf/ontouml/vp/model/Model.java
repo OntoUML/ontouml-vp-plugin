@@ -2,7 +2,6 @@ package it.unibz.inf.ontouml.vp.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.ApplicationManager;
@@ -17,6 +16,17 @@ import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IPackage;
 import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.factory.IModelElementFactory;
+
+/**
+ * 
+ * Implementation of ModelElement to handle IModel objects
+ * to be serialized as ontouml-schema/Package
+ * 
+ * @author Claudenir Fonseca
+ * @author Tiago Prince Sales
+ * @author Victor Viola
+ *
+ */
 
 public class Model implements ModelElement {
 
