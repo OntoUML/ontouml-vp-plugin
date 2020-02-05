@@ -2,6 +2,7 @@ package it.unibz.inf.ontouml.vp.model;
 
 import java.util.LinkedList;
 import java.util.List;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IAssociationClass;
@@ -33,6 +34,10 @@ public class AssociationClass implements ModelElement {
 	@Expose
 	private String name;
 	
+	@SerializedName("description")
+	@Expose
+	private String description;
+	
 	@SerializedName("properties")
 	@Expose
 	private List<Reference> properties;
@@ -43,6 +48,7 @@ public class AssociationClass implements ModelElement {
 		this.type = ModelElement.TYPE_ASSOCIATION_CLASS;
 		this.id = source.getId();
 		setName(source.getName());
+		setDescription(source.getDescription());
 		
 		addProperty(new Reference(source.getFrom()));
 		addProperty(new Reference(source.getTo()));
@@ -69,6 +75,14 @@ public class AssociationClass implements ModelElement {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public List<Reference> getProperties() {

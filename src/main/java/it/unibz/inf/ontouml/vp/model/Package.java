@@ -1,6 +1,7 @@
 package it.unibz.inf.ontouml.vp.model;
 
 import java.util.LinkedList;
+
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -39,6 +40,10 @@ public class Package implements ModelElement {
 	@Expose
 	private String name;
 	
+	@SerializedName("description")
+	@Expose
+	private String description;
+	
 	@SerializedName("propertyAssignments")
 	@Expose
 	private JsonObject propertyAssignments;
@@ -52,6 +57,7 @@ public class Package implements ModelElement {
 		this.type = ModelElement.TYPE_PACKAGE;
 		this.id = source.getId();
 		setName(source.getName());
+		setDescription(source.getDescription());
 		
 		final IModelElement[] children = source.toChildArray();
 		for (int i = 0; children != null && i < children.length; i++) {
@@ -126,6 +132,14 @@ public class Package implements ModelElement {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	
 	public JsonObject getPropertyAssignments() {

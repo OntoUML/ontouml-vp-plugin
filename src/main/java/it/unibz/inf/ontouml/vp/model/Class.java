@@ -1,10 +1,12 @@
 package it.unibz.inf.ontouml.vp.model;
 
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -41,6 +43,10 @@ public class Class implements ModelElement {
 	@SerializedName("name")
 	@Expose
 	private String name;
+	
+	@SerializedName("description")
+	@Expose
+	private String description;
 
 	@SerializedName("properties")
 	@Expose
@@ -114,7 +120,8 @@ public class Class implements ModelElement {
 		} else {
 			setName(source.getName().trim());
 		}
-
+		
+		setDescription(source.getDescription());
 	}
 	
 	public Class(IDataType source) {
@@ -172,6 +179,14 @@ public class Class implements ModelElement {
 	public void setName(String name) {
 		if (name.length() != 0)
 			this.name = name;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Set<Property> getProperties() {

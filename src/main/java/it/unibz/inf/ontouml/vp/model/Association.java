@@ -36,6 +36,10 @@ public class Association implements ModelElement {
 	@SerializedName("name")
 	@Expose
 	private String name;
+	
+	@SerializedName("description")
+	@Expose
+	private String description;
 
 	@SerializedName("properties")
 	@Expose
@@ -63,6 +67,7 @@ public class Association implements ModelElement {
 		this.type = ModelElement.TYPE_RELATION;
 		this.id = source.getId();
 		setName(source.getName());
+		setDescription(source.getDescription());
 
 		addProperty(new Property((IAssociationEnd) source.getFromEnd()));
 		addProperty(new Property((IAssociationEnd) source.getToEnd()));
@@ -130,6 +135,14 @@ public class Association implements ModelElement {
 		this.name = name;
 	}
 	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public JsonObject getPropertyAssignments() {
 		return propertyAssignments;
 	}

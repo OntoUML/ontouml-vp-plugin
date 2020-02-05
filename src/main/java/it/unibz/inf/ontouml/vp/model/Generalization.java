@@ -33,6 +33,10 @@ public class Generalization implements ModelElement {
 	@SerializedName("name")
 	@Expose
 	private String name;
+	
+	@SerializedName("description")
+	@Expose
+	private String description;
 
 	@SerializedName("propertyAssignments")
 	@Expose
@@ -52,6 +56,8 @@ public class Generalization implements ModelElement {
 		this.type = ModelElement.TYPE_GENERALIZATION;
 		this.id = source.getId();
 		setName(source.getName());
+		setDescription(source.getDescription());
+		
 		setGeneral(new Reference(source.getFrom().getModelType(), source.getFrom().getId()));
 		setSpecific(new Reference(source.getTo().getModelType(), source.getTo().getId()));
 
@@ -106,6 +112,14 @@ public class Generalization implements ModelElement {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public JsonObject getPropertyAssignments() {
