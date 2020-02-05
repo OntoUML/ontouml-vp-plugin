@@ -12,8 +12,8 @@ import com.vp.plugin.model.ITaggedValueContainer;
 
 /**
  * 
- * Implementation of ModelElement to handle IAssociation objects
- * to be serialized as ontouml-schema/Association
+ * Implementation of ModelElement to handle IAssociation objects to be
+ * serialized as ontouml-schema/Association
  * 
  * @author Claudenir Fonseca
  * @author Tiago Prince Sales
@@ -36,7 +36,7 @@ public class Association implements ModelElement {
 	@SerializedName("name")
 	@Expose
 	private String name;
-	
+
 	@SerializedName("description")
 	@Expose
 	private String description;
@@ -44,7 +44,7 @@ public class Association implements ModelElement {
 	@SerializedName("properties")
 	@Expose
 	private List<Property> properties;
-	
+
 	@SerializedName("propertyAssignments")
 	@Expose
 	private JsonObject propertyAssignments;
@@ -134,13 +134,17 @@ public class Association implements ModelElement {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
 
 	public void setDescription(String description) {
-		this.description = description;
+		if (description.equals("")) {
+			this.description = null;
+		} else {
+			this.description = description;
+		}
 	}
 
 	public JsonObject getPropertyAssignments() {

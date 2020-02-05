@@ -258,7 +258,11 @@ public class Property implements ModelElement {
 	}
 
 	public void setDescription(String description) {
-		this.description = description;
+		if (description.equals("")) {
+			this.description = null;
+		} else {
+			this.description = description;
+		}
 	}
 
 	public Reference getPropertyType() {

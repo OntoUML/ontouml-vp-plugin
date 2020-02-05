@@ -186,7 +186,11 @@ public class Class implements ModelElement {
 	}
 
 	public void setDescription(String description) {
-		this.description = description;
+		if (description.equals("")) {
+			this.description = null;
+		} else {
+			this.description = description;
+		}
 	}
 
 	public Set<Property> getProperties() {
