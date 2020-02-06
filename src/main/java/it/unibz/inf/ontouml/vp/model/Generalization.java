@@ -58,8 +58,8 @@ public class Generalization implements ModelElement {
 		setName(source.getName());
 		setDescription(source.getDescription());
 		
-		setGeneral(new Reference(source.getFrom().getModelType(), source.getFrom().getId()));
-		setSpecific(new Reference(source.getTo().getModelType(), source.getTo().getId()));
+		setGeneral(new Reference(source.getFrom()));
+		setSpecific(new Reference(source.getTo()));
 
 		ITaggedValueContainer lContainer = source.getTaggedValues();
 		if (lContainer != null) {
