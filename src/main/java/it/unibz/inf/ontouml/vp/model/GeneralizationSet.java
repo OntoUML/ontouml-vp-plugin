@@ -75,12 +75,11 @@ public class GeneralizationSet implements ModelElement {
 		setDisjoint(source.isDisjoint());
 
 		if (source.getPowerType() != null)
-			setCategorizer(new Reference(source.getPowerType().getName(), source.getPowerType().getId()));
+			setCategorizer(new Reference(source.getPowerType()));
 
 		final IGeneralization[] generalizations = source.toGeneralizationArray();
-		for (int i = 0; generalizations != null && i < generalizations.length; i++) {
-			addGeneralization(new Reference(generalizations[i].getName(), generalizations[i].getId()));
-		}
+		for (int i = 0; generalizations != null && i < generalizations.length; i++)
+			addGeneralization(new Reference(generalizations[i]));
 
 		ITaggedValueContainer lContainer = source.getTaggedValues();
 		if (lContainer != null) {
