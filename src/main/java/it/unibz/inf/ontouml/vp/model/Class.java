@@ -19,8 +19,8 @@ import com.vp.plugin.model.ITaggedValueContainer;
 
 /**
  * 
- * Implementation of ModelElement to handle IClass and IDataType objects
- * to be serialized as ontouml-schema/Class
+ * Implementation of ModelElement to handle IClass and IDataType objects to be
+ * serialized as ontouml-schema/Class
  * 
  * @author Claudenir Fonseca
  * @author Tiago Prince Sales
@@ -43,7 +43,7 @@ public class Class implements ModelElement {
 	@SerializedName("name")
 	@Expose
 	private String name;
-	
+
 	@SerializedName("description")
 	@Expose
 	private String description;
@@ -93,10 +93,16 @@ public class Class implements ModelElement {
 			for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++) {
 				switch (lTaggedValues[i].getType()) {
 				case 1:
-					JsonObject reference = new JsonObject();
-					reference.addProperty("type",ModelElement.toOntoUMLSchemaType(lTaggedValues[i].getValueAsElement()));
-					reference.addProperty("id", lTaggedValues[i].getValueAsElement().getId());
-					obj.add(lTaggedValues[i].getName(), reference);
+					JsonObject referenceTag = new JsonObject();
+
+					if (lTaggedValues[i].getValueAsElement() != null) {
+						referenceTag.addProperty("type", ModelElement.toOntoUMLSchemaType(lTaggedValues[i].getValueAsElement()));
+						referenceTag.addProperty("id", lTaggedValues[i].getValueAsElement().getId());
+					} else {
+						referenceTag.add("type", null);
+						referenceTag.add("id", null);
+					}
+					obj.add(lTaggedValues[i].getName(), referenceTag);
 					break;
 				case 5:
 					obj.addProperty(lTaggedValues[i].getName(), Integer.parseInt((String) lTaggedValues[i].getValue()));
@@ -120,10 +126,10 @@ public class Class implements ModelElement {
 		} else {
 			setName(source.getName().trim());
 		}
-		
+
 		setDescription(source.getDescription());
 	}
-	
+
 	public Class(IDataType source) {
 		this.sourceModelElement = source;
 		this.type = ModelElement.TYPE_CLASS;
@@ -141,10 +147,8 @@ public class Class implements ModelElement {
 			JsonObject obj = new JsonObject();
 			ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
 
-			for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++) {
-
+			for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++)
 				obj.addProperty(lTaggedValues[i].getName(), lTaggedValues[i].getValueAsString());
-			}
 
 			setPropertyAssignments(obj);
 		}
@@ -180,7 +184,7 @@ public class Class implements ModelElement {
 		if (name.length() != 0)
 			this.name = name;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}

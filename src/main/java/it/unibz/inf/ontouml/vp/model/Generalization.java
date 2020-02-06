@@ -9,8 +9,8 @@ import com.vp.plugin.model.ITaggedValueContainer;
 
 /**
  * 
- * Implementation of ModelElement to handle IGeneralization objects
- * to be serialized as ontouml-schema/Generalization
+ * Implementation of ModelElement to handle IGeneralization objects to be
+ * serialized as ontouml-schema/Generalization
  * 
  * @author Claudenir Fonseca
  * @author Tiago Prince Sales
@@ -33,7 +33,7 @@ public class Generalization implements ModelElement {
 	@SerializedName("name")
 	@Expose
 	private String name;
-	
+
 	@SerializedName("description")
 	@Expose
 	private String description;
@@ -57,7 +57,7 @@ public class Generalization implements ModelElement {
 		this.id = source.getId();
 		setName(source.getName());
 		setDescription(source.getDescription());
-		
+
 		setGeneral(new Reference(source.getFrom()));
 		setSpecific(new Reference(source.getTo()));
 
@@ -69,10 +69,16 @@ public class Generalization implements ModelElement {
 			for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++) {
 				switch (lTaggedValues[i].getType()) {
 				case 1:
-					JsonObject reference = new JsonObject();
-					reference.addProperty("type", ModelElement.toOntoUMLSchemaType(lTaggedValues[i].getValueAsElement()));
-					reference.addProperty("id", lTaggedValues[i].getValueAsElement().getId());
-					obj.add(lTaggedValues[i].getName(), reference);
+					JsonObject referenceTag = new JsonObject();
+
+					if (lTaggedValues[i].getValueAsElement() != null) {
+						referenceTag.addProperty("type", ModelElement.toOntoUMLSchemaType(lTaggedValues[i].getValueAsElement()));
+						referenceTag.addProperty("id", lTaggedValues[i].getValueAsElement().getId());
+					} else {
+						referenceTag.add("type", null);
+						referenceTag.add("id", null);
+					}
+					obj.add(lTaggedValues[i].getName(), referenceTag);
 					break;
 				case 5:
 					obj.addProperty(lTaggedValues[i].getName(), Integer.parseInt((String) lTaggedValues[i].getValue()));
@@ -113,7 +119,7 @@ public class Generalization implements ModelElement {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}

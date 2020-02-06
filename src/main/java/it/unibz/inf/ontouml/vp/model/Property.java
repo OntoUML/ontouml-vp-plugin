@@ -15,8 +15,8 @@ import com.vp.plugin.model.ITaggedValueContainer;
 
 /**
  * 
- * Implementation of ModelElement to handle IAtrribute and IAssociationEnd objects
- * to be serialized as ontouml-schema/Property
+ * Implementation of ModelElement to handle IAtrribute and IAssociationEnd
+ * objects to be serialized as ontouml-schema/Property
  * 
  * @author Claudenir Fonseca
  * @author Tiago Prince Sales
@@ -39,7 +39,7 @@ public class Property implements ModelElement {
 	@SerializedName("name")
 	@Expose
 	private String name;
-	
+
 	@SerializedName("description")
 	@Expose
 	private String description;
@@ -120,8 +120,14 @@ public class Property implements ModelElement {
 				switch (lTaggedValues[i].getType()) {
 				case 1:
 					JsonObject referenceTag = new JsonObject();
-					referenceTag.addProperty("type", ModelElement.toOntoUMLSchemaType(lTaggedValues[i].getValueAsElement()));
-					referenceTag.addProperty("id", lTaggedValues[i].getValueAsElement().getId());
+
+					if (lTaggedValues[i].getValueAsElement() != null) {
+						referenceTag.addProperty("type", ModelElement.toOntoUMLSchemaType(lTaggedValues[i].getValueAsElement()));
+						referenceTag.addProperty("id", lTaggedValues[i].getValueAsElement().getId());
+					} else {
+						referenceTag.add("type", null);
+						referenceTag.add("id", null);
+					}
 					obj.add(lTaggedValues[i].getName(), referenceTag);
 					break;
 				case 5:
@@ -136,19 +142,18 @@ public class Property implements ModelElement {
 				default:
 					obj.addProperty(lTaggedValues[i].getName(), (String) lTaggedValues[i].getValueAsString());
 				}
+
 			}
 			setPropertyAssignments(obj);
 		}
 
 		Iterator<?> subsettedIterator = source.subsettedPropertyIterator();
-
 		while (subsettedIterator.hasNext()) {
 			IAttribute atr = (IAttribute) subsettedIterator.next();
 			addSubsettedProperty(new Reference(atr.getModelType(), atr.getId()));
 		}
 
 		Iterator<?> redefinedProperties = source.redefinedPropertyIterator();
-
 		while (redefinedProperties.hasNext()) {
 			IAttribute rdp = (IAttribute) redefinedProperties.next();
 			addRedefinedProperty(new Reference(rdp.getModelType(), rdp.getId()));
@@ -193,8 +198,14 @@ public class Property implements ModelElement {
 				switch (lTaggedValues[i].getType()) {
 				case 1:
 					JsonObject referenceTag = new JsonObject();
-					referenceTag.addProperty("type", ModelElement.toOntoUMLSchemaType(lTaggedValues[i].getValueAsElement()));
-					referenceTag.addProperty("id", lTaggedValues[i].getValueAsElement().getId());
+
+					if (lTaggedValues[i].getValueAsElement() != null) {
+						referenceTag.addProperty("type", ModelElement.toOntoUMLSchemaType(lTaggedValues[i].getValueAsElement()));
+						referenceTag.addProperty("id", lTaggedValues[i].getValueAsElement().getId());
+					} else {
+						referenceTag.add("type", null);
+						referenceTag.add("id", null);
+					}
 					obj.add(lTaggedValues[i].getName(), referenceTag);
 					break;
 				case 5:
@@ -252,7 +263,7 @@ public class Property implements ModelElement {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}

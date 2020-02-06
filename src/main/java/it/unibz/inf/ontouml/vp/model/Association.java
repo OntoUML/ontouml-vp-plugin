@@ -87,10 +87,16 @@ public class Association implements ModelElement {
 			for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++) {
 				switch (lTaggedValues[i].getType()) {
 				case 1:
-					JsonObject reference = new JsonObject();
-					reference.addProperty("type", ModelElement.toOntoUMLSchemaType(lTaggedValues[i].getValueAsElement()));
-					reference.addProperty("id", lTaggedValues[i].getValueAsElement().getId());
-					obj.add(lTaggedValues[i].getName(), reference);
+					JsonObject referenceTag = new JsonObject();
+
+					if (lTaggedValues[i].getValueAsElement() != null) {
+						referenceTag.addProperty("type", ModelElement.toOntoUMLSchemaType(lTaggedValues[i].getValueAsElement()));
+						referenceTag.addProperty("id", lTaggedValues[i].getValueAsElement().getId());
+					} else {
+						referenceTag.add("type", null);
+						referenceTag.add("id", null);
+					}
+					obj.add(lTaggedValues[i].getName(), referenceTag);
 					break;
 				case 5:
 					obj.addProperty(lTaggedValues[i].getName(), Integer.parseInt((String) lTaggedValues[i].getValue()));
