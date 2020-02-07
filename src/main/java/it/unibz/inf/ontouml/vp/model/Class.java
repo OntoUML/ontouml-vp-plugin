@@ -1,21 +1,15 @@
 package it.unibz.inf.ontouml.vp.model;
 
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+import com.vp.plugin.model.*;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.google.gson.JsonObject;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import com.vp.plugin.model.IAttribute;
-import com.vp.plugin.model.IClass;
-import com.vp.plugin.model.IDataType;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.ITaggedValue;
-import com.vp.plugin.model.ITaggedValueContainer;
 
 /**
  * 
@@ -51,6 +45,10 @@ public class Class implements ModelElement {
 	@SerializedName("properties")
 	@Expose
 	private Set<Property> properties;
+
+	@SerializedName("literals")
+	@Expose
+	private Set<Property> literals = null;
 
 	@SerializedName("propertyAssignments")
 	@Expose
@@ -181,8 +179,7 @@ public class Class implements ModelElement {
 	}
 
 	public void setName(String name) {
-		if (name.length() != 0)
-			this.name = name;
+		this.name = ModelElement.safeGetString(name);
 	}
 
 	public String getDescription() {
@@ -190,11 +187,7 @@ public class Class implements ModelElement {
 	}
 
 	public void setDescription(String description) {
-		if (description.equals("")) {
-			this.description = null;
-		} else {
-			this.description = description;
-		}
+		this.description = ModelElement.safeGetString(description);;
 	}
 
 	public Set<Property> getProperties() {

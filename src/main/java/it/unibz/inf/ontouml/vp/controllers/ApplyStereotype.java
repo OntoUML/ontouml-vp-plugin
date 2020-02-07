@@ -1,23 +1,16 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPContext;
 import com.vp.plugin.action.VPContextActionController;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeUIModel;
-import com.vp.plugin.model.IAssociation;
-import com.vp.plugin.model.IAssociationEnd;
-import com.vp.plugin.model.IClass;
-import com.vp.plugin.model.IGeneralization;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.ISimpleRelationship;
-import com.vp.plugin.model.IStereotype;
-
+import com.vp.plugin.model.*;
 import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
 
 /**
  * 

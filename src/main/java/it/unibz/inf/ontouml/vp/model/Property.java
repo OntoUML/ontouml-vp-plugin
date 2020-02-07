@@ -1,17 +1,13 @@
 package it.unibz.inf.ontouml.vp.model;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.vp.plugin.model.IAssociationEnd;
-import com.vp.plugin.model.IAttribute;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.ITaggedValue;
-import com.vp.plugin.model.ITaggedValueContainer;
+import com.vp.plugin.model.*;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * 
@@ -150,13 +146,13 @@ public class Property implements ModelElement {
 		Iterator<?> subsettedIterator = source.subsettedPropertyIterator();
 		while (subsettedIterator.hasNext()) {
 			IAttribute atr = (IAttribute) subsettedIterator.next();
-			addSubsettedProperty(new Reference(atr.getModelType(), atr.getId()));
+			addSubsettedProperty(new Reference(atr));
 		}
 
 		Iterator<?> redefinedProperties = source.redefinedPropertyIterator();
 		while (redefinedProperties.hasNext()) {
 			IAttribute rdp = (IAttribute) redefinedProperties.next();
-			addRedefinedProperty(new Reference(rdp.getModelType(), rdp.getId()));
+			addRedefinedProperty(new Reference(rdp));
 		}
 
 		setAggregationKind(source.getAggregation());
@@ -228,17 +224,31 @@ public class Property implements ModelElement {
 
 		while (subsettedIterator.hasNext()) {
 			IAssociationEnd sub = (IAssociationEnd) subsettedIterator.next();
-			addSubsettedProperty(new Reference(sub.getModelType(), sub.getId()));
+			addSubsettedProperty(new Reference(sub));
 		}
 
 		Iterator<?> redefinedProperties = source.redefinedPropertyIterator();
 
 		while (redefinedProperties.hasNext()) {
 			IAssociationEnd rdp = (IAssociationEnd) redefinedProperties.next();
-			addRedefinedProperty(new Reference(rdp.getModelType(), rdp.getId()));
+			addRedefinedProperty(new Reference(rdp));
 		}
 
 		setAggregationKind(source.getAggregationKind());
+	}
+
+	public Property(IAssociationClass associationClass, IModelElement type) {
+		this.sourceModelElement = null;
+
+		this.type = ModelElement.TYPE_PROPERTY;
+		this.id = associationClass.getId()+type.getId();
+		setName(null);
+		setDescription(null);
+
+		if (type != null)
+			setPropertyType(new Reference(type));
+
+		setCardinality("0..*");
 	}
 
 	@Override
@@ -261,7 +271,7 @@ public class Property implements ModelElement {
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = ModelElement.safeGetString(name);
 	}
 
 	public String getDescription() {
@@ -269,11 +279,7 @@ public class Property implements ModelElement {
 	}
 
 	public void setDescription(String description) {
-		if (description.equals("")) {
-			this.description = null;
-		} else {
-			this.description = description;
-		}
+		this.description = ModelElement.safeGetString(description);;
 	}
 
 	public Reference getPropertyType() {
@@ -408,10 +414,25 @@ public class Property implements ModelElement {
 	}
 
 	public void setAggregationKind(String aggregationKind) {
-		if (aggregationKind.equals("COMPOSITED")) {
-			this.aggregationKind = "COMPOSITE";
-		} else {
-			this.aggregationKind = aggregationKind;
+		System.out.println(aggregationKind);
+
+		if(aggregationKind==null) {
+			this.aggregationKind = null;
+			return;
+		}
+
+		switch (aggregationKind.toUpperCase()){
+			case "NONE":
+				this.aggregationKind = "NONE";
+				return;
+			case "COMPOSITED":
+				this.aggregationKind = "COMPOSITE";
+				return;
+			case "SHARED":
+				this.aggregationKind = "SHARED";
+				return;
+			default:
+				this.aggregationKind = null;
 		}
 	}
 

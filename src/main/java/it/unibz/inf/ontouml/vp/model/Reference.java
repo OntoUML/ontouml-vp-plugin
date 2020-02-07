@@ -26,11 +26,6 @@ public class Reference {
 	@Expose
 	private final String id;
 
-	public Reference(String type, String id) {
-		this.type = type;
-		this.id = id;
-	}
-
 	public Reference(IModelElement element) {
 		this.id = element.getId();
 		this.type = ModelElement.toOntoUMLSchemaType(element);

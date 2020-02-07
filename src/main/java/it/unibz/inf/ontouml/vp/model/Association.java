@@ -1,7 +1,5 @@
 package it.unibz.inf.ontouml.vp.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -9,6 +7,9 @@ import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -73,8 +74,6 @@ public class Association implements ModelElement {
 		addProperty(new Property((IAssociationEnd) source.getToEnd()));
 
 		String[] stereotypes = source.toStereotypeArray();
-		this.stereotypes = stereotypes != null ? new ArrayList<String>() : null;
-
 		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
 			addStereotype(stereotypes[i]);
 		}
@@ -138,7 +137,7 @@ public class Association implements ModelElement {
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = ModelElement.safeGetString(name);
 	}
 
 	public String getDescription() {
@@ -146,11 +145,7 @@ public class Association implements ModelElement {
 	}
 
 	public void setDescription(String description) {
-		if (description.equals("")) {
-			this.description = null;
-		} else {
-			this.description = description;
-		}
+		this.description = ModelElement.safeGetString(description);
 	}
 
 	public JsonObject getPropertyAssignments() {
@@ -174,6 +169,9 @@ public class Association implements ModelElement {
 	}
 
 	public void addStereotype(String name) {
+		if (this.stereotypes == null)
+			this.stereotypes = new ArrayList<String>();
+
 		this.stereotypes.add(name);
 	}
 

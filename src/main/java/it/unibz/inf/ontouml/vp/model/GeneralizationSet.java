@@ -1,16 +1,12 @@
 package it.unibz.inf.ontouml.vp.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.vp.plugin.model.IGeneralization;
-import com.vp.plugin.model.IGeneralizationSet;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.ITaggedValue;
-import com.vp.plugin.model.ITaggedValueContainer;
+import com.vp.plugin.model.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -137,7 +133,7 @@ public class GeneralizationSet implements ModelElement {
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = ModelElement.safeGetString(name);
 	}
 
 	public String getDescription() {
@@ -145,11 +141,7 @@ public class GeneralizationSet implements ModelElement {
 	}
 
 	public void setDescription(String description) {
-		if (description.equals("")) {
-			this.description = null;
-		} else {
-			this.description = description;
-		}
+		this.description = ModelElement.safeGetString(description);;
 	}
 
 	public JsonObject getPropertyAssignments() {

@@ -1,16 +1,16 @@
 package it.unibz.inf.ontouml.vp.utils;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.ProjectManager;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.IStereotype;
 import com.vp.plugin.model.factory.IModelElementFactory;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class StereotypeUtils {
 
@@ -40,6 +40,7 @@ public class StereotypeUtils {
 
 	// Association stereotypes
 	public static final String STR_MATERIAL = "material";
+	public static final String STR_DERIVATION = "derivation";
 	public static final String STR_COMPARATIVE = "comparative";
 
 	public static final String STR_MEDIATION = "mediation";

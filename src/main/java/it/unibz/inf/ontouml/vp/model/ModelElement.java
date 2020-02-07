@@ -13,11 +13,10 @@ import com.vp.plugin.model.factory.IModelElementFactory;
  */
 public interface ModelElement {
 
-	public static final String TYPE_MODEL = "Model";
 	public static final String TYPE_PACKAGE = "Package";
 	public static final String TYPE_CLASS = "Class";
-	public static final String TYPE_RELATION = "Association";
-	public static final String TYPE_ASSOCIATION_CLASS = "Association";
+	public static final String TYPE_RELATION = "Relation";
+	public static final String TYPE_ASSOCIATION_CLASS = "Relation";
 	public static final String TYPE_GENERALIZATION = "Generalization";
 	public static final String TYPE_GENERALIZATION_SET = "GeneralizationSet";
 	public static final String TYPE_PROPERTY = "Property";
@@ -129,26 +128,31 @@ public interface ModelElement {
 		}
 	}
 
+	public static String safeGetString(String s){
+		if (s != null && s.length() != 0)
+			return s;
+		return null;
+	}
+
 	public static String toOntoUMLSchemaType(IModelElement element) {
 		switch (element.getModelType()) {
 			case IModelElementFactory.MODEL_TYPE_MODEL:
-				return TYPE_MODEL;
 			case IModelElementFactory.MODEL_TYPE_PACKAGE:
 				return TYPE_PACKAGE;
 			case IModelElementFactory.MODEL_TYPE_CLASS:
+			case IModelElementFactory.MODEL_TYPE_DATA_TYPE:
 				return TYPE_CLASS;
 			case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
-				return TYPE_RELATION;
 			case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
-				return TYPE_ASSOCIATION_CLASS;
+				return TYPE_RELATION;
 			case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
 				return TYPE_GENERALIZATION;
 			case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
 				return TYPE_GENERALIZATION_SET;
 			case IModelElementFactory.MODEL_TYPE_ATTRIBUTE:
+			case IModelElementFactory.MODEL_TYPE_ASSOCIATION_END:
 				return TYPE_PROPERTY;
-			case IModelElementFactory.MODEL_TYPE_DATA_TYPE:
-				return TYPE_CLASS;
+
 		}
 
 		return null;

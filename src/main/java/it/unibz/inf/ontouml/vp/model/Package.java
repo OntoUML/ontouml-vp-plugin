@@ -1,17 +1,12 @@
 package it.unibz.inf.ontouml.vp.model;
 
-import java.util.LinkedList;
-
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.vp.plugin.model.IClass;
-import com.vp.plugin.model.IModel;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IPackage;
-import com.vp.plugin.model.ITaggedValue;
-import com.vp.plugin.model.ITaggedValueContainer;
+import com.vp.plugin.model.*;
 import com.vp.plugin.model.factory.IModelElementFactory;
+
+import java.util.LinkedList;
 
 /**
  * 
@@ -48,9 +43,9 @@ public class Package implements ModelElement {
 	@Expose
 	private JsonObject propertyAssignments;
 
-	@SerializedName("elements")
+	@SerializedName("contents")
 	@Expose
-	private LinkedList<ModelElement> elements;
+	private LinkedList<ModelElement> contents;
 
 	public Package(IPackage source) {
 		this.sourceModelElement = source;
@@ -138,7 +133,7 @@ public class Package implements ModelElement {
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = ModelElement.safeGetString(name);
 	}
 
 	public String getDescription() {
@@ -146,11 +141,7 @@ public class Package implements ModelElement {
 	}
 
 	public void setDescription(String description) {
-		if (description.equals("")) {
-			this.description = null;
-		} else {
-			this.description = description;
-		}
+		this.description = ModelElement.safeGetString(description);;
 	}
 
 	public JsonObject getPropertyAssignments() {
@@ -161,20 +152,20 @@ public class Package implements ModelElement {
 		this.propertyAssignments = propertyAssignments;
 	}
 
-	public LinkedList<ModelElement> getElements() {
-		return elements;
+	public LinkedList<ModelElement> getContents() {
+		return contents;
 	}
 
-	public void setElements(LinkedList<ModelElement> elements) {
-		this.elements = elements;
+	public void setContents(LinkedList<ModelElement> contents) {
+		this.contents = contents;
 	}
 
 	public void addElement(ModelElement element) {
-		if (getElements() == null) {
-			setElements(new LinkedList<ModelElement>());
+		if (getContents() == null) {
+			setContents(new LinkedList<ModelElement>());
 		}
 
-		this.elements.add(element);
+		this.contents.add(element);
 	}
 
 }

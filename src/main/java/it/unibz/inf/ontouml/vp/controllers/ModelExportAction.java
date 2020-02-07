@@ -1,19 +1,17 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
-import java.awt.FileDialog;
-import java.awt.Frame;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
-
 import it.unibz.inf.ontouml.vp.model.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.ProjectConfigurations;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
+
+import java.awt.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * 

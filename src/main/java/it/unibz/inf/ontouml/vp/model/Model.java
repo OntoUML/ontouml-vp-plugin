@@ -1,22 +1,14 @@
 package it.unibz.inf.ontouml.vp.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.ApplicationManager;
-import com.vp.plugin.model.IAssociation;
-import com.vp.plugin.model.IAssociationClass;
-import com.vp.plugin.model.IClass;
-import com.vp.plugin.model.IDataType;
-import com.vp.plugin.model.IGeneralization;
-import com.vp.plugin.model.IGeneralizationSet;
-import com.vp.plugin.model.IModel;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IPackage;
-import com.vp.plugin.model.IProject;
+import com.vp.plugin.model.*;
 import com.vp.plugin.model.factory.IModelElementFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -45,13 +37,17 @@ public class Model implements ModelElement {
 	@Expose
 	private String name;
 
-	@SerializedName("authors")
+	@SerializedName("description")
 	@Expose
-	private List<String> authors;
+	private String description = null;
 
-	@SerializedName("elements")
+	@SerializedName("contents")
 	@Expose
-	private List<ModelElement> elements;
+	private List<ModelElement> contents;
+
+	@SerializedName("propertyAssignments")
+	@Expose
+	private JsonObject propertyAssignments = null;
 
 	/**
 	 * 
@@ -68,8 +64,7 @@ public class Model implements ModelElement {
 				IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS };
 
 		this.sourceModelElement = null;
-		this.type = ModelElement.TYPE_MODEL;
-		this.addAuthor(project.getProjectProperties().getAuthor());
+		this.type = ModelElement.TYPE_PACKAGE;
 		this.id = project.getId();
 		this.setName(project.getName());
 		this.addModelElements(project.toModelElementArray(rootLevelElements));
@@ -85,8 +80,8 @@ public class Model implements ModelElement {
 	public Model(IModel source) {
 		this.sourceModelElement = source;
 		this.type = ModelElement.TYPE_PACKAGE;
-		this.setName(source.getName());
 		this.id = source.getId();
+		this.setName(source.getName());
 		this.addModelElements(source.toChildArray());
 	}
 
@@ -109,50 +104,34 @@ public class Model implements ModelElement {
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = ModelElement.safeGetString(name);
 	}
 
-	public List<String> getAuthors() {
-		return this.authors;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setAuthors(List<String> authors) {
-		this.authors = authors;
+	public void setDescription(String description) {
+		this.description = ModelElement.safeGetString(description);;
 	}
 
-	public String getAuthor(int position) {
-		return this.authors.get(position);
+	public List<ModelElement> getElements() {
+		return contents;
 	}
 
-	public void addAuthor(String name) {
-		if (this.authors == null)
-			this.authors = new ArrayList<String>();
-
-		this.authors.add(name);
-	}
-
-	public void removeAuthor(String name) {
-		if (this.authors.contains(name))
-			this.authors.remove(name);
-	}
-
-	public List<ModelElement> getelements() {
-		return elements;
-	}
-
-	public void setelements(List<ModelElement> elementsList) {
-		this.elements = elementsList;
+	public void setElements(List<ModelElement> elementsList) {
+		this.contents = elementsList;
 	}
 
 	public void addElement(ModelElement element) {
-		if (this.elements == null)
-			this.elements = new ArrayList<ModelElement>();
+		if (this.contents == null)
+			this.contents = new ArrayList<ModelElement>();
 
-		this.elements.add(element);
+		this.contents.add(element);
 	}
 
 	public boolean removeElement(ModelElement element) {
-		return this.elements.remove(element);
+		return this.contents.remove(element);
 	}
 	
 	private void addModelElements(IModelElement[] modelElements) {
