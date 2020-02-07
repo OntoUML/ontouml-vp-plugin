@@ -66,10 +66,15 @@ public class Class implements ModelElement {
 	@Expose
 	private boolean isDerived;
 
-	public Class(IClass source) {
+	private Class(IModelElement source){
 		this.sourceModelElement = source;
 		this.type = ModelElement.TYPE_CLASS;
 		this.id = source.getId();
+		this.properties = null;
+	}
+
+	public Class(IClass source) {
+		this((IModelElement) source);
 
 		final IAttribute[] attributes = source.toAttributeArray();
 		for (int i = 0; attributes != null && i < attributes.length; i++) {
@@ -95,14 +100,9 @@ public class Class implements ModelElement {
 	}
 
 	public Class(IDataType source) {
-		this.sourceModelElement = source;
-		this.type = ModelElement.TYPE_CLASS;
-		this.id = source.getId();
-
-		this.properties = null;
+		this((IModelElement) source);
 
 		addStereotype(StereotypeUtils.STR_DATATYPE);
-
 		setAbstract(false);
 		setDerived(false);
 
