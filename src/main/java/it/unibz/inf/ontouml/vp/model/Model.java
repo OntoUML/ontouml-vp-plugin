@@ -1,51 +1,53 @@
 package it.unibz.inf.ontouml.vp.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.ApplicationManager;
-import com.vp.plugin.model.IAssociation;
-import com.vp.plugin.model.IAssociationClass;
-import com.vp.plugin.model.IClass;
-import com.vp.plugin.model.IGeneralization;
-import com.vp.plugin.model.IGeneralizationSet;
-import com.vp.plugin.model.IModel;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IPackage;
-import com.vp.plugin.model.IProject;
+import com.vp.plugin.model.*;
 import com.vp.plugin.model.factory.IModelElementFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 
+ * Implementation of ModelElement to handle IModel objects
+ * to be serialized as ontouml-schema/Package
+ * 
+ * @author Claudenir Fonseca
+ * @author Tiago Prince Sales
+ * @author Victor Viola
+ *
+ */
 
 public class Model implements ModelElement {
 
-	private static final String BASE_URI = "vpp://model/";
-
 	private final IModel sourceModelElement;
 
-	@SerializedName("@type")
+	@SerializedName("type")
 	@Expose
 	private final String type;
 
-	@SerializedName("uri")
+	@SerializedName("id")
 	@Expose
-	private String URI;
+	private final String id;
 
 	@SerializedName("name")
 	@Expose
 	private String name;
 
-	@SerializedName("url")
+	@SerializedName("description")
 	@Expose
-	private String URL;
+	private String description = null;
 
-	@SerializedName("authors")
+	@SerializedName("contents")
 	@Expose
-	private List<String> authors;
+	private List<ModelElement> contents;
 
-	@SerializedName("structuralElements")
+	@SerializedName("propertyAssignments")
 	@Expose
-	private List<ModelElement> structuralElements;
+	private JsonObject propertyAssignments = null;
 
 	/**
 	 * 
@@ -56,15 +58,14 @@ public class Model implements ModelElement {
 	public Model() {
 		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
 		final String[] rootLevelElements = { IModelElementFactory.MODEL_TYPE_PACKAGE,
-				IModelElementFactory.MODEL_TYPE_MODEL, IModelElementFactory.MODEL_TYPE_CLASS };
+				IModelElementFactory.MODEL_TYPE_MODEL, IModelElementFactory.MODEL_TYPE_CLASS, IModelElementFactory.MODEL_TYPE_DATA_TYPE };
 		final String[] anyLevelElements = { IModelElementFactory.MODEL_TYPE_GENERALIZATION,
 				IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET, IModelElementFactory.MODEL_TYPE_ASSOCIATION,
 				IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS };
 
 		this.sourceModelElement = null;
-		this.type = ModelElement.TYPE_MODEL;
-		this.addAuthor(project.getProjectProperties().getAuthor());
-		this.setURI(BASE_URI + project.getId());
+		this.type = ModelElement.TYPE_PACKAGE;
+		this.id = project.getId();
 		this.setName(project.getName());
 		this.addModelElements(project.toModelElementArray(rootLevelElements));
 		this.addModelElements(project.toAllLevelModelElementArray(anyLevelElements));
@@ -79,9 +80,8 @@ public class Model implements ModelElement {
 	public Model(IModel source) {
 		this.sourceModelElement = source;
 		this.type = ModelElement.TYPE_PACKAGE;
+		this.id = source.getId();
 		this.setName(source.getName());
-		;
-		this.setURI(ModelElement.getModelElementURI(source));
 		this.addModelElements(source.toChildArray());
 	}
 
@@ -99,71 +99,39 @@ public class Model implements ModelElement {
 		return type;
 	}
 
-	public String getURI() {
-		return URI;
-	}
-
-	public void setURI(String URI) {
-		this.URI = URI;
-	}
-
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = ModelElement.safeGetString(name);
 	}
 
-	public String getURL() {
-		return URL;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setURL(String URL) {
-		this.URL = URL;
+	public void setDescription(String description) {
+		this.description = ModelElement.safeGetString(description);;
 	}
 
-	public List<String> getAuthors() {
-		return this.authors;
+	public List<ModelElement> getElements() {
+		return contents;
 	}
 
-	public void setAuthors(List<String> authors) {
-		this.authors = authors;
+	public void setElements(List<ModelElement> elementsList) {
+		this.contents = elementsList;
 	}
 
-	public String getAuthor(int position) {
-		return this.authors.get(position);
+	public void addElement(ModelElement element) {
+		if (this.contents == null)
+			this.contents = new ArrayList<ModelElement>();
+
+		this.contents.add(element);
 	}
 
-	public void addAuthor(String name) {
-		if (this.authors == null)
-			this.authors = new ArrayList<String>();
-
-		this.authors.add(name);
-	}
-
-	public void removeAuthor(String name) {
-		if (this.authors.contains(name))
-			this.authors.remove(name);
-	}
-
-	public List<ModelElement> getStructuralElements() {
-		return structuralElements;
-	}
-
-	public void setStructuralElements(List<ModelElement> elementsList) {
-		this.structuralElements = elementsList;
-	}
-
-	public void addStructuralElement(ModelElement element) {
-		if (this.structuralElements == null)
-			this.structuralElements = new ArrayList<ModelElement>();
-
-		this.structuralElements.add(element);
-	}
-
-	public boolean removeStructuralElement(ModelElement element) {
-		return this.structuralElements.remove(element);
+	public boolean removeElement(ModelElement element) {
+		return this.contents.remove(element);
 	}
 	
 	private void addModelElements(IModelElement[] modelElements) {
@@ -172,25 +140,28 @@ public class Model implements ModelElement {
 			
 			switch (projectElement.getModelType()) {
 			case IModelElementFactory.MODEL_TYPE_PACKAGE:
-				addStructuralElement(new Package((IPackage) projectElement));
+				addElement(new Package((IPackage) projectElement));
 				break;
 			case IModelElementFactory.MODEL_TYPE_MODEL:
-				addStructuralElement(new Model((IModel) projectElement));
+				addElement(new Model((IModel) projectElement));
 				break;
 			case IModelElementFactory.MODEL_TYPE_CLASS:
-				addStructuralElement(new Class((IClass) projectElement));
+				addElement(new Class((IClass) projectElement));
+				break;
+			case IModelElementFactory.MODEL_TYPE_DATA_TYPE:
+				addElement(new Class((IDataType) projectElement));
 				break;
 			case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
-				addStructuralElement(new Generalization((IGeneralization) projectElement));
+				addElement(new Generalization((IGeneralization) projectElement));
 				break;
 			case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
-				addStructuralElement(new Association((IAssociation) projectElement));
+				addElement(new Association((IAssociation) projectElement));
 				break;
 			case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
-				addStructuralElement(new GeneralizationSet((IGeneralizationSet) projectElement));
+				addElement(new GeneralizationSet((IGeneralizationSet) projectElement));
 				break;
 			case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
-				addStructuralElement(new AssociationClass((IAssociationClass) projectElement));
+				addElement(new AssociationClass((IAssociationClass) projectElement));
 			}
 		}
 	}

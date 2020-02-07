@@ -1,46 +1,74 @@
 package it.unibz.inf.ontouml.vp.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IGeneralization;
+import com.vp.plugin.model.ITaggedValue;
+import com.vp.plugin.model.ITaggedValueContainer;
+
+/**
+ * 
+ * Implementation of ModelElement to handle IGeneralization objects to be
+ * serialized as ontouml-schema/Generalization
+ * 
+ * @author Claudenir Fonseca
+ * @author Tiago Prince Sales
+ * @author Victor Viola
+ *
+ */
 
 public class Generalization implements ModelElement {
-	
+
 	private final IGeneralization sourceModelElement;
 
-	@SerializedName("@type")
+	@SerializedName("type")
 	@Expose
 	private final String type;
 
-	@SerializedName("uri")
+	@SerializedName("id")
 	@Expose
-	private String URI;
+	private final String id;
 
 	@SerializedName("name")
 	@Expose
 	private String name;
 
-	@SerializedName("tuple")
+	@SerializedName("description")
 	@Expose
-	private List<String> tuple;
+	private String description;
+
+	@SerializedName("propertyAssignments")
+	@Expose
+	private JsonObject propertyAssignments;
+
+	@SerializedName("general")
+	@Expose
+	private Reference general;
+
+	@SerializedName("specific")
+	@Expose
+	private Reference specific;
 
 	public Generalization(IGeneralization source) {
 		this.sourceModelElement = source;
-		this.type = ModelElement.TYPE_GENERALIZATION_LINK;
+
+		this.type = ModelElement.TYPE_GENERALIZATION;
+		this.id = source.getId();
 		setName(source.getName());
-		setURI(ModelElement.getModelElementURI(source));
-		addGeneric(ModelElement.getModelElementURI(source.getFrom()));
-		addSpecific(ModelElement.getModelElementURI(source.getTo()));
+		setDescription(source.getDescription());
+
+		setGeneral(new Reference(source.getFrom()));
+		setSpecific(new Reference(source.getTo()));
+
+		setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
 	}
-	
+
 	@Override
 	public String getId() {
 		return getSourceModelElement() != null ? getSourceModelElement().getId() : null;
 	}
-	
+
 	@Override
 	public IGeneralization getSourceModelElement() {
 		return this.sourceModelElement;
@@ -51,54 +79,43 @@ public class Generalization implements ModelElement {
 		return this.type;
 	}
 
-	@Override
-	public String getURI() {
-		return URI;
-	}
-
-	@Override
-	public void setURI(String URI) {
-		this.URI = URI;
-	}
-	
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = ModelElement.safeGetString(name);
 	}
 
-	public List<String> getTuple() {
-		return tuple;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setTuple(List<String> tuple) {
-		this.tuple = tuple;
+	public void setDescription(String description) {
+		this.description = ModelElement.safeGetString(description);;
 	}
 
-	public void addTuple(String str) {
-		if(getTuple() == null) {
-			setTuple(new ArrayList<String>(2));
-		}
-		
-		this.tuple.add(str);
-	}
-	
-	public void addGeneric(String genericURI) {
-		if(getTuple() == null) {
-			setTuple(new ArrayList<String>(2));
-		}
-		
-		this.tuple.add(0, genericURI);
-	}
-	
-	public void addSpecific(String specificURI) {
-		if(getTuple() == null) {
-			setTuple(new ArrayList<String>(2));
-		}
-		
-		this.tuple.add(1, specificURI);
+	public JsonObject getPropertyAssignments() {
+		return propertyAssignments;
 	}
 
+	public void setPropertyAssignments(JsonObject propertyAssignments) {
+		this.propertyAssignments = propertyAssignments;
+	}
+
+	public Reference getGeneral() {
+		return general;
+	}
+
+	public void setGeneral(Reference general) {
+		this.general = general;
+	}
+
+	public Reference getSpecific() {
+		return specific;
+	}
+
+	public void setSpecific(Reference specific) {
+		this.specific = specific;
+	}
 }

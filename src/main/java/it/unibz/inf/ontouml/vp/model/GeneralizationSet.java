@@ -1,33 +1,55 @@
 package it.unibz.inf.ontouml.vp.model;
 
-import java.util.LinkedList;
-import java.util.List;
-
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.vp.plugin.model.IGeneralization;
-import com.vp.plugin.model.IGeneralizationSet;
-import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 
+ * Implementation of ModelElement to handle IGeneralizationSet objects to be
+ * serialized as ontouml-schema/GeneralizationSet
+ * 
+ * @author Claudenir Fonseca
+ * @author Tiago Prince Sales
+ * @author Victor Viola
+ *
+ */
 
 public class GeneralizationSet implements ModelElement {
 
 	private final IGeneralizationSet sourceModelElement;
 
-	@SerializedName("@type")
+	@SerializedName("type")
 	@Expose
 	private final String type;
 
-	@SerializedName("uri")
+	@SerializedName("id")
 	@Expose
-	private String URI;
+	private final String id;
 
 	@SerializedName("name")
 	@Expose
 	private String name;
 
-	@SerializedName("url")
+	@SerializedName("description")
 	@Expose
-	private String URL;
+	private String description;
+
+	@SerializedName("propertyAssignments")
+	@Expose
+	private JsonObject propertyAssignments;
+
+	@SerializedName("categorizer")
+	@Expose
+	private Reference categorizer;
+
+	@SerializedName("generalizations")
+	@Expose
+	private List<Reference> generalizations;
 
 	@SerializedName("isDisjoint")
 	@Expose
@@ -37,34 +59,32 @@ public class GeneralizationSet implements ModelElement {
 	@Expose
 	private boolean isComplete;
 
-	@SerializedName("tuple")
-	@Expose
-	private List<String> tuple;
-	
-	@SerializedName("categorizer")
-	@Expose
-	private String categorizer;
-
 	public GeneralizationSet(IGeneralizationSet source) {
 		this.sourceModelElement = source;
+
 		this.type = ModelElement.TYPE_GENERALIZATION_SET;
+		this.id = source.getId();
 		setName(source.getName());
-		setURI(ModelElement.getModelElementURI(source));
+		setDescription(source.getDescription());
+
 		setComplete(source.isCovering());
 		setDisjoint(source.isDisjoint());
-		setCategorizer(ModelElement.getModelElementURI(source.getPowerType()));
-		
+
+		if (source.getPowerType() != null)
+			setCategorizer(new Reference(source.getPowerType()));
+
 		final IGeneralization[] generalizations = source.toGeneralizationArray();
-		for (int i = 0; generalizations != null && i < generalizations.length; i++) {
-			addTuple(ModelElement.getModelElementURI(generalizations[i]));
-		}
+		for (int i = 0; generalizations != null && i < generalizations.length; i++)
+			addGeneralization(new Reference(generalizations[i]));
+
+		setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
 	}
-	
+
 	@Override
 	public String getId() {
 		return getSourceModelElement().getId();
 	}
-	
+
 	@Override
 	public IModelElement getSourceModelElement() {
 		return this.sourceModelElement;
@@ -75,30 +95,28 @@ public class GeneralizationSet implements ModelElement {
 		return type;
 	}
 
-	@Override
-	public String getURI() {
-		return URI;
-	}
-
-	@Override
-	public void setURI(String URI) {
-		this.URI = URI;
-	}
-
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = ModelElement.safeGetString(name);
 	}
 
-	public String getURL() {
-		return URL;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setURL(String uRL) {
-		URL = uRL;
+	public void setDescription(String description) {
+		this.description = ModelElement.safeGetString(description);;
+	}
+
+	public JsonObject getPropertyAssignments() {
+		return propertyAssignments;
+	}
+
+	public void setPropertyAssignments(JsonObject propertyAssignments) {
+		this.propertyAssignments = propertyAssignments;
 	}
 
 	public boolean isDisjoint() {
@@ -117,27 +135,32 @@ public class GeneralizationSet implements ModelElement {
 		this.isComplete = isComplete;
 	}
 
-	public List<String> getTuple() {
-		return tuple;
-	}
-
-	public void setTuple(List<String> tuple) {
-		this.tuple = tuple;
-	}
-
-	public void addTuple(String str) {
-		if(getTuple() == null) {
-			setTuple(new LinkedList<String>());
-		}
-		this.tuple.add(str);
-	}
-	
-	public String getCategorizer() {
+	public Reference getCategorizer() {
 		return this.categorizer;
 	}
 
-	public void setCategorizer(String categorizerURI) {
-		this.categorizer = categorizerURI;
+	public void setCategorizer(Reference categorizer) {
+		this.categorizer = categorizer;
+	}
+
+	public List<Reference> getGeneralizations() {
+		return generalizations;
+	}
+
+	public void setGeneralizations(List<Reference> generalizations) {
+		this.generalizations = generalizations;
+	}
+
+	public void addGeneralization(Reference ref) {
+		if (this.generalizations == null)
+			this.generalizations = new ArrayList<Reference>();
+
+		this.generalizations.add(ref);
+	}
+
+	public void removeGeneralization(Reference ref) {
+		if (this.generalizations != null && this.generalizations.contains(ref))
+			this.generalizations.remove(ref);
 	}
 
 }

@@ -29,4 +29,6 @@ repo/
 .vscode/
 /bin/
 
+.idea/
+*.iml
 ontouml-vp-plugin.zip

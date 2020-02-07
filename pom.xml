@@ -9,7 +9,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<classes.dir>${project.basedir}/classes</classes.dir>
-		<visualparadigm.app.dir>E:\OntoUML\Visual Paradigm\Visual Paradigm CE 16.0</visualparadigm.app.dir>
+		<visualparadigm.app.dir>C:\Program Files\Visual Paradigm CE 16.1</visualparadigm.app.dir>
 	</properties>
 	<dependencies>
 		<dependency>

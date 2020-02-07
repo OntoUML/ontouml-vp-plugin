@@ -48,131 +48,179 @@
 		<contextSensitiveActionSet id="it.unibz.inf.ontouml.vp.ClassStereotypes">
 			<contextTypes all="false"/>
 			<include type="Class"/>
+			<menu id="ontoUMLMenu1" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontuml-simple-logo-small.png"/>
 			
-			<menu
-				id="ontoUMLMenu1" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontuml-simple-logo-small.png"/>
-				
-			<separator
-				id="it.unibz.inf.ontouml.vp.separator0" menuPath="ontoUMLMenu1" />
-				
-			<action
-				id="it.unibz.inf.ontouml.vp.addPhaseStereotype" label="Phase" style="normal" menuPath="ontoUMLMenu1/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
+
+			<action id="it.unibz.inf.ontouml.vp.addEnumerationStereotype" label="Enumeration" style="normal" menuPath="ontoUMLMenu1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
 			
-			<action
-				id="it.unibz.inf.ontouml.vp.addRoleStereotype" label="Role" style="normal" menuPath="ontoUMLMenu1/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
+			<action id="it.unibz.inf.ontouml.vp.addDatatypeStereotype" label="Datatype" style="normal" menuPath="ontoUMLMenu1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
 			
-			<action
-				id="it.unibz.inf.ontouml.vp.addSubkindStereotype" label="Subkind" style="normal" menuPath="ontoUMLMenu1/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
+			<separator id="it.unibz.inf.ontouml.vp.separator0" menuPath="ontoUMLMenu1/#" />
+
+			<action id="it.unibz.inf.ontouml.vp.addTypeStereotype" label="Type" style="normal" menuPath="ontoUMLMenu1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
 			
-			<separator
-				id="it.unibz.inf.ontouml.vp.sortalsSeparator" menuPath="ontoUMLMenu1/#" />
+			<action id="it.unibz.inf.ontouml.vp.addPowertypeStereotype" label="Powertype" style="normal" menuPath="ontoUMLMenu1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+	
+			<separator id="it.unibz.inf.ontouml.vp.separator2" menuPath="ontoUMLMenu1/#"/>
+
+			<action id="it.unibz.inf.ontouml.vp.addHistoricalRoleStereotype" label="HistoricalRole" style="normal" menuPath="ontoUMLMenu1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
 			
-			<action
-				id="it.unibz.inf.ontouml.vp.addMixinStereotype" label="Mixin" style="normal" menuPath="ontoUMLMenu1/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
+			<action id="it.unibz.inf.ontouml.vp.addEventStereotype" label="Event" style="normal" menuPath="ontoUMLMenu1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
 			
-			<action
-				id="it.unibz.inf.ontouml.vp.addPhaseMixinStereotype" label="PhaseMixin" style="normal" menuPath="ontoUMLMenu1/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
+			<separator id="it.unibz.inf.ontouml.vp.separator1" menuPath="ontoUMLMenu1/#" />
 			
-			<action
-				id="it.unibz.inf.ontouml.vp.addRoleMixinStereotype" label="RoleMixin" style="normal" menuPath="ontoUMLMenu1/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
+			<action id="it.unibz.inf.ontouml.vp.addSubkindStereotype" label="Subkind" style="normal" menuPath="ontoUMLMenu1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
 			
-			<action
-				id="it.unibz.inf.ontouml.vp.addCategoryStereotype" label="Category" style="normal" menuPath="ontoUMLMenu1/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
-				
-			<separator
-				id="it.unibz.inf.ontouml.vp.kindsSeparator" menuPath="ontoUMLMenu1/#" />
+			<action id="it.unibz.inf.ontouml.vp.addRoleMixinStereotype" label="RoleMixin" style="normal" menuPath="ontoUMLMenu1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
 			
-			<action
-				id="it.unibz.inf.ontouml.vp.addQualityKindStereotype" label="Quality Kind" style="normal" menuPath="ontoUMLMenu1/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
-				
-			<action
-				id="it.unibz.inf.ontouml.vp.addModeKindStereotype" label="Mode Kind" style="normal" menuPath="ontoUMLMenu1/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
-				
-			<action
-				id="it.unibz.inf.ontouml.vp.addRelatorKindStereotype" label="Relator Kind" style="normal" menuPath="ontoUMLMenu1/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
-				
-			<action
-				id="it.unibz.inf.ontouml.vp.addQuantityKindStereotype" label="Quantity Kind" style="normal" menuPath="ontoUMLMenu1/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
-				
-			<action
-				id="it.unibz.inf.ontouml.vp.addCollectiveKindStereotype" label="Collective Kind" style="normal" menuPath="ontoUMLMenu1/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
-				
-			<action
-				id="it.unibz.inf.ontouml.vp.addKindStereotype" label="Kind" style="normal" menuPath="ontoUMLMenu1/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
+			<action id="it.unibz.inf.ontouml.vp.addRoleStereotype" label="Role" style="normal" menuPath="ontoUMLMenu1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+
+			<action id="it.unibz.inf.ontouml.vp.addRelatorKindStereotype" label="RelatorKind" style="normal" menuPath="ontoUMLMenu1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+
+			<action id="it.unibz.inf.ontouml.vp.addQuantityStereotype" label="Quantity" style="normal" menuPath="ontoUMLMenu1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+
+			<action id="it.unibz.inf.ontouml.vp.addQualityKindStereotype" label="QualityKind" style="normal" menuPath="ontoUMLMenu1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+
+			<action id="it.unibz.inf.ontouml.vp.addPhaseMixinStereotype" label="PhaseMixin" style="normal" menuPath="ontoUMLMenu1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+
+			<action id="it.unibz.inf.ontouml.vp.addPhaseStereotype" label="Phase" style="normal" menuPath="ontoUMLMenu1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+
+			<action id="it.unibz.inf.ontouml.vp.addModeKindStereotype" label="ModeKind" style="normal" menuPath="ontoUMLMenu1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+
+			<action id="it.unibz.inf.ontouml.vp.addMixinStereotype" label="Mixin" style="normal" menuPath="ontoUMLMenu1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+			
+			<action id="it.unibz.inf.ontouml.vp.addKindStereotype" label="Kind" style="normal" menuPath="ontoUMLMenu1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+
+			<action id="it.unibz.inf.ontouml.vp.addCollectiveStereotype" label="Collective" style="normal" menuPath="ontoUMLMenu1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+		
+			<action id="it.unibz.inf.ontouml.vp.addCategoryStereotype" label="Category" style="normal" menuPath="ontoUMLMenu1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+			
 		</contextSensitiveActionSet>
 		
 		<contextSensitiveActionSet id="it.unibz.inf.ontouml.vp.AssociationStereotypes">
 			<contextTypes all="false"/>
 			<include type="Association"/>
 			
-			<menu
-				id="ontoUMLMenu2" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontuml-simple-logo-small.png"/>
+			<menu id="ontoUMLMenu2" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontuml-simple-logo-small.png"/>
 				
-			<separator
-				id="it.unibz.inf.ontouml.vp.AssociationSeparator0" menuPath="ontoUMLMenu2" />
-						
-			<action
-				id="it.unibz.inf.ontouml.vp.addSumStereotype" label="Sum" style="normal" menuPath="ontoUMLMenu2/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
-			
-			<action
-				id="it.unibz.inf.ontouml.vp.addSubQuantityStereotype" label="Sub-Quantity" style="normal" menuPath="ontoUMLMenu2/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
-			
-			<action
-				id="it.unibz.inf.ontouml.vp.addSubCollectionStereotype" label="Sub-Collection" style="normal" menuPath="ontoUMLMenu2/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
-				
-			<action
-				id="it.unibz.inf.ontouml.vp.addMemberOfStereotype" label="Member Of" style="normal" menuPath="ontoUMLMenu2/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
-				
-			<action
-				id="it.unibz.inf.ontouml.vp.addComponentOfStereotype" label="Component Of" style="normal" menuPath="ontoUMLMenu2/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
-				
-			<separator
-				id="it.unibz.inf.ontouml.vp.AssociationSeparator1" menuPath="ontoUMLMenu2/#" />
-					
-			<action
-				id="it.unibz.inf.ontouml.vp.addExternalDependenceStereotype" label="External Dependence" style="normal" menuPath="ontoUMLMenu2/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
-			
-			<action
-				id="it.unibz.inf.ontouml.vp.addCharacterizationStereotype" label="Characterization" style="normal" menuPath="ontoUMLMenu2/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
-			
-			<action
-				id="it.unibz.inf.ontouml.vp.addMediationStereotype" label="Mediation" style="normal" menuPath="ontoUMLMenu2/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
-				
-			<separator
-				id="it.unibz.inf.ontouml.vp.AssociationSeparator2" menuPath="ontoUMLMenu2/#" />
+			<action id="it.unibz.inf.ontouml.vp.addInstantiationStereotype" label="Instantiation" style="normal" menuPath="ontoUMLMenu2/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
 
-			<action
-				id="it.unibz.inf.ontouml.vp.addQuantityHistoricalStereotype" label="Historical" style="normal" menuPath="ontoUMLMenu2/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
+			<separator id="it.unibz.inf.ontouml.vp.AssociationSeparator1" menuPath="ontoUMLMenu2/#" />
+			
+			<action id="it.unibz.inf.ontouml.vp.addTerminationStereotype" label="Termination" style="normal" menuPath="ontoUMLMenu2/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+
+			<action id="it.unibz.inf.ontouml.vp.addParticipationalStereotype" label="Participational" style="normal" menuPath="ontoUMLMenu2/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+
+			<action id="it.unibz.inf.ontouml.vp.addParticipationStereotype" label="Participation" style="normal" menuPath="ontoUMLMenu2/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+
+			<action id="it.unibz.inf.ontouml.vp.addHistoricalDependenceStereotype" label="HistoricalDependence" style="normal" menuPath="ontoUMLMenu2/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+
+			<action id="it.unibz.inf.ontouml.vp.addCreationStereotype" label="Creation" style="normal" menuPath="ontoUMLMenu2/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+			
+			<separator id="it.unibz.inf.ontouml.vp.AssociationSeparator0" menuPath="ontoUMLMenu2/#" />
+
+			<action id="it.unibz.inf.ontouml.vp.addSubQuantityStereotype" label="SubQuantityOf" style="normal" menuPath="ontoUMLMenu2/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+			
+			<action id="it.unibz.inf.ontouml.vp.addSubCollectionStereotype" label="SubCollectionOf" style="normal" menuPath="ontoUMLMenu2/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
 				
-			<action
-				id="it.unibz.inf.ontouml.vp.addCollectiveComparativeStereotype" label="Comparative" style="normal" menuPath="ontoUMLMenu2/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
+			<action id="it.unibz.inf.ontouml.vp.addMemberOfStereotype" label="MemberOf" style="normal" menuPath="ontoUMLMenu2/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+
+			<action id="it.unibz.inf.ontouml.vp.addMediationStereotype" label="Mediation" style="normal" menuPath="ontoUMLMenu2/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+
+			<action id="it.unibz.inf.ontouml.vp.addMaterialStereotype" label="Material" style="normal" menuPath="ontoUMLMenu2/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+
+			<action id="it.unibz.inf.ontouml.vp.addExternalDependenceStereotype" label="ExternalDependence" style="normal" menuPath="ontoUMLMenu2/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
 				
-			<action
-				id="it.unibz.inf.ontouml.vp.addMaterialStereotype" label="Material" style="normal" menuPath="ontoUMLMenu2/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/> </action>
+			<action id="it.unibz.inf.ontouml.vp.addComponentOfStereotype" label="ComponentOf" style="normal" menuPath="ontoUMLMenu2/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+
+			<action id="it.unibz.inf.ontouml.vp.addComparativeStereotype" label="Comparative" style="normal" menuPath="ontoUMLMenu2/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+			
+			<action id="it.unibz.inf.ontouml.vp.addCharacterizationStereotype" label="Characterization" style="normal" menuPath="ontoUMLMenu2/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+			
+		</contextSensitiveActionSet>
+
+		<contextSensitiveActionSet id="it.unibz.inf.ontouml.vp.AttributeStereotypes">
+			<contextTypes all="false"/>
+			<include type="Attribute"/>
+			
+			<menu id="ontoUMLMenu3" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontuml-simple-logo-small.png"/>
+				
+			<action id="it.unibz.inf.ontouml.vp.addEndStereotype" label="End" style="normal" menuPath="ontoUMLMenu3/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+			
+			<action id="it.unibz.inf.ontouml.vp.addBeginStereotype" label="Begin" style="normal" menuPath="ontoUMLMenu3/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+			</action>
+			
 		</contextSensitiveActionSet>
 	</actionSets>
 </plugin>

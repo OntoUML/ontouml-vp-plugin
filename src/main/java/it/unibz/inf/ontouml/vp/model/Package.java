@@ -1,99 +1,98 @@
 package it.unibz.inf.ontouml.vp.model;
 
-import java.util.LinkedList;
-
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.vp.plugin.model.IClass;
-import com.vp.plugin.model.IModel;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IPackage;
+import com.vp.plugin.model.*;
 import com.vp.plugin.model.factory.IModelElementFactory;
+
+import java.util.LinkedList;
+
+/**
+ * 
+ * Implementation of ModelElement to handle IPackage objects to be serialized as
+ * ontouml-schema/Package
+ * 
+ * @author Claudenir Fonseca
+ * @author Tiago Prince Sales
+ * @author Victor Viola
+ *
+ */
 
 public class Package implements ModelElement {
 
 	private final IPackage sourceModelElement;
-	
-	@SerializedName("@type")
+
+	@SerializedName("type")
 	@Expose
 	private final String type;
 
-	@SerializedName("uri")
+	@SerializedName("id")
 	@Expose
-	private String URI;
-
-	@SerializedName("url")
-	@Expose
-	private String URL;
+	private final String id;
 
 	@SerializedName("name")
 	@Expose
 	private String name;
 
-	@SerializedName("structuralElements")
+	@SerializedName("description")
 	@Expose
-	private LinkedList<ModelElement> structuralElements;
+	private String description;
+
+	@SerializedName("propertyAssignments")
+	@Expose
+	private JsonObject propertyAssignments;
+
+	@SerializedName("contents")
+	@Expose
+	private LinkedList<ModelElement> contents;
 
 	public Package(IPackage source) {
 		this.sourceModelElement = source;
 		this.type = ModelElement.TYPE_PACKAGE;
+		this.id = source.getId();
 		setName(source.getName());
-		setURI(ModelElement.getModelElementURI(source));
-		
+		setDescription(source.getDescription());
+
 		final IModelElement[] children = source.toChildArray();
 		for (int i = 0; children != null && i < children.length; i++) {
 			final IModelElement child = children[i];
 
 			switch (child.getModelType()) {
 			case IModelElementFactory.MODEL_TYPE_PACKAGE:
-				addStructuralElement(new Package((IPackage) child));
+				addElement(new Package((IPackage) child));
 				break;
 			case IModelElementFactory.MODEL_TYPE_MODEL:
-				addStructuralElement(new Model((IModel) child));
+				addElement(new Model((IModel) child));
 				break;
 			case IModelElementFactory.MODEL_TYPE_CLASS:
-				addStructuralElement(new Class((IClass) child));
+				addElement(new Class((IClass) child));
 				break;
-//			TODO Add remaining elements, maybe by adding these to relation's source's package.
-//			case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
-//			case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
-//			case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
-//			case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
+			// TODO Add remaining elements, maybe by adding these to relation's
+			// source's package.
+			// case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
+			// case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
+			// case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
+			// case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
 			}
 		}
+
+		setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
 	}
 
 	@Override
 	public IPackage getSourceModelElement() {
 		return sourceModelElement;
 	}
-	
+
 	@Override
 	public String getId() {
 		return getSourceModelElement().getId();
 	}
-	
+
 	@Override
 	public String getOntoUMLType() {
 		return this.type;
-	}
-
-	@Override
-	public String getURI() {
-		return URI;
-	}
-
-	@Override
-	public void setURI(String URI) {
-		this.URI = URI;
-	}
-
-	public String getURL() {
-		return URL;
-	}
-
-	public void setURL(String URL) {
-		this.URL = URL;
 	}
 
 	public String getName() {
@@ -101,23 +100,39 @@ public class Package implements ModelElement {
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = ModelElement.safeGetString(name);
 	}
 
-	public LinkedList<ModelElement> getStructuralElements() {
-		return structuralElements;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setStructuralElements(LinkedList<ModelElement> structuralElements) {
-		this.structuralElements = structuralElements;
+	public void setDescription(String description) {
+		this.description = ModelElement.safeGetString(description);;
 	}
 
-	public void addStructuralElement(ModelElement element) {
-		if(getStructuralElements() == null) {
-			setStructuralElements(new LinkedList<ModelElement>());
+	public JsonObject getPropertyAssignments() {
+		return propertyAssignments;
+	}
+
+	public void setPropertyAssignments(JsonObject propertyAssignments) {
+		this.propertyAssignments = propertyAssignments;
+	}
+
+	public LinkedList<ModelElement> getContents() {
+		return contents;
+	}
+
+	public void setContents(LinkedList<ModelElement> contents) {
+		this.contents = contents;
+	}
+
+	public void addElement(ModelElement element) {
+		if (getContents() == null) {
+			setContents(new LinkedList<ModelElement>());
 		}
-		
-		this.structuralElements.add(element);
+
+		this.contents.add(element);
 	}
 
 }

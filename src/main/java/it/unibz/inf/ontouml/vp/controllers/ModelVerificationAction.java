@@ -1,5 +1,9 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -29,6 +33,7 @@ public class ModelVerificationAction implements VPActionController {
 	 */
 	@Override
 	public void performAction(VPAction action) {
+		
 		ExecutorService executor = Executors.newFixedThreadPool(10);
 		executor.execute(new Runnable() {
 
