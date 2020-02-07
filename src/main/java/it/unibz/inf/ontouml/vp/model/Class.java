@@ -106,16 +106,7 @@ public class Class implements ModelElement {
 		setAbstract(false);
 		setDerived(false);
 
-		ITaggedValueContainer lContainer = source.getTaggedValues();
-		if (lContainer != null) {
-			JsonObject obj = new JsonObject();
-			ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
-
-			for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++)
-				obj.addProperty(lTaggedValues[i].getName(), lTaggedValues[i].getValueAsString());
-
-			setPropertyAssignments(obj);
-		}
+		setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
 
 		if (source.getName().trim().startsWith("/")) {
 			setName(source.getName().substring(1));
