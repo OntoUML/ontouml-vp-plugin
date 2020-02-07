@@ -80,13 +80,20 @@ public class Property implements ModelElement {
 	@Expose
 	private String aggregationKind;
 
-	public Property(IAttribute source) {
+	private Property(IModelElement source){
 		this.sourceModelElement = source;
 
 		this.type = ModelElement.TYPE_PROPERTY;
 		this.id = source.getId();
 		setName(source.getName());
 		setDescription(source.getDescription());
+
+		setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
+
+	}
+
+	public Property(IAttribute source) {
+		this((IModelElement) source);
 
 		IModelElement reference = source.getTypeAsElement();
 		if (reference != null) {
@@ -98,49 +105,13 @@ public class Property implements ModelElement {
 		if (!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED)))
 			setCardinality(source.getMultiplicity());
 
+		setOrdered(source.getMultiplicityDetail());
 		setDerived(source.isDerived());
-		// TODO:isOrdered
 		setReadOnly(source.isReadOnly());
 
 		final String[] stereotypes = source.toStereotypeArray();
 		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
 			addStereotype(stereotypes[i]);
-		}
-
-		ITaggedValueContainer lContainer = source.getTaggedValues();
-		if (lContainer != null) {
-			JsonObject obj = new JsonObject();
-			ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
-
-			for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++) {
-				switch (lTaggedValues[i].getType()) {
-				case 1:
-					JsonObject referenceTag = new JsonObject();
-
-					if (lTaggedValues[i].getValueAsElement() != null) {
-						referenceTag.addProperty("type", ModelElement.toOntoUMLSchemaType(lTaggedValues[i].getValueAsElement()));
-						referenceTag.addProperty("id", lTaggedValues[i].getValueAsElement().getId());
-					} else {
-						referenceTag.add("type", null);
-						referenceTag.add("id", null);
-					}
-					obj.add(lTaggedValues[i].getName(), referenceTag);
-					break;
-				case 5:
-					obj.addProperty(lTaggedValues[i].getName(), Integer.parseInt((String) lTaggedValues[i].getValue()));
-					break;
-				case 6:
-					obj.addProperty(lTaggedValues[i].getName(), Float.parseFloat((String) lTaggedValues[i].getValue()));
-					break;
-				case 7:
-					obj.addProperty(lTaggedValues[i].getName(), Boolean.parseBoolean((String) lTaggedValues[i].getValue()));
-					break;
-				default:
-					obj.addProperty(lTaggedValues[i].getName(), (String) lTaggedValues[i].getValueAsString());
-				}
-
-			}
-			setPropertyAssignments(obj);
 		}
 
 		Iterator<?> subsettedIterator = source.subsettedPropertyIterator();
@@ -160,11 +131,7 @@ public class Property implements ModelElement {
 	}
 
 	public Property(IAssociationEnd source) {
-		this.sourceModelElement = source;
-
-		this.type = ModelElement.TYPE_PROPERTY;
-		this.id = source.getId();
-		setName(source.getName());
+		this((IModelElement) source);
 
 		IModelElement reference = source.getTypeAsElement();
 		if (reference != null) {
@@ -177,47 +144,12 @@ public class Property implements ModelElement {
 			setCardinality(source.getMultiplicity());
 
 		setDerived(source.isDerived());
-		// TODO:isOrdered
+		setOrdered(source.getMultiplicityDetail());
 		setReadOnly(source.isReadOnly());
 
 		final String[] stereotypes = source.toStereotypeArray();
 		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
 			addStereotype(stereotypes[i]);
-		}
-
-		ITaggedValueContainer lContainer = source.getTaggedValues();
-		if (lContainer != null) {
-			JsonObject obj = new JsonObject();
-			ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
-
-			for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++) {
-				switch (lTaggedValues[i].getType()) {
-				case 1:
-					JsonObject referenceTag = new JsonObject();
-
-					if (lTaggedValues[i].getValueAsElement() != null) {
-						referenceTag.addProperty("type", ModelElement.toOntoUMLSchemaType(lTaggedValues[i].getValueAsElement()));
-						referenceTag.addProperty("id", lTaggedValues[i].getValueAsElement().getId());
-					} else {
-						referenceTag.add("type", null);
-						referenceTag.add("id", null);
-					}
-					obj.add(lTaggedValues[i].getName(), referenceTag);
-					break;
-				case 5:
-					obj.addProperty(lTaggedValues[i].getName(), Integer.parseInt((String) lTaggedValues[i].getValue()));
-					break;
-				case 6:
-					obj.addProperty(lTaggedValues[i].getName(), Float.parseFloat((String) lTaggedValues[i].getValue()));
-					break;
-				case 7:
-					obj.addProperty(lTaggedValues[i].getName(), Boolean.parseBoolean((String) lTaggedValues[i].getValue()));
-					break;
-				default:
-					obj.addProperty(lTaggedValues[i].getName(), (String) lTaggedValues[i].getValueAsString());
-				}
-			}
-			setPropertyAssignments(obj);
 		}
 
 		Iterator<?> subsettedIterator = source.subsettedPropertyIterator();
@@ -312,6 +244,10 @@ public class Property implements ModelElement {
 
 	public void setOrdered(boolean isOrdered) {
 		this.isOrdered = isOrdered;
+	}
+
+	public void setOrdered(IMultiplicity multiplicity) {
+		this.isOrdered = (multiplicity != null) ? multiplicity.isOrdered() : false;
 	}
 
 	public boolean isReadOnly() {
