@@ -166,7 +166,7 @@ public interface ModelElement {
 		if (lContainer == null)
 			return null;
 
-		JsonObject obj = new JsonObject();
+		JsonObject obj = new JsonObject();	
 		ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
 
 		for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++) {
@@ -195,7 +195,10 @@ public interface ModelElement {
 					obj.addProperty(lTaggedValues[i].getName(), (String) lTaggedValues[i].getValueAsString());
 			}
 		}
-
-		return obj;
+		
+		if(obj.size()==0)
+			return null;
+		else
+			return obj;
 	}
 }
