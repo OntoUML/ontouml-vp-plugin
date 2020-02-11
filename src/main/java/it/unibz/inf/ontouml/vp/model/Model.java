@@ -152,7 +152,9 @@ public class Model implements ModelElement {
 				addElement(new Class((IDataType) projectElement));
 				break;
 			case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
-				addElement(new Generalization((IGeneralization) projectElement));
+				IGeneralization gen = (IGeneralization) projectElement;
+				if(!(gen.getFrom().getModelType().equals("Stereotype")&&gen.getTo().getModelType().equals("Stereotype")))
+					addElement(new Generalization((IGeneralization) projectElement));
 				break;
 			case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
 				addElement(new Association((IAssociation) projectElement));
