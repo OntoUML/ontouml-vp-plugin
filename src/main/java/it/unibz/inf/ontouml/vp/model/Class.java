@@ -4,10 +4,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.*;
+
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -48,7 +50,7 @@ public class Class implements ModelElement {
 
 	@SerializedName("literals")
 	@Expose
-	private Set<Property> literals = null;
+	private LinkedList<Literal> literals;
 
 	@SerializedName("propertyAssignments")
 	@Expose
@@ -71,6 +73,7 @@ public class Class implements ModelElement {
 		this.type = ModelElement.TYPE_CLASS;
 		this.id = source.getId();
 		this.properties = null;
+		this.literals = null;
 	}
 
 	public Class(IClass source) {
@@ -84,6 +87,13 @@ public class Class implements ModelElement {
 		final String[] stereotypes = source.toStereotypeArray();
 		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
 			addStereotype(stereotypes[i]);
+		}
+		
+		if(this.stereotypes.contains(StereotypeUtils.STR_ENUMERATION)){
+			IEnumerationLiteral[] literalArray = source.toEnumerationLiteralArray();
+			for (int i = 0; literalArray != null && i < literalArray.length; i++) {
+				addLiteral(new Literal(literalArray[i]));
+			}
 		}
 
 		setAbstract(source.isAbstract());
@@ -209,5 +219,21 @@ public class Class implements ModelElement {
 
 	public void setDerived(boolean isDerived) {
 		this.isDerived = isDerived;
+	}
+	
+	public LinkedList<Literal> getLiterals() {
+		return literals;
+	}
+
+	public void setLiterals(LinkedList<Literal> literals) {
+		this.literals = literals;
+	}
+
+	public void addLiteral(Literal literal) {
+		if (getLiterals() == null) {
+			setLiterals(new LinkedList<Literal>());
+		}
+
+		this.literals.add(literal);
 	}
 }

@@ -23,6 +23,7 @@ public interface ModelElement {
 	public static final String TYPE_GENERALIZATION = "Generalization";
 	public static final String TYPE_GENERALIZATION_SET = "GeneralizationSet";
 	public static final String TYPE_PROPERTY = "Property";
+	public static final String TYPE_LITERAL = "Literal";
 
 	/**
 	 * 
@@ -155,7 +156,8 @@ public interface ModelElement {
 			case IModelElementFactory.MODEL_TYPE_ATTRIBUTE:
 			case IModelElementFactory.MODEL_TYPE_ASSOCIATION_END:
 				return TYPE_PROPERTY;
-
+			case IModelElementFactory.MODEL_TYPE_ENUMERATION_LITERAL:
+				return TYPE_LITERAL;
 		}
 
 		return null;
