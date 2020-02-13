@@ -42,9 +42,9 @@ public class ModelExportAction implements VPActionController {
 		String suggestedFilename;
 		fd.setDirectory(projectConfigurations.getExportFolderPath());
 		
-		if(projectConfigurations.getExportFilename().length() == 0){
+		if(projectConfigurations.getExportFilename().isEmpty()){
 			String projectName = ApplicationManager.instance().getProjectManager().getProject().getName();		
-			suggestedFilename = projectName;
+			suggestedFilename = projectName+".json";
 			fd.setFile(suggestedFilename);
 		}else{
 			suggestedFilename = projectConfigurations.getExportFilename();
