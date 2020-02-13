@@ -68,11 +68,12 @@ public class Class implements ModelElement {
 	@Expose
 	private boolean isDerived;
 
-	private Class(IModelElement source){
+	private Class(IModelElement source) {
 		this.sourceModelElement = source;
 		this.type = ModelElement.TYPE_CLASS;
 		this.id = source.getId();
 		this.properties = null;
+		this.stereotypes = null;
 		this.literals = null;
 	}
 
@@ -88,11 +89,13 @@ public class Class implements ModelElement {
 		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
 			addStereotype(stereotypes[i]);
 		}
-		
-		if(this.stereotypes.contains(StereotypeUtils.STR_ENUMERATION)){
-			IEnumerationLiteral[] literalArray = source.toEnumerationLiteralArray();
-			for (int i = 0; literalArray != null && i < literalArray.length; i++) {
-				addLiteral(new Literal(literalArray[i]));
+
+		if (this.stereotypes != null) {
+			if (this.stereotypes.contains(StereotypeUtils.STR_ENUMERATION)) {
+				IEnumerationLiteral[] literalArray = source.toEnumerationLiteralArray();
+				for (int i = 0; literalArray != null && i < literalArray.length; i++) {
+					addLiteral(new Literal(literalArray[i]));
+				}
 			}
 		}
 
@@ -154,7 +157,8 @@ public class Class implements ModelElement {
 	}
 
 	public void setDescription(String description) {
-		this.description = ModelElement.safeGetString(description);;
+		this.description = ModelElement.safeGetString(description);
+		;
 	}
 
 	public Set<Property> getProperties() {
@@ -220,7 +224,7 @@ public class Class implements ModelElement {
 	public void setDerived(boolean isDerived) {
 		this.isDerived = isDerived;
 	}
-	
+
 	public LinkedList<Literal> getLiterals() {
 		return literals;
 	}
