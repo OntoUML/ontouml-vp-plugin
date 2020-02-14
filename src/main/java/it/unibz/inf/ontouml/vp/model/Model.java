@@ -112,7 +112,6 @@ public class Model implements ModelElement {
 
 	public void setDescription(String description) {
 		this.description = ModelElement.safeGetString(description);
-		;
 	}
 
 	public List<ModelElement> getElements() {
