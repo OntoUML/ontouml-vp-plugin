@@ -2,6 +2,7 @@ package it.unibz.inf.ontouml.vp.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.ApplicationManager;
@@ -60,23 +61,25 @@ public class Configurations {
 			
 			if(configurationsFile.exists()) {
 				String json = "";
-				
 				try {
 					json = new String(Files.readAllBytes(configurationsFile.toPath()));
+					Gson gson = new Gson();
+					instance = gson.fromJson(json, Configurations.class);
 				}
-				catch (IOException e) {
+				catch (Exception e) {
+					if(e instanceof IOException)
+						application.getViewManager().showMessage("Unable to load configuration file (" + OntoUMLPlugin.PLUGIN_NAME + ").\n");
+					else if(e instanceof JsonSyntaxException )
+						application.getViewManager().showMessage("Configuration file ill-formed (" + OntoUMLPlugin.PLUGIN_NAME + ").\n");
+					else
+						application.getViewManager().showMessage("Unknown error while reading configuration file (" + OntoUMLPlugin.PLUGIN_NAME + ").\n");
+
 					e.printStackTrace();
-					application.getViewManager().showMessage("Unable to load " 
-							+ OntoUMLPlugin.PLUGIN_NAME + " configurations.\n" + 
-							"Please contact our team at <https://github.com/OntoUML/ontouml-vp-plugin>.");
 				}
-				
-				Gson gson = new Gson();
-				instance = gson.fromJson(json, Configurations.class);
 			}
-			else {
+
+			if(instance==null)
 				instance = new Configurations();
-			}
 		}
 
 		return instance;

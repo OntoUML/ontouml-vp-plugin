@@ -32,30 +32,27 @@ public class ModelExportAction implements VPActionController {
 	 */
 	@Override
 	public void performAction(VPAction action) {
-		final ProjectConfigurations projectConfigurations = Configurations.getInstance().getProjectConfigurations();
 		final Configurations configs = Configurations.getInstance();
+		final ProjectConfigurations projectConfigurations = configs.getProjectConfigurations();
 
 		FileDialog fd = new FileDialog((Frame) ApplicationManager.instance().getViewManager().getRootFrame(),
 				"Choose destination", FileDialog.SAVE);
-		
-		
-		String suggestedFilename;
-		fd.setDirectory(projectConfigurations.getExportFolderPath());
-		
-		if(projectConfigurations.getExportFilename().isEmpty()){
-			String projectName = ApplicationManager.instance().getProjectManager().getProject().getName();		
-			suggestedFilename = projectName+".json";
-			fd.setFile(suggestedFilename);
-		}else{
-			suggestedFilename = projectConfigurations.getExportFilename();
-			fd.setFile(suggestedFilename);
+
+		String suggestedFolderPath = projectConfigurations.getExportFolderPath();
+		String suggestedFileName = projectConfigurations.getExportFilename();
+
+		if(suggestedFileName.isEmpty()){
+			String projectName = ApplicationManager.instance().getProjectManager().getProject().getName();
+			suggestedFileName = projectName+".json";
 		}
-		
+
+		fd.setDirectory(suggestedFolderPath);
+		fd.setFile(suggestedFileName);
 		fd.setVisible(true);
 
 		String fileDirectory = fd.getDirectory();
-
 		String fileName = fd.getFile();
+
 		if(!fileName.endsWith(".json"))
 			fileName+=".json";
 
