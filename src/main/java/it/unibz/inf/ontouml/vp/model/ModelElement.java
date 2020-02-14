@@ -200,7 +200,7 @@ public interface ModelElement {
 		
 		if(obj.size()==0)
 			return null;
-		else
-			return obj;
+
+		return obj;
 	}
 }
