@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
  * Class that captures user preferences for a given project and enables JSON serialization.
  * 
  * @author Claudenir Fonseca
+ * @author Victor Viola
  *
  */
 public class ProjectConfigurations {
@@ -18,6 +19,7 @@ public class ProjectConfigurations {
 	public static final boolean DEFAULT_IS_AUTOMATIC_COLORING_ENABLED = true;
 	public static final String DEFAULT_SERVER_URL = "https://ontouml.herokuapp.com";
 	public static final String DEFAULT_EXPORT_PATH = System.getProperty("user.home");
+	public static final String DEFAULT_EXPORT_FILENAME = "";
 
 	@SerializedName("projectId")
 	@Expose()
@@ -38,6 +40,10 @@ public class ProjectConfigurations {
 	@SerializedName("exportFolderPath")
 	@Expose()
 	private String exportFolderPath;
+	
+	@SerializedName("exportFileName")
+	@Expose()
+	private String exportFileName;
 	
 	@SerializedName("isExportEnabled")
 	@Expose()
@@ -73,6 +79,7 @@ public class ProjectConfigurations {
 		
 		this.isModelExportEnabled = ProjectConfigurations.DEFAULT_IS_EXPORT_ENABLED;
 		this.exportFolderPath = ProjectConfigurations.DEFAULT_EXPORT_PATH;
+		this.exportFileName = ProjectConfigurations.DEFAULT_EXPORT_FILENAME;
 		
 		this.isAutomaticColoringEnabled = ProjectConfigurations.DEFAULT_IS_AUTOMATIC_COLORING_ENABLED;;
 	}
@@ -177,6 +184,29 @@ public class ProjectConfigurations {
 	 */
 	public void setExportFolderPath(String exportFolderPath) {
 		this.exportFolderPath = exportFolderPath;
+	}
+	
+	/**
+	 * 
+	 * Returns automatic export filename as a String.
+	 * 
+	 * @return exportFileName
+	 * 
+	 */
+	public String getExportFilename() {
+		return exportFileName;
+	}
+	
+
+	/**
+	 * 
+	 * Sets automatic export filename from a String.
+	 * 
+	 * @param exportFileName
+	 * 
+	 */
+	public void setExportFilename(String exportFileName) {
+		this.exportFileName = exportFileName;
 	}
 	
 	/**

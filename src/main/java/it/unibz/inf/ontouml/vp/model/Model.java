@@ -12,8 +12,8 @@ import java.util.List;
 
 /**
  * 
- * Implementation of ModelElement to handle IModel objects
- * to be serialized as ontouml-schema/Package
+ * Implementation of ModelElement to handle IModel objects to be serialized as
+ * ontouml-schema/Package
  * 
  * @author Claudenir Fonseca
  * @author Tiago Prince Sales
@@ -51,16 +51,15 @@ public class Model implements ModelElement {
 
 	/**
 	 * 
-	 * Constructs a model to contain all project's model elements independent of a
-	 * <code>IModelElement</code>.
+	 * Constructs a model to contain all project's model elements independent of
+	 * a <code>IModelElement</code>.
 	 * 
 	 */
 	public Model() {
 		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
-		final String[] rootLevelElements = { IModelElementFactory.MODEL_TYPE_PACKAGE,
-				IModelElementFactory.MODEL_TYPE_MODEL, IModelElementFactory.MODEL_TYPE_CLASS, IModelElementFactory.MODEL_TYPE_DATA_TYPE };
-		final String[] anyLevelElements = { IModelElementFactory.MODEL_TYPE_GENERALIZATION,
-				IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET, IModelElementFactory.MODEL_TYPE_ASSOCIATION,
+		final String[] rootLevelElements = { IModelElementFactory.MODEL_TYPE_PACKAGE, IModelElementFactory.MODEL_TYPE_MODEL, IModelElementFactory.MODEL_TYPE_CLASS,
+				IModelElementFactory.MODEL_TYPE_DATA_TYPE };
+		final String[] anyLevelElements = { IModelElementFactory.MODEL_TYPE_GENERALIZATION, IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET, IModelElementFactory.MODEL_TYPE_ASSOCIATION,
 				IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS };
 
 		this.sourceModelElement = null;
@@ -112,7 +111,7 @@ public class Model implements ModelElement {
 	}
 
 	public void setDescription(String description) {
-		this.description = ModelElement.safeGetString(description);;
+		this.description = ModelElement.safeGetString(description);
 	}
 
 	public List<ModelElement> getElements() {
@@ -133,35 +132,51 @@ public class Model implements ModelElement {
 	public boolean removeElement(ModelElement element) {
 		return this.contents.remove(element);
 	}
-	
+
 	private void addModelElements(IModelElement[] modelElements) {
 		for (int i = 0; modelElements != null && i < modelElements.length; i++) {
 			final IModelElement projectElement = modelElements[i];
-			
+
 			switch (projectElement.getModelType()) {
 			case IModelElementFactory.MODEL_TYPE_PACKAGE:
 				addElement(new Package((IPackage) projectElement));
 				break;
+
 			case IModelElementFactory.MODEL_TYPE_MODEL:
 				addElement(new Model((IModel) projectElement));
 				break;
+
 			case IModelElementFactory.MODEL_TYPE_CLASS:
 				addElement(new Class((IClass) projectElement));
 				break;
+
 			case IModelElementFactory.MODEL_TYPE_DATA_TYPE:
 				addElement(new Class((IDataType) projectElement));
 				break;
+
 			case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
 				IGeneralization gen = (IGeneralization) projectElement;
-				if(!(gen.getFrom().getModelType().equals(IModelElementFactory.MODEL_TYPE_STEREOTYPE)&&gen.getTo().getModelType().equals(IModelElementFactory.MODEL_TYPE_STEREOTYPE)))
+
+				String fromType = gen.getFrom().getModelType();
+				boolean isFromClass = fromType.equals(IModelElementFactory.MODEL_TYPE_CLASS);
+				boolean isFromAssociation = fromType.equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
+
+				String toType = gen.getTo().getModelType();
+				boolean isToClass = toType.equals(IModelElementFactory.MODEL_TYPE_CLASS);
+				boolean isToAssociation = toType.equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
+
+				if ((isFromClass || isFromAssociation) && (isToClass || isToAssociation))
 					addElement(new Generalization((IGeneralization) projectElement));
 				break;
+
 			case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
 				addElement(new Association((IAssociation) projectElement));
 				break;
+
 			case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
 				addElement(new GeneralizationSet((IGeneralizationSet) projectElement));
 				break;
+
 			case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
 				addElement(new AssociationClass((IAssociationClass) projectElement));
 			}

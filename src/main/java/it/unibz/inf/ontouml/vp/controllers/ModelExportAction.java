@@ -32,13 +32,25 @@ public class ModelExportAction implements VPActionController {
 	 */
 	@Override
 	public void performAction(VPAction action) {
-		final ProjectConfigurations configurations = Configurations.getInstance().getProjectConfigurations();
+		final ProjectConfigurations projectConfigurations = Configurations.getInstance().getProjectConfigurations();
+		final Configurations configs = Configurations.getInstance();
 
 		FileDialog fd = new FileDialog((Frame) ApplicationManager.instance().getViewManager().getRootFrame(),
 				"Choose destination", FileDialog.SAVE);
-
-		fd.setDirectory(configurations.getExportFolderPath());
-		fd.setFile("*.json");
+		
+		
+		String suggestedFilename;
+		fd.setDirectory(projectConfigurations.getExportFolderPath());
+		
+		if(projectConfigurations.getExportFilename().isEmpty()){
+			String projectName = ApplicationManager.instance().getProjectManager().getProject().getName();		
+			suggestedFilename = projectName+".json";
+			fd.setFile(suggestedFilename);
+		}else{
+			suggestedFilename = projectConfigurations.getExportFilename();
+			fd.setFile(suggestedFilename);
+		}
+		
 		fd.setVisible(true);
 
 		String fileDirectory = fd.getDirectory();
@@ -51,7 +63,9 @@ public class ModelExportAction implements VPActionController {
 			try {
 				final String jsonModel = ModelElement.generateModel(true);
 				Files.write(Paths.get(fileDirectory, fileName), jsonModel.getBytes());
-				configurations.setExportFolderPath(fileDirectory);
+				projectConfigurations.setExportFolderPath(fileDirectory);
+				projectConfigurations.setExportFilename(fileName);
+				configs.save();
 			} catch (IOException e) {
 				ViewUtils.log(
 						"Export Failed. Please submit your Visual Paradigm's log and the time of the error our developers.",
