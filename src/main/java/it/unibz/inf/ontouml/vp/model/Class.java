@@ -90,13 +90,10 @@ public class Class implements ModelElement {
 			addStereotype(stereotypes[i]);
 		}
 
-		if (this.stereotypes != null) {
-			if (this.stereotypes.contains(StereotypeUtils.STR_ENUMERATION)) {
-				IEnumerationLiteral[] literalArray = source.toEnumerationLiteralArray();
-				for (int i = 0; literalArray != null && i < literalArray.length; i++) {
-					addLiteral(new Literal(literalArray[i]));
-				}
-			}
+		if (this.stereotypes != null && this.stereotypes.contains(StereotypeUtils.STR_ENUMERATION)) {
+			IEnumerationLiteral[] literalArray = source.toEnumerationLiteralArray();
+			for (int i = 0; literalArray != null && i < literalArray.length; i++)
+				addLiteral(new Literal(literalArray[i]));
 		}
 
 		setAbstract(source.isAbstract());
