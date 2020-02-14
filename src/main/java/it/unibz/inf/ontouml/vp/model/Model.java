@@ -141,26 +141,42 @@ public class Model implements ModelElement {
 			case IModelElementFactory.MODEL_TYPE_PACKAGE:
 				addElement(new Package((IPackage) projectElement));
 				break;
+
 			case IModelElementFactory.MODEL_TYPE_MODEL:
 				addElement(new Model((IModel) projectElement));
 				break;
+
 			case IModelElementFactory.MODEL_TYPE_CLASS:
 				addElement(new Class((IClass) projectElement));
 				break;
+
 			case IModelElementFactory.MODEL_TYPE_DATA_TYPE:
 				addElement(new Class((IDataType) projectElement));
 				break;
+
 			case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
 				IGeneralization gen = (IGeneralization) projectElement;
-				if (!(gen.getFrom().getModelType().equals(IModelElementFactory.MODEL_TYPE_STEREOTYPE) && gen.getTo().getModelType().equals(IModelElementFactory.MODEL_TYPE_STEREOTYPE)))
+
+				String fromType = gen.getFrom().getModelType();
+				boolean isFromClass = fromType.equals(IModelElementFactory.MODEL_TYPE_CLASS);
+				boolean isFromAssociation = fromType.equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
+
+				String toType = gen.getTo().getModelType();
+				boolean isToClass = toType.equals(IModelElementFactory.MODEL_TYPE_CLASS);
+				boolean isToAssociation = toType.equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
+
+				if ((isFromClass || isFromAssociation) && (isToClass || isToAssociation))
 					addElement(new Generalization((IGeneralization) projectElement));
 				break;
+
 			case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
 				addElement(new Association((IAssociation) projectElement));
 				break;
+
 			case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
 				addElement(new GeneralizationSet((IGeneralizationSet) projectElement));
 				break;
+
 			case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
 				addElement(new AssociationClass((IAssociationClass) projectElement));
 			}
