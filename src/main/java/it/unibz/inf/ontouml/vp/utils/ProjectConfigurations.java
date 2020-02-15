@@ -23,7 +23,7 @@ public class ProjectConfigurations {
 
 	@SerializedName("projectId")
 	@Expose()
-	final private String id;
+	private String id;
 	
 	@SerializedName("isOntoUMLPluginEnabled")
 	@Expose()
@@ -31,7 +31,7 @@ public class ProjectConfigurations {
 
 	@SerializedName("serverURL")
 	@Expose()
-	private String serverURL = DEFAULT_SERVER_URL;
+	private String serverURL;
 	
 	@SerializedName("isCustomServerEnabled")
 	@Expose()
@@ -52,7 +52,17 @@ public class ProjectConfigurations {
 	@SerializedName("isAutomaticColoringEnabled")
 	@Expose()
 	private boolean isAutomaticColoringEnabled;
-	
+
+	/**
+	 *
+	 * Constructor without args to be called when deserializing project settings.
+	 *
+	 */
+	public ProjectConfigurations() {
+		this.id = "";
+		this.setDefaultValues();
+	}
+
 	/**
 	 * 
 	 * Initializes an instance of ProjectConfigurations with default settings.
@@ -62,7 +72,7 @@ public class ProjectConfigurations {
 	 */
 	public ProjectConfigurations(String projectId) {
 		this.id = projectId;
-		this.resetDefaults();
+		this.setDefaultValues();
 	}
 	
 	/** 
@@ -71,7 +81,7 @@ public class ProjectConfigurations {
 	 * By default, none of the options are enabled and the server's URL is the plugin's defaults.
 	 * 
 	 */
-	public void resetDefaults() {
+	public void setDefaultValues() {
 		this.isOntoUMLPluginEnabled = ProjectConfigurations.DEFAULT_IS_PLUGIN_ENABLED;
 		
 		this.isCustomServerEnabled = ProjectConfigurations.DEFAULT_IS_CUSTOM_SERVER_ENABLED;
