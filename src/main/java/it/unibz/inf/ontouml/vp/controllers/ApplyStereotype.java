@@ -38,9 +38,9 @@ public class ApplyStereotype implements VPContextActionController {
 	public static final Color COLOR_FUNCTIONAL_COMPLEX_KIND = new Color(255, 218, 221);
 	public static final Color COLOR_COLLECTIVE = new Color(255, 218, 221);
 	public static final Color COLOR_QUANTITY = new Color(255, 218, 221);
-	public static final Color COLOR_RELATOR_KIND = new Color(211, 255, 211);
-	public static final Color COLOR_MODE_KIND = new Color(192, 237, 255);
-	public static final Color COLOR_QUALITY_KIND = new Color(192, 237, 255);
+	public static final Color COLOR_RELATOR = new Color(211, 255, 211);
+	public static final Color COLOR_MODE = new Color(192, 237, 255);
+	public static final Color COLOR_QUALITY = new Color(192, 237, 255);
 
 	public static final Color COLOR_FUNCTIONAL_COMPLEX_SORTAL = new Color(255, 218, 221);
 	public static final Color COLOR_COLLECTIVE_SORTAL = new Color(255, 218, 221);
@@ -98,17 +98,17 @@ public class ApplyStereotype implements VPContextActionController {
 			element.addStereotype(StereotypeUtils.STR_ROLE);
 			paint(context, getSpecializedColor(context));
 			break;
-		case ActionIds.RELATOR_KIND:
+		case ActionIds.RELATOR:
 			element.addStereotype(StereotypeUtils.STR_RELATOR);
-			paint(context, COLOR_RELATOR_KIND);
+			paint(context, COLOR_RELATOR);
 			break;
 		case ActionIds.QUANTITY:
 			element.addStereotype(StereotypeUtils.STR_QUANTITY);
 			paint(context, COLOR_QUANTITY);
 			break;
-		case ActionIds.QUALITY_KIND:
+		case ActionIds.QUALITY:
 			element.addStereotype(StereotypeUtils.STR_QUALITY);
-			paint(context, COLOR_QUALITY_KIND);
+			paint(context, COLOR_QUALITY);
 			break;
 		case ActionIds.PHASE_MIXIN:
 			element.addStereotype(StereotypeUtils.STR_PHASE_MIXIN);
@@ -119,9 +119,9 @@ public class ApplyStereotype implements VPContextActionController {
 			element.addStereotype(StereotypeUtils.STR_PHASE);
 			paint(context, getSpecializedColor(context));
 			break;
-		case ActionIds.MODE_KIND:
+		case ActionIds.MODE:
 			element.addStereotype(StereotypeUtils.STR_MODE);
-			paint(context, COLOR_MODE_KIND);
+			paint(context, COLOR_MODE);
 			break;
 		case ActionIds.MIXIN:
 			element.addStereotype(StereotypeUtils.STR_MIXIN);
@@ -168,6 +168,7 @@ public class ApplyStereotype implements VPContextActionController {
 		case ActionIds.MANIFESTATION:
 			element.addStereotype(StereotypeUtils.STR_MANIFESTATION);
 			removeAggregationKind(element);
+			break;
 		case ActionIds.MATERIAL:
 			element.addStereotype(StereotypeUtils.STR_MATERIAL);
 			removeAggregationKind(element);
@@ -362,11 +363,11 @@ public class ApplyStereotype implements VPContextActionController {
 					return COLOR_COLLECTIVE_SORTAL;
 				} else if (superColor.equals(COLOR_QUANTITY) || superColor.equals(COLOR_QUANTITY_SORTAL)) {
 					return COLOR_QUANTITY_SORTAL;
-				} else if (superColor.equals(COLOR_RELATOR_KIND) || superColor.equals(COLOR_RELATOR_SORTAL)) {
+				} else if (superColor.equals(COLOR_RELATOR) || superColor.equals(COLOR_RELATOR_SORTAL)) {
 					return COLOR_RELATOR_SORTAL;
-				} else if (superColor.equals(COLOR_MODE_KIND) || superColor.equals(COLOR_MODE_SORTAL)) {
+				} else if (superColor.equals(COLOR_MODE) || superColor.equals(COLOR_MODE_SORTAL)) {
 					return COLOR_MODE_SORTAL;
-				} else if (superColor.equals(COLOR_QUALITY_KIND) || superColor.equals(COLOR_QUALITY_SORTAL)) {
+				} else if (superColor.equals(COLOR_QUALITY) || superColor.equals(COLOR_QUALITY_SORTAL)) {
 					return COLOR_QUALITY_SORTAL;
 				}
 			}

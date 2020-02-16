@@ -15,12 +15,12 @@ public final class ActionIds {
 	public static final String SUBKIND = "it.unibz.inf.ontouml.vp.addSubkindStereotype";
 	public static final String ROLE_MIXIN = "it.unibz.inf.ontouml.vp.addRoleMixinStereotype";
 	public static final String ROLE = "it.unibz.inf.ontouml.vp.addRoleStereotype";
-	public static final String RELATOR_KIND = "it.unibz.inf.ontouml.vp.addRelatorKindStereotype";
+	public static final String RELATOR = "it.unibz.inf.ontouml.vp.addRelatorStereotype";
 	public static final String QUANTITY = "it.unibz.inf.ontouml.vp.addQuantityStereotype";
-	public static final String QUALITY_KIND = "it.unibz.inf.ontouml.vp.addQualityKindStereotype";
+	public static final String QUALITY = "it.unibz.inf.ontouml.vp.addQualityStereotype";
 	public static final String PHASE_MIXIN = "it.unibz.inf.ontouml.vp.addPhaseMixinStereotype";
 	public static final String PHASE = "it.unibz.inf.ontouml.vp.addPhaseStereotype";
-	public static final String MODE_KIND = "it.unibz.inf.ontouml.vp.addModeKindStereotype";
+	public static final String MODE = "it.unibz.inf.ontouml.vp.addModeStereotype";
 	public static final String MIXIN = "it.unibz.inf.ontouml.vp.addMixinStereotype";
 	public static final String KIND = "it.unibz.inf.ontouml.vp.addKindStereotype";
 	public static final String COLLECTIVE = "it.unibz.inf.ontouml.vp.addCollectiveStereotype";
