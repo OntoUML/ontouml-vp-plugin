@@ -62,7 +62,7 @@ public abstract class SourceKind {
 			setActionForTarget(action, targetPhase);
 			break;
 		case StereotypeUtils.STR_CATEGORY:
-			setActionForTarget(action, targetRelator);
+			setActionForTarget(action, targetCategory);
 			break;
 		case StereotypeUtils.STR_MIXIN:
 			setActionForTarget(action, targetMixin);
