@@ -2,11 +2,13 @@ package it.unibz.inf.ontouml.vp.utils;
 
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.ProjectManager;
+import com.vp.plugin.action.VPAction;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.IStereotype;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -28,9 +30,9 @@ public class StereotypeUtils {
 	public static final String STR_KIND = "kind";
 	public static final String STR_COLLECTIVE = "collective";
 	public static final String STR_QUANTITY = "quantity";
-	public static final String STR_RELATOR_KIND = "relatorKind";
-	public static final String STR_QUALITY_KIND = "qualityKind";
-	public static final String STR_MODE_KIND = "modeKind";
+	public static final String STR_RELATOR = "relator";
+	public static final String STR_QUALITY= "quality";
+	public static final String STR_MODE = "mode";
 	public static final String STR_SUBKIND = "subkind";
 	public static final String STR_ROLE = "role";
 	public static final String STR_PHASE = "phase";
@@ -59,16 +61,17 @@ public class StereotypeUtils {
 	public static final String STR_PARTICIPATION = "participation";
 	public static final String STR_HISTORICAL_DEPENDENCE = "historicalDependence";
 	public static final String STR_CREATION = "creation";
+	public static final String STR_MANIFESTATION = "manifestation";
 	
 	// Attribute stereotypes
 	public static final String STR_BEGIN = "begin";
 	public static final String STR_END = "end";
 
 	public static final List<String> STEREOTYPES = Arrays.asList(STR_POWERTYPE, STR_TYPE, STR_HISTORICAL_ROLE, STR_EVENT, STR_CATEGORY,
-	STR_MIXIN, STR_ROLE_MIXIN, STR_PHASE_MIXIN, STR_KIND,	STR_COLLECTIVE,	STR_QUANTITY,	STR_RELATOR_KIND,	STR_QUALITY_KIND,	STR_MODE_KIND,
+	STR_MIXIN, STR_ROLE_MIXIN, STR_PHASE_MIXIN, STR_KIND,	STR_COLLECTIVE,	STR_QUANTITY,	STR_RELATOR,	STR_QUALITY,	STR_MODE,
 	STR_SUBKIND,	STR_ROLE, STR_PHASE, STR_ENUMERATION, STR_DATATYPE, STR_MATERIAL, STR_COMPARATIVE, STR_MEDIATION,
 	STR_CHARACTERIZATION, STR_EXTERNAL_DEPENDENCE, STR_COMPONENT_OF, STR_MEMBER_OF, STR_SUB_COLLECTION_OF, STR_SUB_QUANTITY_OF, 
-	STR_INSTANTIATION, STR_TERMINATION, STR_PARTICIPATIONAL, STR_PARTICIPATION, STR_HISTORICAL_DEPENDENCE, STR_CREATION, STR_BEGIN, STR_END);
+	STR_INSTANTIATION, STR_TERMINATION, STR_PARTICIPATIONAL, STR_PARTICIPATION, STR_HISTORICAL_DEPENDENCE, STR_CREATION, STR_MANIFESTATION, STR_BEGIN, STR_END);
 
 	public static void removeAllModelStereotypes(String modelType) {
 
@@ -160,9 +163,9 @@ public class StereotypeUtils {
 		str_names.add(STR_PHASE_MIXIN);
 		str_names.add(STR_KIND);
 		str_names.add(STR_QUANTITY);
-		str_names.add(STR_RELATOR_KIND);
-		str_names.add(STR_QUALITY_KIND);
-		str_names.add(STR_MODE_KIND);
+		str_names.add(STR_RELATOR);
+		str_names.add(STR_QUALITY);
+		str_names.add(STR_MODE);
 		str_names.add(STR_SUBKIND);
 		str_names.add(STR_ROLE);
 		str_names.add(STR_PHASE);
@@ -180,6 +183,7 @@ public class StereotypeUtils {
 		str_names.add(STR_PARTICIPATION);
 		str_names.add(STR_HISTORICAL_DEPENDENCE);
 		str_names.add(STR_CREATION);
+		str_names.add(STR_MANIFESTATION);
 
 		str_names.add(STR_MATERIAL);
 		str_names.add(STR_MEDIATION);
