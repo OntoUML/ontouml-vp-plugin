@@ -350,8 +350,6 @@ public class Property implements ModelElement {
 	}
 
 	public void setAggregationKind(String aggregationKind) {
-		System.out.println(aggregationKind);
-
 		if(aggregationKind==null) {
 			this.aggregationKind = null;
 			return;
