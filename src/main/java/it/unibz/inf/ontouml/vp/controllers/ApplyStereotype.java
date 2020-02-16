@@ -260,7 +260,7 @@ public class ApplyStereotype implements VPContextActionController {
 				SourceMode.setAction(action, targetStereotype);
 				break;
 			case StereotypeUtils.STR_QUALITY:
-				SourceMode.setAction(action, targetStereotype);
+				SourceQuality.setAction(action, targetStereotype);
 				break;
 			case StereotypeUtils.STR_SUBKIND:
 				SourceSubKind.setAction(action, targetStereotype);
