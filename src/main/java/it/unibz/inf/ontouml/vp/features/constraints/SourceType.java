@@ -4,99 +4,50 @@ import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.vp.plugin.action.VPAction;
 
 public class SourceType {
-
 	// each ArrayList is a set of permitted associations when the source is Type
-	public static final ArrayList<String> targetKind = new ArrayList<>();
-	public static final ArrayList<String> targetQuantity = new ArrayList<>();
-	public static final ArrayList<String> targetCollective = new ArrayList<>();
-	public static final ArrayList<String> targetRelator = new ArrayList<>();
-	public static final ArrayList<String> targetMode = new ArrayList<>();
-	public static final ArrayList<String> targetQuality = new ArrayList<>();
-	public static final ArrayList<String> targetSubKind = new ArrayList<>();
-	public static final ArrayList<String> targetRole = new ArrayList<>();
-	public static final ArrayList<String> targetPhase = new ArrayList<>();
-	public static final ArrayList<String> targetCategory = new ArrayList<>();
-	public static final ArrayList<String> targetMixin = new ArrayList<>();
-	public static final ArrayList<String> targetRoleMixin = new ArrayList<>();
-	public static final ArrayList<String> targetPhaseMixin = new ArrayList<>();
-	public static final ArrayList<String> targetHistoricalRole = new ArrayList<>();
-	public static final ArrayList<String> targetEvent = new ArrayList<>();
-	public static final ArrayList<String> targetType = new ArrayList<>(Arrays.asList(ActionIds.INSTANTIATION));
-	public static final ArrayList<String> targetDataType = new ArrayList<>();
-	public static final ArrayList<String> targetEnumeration = new ArrayList<>();
+	@SuppressWarnings("serial")
+	public static final Map<String, ArrayList<String>> allowedRelationsMap = new HashMap<String, ArrayList<String>>() {
+		{
+			put(StereotypeUtils.STR_KIND, new ArrayList<>());
+			put(StereotypeUtils.STR_QUANTITY, new ArrayList<>());
+			put(StereotypeUtils.STR_COLLECTIVE, new ArrayList<>());
+			put(StereotypeUtils.STR_RELATOR, new ArrayList<>());
+			put(StereotypeUtils.STR_MODE, new ArrayList<>());
+			put(StereotypeUtils.STR_QUALITY, new ArrayList<>());
+			put(StereotypeUtils.STR_SUBKIND, new ArrayList<>());
+			put(StereotypeUtils.STR_ROLE, new ArrayList<>());
+			put(StereotypeUtils.STR_PHASE, new ArrayList<>());
+			put(StereotypeUtils.STR_CATEGORY, new ArrayList<>());
+			put(StereotypeUtils.STR_MIXIN, new ArrayList<>());
+			put(StereotypeUtils.STR_ROLE_MIXIN, new ArrayList<>());
+			put(StereotypeUtils.STR_PHASE_MIXIN, new ArrayList<>());
+			put(StereotypeUtils.STR_HISTORICAL_ROLE, new ArrayList<>());
+			put(StereotypeUtils.STR_EVENT, new ArrayList<>());
+			put(StereotypeUtils.STR_TYPE, new ArrayList<>(Arrays.asList(ActionIds.INSTANTIATION)));
+			put(StereotypeUtils.STR_DATATYPE, new ArrayList<>());
+			put(StereotypeUtils.STR_ENUMERATION, new ArrayList<>());
+		}
+	};
 
 	public static void setAction(VPAction action, String targetStereotype) {
+		ArrayList<String> allowedRelations = allowedRelationsMap.get(targetStereotype);
 
-		switch (targetStereotype) {
-		case StereotypeUtils.STR_KIND:
-			setActionForTarget(action, targetKind);
-			break;
-		case StereotypeUtils.STR_QUANTITY:
-			setActionForTarget(action, targetQuantity);
-			break;
-		case StereotypeUtils.STR_COLLECTIVE:
-			setActionForTarget(action, targetCollective);
-			break;
-		case StereotypeUtils.STR_RELATOR:
-			setActionForTarget(action, targetRelator);
-			break;
-		case StereotypeUtils.STR_MODE:
-			setActionForTarget(action, targetMode);
-			break;
-		case StereotypeUtils.STR_QUALITY:
-			setActionForTarget(action, targetQuality);
-			break;
-		case StereotypeUtils.STR_SUBKIND:
-			setActionForTarget(action, targetSubKind);
-			break;
-		case StereotypeUtils.STR_ROLE:
-			setActionForTarget(action, targetRole);
-			break;
-		case StereotypeUtils.STR_PHASE:
-			setActionForTarget(action, targetPhase);
-			break;
-		case StereotypeUtils.STR_CATEGORY:
-			setActionForTarget(action, targetCategory);
-			break;
-		case StereotypeUtils.STR_MIXIN:
-			setActionForTarget(action, targetMixin);
-			break;
-		case StereotypeUtils.STR_ROLE_MIXIN:
-			setActionForTarget(action, targetRoleMixin);
-			break;
-		case StereotypeUtils.STR_PHASE_MIXIN:
-			setActionForTarget(action, targetPhaseMixin);
-			break;
-		case StereotypeUtils.STR_HISTORICAL_ROLE:
-			setActionForTarget(action, targetHistoricalRole);
-			break;
-		case StereotypeUtils.STR_EVENT:
-			setActionForTarget(action, targetEvent);
-			break;
-		case StereotypeUtils.STR_TYPE:
-			setActionForTarget(action, targetType);
-			break;
-		case StereotypeUtils.STR_DATATYPE:
-			setActionForTarget(action, targetDataType);
-			break;
-		case StereotypeUtils.STR_ENUMERATION:
-			setActionForTarget(action, targetEnumeration);
-			break;
-		default:
+		if (allowedRelations != null)
+			setActionForTarget(action, allowedRelations);
+		else
 			action.setEnabled(false);
-		}
 	}
 
 	public static void setActionForTarget(VPAction action, ArrayList<String> target) {
-
-		if (target.contains(action.getActionId())) {
+		if (target.contains(action.getActionId()))
 			action.setEnabled(true);
-		} else {
+		else
 			action.setEnabled(false);
-		}
 	}
 }
