@@ -2,13 +2,10 @@ package it.unibz.inf.ontouml.vp.utils;
 
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.ProjectManager;
-import com.vp.plugin.action.VPAction;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.IStereotype;
 import com.vp.plugin.model.factory.IModelElementFactory;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -17,7 +14,8 @@ import java.util.Set;
 public class StereotypeUtils {
 
 	// Class stereotypes
-	public static final String STR_POWERTYPE = "powertype";
+	//if uncomment next line please add in the STEREOTYPES var list below
+	//public static final String STR_POWERTYPE = "powertype";
 	public static final String STR_TYPE = "type";
 
 	public static final String STR_HISTORICAL_ROLE = "historicalRole";
@@ -67,7 +65,8 @@ public class StereotypeUtils {
 	public static final String STR_BEGIN = "begin";
 	public static final String STR_END = "end";
 
-	public static final List<String> STEREOTYPES = Arrays.asList(STR_POWERTYPE, STR_TYPE, STR_HISTORICAL_ROLE, STR_EVENT, STR_CATEGORY,
+	//removed STR_POWERTYPE from the below list - 17 fev 2020
+	public static final List<String> STEREOTYPES = Arrays.asList(STR_TYPE, STR_HISTORICAL_ROLE, STR_EVENT, STR_CATEGORY,
 	STR_MIXIN, STR_ROLE_MIXIN, STR_PHASE_MIXIN, STR_KIND,	STR_COLLECTIVE,	STR_QUANTITY,	STR_RELATOR,	STR_QUALITY,	STR_MODE,
 	STR_SUBKIND,	STR_ROLE, STR_PHASE, STR_ENUMERATION, STR_DATATYPE, STR_MATERIAL, STR_COMPARATIVE, STR_MEDIATION,
 	STR_CHARACTERIZATION, STR_EXTERNAL_DEPENDENCE, STR_COMPONENT_OF, STR_MEMBER_OF, STR_SUB_COLLECTION_OF, STR_SUB_QUANTITY_OF, 
@@ -148,7 +147,7 @@ public class StereotypeUtils {
 	public static Set<String> getOntoUMLClassStereotypeNames() {
 		final Set<String> str_names = new HashSet<String>();
 
-		str_names.add(STR_POWERTYPE);
+		//str_names.add(STR_POWERTYPE);
 		str_names.add(STR_TYPE);
 		
 		str_names.add(STR_HISTORICAL_ROLE);

@@ -61,13 +61,13 @@ public class ApplyStereotype implements VPContextActionController {
 		}
 
 		switch (action.getActionId()) {
+		/*case ActionIds.POWERTYPE:
+			element.addStereotype(StereotypeUtils.STR_POWERTYPE);
+			paint(context, COLOR_POWERTYPE);
+			break;*/
 		case ActionIds.TYPE:
 			element.addStereotype(StereotypeUtils.STR_TYPE);
 			paint(context, COLOR_TYPE);
-			break;
-		case ActionIds.POWERTYPE:
-			element.addStereotype(StereotypeUtils.STR_POWERTYPE);
-			paint(context, COLOR_POWERTYPE);
 			break;
 		case ActionIds.HISTORICAL_ROLE:
 			element.addStereotype(StereotypeUtils.STR_HISTORICAL_ROLE);

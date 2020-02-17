@@ -1,15 +1,9 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
-
 import it.unibz.inf.ontouml.vp.model.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.OntoUMLServerUtils;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;

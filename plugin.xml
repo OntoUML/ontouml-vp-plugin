@@ -65,9 +65,9 @@
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
             
-            <action id="it.unibz.inf.ontouml.vp.addPowertypeStereotype" label="Powertype" style="normal" menuPath="ontoUMLMenu1/#">
+          <!-- POWERTYPE REMOVED IN 17 FEV 2020  <action id="it.unibz.inf.ontouml.vp.addPowertypeStereotype" label="Powertype" style="normal" menuPath="ontoUMLMenu1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
-            </action>
+            </action> -->
     
             <separator id="it.unibz.inf.ontouml.vp.separator2" menuPath="ontoUMLMenu1/#"/>
 
