@@ -14,12 +14,9 @@ import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.lang.reflect.InvocationTargetException;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 
@@ -256,18 +253,17 @@ public class ApplyStereotype implements VPContextActionController {
 
 		ArrayList<String> allowedCombinations = AssociationConstraints.allowedCombinations.get(new AbstractMap.SimpleEntry<String, String>(sourceStereotype, targetStereotype));
 
-		if(allowedCombinations == null){
+		if (allowedCombinations == null) {
 			action.setEnabled(false);
 			return;
 		}
-					
+
 		if (allowedCombinations.contains(action.getActionId()))
 			action.setEnabled(true);
 		else
 			action.setEnabled(false);
 
 		return;
-
 	}
 
 	/**
