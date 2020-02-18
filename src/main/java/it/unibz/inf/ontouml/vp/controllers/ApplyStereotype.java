@@ -14,8 +14,12 @@ import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.lang.reflect.InvocationTargetException;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
@@ -61,10 +65,9 @@ public class ApplyStereotype implements VPContextActionController {
 		}
 
 		switch (action.getActionId()) {
-		/*case ActionIds.POWERTYPE:
-			element.addStereotype(StereotypeUtils.STR_POWERTYPE);
-			paint(context, COLOR_POWERTYPE);
-			break;*/
+		/*
+		 * case ActionIds.POWERTYPE: element.addStereotype(StereotypeUtils.STR_POWERTYPE); paint(context, COLOR_POWERTYPE); break;
+		 */
 		case ActionIds.TYPE:
 			element.addStereotype(StereotypeUtils.STR_TYPE);
 			paint(context, COLOR_TYPE);
@@ -236,75 +239,34 @@ public class ApplyStereotype implements VPContextActionController {
 		ArrayList<String> targetStereotypes = new ArrayList<String>(Arrays.asList(target.toStereotypeArray()));
 
 		if (sourceStereotypes.size() == 0 || targetStereotypes.size() == 0) {
-			//if any end has no stereotypes everything is allowed
+			// if any end has no stereotypes everything is allowed
 			action.setEnabled(true);
-		} else if (sourceStereotypes.size() == 1 && targetStereotypes.size() == 1) {
-
-			String sourceStereotype = sourceStereotypes.get(0);
-			String targetStereotype = targetStereotypes.get(0);
-
-			switch (sourceStereotype) {
-			case StereotypeUtils.STR_KIND:
-				SourceKind.setAction(action, targetStereotype);
-				break;
-			case StereotypeUtils.STR_QUANTITY:
-				SourceQuantity.setAction(action, targetStereotype);
-				break;
-			case StereotypeUtils.STR_COLLECTIVE:
-				SourceCollective.setAction(action, targetStereotype);
-				break;
-			case StereotypeUtils.STR_RELATOR:
-				SourceRelator.setAction(action, targetStereotype);
-				break;
-			case StereotypeUtils.STR_MODE:
-				SourceMode.setAction(action, targetStereotype);
-				break;
-			case StereotypeUtils.STR_QUALITY:
-				SourceQuality.setAction(action, targetStereotype);
-				break;
-			case StereotypeUtils.STR_SUBKIND:
-				SourceSubKind.setAction(action, targetStereotype);
-				break;
-			case StereotypeUtils.STR_ROLE:
-				SourceRole.setAction(action, targetStereotype);
-				break;
-			case StereotypeUtils.STR_PHASE:
-				SourcePhase.setAction(action, targetStereotype);
-				break;
-			case StereotypeUtils.STR_CATEGORY:
-				SourceCategory.setAction(action, targetStereotype);
-				break;
-			case StereotypeUtils.STR_MIXIN:
-				SourceMixin.setAction(action, targetStereotype);
-				break;
-			case StereotypeUtils.STR_ROLE_MIXIN:
-				SourceRoleMixin.setAction(action, targetStereotype);
-				break;
-			case StereotypeUtils.STR_PHASE_MIXIN:
-				SourcePhaseMixin.setAction(action, targetStereotype);
-				break;
-			case StereotypeUtils.STR_HISTORICAL_ROLE:
-				SourceHistoricalRole.setAction(action, targetStereotype);
-				break;
-			case StereotypeUtils.STR_EVENT:
-				SourceEvent.setAction(action, targetStereotype);
-				break;
-			case StereotypeUtils.STR_TYPE:
-				SourceType.setAction(action, targetStereotype);
-				break;
-			case StereotypeUtils.STR_DATATYPE:
-				SourceDataType.setAction(action, targetStereotype);
-				break;
-			case StereotypeUtils.STR_ENUMERATION:
-				SourceEnumeration.setAction(action, targetStereotype);
-				break;
-			default:
-				action.setEnabled(false);
-			}
-		} else {
-			//if any end has more than 1 stereotypes nothing is allowed
-			action.setEnabled(false);
+			return;
 		}
+
+		if (sourceStereotypes.size() > 1 || targetStereotypes.size() > 1) {
+			// if any end has more than 1 stereotypes nothing is allowed
+			action.setEnabled(false);
+			return;
+		}
+
+		// continue if both ends has ONLY ONE stereotype in both ends
+		String sourceStereotype = sourceStereotypes.get(0);
+		String targetStereotype = targetStereotypes.get(0);
+
+		ArrayList<String> allowedCombinations = AssociationConstraints.allowedCombinations.get(new AbstractMap.SimpleEntry<String, String>(sourceStereotype, targetStereotype));
+
+		if(allowedCombinations == null){
+			action.setEnabled(false);
+			return;
+		}
+					
+		if (allowedCombinations.contains(action.getActionId()))
+			action.setEnabled(true);
+		else
+			action.setEnabled(false);
+
+		return;
 
 	}
 
