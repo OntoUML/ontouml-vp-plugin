@@ -14,7 +14,7 @@ import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.AbstractMap;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -216,12 +216,12 @@ public class ApplyStereotype implements VPContextActionController {
 
 	@Override
 	public void update(VPAction action, VPContext context) {
-		IModelElement element = context.getModelElement();
+		final IModelElement element = context.getModelElement();
 
 		if (!element.getModelType().equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION))
 			return;
 
-		IAssociation association = (IAssociation) element;
+		final IAssociation association = (IAssociation) element;
 
 		if (!association.getFrom().getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS))
 			return;
@@ -229,11 +229,11 @@ public class ApplyStereotype implements VPContextActionController {
 		if (!association.getTo().getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS))
 			return;
 
-		IClass source = (IClass) association.getFrom();
-		IClass target = (IClass) association.getTo();
+		final IClass source = (IClass) association.getFrom();
+		final IClass target = (IClass) association.getTo();
 
-		ArrayList<String> sourceStereotypes = new ArrayList<String>(Arrays.asList(source.toStereotypeArray()));
-		ArrayList<String> targetStereotypes = new ArrayList<String>(Arrays.asList(target.toStereotypeArray()));
+		final ArrayList<String> sourceStereotypes = new ArrayList<String>(Arrays.asList(source.toStereotypeArray()));
+		final ArrayList<String> targetStereotypes = new ArrayList<String>(Arrays.asList(target.toStereotypeArray()));
 
 		if (sourceStereotypes.size() == 0 || targetStereotypes.size() == 0) {
 			// if any end has no stereotypes everything is allowed
@@ -248,22 +248,16 @@ public class ApplyStereotype implements VPContextActionController {
 		}
 
 		// continue if both ends has ONLY ONE stereotype in both ends
-		String sourceStereotype = sourceStereotypes.get(0);
-		String targetStereotype = targetStereotypes.get(0);
+		final String sourceStereotype = sourceStereotypes.get(0);
+		final String targetStereotype = targetStereotypes.get(0);
+		final ArrayList<String> allowedCombinations = AssociationConstraints.allowedCombinations.get(new SimpleEntry<String, String>(sourceStereotype, targetStereotype));
 
-		ArrayList<String> allowedCombinations = AssociationConstraints.allowedCombinations.get(new AbstractMap.SimpleEntry<String, String>(sourceStereotype, targetStereotype));
-
-		if (allowedCombinations == null) {
+		if (allowedCombinations == null || !allowedCombinations.contains(action.getActionId())) {
 			action.setEnabled(false);
-			return;
 		}
-
-		if (allowedCombinations.contains(action.getActionId()))
+		else {
 			action.setEnabled(true);
-		else
-			action.setEnabled(false);
-
-		return;
+		}
 	}
 
 	/**
