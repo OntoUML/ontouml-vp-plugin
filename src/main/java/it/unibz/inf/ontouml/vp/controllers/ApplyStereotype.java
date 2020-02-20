@@ -27,31 +27,6 @@ import java.util.Arrays;
  */
 public class ApplyStereotype implements VPContextActionController {
 
-	// Default colors
-	public static final Color COLOR_TYPE = new Color(211, 211, 252);
-	public static final Color COLOR_POWERTYPE = new Color(211, 211, 252);
-
-	public static final Color COLOR_EVENT = new Color(252, 252, 212);
-
-	public static final Color COLOR_ENUMERATION = new Color(255, 255, 255);
-	public static final Color COLOR_DATATYPE = new Color(255, 255, 255);
-
-	public static final Color COLOR_FUNCTIONAL_COMPLEX_KIND = new Color(255, 218, 221);
-	public static final Color COLOR_COLLECTIVE = new Color(255, 218, 221);
-	public static final Color COLOR_QUANTITY = new Color(255, 218, 221);
-	public static final Color COLOR_RELATOR = new Color(211, 255, 211);
-	public static final Color COLOR_MODE = new Color(192, 237, 255);
-	public static final Color COLOR_QUALITY = new Color(192, 237, 255);
-
-	public static final Color COLOR_FUNCTIONAL_COMPLEX_SORTAL = new Color(255, 218, 221);
-	public static final Color COLOR_COLLECTIVE_SORTAL = new Color(255, 218, 221);
-	public static final Color COLOR_QUANTITY_SORTAL = new Color(255, 218, 221);
-	public static final Color COLOR_RELATOR_SORTAL = new Color(211, 255, 211);
-	public static final Color COLOR_MODE_SORTAL = new Color(192, 237, 255);
-	public static final Color COLOR_QUALITY_SORTAL = new Color(192, 237, 255);
-
-	public static final Color COLOR_NON_SORTAL = new Color(224, 224, 224);
-
 	@Override
 	public void performAction(VPAction action, VPContext context, ActionEvent event) {
 		final IModelElement element = context.getModelElement();
@@ -67,79 +42,60 @@ public class ApplyStereotype implements VPContextActionController {
 		 */
 		case ActionIds.TYPE:
 			element.addStereotype(StereotypeUtils.STR_TYPE);
-			paint(context, COLOR_TYPE);
 			break;
 		case ActionIds.HISTORICAL_ROLE:
 			element.addStereotype(StereotypeUtils.STR_HISTORICAL_ROLE);
-			paint(context, getSpecializedColor(context));
 			break;
 		case ActionIds.EVENT:
 			element.addStereotype(StereotypeUtils.STR_EVENT);
-			paint(context, COLOR_EVENT);
 			break;
 		case ActionIds.ENUMERATION:
 			element.addStereotype(StereotypeUtils.STR_ENUMERATION);
-			paint(context, COLOR_ENUMERATION);
 			break;
 		case ActionIds.DATATYPE:
 			element.addStereotype(StereotypeUtils.STR_DATATYPE);
-			paint(context, COLOR_DATATYPE);
 			break;
 		case ActionIds.SUBKIND:
 			element.addStereotype(StereotypeUtils.STR_SUBKIND);
-			paint(context, getSpecializedColor(context));
 			break;
 		case ActionIds.ROLE_MIXIN:
 			element.addStereotype(StereotypeUtils.STR_ROLE_MIXIN);
 			setAbstract(element);
-			paint(context, COLOR_NON_SORTAL);
 			break;
 		case ActionIds.ROLE:
 			element.addStereotype(StereotypeUtils.STR_ROLE);
-			paint(context, getSpecializedColor(context));
 			break;
 		case ActionIds.RELATOR:
 			element.addStereotype(StereotypeUtils.STR_RELATOR);
-			paint(context, COLOR_RELATOR);
 			break;
 		case ActionIds.QUANTITY:
 			element.addStereotype(StereotypeUtils.STR_QUANTITY);
-			paint(context, COLOR_QUANTITY);
 			break;
 		case ActionIds.QUALITY:
 			element.addStereotype(StereotypeUtils.STR_QUALITY);
-			paint(context, COLOR_QUALITY);
 			break;
 		case ActionIds.PHASE_MIXIN:
 			element.addStereotype(StereotypeUtils.STR_PHASE_MIXIN);
 			setAbstract(element);
-			paint(context, COLOR_NON_SORTAL);
 			break;
 		case ActionIds.PHASE:
 			element.addStereotype(StereotypeUtils.STR_PHASE);
-			paint(context, getSpecializedColor(context));
 			break;
 		case ActionIds.MODE:
 			element.addStereotype(StereotypeUtils.STR_MODE);
-			paint(context, COLOR_MODE);
 			break;
 		case ActionIds.MIXIN:
 			element.addStereotype(StereotypeUtils.STR_MIXIN);
 			setAbstract(element);
-			paint(context, COLOR_NON_SORTAL);
 			break;
 		case ActionIds.KIND:
 			element.addStereotype(StereotypeUtils.STR_KIND);
-			paint(context, COLOR_FUNCTIONAL_COMPLEX_KIND);
 			break;
 		case ActionIds.COLLECTIVE:
 			element.addStereotype(StereotypeUtils.STR_COLLECTIVE);
-			paint(context, COLOR_COLLECTIVE);
 			break;
 		case ActionIds.CATEGORY:
 			element.addStereotype(StereotypeUtils.STR_CATEGORY);
-			setAbstract(element);
-			paint(context, COLOR_NON_SORTAL);
 			break;
 		case ActionIds.INSTANTIATION:
 			element.addStereotype(StereotypeUtils.STR_INSTANTIATION);
@@ -258,77 +214,6 @@ public class ApplyStereotype implements VPContextActionController {
 		else {
 			action.setEnabled(true);
 		}
-	}
-
-	/**
-	 * 
-	 * Paints the assigned diagram element with the assigned color. No effect whenever auto-coloring is disabled or color is <code>null</code>.
-	 * 
-	 * @param diagramElement
-	 * @param color
-	 */
-	private void paint(VPContext context, Color color) {
-		if (!Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled() || color == null) {
-			return;
-		}
-
-		final IModelElement _class = context.getModelElement();
-		final IDiagramElement[] diagramElements = _class.getDiagramElements();
-
-		for (int i = 0; diagramElements != null && i < diagramElements.length; i++) {
-			IDiagramElement diagramElement = diagramElements[i];
-			if (diagramElement instanceof IShapeUIModel) {
-				((IShapeUIModel) diagramElement).getFillColor().setColor1(color);
-			} else {
-				diagramElement.setForeground(color);
-			}
-		}
-
-	}
-
-	/**
-	 * 
-	 * Returns first sortal color occurring on one of the generalizations of this class. If generalization with such color is found, returns <code>null</code>.
-	 * 
-	 * @param context
-	 * 
-	 */
-	private Color getSpecializedColor(VPContext context) {
-		final IModelElement sourceModelElement = context.getModelElement();
-		final ISimpleRelationship[] specializations = sourceModelElement.toToRelationshipArray();
-
-		for (int i = 0; specializations != null && i < specializations.length; i++) {
-			if (!(specializations[i] instanceof IGeneralization)) {
-				continue;
-			}
-
-			final IModelElement superClass = specializations[i].getFrom();
-			final IDiagramElement[] superDiagramElements = superClass.getDiagramElements();
-
-			for (int j = 0; j < superDiagramElements.length; j++) {
-				if (!(superDiagramElements[j] instanceof IShapeUIModel)) {
-					continue;
-				}
-
-				final Color superColor = ((IShapeUIModel) superDiagramElements[j]).getFillColor().getColor1();
-
-				if (superColor.equals(COLOR_FUNCTIONAL_COMPLEX_KIND) || superColor.equals(COLOR_FUNCTIONAL_COMPLEX_SORTAL)) {
-					return COLOR_FUNCTIONAL_COMPLEX_SORTAL;
-				} else if (superColor.equals(COLOR_COLLECTIVE) || superColor.equals(COLOR_COLLECTIVE_SORTAL)) {
-					return COLOR_COLLECTIVE_SORTAL;
-				} else if (superColor.equals(COLOR_QUANTITY) || superColor.equals(COLOR_QUANTITY_SORTAL)) {
-					return COLOR_QUANTITY_SORTAL;
-				} else if (superColor.equals(COLOR_RELATOR) || superColor.equals(COLOR_RELATOR_SORTAL)) {
-					return COLOR_RELATOR_SORTAL;
-				} else if (superColor.equals(COLOR_MODE) || superColor.equals(COLOR_MODE_SORTAL)) {
-					return COLOR_MODE_SORTAL;
-				} else if (superColor.equals(COLOR_QUALITY) || superColor.equals(COLOR_QUALITY_SORTAL)) {
-					return COLOR_QUALITY_SORTAL;
-				}
-			}
-		}
-
-		return null;
 	}
 
 	private void setAggregationKind(IModelElement element) {
