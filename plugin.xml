@@ -33,6 +33,17 @@
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ModelExportAction" />
             </action>
             <action 
+                    id="it.unibz.inf.ontouml.vp.actions.PaintModel"
+                    actionType="generalAction"
+                    description="Smart Paint Current project."
+                    style="normal"
+                    tooltip="Paint Model" 
+                    icon="icons/toolbar/share-blue.png"
+                    label="Paint Model"
+                    toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.PaintModelAction" />
+            </action>
+            <action 
                     id="it.unibz.inf.ontouml.vp.actions.OpenConfigurationsAction"
                     actionType="generalAction"
                     description="Opens configurations menu."

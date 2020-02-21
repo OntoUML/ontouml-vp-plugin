@@ -3,15 +3,20 @@ package it.unibz.inf.ontouml.vp.utils;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 
+import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPContext;
 import com.vp.plugin.diagram.IDiagramElement;
+import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.diagram.IShapeUIModel;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IGeneralization;
 import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.ISimpleRelationship;
 import com.vp.plugin.model.IStereotype;
+import com.vp.plugin.model.factory.IModelElementFactory;
 
 public class SmartColoring {
 
@@ -40,14 +45,12 @@ public class SmartColoring {
 
 	public static final Color COLOR_NON_SORTAL = new Color(224, 224, 224);
 
-	// cinza
-	public static final Color I_DONT_KNOW = new Color(224, 224, 224);
-
-	private static final ArrayList<String> identityProviderList = new ArrayList<>(Arrays.asList(StereotypeUtils.STR_KIND, StereotypeUtils.STR_COLLECTIVE, StereotypeUtils.STR_QUANTITY, StereotypeUtils.STR_MODE, StereotypeUtils.STR_RELATOR, StereotypeUtils.STR_QUALITY, StereotypeUtils.STR_TYPE));
+	public static final Color COLOR_UNDEFINED = new Color(224, 224, 224);
 
 	/**
 	 * 
-	 * Paints the assigned diagram element with the assigned color. No effect whenever auto-coloring is disabled or color is <code>null</code>.
+	 * Paints the assigned diagram element with the assigned color. No effect
+	 * whenever auto-coloring is disabled or color is <code>null</code>.
 	 * 
 	 * @param diagramElement
 	 * @param color
@@ -123,7 +126,8 @@ public class SmartColoring {
 
 	/**
 	 * 
-	 * Returns first sortal color occurring on one of the generalizations of this class. If generalization with such color is found, returns <code>null</code>.
+	 * Returns first sortal color occurring on one of the generalizations of this
+	 * class. If generalization with such color is found, returns <code>null</code>.
 	 * 
 	 * @param context
 	 * 
@@ -149,7 +153,8 @@ public class SmartColoring {
 
 				final Color superColor = ((IShapeUIModel) superDiagramElements[j]).getFillColor().getColor1();
 
-				if (superColor.equals(COLOR_FUNCTIONAL_COMPLEX_KIND) || superColor.equals(COLOR_FUNCTIONAL_COMPLEX_SORTAL)) {
+				if (superColor.equals(COLOR_FUNCTIONAL_COMPLEX_KIND)
+						|| superColor.equals(COLOR_FUNCTIONAL_COMPLEX_SORTAL)) {
 					return COLOR_FUNCTIONAL_COMPLEX_SORTAL;
 				} else if (superColor.equals(COLOR_COLLECTIVE) || superColor.equals(COLOR_COLLECTIVE_SORTAL)) {
 					return COLOR_COLLECTIVE_SORTAL;
@@ -169,39 +174,14 @@ public class SmartColoring {
 		return COLOR_NON_SORTAL;
 	}
 
-	public static void smartPaint(IClass _class) {
-		if(_class == null)
-			return;
-		
-		final ISimpleRelationship[] specializations = _class.toToRelationshipArray();
-		if (specializations == null)
-			return;
-		
-		
-		for (int i = 0; specializations != null && i < specializations.length; i++) {
-			if (!(specializations[i] instanceof IGeneralization)) {
-				continue;
-			}
-			
-			final IModelElement specializedClass = specializations[i].getFrom();
-			smartPaint((IClass) specializedClass);
+	public static void smartPaint() {
+
+		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
+		IModelElement[] modelElements = project.toAllLevelModelElementArray();
+
+		for (int i = 0; modelElements != null && i < modelElements.length; i++) {
+			SmartColoring.paint((IClass) modelElements[i]);
 		}
-		
-		setColor(_class, getSpecializedColor(_class));
-			
-	}
-
-	private static boolean isIdentityProvider(IClass _class) {
-
-		String[] stereotypes = _class.toStereotypeArray();
-
-		for (int i = 0; i < stereotypes.length; i++) {
-			if (identityProviderList.contains(stereotypes[i])) {
-				return true;
-			}
-		}
-		return false;
-
 	}
 
 }

@@ -54,13 +54,15 @@ public class OntoUMLPlugin implements VPPlugin {
 	 */
 	@Override
 	public void loaded(VPPluginInfo pluginInfo) {
-		// TODO Reevaluate the need for the following code
 		ProjectManager pm = ApplicationManager.instance().getProjectManager();
 		ProjectListener projectListener = new ProjectListener();
 		IProject p = pm.getProject();
 		p.addProjectListener(projectListener);
 		OntoUMLPlugin.allModelElements = pm.getSelectableStereotypesForModelType(IModelElementFactory.MODEL_TYPE_CLASS,
 				p, true);
+		
+		for(int i = 0;i < OntoUMLPlugin.allModelElements.length; i++)
+			OntoUMLPlugin.allModelElements[i].addPropertyChangeListener(OntoUMLPlugin.MODEL_LISTENER);
 	}
 
 	/**
