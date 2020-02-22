@@ -7,7 +7,6 @@ import com.vp.plugin.VPPluginInfo;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.factory.IModelElementFactory;
-
 import it.unibz.inf.ontouml.vp.listeners.DiagramListener;
 import it.unibz.inf.ontouml.vp.listeners.ModelListener;
 import it.unibz.inf.ontouml.vp.listeners.ProjectDiagramListener;
@@ -54,15 +53,14 @@ public class OntoUMLPlugin implements VPPlugin {
 	 */
 	@Override
 	public void loaded(VPPluginInfo pluginInfo) {
+	
 		ProjectManager pm = ApplicationManager.instance().getProjectManager();
 		ProjectListener projectListener = new ProjectListener();
 		IProject p = pm.getProject();
 		p.addProjectListener(projectListener);
 		OntoUMLPlugin.allModelElements = pm.getSelectableStereotypesForModelType(IModelElementFactory.MODEL_TYPE_CLASS,
 				p, true);
-		
-		for(int i = 0;i < OntoUMLPlugin.allModelElements.length; i++)
-			OntoUMLPlugin.allModelElements[i].addPropertyChangeListener(OntoUMLPlugin.MODEL_LISTENER);
+	
 	}
 
 	/**

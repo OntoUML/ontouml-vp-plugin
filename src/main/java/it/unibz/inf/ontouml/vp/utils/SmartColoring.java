@@ -1,22 +1,12 @@
 package it.unibz.inf.ontouml.vp.utils;
 
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-
-import com.vp.plugin.ApplicationManager;
-import com.vp.plugin.action.VPContext;
 import com.vp.plugin.diagram.IDiagramElement;
-import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.diagram.IShapeUIModel;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IGeneralization;
 import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.ISimpleRelationship;
-import com.vp.plugin.model.IStereotype;
-import com.vp.plugin.model.factory.IModelElementFactory;
 
 public class SmartColoring {
 
@@ -172,16 +162,6 @@ public class SmartColoring {
 			}
 		}
 		return COLOR_NON_SORTAL;
-	}
-
-	public static void smartPaint() {
-
-		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
-		IModelElement[] modelElements = project.toAllLevelModelElementArray(IModelElementFactory.MODEL_TYPE_CLASS);
-
-		for (int i = 0; modelElements != null && i < modelElements.length; i++) {
-				SmartColoring.paint((IClass) modelElements[i]);
-		}
 	}
 
 }
