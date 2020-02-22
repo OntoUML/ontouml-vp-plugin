@@ -177,10 +177,10 @@ public class SmartColoring {
 	public static void smartPaint() {
 
 		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
-		IModelElement[] modelElements = project.toAllLevelModelElementArray();
+		IModelElement[] modelElements = project.toAllLevelModelElementArray(IModelElementFactory.MODEL_TYPE_CLASS);
 
 		for (int i = 0; modelElements != null && i < modelElements.length; i++) {
-			SmartColoring.paint((IClass) modelElements[i]);
+				SmartColoring.paint((IClass) modelElements[i]);
 		}
 	}
 
