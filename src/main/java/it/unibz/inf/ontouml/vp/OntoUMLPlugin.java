@@ -7,6 +7,7 @@ import com.vp.plugin.VPPluginInfo;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.factory.IModelElementFactory;
+
 import it.unibz.inf.ontouml.vp.listeners.DiagramListener;
 import it.unibz.inf.ontouml.vp.listeners.ModelListener;
 import it.unibz.inf.ontouml.vp.listeners.ProjectDiagramListener;

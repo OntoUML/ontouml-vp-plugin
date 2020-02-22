@@ -9,9 +9,10 @@ import com.vp.plugin.model.factory.IModelElementFactory;
 import it.unibz.inf.ontouml.vp.utils.SmartColoring;
 
 public class ModelListener implements PropertyChangeListener {
-	
-	public ModelListener() {}
-	
+
+	public ModelListener() {
+	}
+
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		Object changeSource = evt.getSource();
@@ -20,6 +21,11 @@ public class ModelListener implements PropertyChangeListener {
 
 			if (model.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
 				SmartColoring.paint((IClass) model);
+			}
+			
+			if (model.getModelType().equals(IModelElementFactory.MODEL_TYPE_STEREOTYPE)) {
+				//Not able to find the class of the given stereotype
+				SmartColoring.smartPaint();
 			}
 		}
 	}
