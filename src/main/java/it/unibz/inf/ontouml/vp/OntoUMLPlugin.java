@@ -59,6 +59,8 @@ public class OntoUMLPlugin implements VPPlugin {
 		ProjectListener projectListener = new ProjectListener();
 		IProject p = pm.getProject();
 		p.addProjectListener(projectListener);
+		p.addProjectDiagramListener(OntoUMLPlugin.PROJECT_DIAGRAM_LISTENER);
+		p.addProjectModelListener(OntoUMLPlugin.PROJECT_MODEL_LISTENER);
 		OntoUMLPlugin.allModelElements = pm.getSelectableStereotypesForModelType(IModelElementFactory.MODEL_TYPE_CLASS,
 				p, true);
 	
