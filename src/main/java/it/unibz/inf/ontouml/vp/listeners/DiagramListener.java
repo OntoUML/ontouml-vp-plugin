@@ -1,5 +1,6 @@
 package it.unibz.inf.ontouml.vp.listeners;
 
+import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.SmartColoring;
 
 import com.vp.plugin.diagram.IDiagramElement;
@@ -16,6 +17,10 @@ public class DiagramListener implements IDiagramListener {
 
 	@Override
 	public void diagramElementAdded(IDiagramUIModel arg0, IDiagramElement arg1) {
+
+		if (!Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled()) {
+			return;
+		}
 
 		if (arg1.getModelElement().getName().equals(IModelElementFactory.MODEL_TYPE_GENERALIZATION)) {
 			IGeneralization generalization = (IGeneralization) arg1.getModelElement();
@@ -37,6 +42,10 @@ public class DiagramListener implements IDiagramListener {
 
 	@Override
 	public void diagramElementRemoved(IDiagramUIModel arg0, IDiagramElement arg1) {
+		
+		if (!Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled()) {
+			return;
+		}
 
 		SmartColoring.smartPaint();
 
@@ -44,17 +53,16 @@ public class DiagramListener implements IDiagramListener {
 
 	@Override
 	public void diagramUIModelLoaded(IDiagramUIModel arg0) {
-		
-	//	SmartColoring.smartPaint();
-		
+
+		// SmartColoring.smartPaint();
+
 	}
 
 	@Override
 	public void diagramUIModelPropertyChanged(IDiagramUIModel arg0, String arg1, Object arg2, Object arg3) {
-		
-	//	SmartColoring.smartPaint();
+
+		// SmartColoring.smartPaint();
 	}
-	
 
 	@Override
 	public void diagramUIModelRenamed(IDiagramUIModel arg0) {

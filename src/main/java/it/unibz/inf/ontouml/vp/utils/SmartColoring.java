@@ -173,6 +173,10 @@ public class SmartColoring {
 		for (int i = 0; modelElements != null && i < modelElements.length; i++) {
 			SmartColoring.paint((IClass) modelElements[i]);
 		}
+		
+		for (int j = 0; modelElements != null && j < modelElements.length; j++) {
+			SmartColoring.paint((IClass) modelElements[j]);
+		}
 	}
 
 }

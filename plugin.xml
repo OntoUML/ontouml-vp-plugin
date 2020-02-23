@@ -38,7 +38,7 @@
                     description="Smart Paint Current project."
                     style="normal"
                     tooltip="Paint Model" 
-                    icon="icons/toolbar/share-blue.png"
+                    icon="icons/toolbar/plus-sign-in-circle-orange.png"
                     label="Paint Model"
                     toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.PaintModelAction" />
