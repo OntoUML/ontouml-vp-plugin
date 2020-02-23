@@ -2,6 +2,7 @@ package it.unibz.inf.ontouml.vp.listeners;
 
 import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.SmartColoring;
+import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramListener;
@@ -31,18 +32,20 @@ public class DiagramListener implements IDiagramListener {
 			String toType = generalization.getTo().getModelType();
 			boolean isToClass = toType.equals(IModelElementFactory.MODEL_TYPE_CLASS);
 
-			if ((isFromClass) && (isToClass))
+			if ((isFromClass) && (isToClass)) {
 				SmartColoring.paint((IClass) generalization.getFrom());
+				SmartColoring.paint((IClass) generalization.getTo());
+			}
+
+			SmartColoring.smartPaint();
 
 		}
-
-		SmartColoring.smartPaint();
 
 	}
 
 	@Override
 	public void diagramElementRemoved(IDiagramUIModel arg0, IDiagramElement arg1) {
-		
+
 		if (!Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled()) {
 			return;
 		}

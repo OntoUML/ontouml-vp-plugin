@@ -36,10 +36,9 @@ public class SmartColoring {
 	public static final Color COLOR_RELATOR_SORTAL = new Color(211, 255, 211);
 	public static final Color COLOR_MODE_SORTAL = new Color(192, 237, 255);
 	public static final Color COLOR_QUALITY_SORTAL = new Color(192, 237, 255);
+	public static final Color COLOR_TYPE_SORTAL = new Color(211, 211, 252);
 
 	public static final Color COLOR_NON_SORTAL = new Color(224, 224, 224);
-
-	public static final Color COLOR_UNDEFINED = new Color(224, 224, 224);
 
 	/**
 	 * 
@@ -92,8 +91,14 @@ public class SmartColoring {
 			case StereotypeUtils.STR_COLLECTIVE:
 				setColor(_class, COLOR_COLLECTIVE);
 				break;
+			case StereotypeUtils.STR_CATEGORY:
+			case StereotypeUtils.STR_MIXIN:
+			case StereotypeUtils.STR_ROLE_MIXIN:
+			case StereotypeUtils.STR_PHASE_MIXIN:
+				setColor(_class, inferColorBasedSpecialization(_class));
+				break;
 			default:
-				setColor(_class, getSpecializedColor(_class));
+				setColor(_class, inferColorBasedSuper(_class));
 				break;
 			}
 		}
@@ -123,7 +128,7 @@ public class SmartColoring {
 	 * @param context
 	 * 
 	 */
-	public static Color getSpecializedColor(IClass _class) {
+	public static Color inferColorBasedSuper(IClass _class) {
 		final ISimpleRelationship[] specializations = _class.toToRelationshipArray();
 
 		if (specializations == null)
@@ -144,25 +149,60 @@ public class SmartColoring {
 
 				final Color superColor = ((IShapeUIModel) superDiagramElements[j]).getFillColor().getColor1();
 
-				if (superColor.equals(COLOR_FUNCTIONAL_COMPLEX_KIND)
-						|| superColor.equals(COLOR_FUNCTIONAL_COMPLEX_SORTAL)) {
-					return COLOR_FUNCTIONAL_COMPLEX_SORTAL;
-				} else if (superColor.equals(COLOR_COLLECTIVE) || superColor.equals(COLOR_COLLECTIVE_SORTAL)) {
-					return COLOR_COLLECTIVE_SORTAL;
-				} else if (superColor.equals(COLOR_QUANTITY) || superColor.equals(COLOR_QUANTITY_SORTAL)) {
-					return COLOR_QUANTITY_SORTAL;
-				} else if (superColor.equals(COLOR_RELATOR) || superColor.equals(COLOR_RELATOR_SORTAL)) {
-					return COLOR_RELATOR_SORTAL;
-				} else if (superColor.equals(COLOR_MODE) || superColor.equals(COLOR_MODE_SORTAL)) {
-					return COLOR_MODE_SORTAL;
-				} else if (superColor.equals(COLOR_QUALITY) || superColor.equals(COLOR_QUALITY_SORTAL)) {
-					return COLOR_QUALITY_SORTAL;
-				} else if (superColor.equals(COLOR_TYPE)) {
-					return COLOR_TYPE;
-				}
+				return getSortalColor(superColor);
 			}
 		}
 		return COLOR_NON_SORTAL;
+	}
+
+	public static Color inferColorBasedSpecialization(IClass _class) {
+		final ISimpleRelationship[] specializations = _class.toFromRelationshipArray();
+
+		if (specializations == null)
+			return COLOR_NON_SORTAL;
+
+		for (int i = 0; specializations != null && i < specializations.length; i++) {
+			if (!(specializations[i] instanceof IGeneralization)) {
+				continue;
+			}
+
+			final IModelElement specializedClass = specializations[i].getTo();
+			final IDiagramElement[] specializedDiagramElements = specializedClass.getDiagramElements();
+
+			for (int j = 0; j < specializedDiagramElements.length; j++) {
+				if (!(specializedDiagramElements[j] instanceof IShapeUIModel)) {
+					continue;
+				}
+
+				final Color specializedColor = ((IShapeUIModel) specializedDiagramElements[j]).getFillColor()
+						.getColor1();
+
+				return getSortalColor(specializedColor);
+
+			}
+		}
+		return COLOR_NON_SORTAL;
+	}
+
+	private static Color getSortalColor(Color color) {
+
+		if (color.equals(COLOR_FUNCTIONAL_COMPLEX_KIND) || color.equals(COLOR_FUNCTIONAL_COMPLEX_SORTAL)) {
+			return COLOR_FUNCTIONAL_COMPLEX_SORTAL;
+		} else if (color.equals(COLOR_COLLECTIVE) || color.equals(COLOR_COLLECTIVE_SORTAL)) {
+			return COLOR_COLLECTIVE_SORTAL;
+		} else if (color.equals(COLOR_QUANTITY) || color.equals(COLOR_QUANTITY_SORTAL)) {
+			return COLOR_QUANTITY_SORTAL;
+		} else if (color.equals(COLOR_RELATOR) || color.equals(COLOR_RELATOR_SORTAL)) {
+			return COLOR_RELATOR_SORTAL;
+		} else if (color.equals(COLOR_MODE) || color.equals(COLOR_MODE_SORTAL)) {
+			return COLOR_MODE_SORTAL;
+		} else if (color.equals(COLOR_QUALITY) || color.equals(COLOR_QUALITY_SORTAL)) {
+			return COLOR_QUALITY_SORTAL;
+		} else if (color.equals(COLOR_TYPE)) {
+			return COLOR_TYPE_SORTAL;
+		}
+		return COLOR_NON_SORTAL;
+
 	}
 
 	public static void smartPaint() {
@@ -173,7 +213,7 @@ public class SmartColoring {
 		for (int i = 0; modelElements != null && i < modelElements.length; i++) {
 			SmartColoring.paint((IClass) modelElements[i]);
 		}
-		
+
 		for (int j = 0; modelElements != null && j < modelElements.length; j++) {
 			SmartColoring.paint((IClass) modelElements[j]);
 		}
