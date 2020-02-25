@@ -147,7 +147,10 @@ public class SmartColoring {
 			final IModelElement superClass = specializations[i].getFrom();
 			final IDiagramElement[] superDiagramElements = superClass.getDiagramElements();
 
-			if (superClass.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS) && !hasIdentityProvider(((IClass) superClass)))
+			if (superClass.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS) && hasSameStereotype((IClass) superClass, _class))
+				return getSortalColor((IClass) superClass);
+
+			if (superClass.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS) && !hasIdentityProvider((IClass) superClass))
 				continue;
 
 			for (int j = 0; j < superDiagramElements.length; j++) {
@@ -207,6 +210,37 @@ public class SmartColoring {
 		}
 	}
 
+	private static Color getSortalColor(IClass _class) {
+
+		final IDiagramElement[] diagramElements = _class.getDiagramElements();
+
+		for (int j = 0; j < diagramElements.length; j++) {
+			if (!(diagramElements[j] instanceof IShapeUIModel)) {
+				continue;
+			}
+
+			final Color color = ((IShapeUIModel) diagramElements[j]).getFillColor().getColor1();
+
+			if (color.equals(COLOR_FUNCTIONAL_COMPLEX_KIND) || color.equals(COLOR_FUNCTIONAL_COMPLEX_SORTAL)) {
+				return COLOR_FUNCTIONAL_COMPLEX_SORTAL;
+			} else if (color.equals(COLOR_COLLECTIVE) || color.equals(COLOR_COLLECTIVE_SORTAL)) {
+				return COLOR_COLLECTIVE_SORTAL;
+			} else if (color.equals(COLOR_QUANTITY) || color.equals(COLOR_QUANTITY_SORTAL)) {
+				return COLOR_QUANTITY_SORTAL;
+			} else if (color.equals(COLOR_RELATOR) || color.equals(COLOR_RELATOR_SORTAL)) {
+				return COLOR_RELATOR_SORTAL;
+			} else if (color.equals(COLOR_MODE) || color.equals(COLOR_MODE_SORTAL)) {
+				return COLOR_MODE_SORTAL;
+			} else if (color.equals(COLOR_QUALITY) || color.equals(COLOR_QUALITY_SORTAL)) {
+				return COLOR_QUALITY_SORTAL;
+			} else if (color.equals(COLOR_TYPE)) {
+				return COLOR_TYPE_SORTAL;
+			}
+			return COLOR_NON_SORTAL;
+		}
+		return COLOR_NON_SORTAL;
+	}
+
 	private static Color getSortalColor(Color color) {
 
 		if (color.equals(COLOR_FUNCTIONAL_COMPLEX_KIND) || color.equals(COLOR_FUNCTIONAL_COMPLEX_SORTAL)) {
@@ -234,6 +268,22 @@ public class SmartColoring {
 		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
 			if (identityProviderList.contains(stereotypes[i]))
 				return true;
+		}
+
+		return false;
+	}
+
+	private static boolean hasSameStereotype(IClass class1, IClass class2) {
+		final String[] stereotypes1 = class1.toStereotypeArray();
+		final String[] stereotypes2 = class2.toStereotypeArray();
+
+		if (stereotypes1 == null || stereotypes2 == null)
+			return false;
+
+		for (int i = 0; stereotypes1 != null && i < stereotypes1.length; i++) {
+			for (int j = 0; stereotypes2 != null && j < stereotypes2.length; j++)
+				if (stereotypes1[i].equals(stereotypes2[j]))
+					return true;
 		}
 
 		return false;
