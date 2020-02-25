@@ -50,8 +50,7 @@ public class SmartColoring {
 	 * 
 	 * Paints the assigned diagram element with the assigned color. No effect whenever auto-coloring is disabled or color is <code>null</code>.
 	 * 
-	 * @param diagramElement
-	 * @param color
+	 * @param _class
 	 */
 	public static void paint(IClass _class) {
 		if (!Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled())
@@ -59,13 +58,15 @@ public class SmartColoring {
 
 		final String[] stereotypes = _class.toStereotypeArray();
 
-		if (stereotypes == null || stereotypes.length == 0)
+		// I changed this check so that the smart-paint does not run if a class has more than 1 stereotype.
+		if (stereotypes == null || stereotypes.length != 1)
 			return;
 
-		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
-			String stereotype = stereotypes[i];
+		String stereotype = stereotypes[0];
 
-			switch (stereotype) {
+		System.out.println("<<"+stereotype+">>"+_class.getName());
+
+		switch (stereotype) {
 			case StereotypeUtils.STR_TYPE:
 				setColor(_class, COLOR_TYPE);
 				break;
@@ -102,10 +103,12 @@ public class SmartColoring {
 			case StereotypeUtils.STR_PHASE_MIXIN:
 				setColor(_class, inferColorBasedSpecialization(_class));
 				break;
-			default:
+			case StereotypeUtils.STR_ROLE:
+			case StereotypeUtils.STR_SUBKIND:
+			case StereotypeUtils.STR_PHASE:
+			case StereotypeUtils.STR_HISTORICAL_ROLE:
 				setColor(_class, inferColorBasedSuper(_class));
 				break;
-			}
 		}
 
 	}
@@ -129,7 +132,7 @@ public class SmartColoring {
 	 * 
 	 * Returns first sortal color occurring on one of the generalizations of this class. If generalization with such color is found, returns <code>null</code>.
 	 * 
-	 * @param context
+	 * @param _class
 	 * 
 	 */
 	public static Color inferColorBasedSuper(IClass _class) {
