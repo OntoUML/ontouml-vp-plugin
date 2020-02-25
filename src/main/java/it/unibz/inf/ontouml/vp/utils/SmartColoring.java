@@ -42,7 +42,7 @@ public class SmartColoring {
 	public static final Color COLOR_QUALITY_SORTAL = new Color(192, 237, 255);
 	public static final Color COLOR_TYPE_SORTAL = new Color(211, 211, 252);
 
-	public static final Color COLOR_NON_SORTAL = new Color(224, 224, 224);
+	public static final Color COLOR_UNKNOWN = new Color(224, 224, 224);
 
 	private static final ArrayList<String> identityProviderList = new ArrayList<>(Arrays.asList(StereotypeUtils.STR_KIND, StereotypeUtils.STR_COLLECTIVE, StereotypeUtils.STR_QUANTITY, StereotypeUtils.STR_MODE, StereotypeUtils.STR_RELATOR, StereotypeUtils.STR_QUALITY, StereotypeUtils.STR_TYPE));
 
@@ -140,7 +140,7 @@ public class SmartColoring {
 		ArrayList<Color> superColors = new ArrayList<Color>();
 
 		if (specializations == null)
-			return COLOR_NON_SORTAL;
+			return COLOR_UNKNOWN;
 
 		for (int i = 0; specializations != null && i < specializations.length; i++) {
 			if (!(specializations[i] instanceof IGeneralization)) {
@@ -163,7 +163,7 @@ public class SmartColoring {
 
 				final Color superColor = ((IShapeUIModel) superDiagramElements[j]).getFillColor().getColor1();
 
-				if (!getSortalColor(superColor).equals(COLOR_NON_SORTAL) && !superColors.contains(getSortalColor(superColor))) {
+				if (!getSortalColor(superColor).equals(COLOR_UNKNOWN) && !superColors.contains(getSortalColor(superColor))) {
 					superColors.add(getSortalColor(superColor));
 				}
 			}
@@ -171,7 +171,7 @@ public class SmartColoring {
 		if (superColors.size() == 1) {
 			return superColors.get(0);
 		} else {
-			return COLOR_NON_SORTAL;
+			return COLOR_UNKNOWN;
 		}
 	}
 
@@ -181,7 +181,7 @@ public class SmartColoring {
 		// specializedColors.add(COLOR_NON_SORTAL);
 
 		if (specializations == null)
-			return COLOR_NON_SORTAL;
+			return COLOR_UNKNOWN;
 
 		for (int i = 0; specializations != null && i < specializations.length; i++) {
 			if (!(specializations[i] instanceof IGeneralization)) {
@@ -207,7 +207,7 @@ public class SmartColoring {
 		List<Color> listWithoutDuplicates = specializedColors.stream().distinct().collect(Collectors.toList());
 
 		if (listWithoutDuplicates.size() > 1) {
-			return COLOR_NON_SORTAL;
+			return COLOR_UNKNOWN;
 		} else {
 			return listWithoutDuplicates.get(0);
 		}
@@ -239,9 +239,9 @@ public class SmartColoring {
 			} else if (color.equals(COLOR_TYPE)) {
 				return COLOR_TYPE_SORTAL;
 			}
-			return COLOR_NON_SORTAL;
+			return COLOR_UNKNOWN;
 		}
-		return COLOR_NON_SORTAL;
+		return COLOR_UNKNOWN;
 	}
 
 	private static Color getSortalColor(Color color) {
@@ -261,7 +261,7 @@ public class SmartColoring {
 		} else if (color.equals(COLOR_TYPE)) {
 			return COLOR_TYPE_SORTAL;
 		}
-		return COLOR_NON_SORTAL;
+		return COLOR_UNKNOWN;
 
 	}
 
