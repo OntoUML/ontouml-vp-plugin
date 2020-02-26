@@ -61,8 +61,6 @@ public class SmartColoring {
 
 		String stereotype = stereotypes[0];
 
-		System.out.println("<<" + stereotype + ">>" + _class.getName());
-
 		switch (stereotype) {
 		case StereotypeUtils.STR_TYPE:
 			setColor(_class, COLOR_TYPE);
