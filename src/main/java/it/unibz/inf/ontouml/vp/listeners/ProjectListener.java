@@ -18,7 +18,6 @@ public class ProjectListener implements IProjectListener {
 	public void projectNewed(IProject arg0) {
 
 		arg0.addProjectDiagramListener(OntoUMLPlugin.PROJECT_DIAGRAM_LISTENER);
-		arg0.addProjectModelListener(OntoUMLPlugin.PROJECT_MODEL_LISTENER);
 
 	}
 
@@ -26,7 +25,6 @@ public class ProjectListener implements IProjectListener {
 	public void projectOpened(IProject arg0) {
 
 		arg0.addProjectDiagramListener(OntoUMLPlugin.PROJECT_DIAGRAM_LISTENER);
-		arg0.addProjectModelListener(OntoUMLPlugin.PROJECT_MODEL_LISTENER);
 		
 	}
 

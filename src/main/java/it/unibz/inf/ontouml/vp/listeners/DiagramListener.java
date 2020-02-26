@@ -47,14 +47,14 @@ public class DiagramListener implements IDiagramListener {
 		if (!Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled()) {
 			return;
 		}
-		
+
 		SmartColoring.smartPaint();
 	}
 
 	@Override
 	public void diagramUIModelLoaded(IDiagramUIModel arg0) {
 
-		// SmartColoring.smartPaint();
+		SmartColoring.smartPaint();
 	}
 
 	@Override

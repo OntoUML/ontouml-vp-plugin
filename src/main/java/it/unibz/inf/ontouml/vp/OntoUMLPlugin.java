@@ -9,10 +9,8 @@ import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.listeners.DiagramListener;
-import it.unibz.inf.ontouml.vp.listeners.ModelListener;
 import it.unibz.inf.ontouml.vp.listeners.ProjectDiagramListener;
 import it.unibz.inf.ontouml.vp.listeners.ProjectListener;
-import it.unibz.inf.ontouml.vp.listeners.ProjectModelListener;
 
 /**
  * 
@@ -31,9 +29,7 @@ public class OntoUMLPlugin implements VPPlugin {
 	public static IModelElement[] allModelElements;
 	public static boolean isPluginActive;
 	
-	public static ModelListener MODEL_LISTENER = new ModelListener();
 	public static DiagramListener DIAGRAM_LISTENER = new DiagramListener();
-	public static ProjectModelListener PROJECT_MODEL_LISTENER = new ProjectModelListener();
 	public static ProjectDiagramListener PROJECT_DIAGRAM_LISTENER = new ProjectDiagramListener();
 
 	/**
@@ -60,7 +56,6 @@ public class OntoUMLPlugin implements VPPlugin {
 		IProject p = pm.getProject();
 		p.addProjectListener(projectListener);
 		p.addProjectDiagramListener(OntoUMLPlugin.PROJECT_DIAGRAM_LISTENER);
-		p.addProjectModelListener(OntoUMLPlugin.PROJECT_MODEL_LISTENER);
 		OntoUMLPlugin.allModelElements = pm.getSelectableStereotypesForModelType(IModelElementFactory.MODEL_TYPE_CLASS,
 				p, true);
 	
