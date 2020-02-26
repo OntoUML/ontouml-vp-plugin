@@ -13,44 +13,44 @@
             <action 
                     id="it.unibz.inf.ontouml.vp.actions.ModelVerificationAction"
                     actionType="generalAction"
-                    description="Verify OntoUML Model."
+                    description="Tests if the model complies to OntoUML's syntactical constraints."
                     style="normal"
-                    tooltip="Verify model" 
-                    icon="icons/toolbar/magnifying-glass-with-check-mark-orange.png"
-                    label="Verify Model"
+                    tooltip="Tests if the model complies to OntoUML's syntactical constraints."
+                    icon="icons/toolbar/check-circle-orange.png"
+                    label="Verification"
                     toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ModelVerificationAction" />
             </action>
             <action 
                     id="it.unibz.inf.ontouml.vp.actions.ModelExportAction"
                     actionType="generalAction"
-                    description="Export OntoUML Model in both JSON and XMI."
+                    description="Exports the model into a JSON file formatted according to OntoUML JSON Schema."
                     style="normal"
-                    tooltip="Export Model" 
-                    icon="icons/toolbar/share-blue.png"
-                    label="Export Model"
+                    tooltip="Exports the model into a JSON file formatted according to OntoUML JSON Schema."
+                    icon="icons/toolbar/import-export-orange.png"
+                    label="Export JSON"
                     toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ModelExportAction" />
             </action>
             <action 
                     id="it.unibz.inf.ontouml.vp.actions.PaintModel"
                     actionType="generalAction"
-                    description="Smart Paint Current project."
+                    description="Applies the smart paint algorithm to the project."
                     style="normal"
-                    tooltip="Paint Model" 
-                    icon="icons/toolbar/plus-sign-in-circle-orange.png"
-                    label="Paint Model"
+                    tooltip="Applies the smart paint algorithm to the project."
+                    icon="icons/toolbar/format-paint-orange.png"
+                    label="Smart Paint"
                     toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.PaintModelAction" />
             </action>
             <action 
                     id="it.unibz.inf.ontouml.vp.actions.OpenConfigurationsAction"
                     actionType="generalAction"
-                    description="Opens configurations menu."
+                    description="Opens the settings menu for the plugin."
                     style="normal"
-                    tooltip="Opens configurations menu"
-                    icon="icons/toolbar/list-orange.png"
-                    label="Configurations"
+                    tooltip="Opens the settings menu for the plugin."
+                    icon="icons/toolbar/gear-orange.png"
+                    label="Settings"
                     toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.OpenConfigurationsAction" />
             </action>
