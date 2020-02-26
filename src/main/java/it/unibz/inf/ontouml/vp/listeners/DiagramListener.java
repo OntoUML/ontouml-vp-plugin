@@ -9,6 +9,7 @@ import com.vp.plugin.diagram.IDiagramListener;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IGeneralization;
+import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 public class DiagramListener implements IDiagramListener {
@@ -53,14 +54,11 @@ public class DiagramListener implements IDiagramListener {
 
 	@Override
 	public void diagramUIModelLoaded(IDiagramUIModel arg0) {
-
 		SmartColoring.smartPaint();
 	}
 
 	@Override
 	public void diagramUIModelPropertyChanged(IDiagramUIModel arg0, String arg1, Object arg2, Object arg3) {
-
-		// SmartColoring.smartPaint();
 	}
 
 	@Override
