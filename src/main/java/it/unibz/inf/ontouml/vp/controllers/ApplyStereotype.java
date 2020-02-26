@@ -10,6 +10,7 @@ import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.features.constraints.*;
 import it.unibz.inf.ontouml.vp.utils.Configurations;
+import it.unibz.inf.ontouml.vp.utils.SmartColoring;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 import java.awt.*;
@@ -168,6 +169,9 @@ public class ApplyStereotype implements VPContextActionController {
 			element.addStereotype(StereotypeUtils.STR_END);
 			break;
 		}
+		
+		SmartColoring.paint((IClass) element);
+		SmartColoring.smartPaint();
 	}
 
 	@Override
