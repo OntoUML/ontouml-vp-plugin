@@ -2,7 +2,6 @@ package it.unibz.inf.ontouml.vp.utils;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,8 +43,6 @@ public class SmartColoring {
 
 	public static final Color COLOR_UNKNOWN = new Color(224, 224, 224);
 
-	private static final ArrayList<String> identityProviderList = new ArrayList<>(Arrays.asList(StereotypeUtils.STR_KIND, StereotypeUtils.STR_COLLECTIVE, StereotypeUtils.STR_QUANTITY, StereotypeUtils.STR_MODE, StereotypeUtils.STR_RELATOR, StereotypeUtils.STR_QUALITY, StereotypeUtils.STR_TYPE));
-
 	/**
 	 * 
 	 * Paints the assigned diagram element with the assigned color. No effect whenever auto-coloring is disabled or color is <code>null</code>.
@@ -64,51 +61,51 @@ public class SmartColoring {
 
 		String stereotype = stereotypes[0];
 
-		System.out.println("<<"+stereotype+">>"+_class.getName());
+		System.out.println("<<" + stereotype + ">>" + _class.getName());
 
 		switch (stereotype) {
-			case StereotypeUtils.STR_TYPE:
-				setColor(_class, COLOR_TYPE);
-				break;
-			case StereotypeUtils.STR_EVENT:
-				setColor(_class, COLOR_EVENT);
-				break;
-			case StereotypeUtils.STR_ENUMERATION:
-				setColor(_class, COLOR_ENUMERATION);
-				break;
-			case StereotypeUtils.STR_DATATYPE:
-				setColor(_class, COLOR_DATATYPE);
-				break;
-			case StereotypeUtils.STR_RELATOR:
-				setColor(_class, COLOR_RELATOR);
-				break;
-			case StereotypeUtils.STR_QUANTITY:
-				setColor(_class, COLOR_QUANTITY);
-				break;
-			case StereotypeUtils.STR_QUALITY:
-				setColor(_class, COLOR_QUALITY);
-				break;
-			case StereotypeUtils.STR_MODE:
-				setColor(_class, COLOR_MODE);
-				break;
-			case StereotypeUtils.STR_KIND:
-				setColor(_class, COLOR_FUNCTIONAL_COMPLEX_KIND);
-				break;
-			case StereotypeUtils.STR_COLLECTIVE:
-				setColor(_class, COLOR_COLLECTIVE);
-				break;
-			case StereotypeUtils.STR_CATEGORY:
-			case StereotypeUtils.STR_MIXIN:
-			case StereotypeUtils.STR_ROLE_MIXIN:
-			case StereotypeUtils.STR_PHASE_MIXIN:
-				setColor(_class, inferColorBasedSpecialization(_class));
-				break;
-			case StereotypeUtils.STR_ROLE:
-			case StereotypeUtils.STR_SUBKIND:
-			case StereotypeUtils.STR_PHASE:
-			case StereotypeUtils.STR_HISTORICAL_ROLE:
-				setColor(_class, inferColorBasedSuper(_class));
-				break;
+		case StereotypeUtils.STR_TYPE:
+			setColor(_class, COLOR_TYPE);
+			break;
+		case StereotypeUtils.STR_EVENT:
+			setColor(_class, COLOR_EVENT);
+			break;
+		case StereotypeUtils.STR_ENUMERATION:
+			setColor(_class, COLOR_ENUMERATION);
+			break;
+		case StereotypeUtils.STR_DATATYPE:
+			setColor(_class, COLOR_DATATYPE);
+			break;
+		case StereotypeUtils.STR_RELATOR:
+			setColor(_class, COLOR_RELATOR);
+			break;
+		case StereotypeUtils.STR_QUANTITY:
+			setColor(_class, COLOR_QUANTITY);
+			break;
+		case StereotypeUtils.STR_QUALITY:
+			setColor(_class, COLOR_QUALITY);
+			break;
+		case StereotypeUtils.STR_MODE:
+			setColor(_class, COLOR_MODE);
+			break;
+		case StereotypeUtils.STR_KIND:
+			setColor(_class, COLOR_FUNCTIONAL_COMPLEX_KIND);
+			break;
+		case StereotypeUtils.STR_COLLECTIVE:
+			setColor(_class, COLOR_COLLECTIVE);
+			break;
+		case StereotypeUtils.STR_CATEGORY:
+		case StereotypeUtils.STR_MIXIN:
+		case StereotypeUtils.STR_ROLE_MIXIN:
+		case StereotypeUtils.STR_PHASE_MIXIN:
+			setColor(_class, inferColorBasedSpecialization(_class));
+			break;
+		case StereotypeUtils.STR_ROLE:
+		case StereotypeUtils.STR_SUBKIND:
+		case StereotypeUtils.STR_PHASE:
+		case StereotypeUtils.STR_HISTORICAL_ROLE:
+			setColor(_class, inferColorBasedSuper(_class));
+			break;
 		}
 
 	}
@@ -150,12 +147,6 @@ public class SmartColoring {
 			final IModelElement superClass = specializations[i].getFrom();
 			final IDiagramElement[] superDiagramElements = superClass.getDiagramElements();
 
-			if (superClass.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS) && hasSameStereotype((IClass) superClass, _class))
-				return getSortalColor((IClass) superClass);
-
-			if (superClass.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS) && !hasIdentityProvider((IClass) superClass))
-				continue;
-
 			for (int j = 0; j < superDiagramElements.length; j++) {
 				if (!(superDiagramElements[j] instanceof IShapeUIModel)) {
 					continue;
@@ -178,8 +169,7 @@ public class SmartColoring {
 	public static Color inferColorBasedSpecialization(IClass _class) {
 		final ISimpleRelationship[] specializations = _class.toFromRelationshipArray();
 		ArrayList<Color> specializedColors = new ArrayList<Color>();
-		// specializedColors.add(COLOR_NON_SORTAL);
-
+		
 		if (specializations == null)
 			return COLOR_UNKNOWN;
 
@@ -206,42 +196,11 @@ public class SmartColoring {
 
 		List<Color> listWithoutDuplicates = specializedColors.stream().distinct().collect(Collectors.toList());
 
-		if (listWithoutDuplicates.size() > 1) {
+		if (listWithoutDuplicates.size() == 0 || listWithoutDuplicates.size() > 1) {
 			return COLOR_UNKNOWN;
 		} else {
 			return listWithoutDuplicates.get(0);
 		}
-	}
-
-	private static Color getSortalColor(IClass _class) {
-
-		final IDiagramElement[] diagramElements = _class.getDiagramElements();
-
-		for (int j = 0; j < diagramElements.length; j++) {
-			if (!(diagramElements[j] instanceof IShapeUIModel)) {
-				continue;
-			}
-
-			final Color color = ((IShapeUIModel) diagramElements[j]).getFillColor().getColor1();
-
-			if (color.equals(COLOR_FUNCTIONAL_COMPLEX_KIND) || color.equals(COLOR_FUNCTIONAL_COMPLEX_SORTAL)) {
-				return COLOR_FUNCTIONAL_COMPLEX_SORTAL;
-			} else if (color.equals(COLOR_COLLECTIVE) || color.equals(COLOR_COLLECTIVE_SORTAL)) {
-				return COLOR_COLLECTIVE_SORTAL;
-			} else if (color.equals(COLOR_QUANTITY) || color.equals(COLOR_QUANTITY_SORTAL)) {
-				return COLOR_QUANTITY_SORTAL;
-			} else if (color.equals(COLOR_RELATOR) || color.equals(COLOR_RELATOR_SORTAL)) {
-				return COLOR_RELATOR_SORTAL;
-			} else if (color.equals(COLOR_MODE) || color.equals(COLOR_MODE_SORTAL)) {
-				return COLOR_MODE_SORTAL;
-			} else if (color.equals(COLOR_QUALITY) || color.equals(COLOR_QUALITY_SORTAL)) {
-				return COLOR_QUALITY_SORTAL;
-			} else if (color.equals(COLOR_TYPE)) {
-				return COLOR_TYPE_SORTAL;
-			}
-			return COLOR_UNKNOWN;
-		}
-		return COLOR_UNKNOWN;
 	}
 
 	private static Color getSortalColor(Color color) {
@@ -265,39 +224,12 @@ public class SmartColoring {
 
 	}
 
-	private static boolean hasIdentityProvider(IClass _class) {
-		final String[] stereotypes = _class.toStereotypeArray();
-
-		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
-			if (identityProviderList.contains(stereotypes[i]))
-				return true;
-		}
-
-		return false;
-	}
-
-	private static boolean hasSameStereotype(IClass class1, IClass class2) {
-		final String[] stereotypes1 = class1.toStereotypeArray();
-		final String[] stereotypes2 = class2.toStereotypeArray();
-
-		if (stereotypes1 == null || stereotypes2 == null)
-			return false;
-
-		for (int i = 0; stereotypes1 != null && i < stereotypes1.length; i++) {
-			for (int j = 0; stereotypes2 != null && j < stereotypes2.length; j++)
-				if (stereotypes1[i].equals(stereotypes2[j]))
-					return true;
-		}
-
-		return false;
-	}
-
 	public static void smartPaint() {
 
 		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
 		IModelElement[] modelElements = project.toAllLevelModelElementArray(IModelElementFactory.MODEL_TYPE_CLASS);
 
-		for(int i = 0; i <= 1; i++){
+		for (int i = 0; i <= 1; i++) {
 			for (int j = 0; modelElements != null && j < modelElements.length; j++) {
 				SmartColoring.paint((IClass) modelElements[j]);
 			}

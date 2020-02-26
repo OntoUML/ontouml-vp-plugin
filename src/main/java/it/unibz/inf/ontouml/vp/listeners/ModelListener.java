@@ -2,8 +2,10 @@ package it.unibz.inf.ontouml.vp.listeners;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.IStereotype;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.utils.Configurations;
@@ -16,7 +18,6 @@ public class ModelListener implements PropertyChangeListener {
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		
 		if (!Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled()) {
 			return;
 		}
@@ -27,12 +28,7 @@ public class ModelListener implements PropertyChangeListener {
 
 			if (model.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
 				SmartColoring.paint((IClass) model);
-				SmartColoring.smartPaint();
-			}
-			
-			if (model.getModelType().equals(IModelElementFactory.MODEL_TYPE_STEREOTYPE)) {
-				//Not able to find the class of the given stereotype
-				SmartColoring.smartPaint();
+				//SmartColoring.smartPaint();
 			}
 		}
 	}
