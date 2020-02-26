@@ -56,8 +56,10 @@ public class SmartColoring {
 		final String[] stereotypes = _class.toStereotypeArray();
 
 		// I changed this check so that the smart-paint does not run if a class has more than 1 stereotype.
-		if (stereotypes == null || stereotypes.length != 1)
+		if (stereotypes == null || stereotypes.length != 1){
+			setColor(_class, COLOR_UNKNOWN);
 			return;
+		}
 
 		String stereotype = stereotypes[0];
 
