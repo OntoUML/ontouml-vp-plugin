@@ -15,6 +15,15 @@ import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.ISimpleRelationship;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
+/**
+ * 
+ * Implementation of the coloring feature
+ * 
+ * @author Victor Viola
+ * @author Claudenir Fonseca
+ * @author Tiago Prince Sales
+ *
+ */
 public class SmartColoring {
 
 	// Default colors
@@ -45,7 +54,7 @@ public class SmartColoring {
 
 	/**
 	 * 
-	 * Paints the assigned diagram element with the assigned color. No effect whenever auto-coloring is disabled or color is <code>null</code>.
+	 * Defines and paint the color of the diagram element. No effect whenever auto-coloring is disabled or color is <code>null</code>.
 	 * 
 	 * @param _class
 	 */
@@ -56,7 +65,7 @@ public class SmartColoring {
 		final String[] stereotypes = _class.toStereotypeArray();
 
 		// I changed this check so that the smart-paint does not run if a class has more than 1 stereotype.
-		if (stereotypes == null || stereotypes.length != 1){
+		if (stereotypes == null || stereotypes.length != 1) {
 			setColor(_class, COLOR_UNKNOWN);
 			return;
 		}
@@ -110,6 +119,13 @@ public class SmartColoring {
 
 	}
 
+	/**
+	 * 
+	 * Paints the assigned diagram element with the assigned color.
+	 * 
+	 * @param _class
+	 */
+
 	public static void setColor(IClass _class, Color color) {
 
 		final IDiagramElement[] diagramElements = _class.getDiagramElements();
@@ -127,7 +143,7 @@ public class SmartColoring {
 
 	/**
 	 * 
-	 * Returns first sortal color occurring on one of the generalizations of this class. If generalization with such color is found, returns <code>null</code>.
+	 * Infer color of the class based on its super classes.
 	 * 
 	 * @param _class
 	 * 
@@ -166,10 +182,18 @@ public class SmartColoring {
 		}
 	}
 
+	/**
+	 * 
+	 * Infer color of the mixins based on its specialized classes.
+	 * 
+	 * @param _class
+	 * 
+	 */
+
 	public static Color inferColorBasedSpecialization(IClass _class) {
 		final ISimpleRelationship[] specializations = _class.toFromRelationshipArray();
 		ArrayList<Color> specializedColors = new ArrayList<Color>();
-		
+
 		if (specializations == null)
 			return COLOR_UNKNOWN;
 
@@ -203,6 +227,13 @@ public class SmartColoring {
 		}
 	}
 
+	/**
+	 * 
+	 * Get sortal color based on a given color.
+	 * 
+	 * @param color
+	 * 
+	 */
 	private static Color getSortalColor(Color color) {
 
 		if (color.equals(COLOR_FUNCTIONAL_COMPLEX_KIND) || color.equals(COLOR_FUNCTIONAL_COMPLEX_SORTAL)) {
@@ -224,6 +255,12 @@ public class SmartColoring {
 
 	}
 
+	/**
+	 * 
+	 * Runs twice over the diagram and paint all the elements.
+	 * 
+	 * 
+	 */
 	public static void smartPaint() {
 
 		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
@@ -234,7 +271,6 @@ public class SmartColoring {
 				SmartColoring.paint((IClass) modelElements[j]);
 			}
 		}
-
 	}
 
 }

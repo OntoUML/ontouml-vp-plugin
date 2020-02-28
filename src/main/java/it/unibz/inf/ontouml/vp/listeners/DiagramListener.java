@@ -2,14 +2,11 @@ package it.unibz.inf.ontouml.vp.listeners;
 
 import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.SmartColoring;
-import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
-
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramListener;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IGeneralization;
-import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 public class DiagramListener implements IDiagramListener {
