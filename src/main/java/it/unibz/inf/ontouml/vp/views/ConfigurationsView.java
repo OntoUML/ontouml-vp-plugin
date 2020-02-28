@@ -84,7 +84,7 @@ public class ConfigurationsView extends JPanel {
 		gbc__txtServerAddress.gridx = 1;
 		gbc__txtServerAddress.gridy = 0;
 		_ontoUMLServerPanel.add(_txtServerAddress, gbc__txtServerAddress);
-		_txtServerAddress.setText("https://ontouml.herokuapp.com/v1/verification");
+		_txtServerAddress.setText("");
 		_txtServerAddress.setColumns(10);
 		
 		JPanel _exportPanel = new JPanel();
@@ -96,7 +96,7 @@ public class ConfigurationsView extends JPanel {
 		gbl__exportPanel.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		_exportPanel.setLayout(gbl__exportPanel);
 		
-		_chckbxEnableAutoColoring = new JCheckBox("Enable automatic coloring");
+		_chckbxEnableAutoColoring = new JCheckBox("Enable Smart Paint");
 		_optionsPanel.add(_chckbxEnableAutoColoring);
 		
 		JPanel _controlButtonsPanel = new JPanel();
