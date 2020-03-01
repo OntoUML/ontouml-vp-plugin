@@ -36,18 +36,20 @@ public class ModelListener implements PropertyChangeListener {
 
 				IGeneralization generalization = (IGeneralization) model;
 
-				String fromType = generalization.getFrom().getModelType();
-				boolean isFromClass = fromType.equals(IModelElementFactory.MODEL_TYPE_CLASS);
+				if (generalization.getFrom() != null && generalization.getTo() != null) {
+					String fromType = generalization.getFrom().getModelType();
+					boolean isFromClass = fromType.equals(IModelElementFactory.MODEL_TYPE_CLASS);
 
-				String toType = generalization.getTo().getModelType();
-				boolean isToClass = toType.equals(IModelElementFactory.MODEL_TYPE_CLASS);
+					String toType = generalization.getTo().getModelType();
+					boolean isToClass = toType.equals(IModelElementFactory.MODEL_TYPE_CLASS);
 
-				if ((isFromClass) && (isToClass)) {
-					SmartColoring.paint((IClass) generalization.getFrom());
-					SmartColoring.paint((IClass) generalization.getTo());
+					if ((isFromClass) && (isToClass)) {
+						SmartColoring.paint((IClass) generalization.getFrom());
+						SmartColoring.paint((IClass) generalization.getTo());
+					}
+
+					SmartColoring.smartPaint();
 				}
-
-				SmartColoring.smartPaint();
 			}
 
 		}
