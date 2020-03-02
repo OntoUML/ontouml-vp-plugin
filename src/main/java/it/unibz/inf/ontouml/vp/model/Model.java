@@ -169,7 +169,7 @@ public class Model implements ModelElement {
 				boolean isFromClass = fromType.equals(IModelElementFactory.MODEL_TYPE_CLASS);
 				boolean isFromAssociation = fromType.equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
 
-				if (!isFromClass || !isFromAssociation)
+				if (!isFromClass && !isFromAssociation)
 					break;
 
 				IModelElement toElement = gen.getTo();
@@ -185,7 +185,7 @@ public class Model implements ModelElement {
 				boolean isToClass = toType.equals(IModelElementFactory.MODEL_TYPE_CLASS);
 				boolean isToAssociation = toType.equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
 
-				if(!isToClass || !isToAssociation)
+				if(!isToClass && !isToAssociation)
 					break;
 
 				addElement(new Generalization((IGeneralization) projectElement));
