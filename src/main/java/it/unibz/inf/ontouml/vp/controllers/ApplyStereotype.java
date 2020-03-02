@@ -1,23 +1,24 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
-import com.vp.plugin.action.VPAction;
-import com.vp.plugin.action.VPContext;
-import com.vp.plugin.action.VPContextActionController;
-import com.vp.plugin.diagram.IDiagramElement;
-import com.vp.plugin.diagram.IShapeUIModel;
-import com.vp.plugin.model.*;
-import com.vp.plugin.model.factory.IModelElementFactory;
-
-import it.unibz.inf.ontouml.vp.features.constraints.*;
-import it.unibz.inf.ontouml.vp.utils.Configurations;
-import it.unibz.inf.ontouml.vp.utils.SmartColoring;
-import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
-
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import com.vp.plugin.action.VPAction;
+import com.vp.plugin.action.VPContext;
+import com.vp.plugin.action.VPContextActionController;
+import com.vp.plugin.model.IAssociation;
+import com.vp.plugin.model.IAssociationEnd;
+import com.vp.plugin.model.IClass;
+import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.IStereotype;
+import com.vp.plugin.model.factory.IModelElementFactory;
+
+import it.unibz.inf.ontouml.vp.features.constraints.ActionIds;
+import it.unibz.inf.ontouml.vp.features.constraints.AssociationConstraints;
+import it.unibz.inf.ontouml.vp.utils.SmartColoring;
+import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 /**
  * 

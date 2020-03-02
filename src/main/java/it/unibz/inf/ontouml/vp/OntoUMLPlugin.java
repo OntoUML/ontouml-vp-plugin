@@ -4,7 +4,6 @@ import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.ProjectManager;
 import com.vp.plugin.VPPlugin;
 import com.vp.plugin.VPPluginInfo;
-import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.factory.IModelElementFactory;
@@ -14,7 +13,6 @@ import it.unibz.inf.ontouml.vp.listeners.ModelListener;
 import it.unibz.inf.ontouml.vp.listeners.ProjectDiagramListener;
 import it.unibz.inf.ontouml.vp.listeners.ProjectListener;
 import it.unibz.inf.ontouml.vp.listeners.ProjectModelListener;
-import it.unibz.inf.ontouml.vp.utils.SmartColoring;
 
 /**
  * 

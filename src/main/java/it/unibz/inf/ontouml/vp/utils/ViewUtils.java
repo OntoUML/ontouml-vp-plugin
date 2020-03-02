@@ -1,6 +1,7 @@
 package it.unibz.inf.ontouml.vp.utils;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 
 import javax.swing.ImageIcon;
@@ -12,6 +13,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.vp.plugin.ApplicationManager;
+
+import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 
 /**
  * 
@@ -81,19 +84,26 @@ public class ViewUtils {
 		}
 	}
 
-	public static boolean enableSmartPaintDialog() {
-		final String workspace = ApplicationManager.instance().getWorkspaceLocation().toString(); 
-		final String pathLogo = workspace.substring(0, workspace.length()-2) + ONTOUML_SIMPLE_LOGO_PATH;
-		ImageIcon icon = new ImageIcon(pathLogo, "OntoUML");
-		
-		int isToenable = ApplicationManager.instance().getViewManager().showConfirmDialog(null,
-				"Auto coloring is not enabled. Do you want to activate?", "Smart Paint", JOptionPane.OK_CANCEL_OPTION,
-				JOptionPane.INFORMATION_MESSAGE, icon);
-		
-		if(isToenable == 0)
-			return true;
-		else
-			return false;
+	public static int smartPaintEnableDialog() {
+		final File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();
+		final File logoFile = Paths.get(pluginDir.getAbsolutePath(),"icons","logo","ontouml-simple-logo.png").toFile();
+
+		return ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+				"Smart Paint is disabled. Do you want to enable this feature?\n"+
+				"Warning: this feature will affect all diagrams within the project.", 
+				"Smart Paint", JOptionPane.YES_NO_OPTION,
+				JOptionPane.INFORMATION_MESSAGE, new ImageIcon(logoFile.getAbsolutePath()));
+	}
+
+	public static int smartPaintConfirmationDialog() {
+		final File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();
+		final File logoFile = Paths.get(pluginDir.getAbsolutePath(),"icons","logo","ontouml-simple-logo.png").toFile();
+
+		return ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+				"Warning: this feature will affect all diagrams within the project.\n" +
+				"Do you want to proceed?",
+				"Smart Paint", JOptionPane.YES_NO_OPTION,
+				JOptionPane.INFORMATION_MESSAGE, new ImageIcon(logoFile.getAbsolutePath()));
 	}
 
 }

@@ -1,5 +1,7 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
+import javax.swing.JOptionPane;
+
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 
@@ -13,16 +15,20 @@ public class PaintModelAction implements VPActionController {
 	public void performAction(VPAction arg0) {
 		
 		if (!Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled()) {
-			
-			if(ViewUtils.enableSmartPaintDialog()) {
+			final int enableSmartPaint = ViewUtils.smartPaintEnableDialog();
+
+			if(enableSmartPaint == JOptionPane.YES_OPTION) {
 				Configurations.getInstance().getProjectConfigurations().setAutomaticColoringEnabled(true);
 				SmartColoring.smartPaint();
 			}
-			
-			return;
 		}
-		
-		SmartColoring.smartPaint();
+		else {
+			final int proceedSmartPaintAction = ViewUtils.smartPaintConfirmationDialog();
+
+			if(proceedSmartPaintAction == JOptionPane.YES_OPTION) {
+				SmartColoring.smartPaint();
+			}
+		}
 	}
 
 	@Override
