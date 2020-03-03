@@ -59,7 +59,7 @@
         <contextSensitiveActionSet id="it.unibz.inf.ontouml.vp.ClassStereotypes">
             <contextTypes all="false"/>
             <include type="Class"/>
-            <menu id="ontoUMLMenu1" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontuml-simple-logo-small.png"/>
+            <menu id="ontoUMLMenu1" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
             
 
             <action id="it.unibz.inf.ontouml.vp.addEnumerationStereotype" label="Enumeration" style="normal" menuPath="ontoUMLMenu1/#">
@@ -150,7 +150,7 @@
             <contextTypes all="false"/>
             <include type="Association"/>
             
-            <menu id="ontoUMLMenu2" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontuml-simple-logo-small.png"/>
+            <menu id="ontoUMLMenu2" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
                 
             <action id="it.unibz.inf.ontouml.vp.addInstantiationStereotype" label="Instantiation" style="normal" menuPath="ontoUMLMenu2/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
@@ -226,7 +226,7 @@
             <contextTypes all="false"/>
             <include type="Attribute"/>
             
-            <menu id="ontoUMLMenu3" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontuml-simple-logo-small.png"/>
+            <menu id="ontoUMLMenu3" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
                 
             <action id="it.unibz.inf.ontouml.vp.addEndStereotype" label="End" style="normal" menuPath="ontoUMLMenu3/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>

@@ -13,27 +13,27 @@ public class ProjectListener implements IProjectListener {
 	}
 
 	@Override
-	public void projectAfterOpened(IProject arg0) {
+	public void projectAfterOpened(IProject project) {
 	}
 
 	@Override
-	public void projectNewed(IProject arg0) {
+	public void projectNewed(IProject project) {
 
-		arg0.addProjectDiagramListener(OntoUMLPlugin.PROJECT_DIAGRAM_LISTENER);
-		arg0.addProjectModelListener(OntoUMLPlugin.PROJECT_MODEL_LISTENER);
+		project.addProjectDiagramListener(OntoUMLPlugin.PROJECT_DIAGRAM_LISTENER);
+		project.addProjectModelListener(OntoUMLPlugin.PROJECT_MODEL_LISTENER);
 
 	}
 
 	@Override
-	public void projectOpened(IProject arg0) {
+	public void projectOpened(IProject project) {
 
-		arg0.addProjectDiagramListener(OntoUMLPlugin.PROJECT_DIAGRAM_LISTENER);
-		arg0.addProjectModelListener(OntoUMLPlugin.PROJECT_MODEL_LISTENER);
+		project.addProjectDiagramListener(OntoUMLPlugin.PROJECT_DIAGRAM_LISTENER);
+		project.addProjectModelListener(OntoUMLPlugin.PROJECT_MODEL_LISTENER);
 
 		String[] elementTypes = { IModelElementFactory.MODEL_TYPE_CLASS,
 				IModelElementFactory.MODEL_TYPE_GENERALIZATION };
 
-		IModelElement[] modelElements = arg0.toAllLevelModelElementArray(elementTypes);
+		IModelElement[] modelElements = project.toAllLevelModelElementArray(elementTypes);
 
 		for (int i = 0; i <= 1; i++) {
 			for (int j = 0; modelElements != null && j < modelElements.length; j++) {
@@ -44,15 +44,15 @@ public class ProjectListener implements IProjectListener {
 	}
 
 	@Override
-	public void projectPreSave(IProject arg0) {
+	public void projectPreSave(IProject project) {
 	}
 
 	@Override
-	public void projectRenamed(IProject arg0) {
+	public void projectRenamed(IProject project) {
 	}
 
 	@Override
-	public void projectSaved(IProject arg0) {
+	public void projectSaved(IProject project) {
 	}
 
 }

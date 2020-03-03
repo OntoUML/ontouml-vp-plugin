@@ -9,13 +9,11 @@ import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 public class ProjectModelListener implements IProjectModelListener {
 
 	@Override
-	public void modelAdded(IProject arg0, IModelElement arg1) {
-		
-		arg1.addPropertyChangeListener(OntoUMLPlugin.MODEL_LISTENER);
-		
+	public void modelAdded(IProject project, IModelElement modelElement) {
+		modelElement.addPropertyChangeListener(OntoUMLPlugin.MODEL_LISTENER);
 	}
 
 	@Override
-	public void modelRemoved(IProject arg0, IModelElement arg1) {}
+	public void modelRemoved(IProject project, IModelElement modelElement) {}
 
 }

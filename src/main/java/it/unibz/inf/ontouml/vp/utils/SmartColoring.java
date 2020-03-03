@@ -9,7 +9,6 @@ import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeUIModel;
 import com.vp.plugin.model.IClass;
-import com.vp.plugin.model.IGeneralization;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.ISimpleRelationship;
@@ -107,13 +106,13 @@ public class SmartColoring {
 		case StereotypeUtils.STR_MIXIN:
 		case StereotypeUtils.STR_ROLE_MIXIN:
 		case StereotypeUtils.STR_PHASE_MIXIN:
-			setColor(_class, inferColorBasedSpecialization(_class));
+			setColor(_class, inferColorBasedOnSubClasses(_class));
 			break;
 		case StereotypeUtils.STR_ROLE:
 		case StereotypeUtils.STR_SUBKIND:
 		case StereotypeUtils.STR_PHASE:
 		case StereotypeUtils.STR_HISTORICAL_ROLE:
-			setColor(_class, inferColorBasedSuper(_class));
+			setColor(_class, inferColorBasedSuperClasses(_class));
 			break;
 		}
 
@@ -148,38 +147,37 @@ public class SmartColoring {
 	 * @param _class
 	 * 
 	 */
-	public static Color inferColorBasedSuper(IClass _class) {
-		final ISimpleRelationship[] specializations = _class.toToRelationshipArray();
-		ArrayList<Color> superColors = new ArrayList<Color>();
+	public static Color inferColorBasedSuperClasses(IClass _class) {
+		final ISimpleRelationship[] relationshipsAsTarget = _class.toToRelationshipArray();
+		final ArrayList<Color> superClassesColors = new ArrayList<Color>();
 
-		if (specializations == null)
-			return COLOR_UNKNOWN;
+		for (int i = 0; relationshipsAsTarget != null && i < relationshipsAsTarget.length; i++) {
+			final ISimpleRelationship relationship = relationshipsAsTarget[i];
+			final String relationshipType = relationship.getModelType();
+			final String superClassType = relationship.getFrom() != null ? relationship.getFrom().getModelType() : "";
 
-		for (int i = 0; specializations != null && i < specializations.length; i++) {
-			if (!(specializations[i] instanceof IGeneralization)) {
+			if (!(relationshipType.equals(IModelElementFactory.MODEL_TYPE_GENERALIZATION))
+					|| !(superClassType.equals(IModelElementFactory.MODEL_TYPE_CLASS))) {
 				continue;
 			}
 
-			final IModelElement superClass = specializations[i].getFrom();
-			final IDiagramElement[] superDiagramElements = superClass.getDiagramElements();
+			final IClass superClass = (IClass) relationshipsAsTarget[i].getFrom();
+			final IDiagramElement[] superClassShapes = superClass.getDiagramElements();
 
-			for (int j = 0; j < superDiagramElements.length; j++) {
-				if (!(superDiagramElements[j] instanceof IShapeUIModel)) {
+			for (int j = 0; j < superClassShapes.length; j++) {
+				if (!(superClassShapes[j] instanceof IShapeUIModel)) {
 					continue;
 				}
 
-				final Color superColor = ((IShapeUIModel) superDiagramElements[j]).getFillColor().getColor1();
+				final Color superClassColor = ((IShapeUIModel) superClassShapes[j]).getFillColor().getColor1();
 
-				if (!getSortalColor(superColor).equals(COLOR_UNKNOWN) && !superColors.contains(getSortalColor(superColor))) {
-					superColors.add(getSortalColor(superColor));
+				if (!getSortalColor(superClassColor).equals(COLOR_UNKNOWN) && !superClassesColors.contains(getSortalColor(superClassColor))) {
+					superClassesColors.add(getSortalColor(superClassColor));
 				}
 			}
 		}
-		if (superColors.size() == 1) {
-			return superColors.get(0);
-		} else {
-			return COLOR_UNKNOWN;
-		}
+
+		return superClassesColors.size() == 1 ? superClassesColors.get(0) : COLOR_UNKNOWN;
 	}
 
 	/**
@@ -189,42 +187,42 @@ public class SmartColoring {
 	 * @param _class
 	 * 
 	 */
+	public static Color inferColorBasedOnSubClasses(IClass _class) {
+		final ISimpleRelationship[] relationshipsAsSource = _class.toFromRelationshipArray();
+		final ArrayList<Color> subClassesColors = new ArrayList<Color>();
 
-	public static Color inferColorBasedSpecialization(IClass _class) {
-		final ISimpleRelationship[] specializations = _class.toFromRelationshipArray();
-		ArrayList<Color> specializedColors = new ArrayList<Color>();
-
-		if (specializations == null)
+		if (relationshipsAsSource == null)
 			return COLOR_UNKNOWN;
 
-		for (int i = 0; specializations != null && i < specializations.length; i++) {
-			if (!(specializations[i] instanceof IGeneralization)) {
+		for (int i = 0; relationshipsAsSource != null && i < relationshipsAsSource.length; i++) {
+			final ISimpleRelationship relationship = relationshipsAsSource[i];
+			final String relationshipType = relationship.getModelType();
+			final String subClassType = relationship.getTo() != null ? relationship.getTo().getModelType() : "";
+
+			if (!(relationshipType.equals(IModelElementFactory.MODEL_TYPE_GENERALIZATION))
+					|| !(subClassType.equals(IModelElementFactory.MODEL_TYPE_CLASS))) {
 				continue;
 			}
 
-			final IModelElement specializedClass = specializations[i].getTo();
-			final IDiagramElement[] specializedDiagramElements = specializedClass.getDiagramElements();
+			final IClass subClass = (IClass) relationship.getTo();
+			final IDiagramElement[] subClassShapes = subClass.getDiagramElements();
 
-			for (int j = 0; j < specializedDiagramElements.length; j++) {
-				if (!(specializedDiagramElements[j] instanceof IShapeUIModel)) {
+			for (int j = 0; j < subClassShapes.length; j++) {
+				if (!(subClassShapes[j] instanceof IShapeUIModel)) {
 					continue;
 				}
 
-				final Color specializedColor = ((IShapeUIModel) specializedDiagramElements[j]).getFillColor().getColor1();
+				final Color subClassColor = ((IShapeUIModel) subClassShapes[j]).getFillColor().getColor1();
 
-				if (!specializedColors.contains(getSortalColor(specializedColor))) {
-					specializedColors.add(getSortalColor(specializedColor));
+				if (!subClassesColors.contains(getSortalColor(subClassColor))) {
+					subClassesColors.add(getSortalColor(subClassColor));
 				}
 			}
 		}
 
-		List<Color> listWithoutDuplicates = specializedColors.stream().distinct().collect(Collectors.toList());
+		final List<Color> listWithoutDuplicates = subClassesColors.stream().distinct().collect(Collectors.toList());
 
-		if (listWithoutDuplicates.size() == 0 || listWithoutDuplicates.size() > 1) {
-			return COLOR_UNKNOWN;
-		} else {
-			return listWithoutDuplicates.get(0);
-		}
+		return listWithoutDuplicates.size() == 1 ? listWithoutDuplicates.get(0) : COLOR_UNKNOWN;
 	}
 
 	/**
@@ -255,16 +253,16 @@ public class SmartColoring {
 
 	}
 
+	// TODO: this method runs twice because it must guarantee that all ultimate
+	// sortals were painted. Improve the code by not relying on the color of classes
+	// related by generalization.
 	/**
-	 * 
 	 * Runs twice over the diagram and paint all the elements.
-	 * 
-	 * 
 	 */
 	public static void smartPaint() {
-
 		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
-		IModelElement[] modelElements = project.toAllLevelModelElementArray(IModelElementFactory.MODEL_TYPE_CLASS);
+		final IModelElement[] modelElements = project
+				.toAllLevelModelElementArray(IModelElementFactory.MODEL_TYPE_CLASS);
 
 		for (int i = 0; i <= 1; i++) {
 			for (int j = 0; modelElements != null && j < modelElements.length; j++) {

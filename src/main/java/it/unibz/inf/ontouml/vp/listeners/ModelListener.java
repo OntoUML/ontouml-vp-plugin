@@ -17,41 +17,49 @@ public class ModelListener implements PropertyChangeListener {
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
+	public void propertyChange(PropertyChangeEvent event) {
+		// TODO: Removing before merging into `development`
+		final StringBuilder msg = new StringBuilder();
+		msg.append("[MODEL ELEMENT PROPERTY CHANGE]");
+		msg.append(" EVENT | ");
+		msg.append(event);
+
+		System.out.println(msg.toString());
 
 		if (!Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled()) {
 			return;
 		}
 
-		Object changeSource = evt.getSource();
-		if (changeSource instanceof IModelElement) {
-			IModelElement model = (IModelElement) changeSource;
+		final Object changeSource = event.getSource();
+		try {
+			if (changeSource instanceof IModelElement) {
+				final IModelElement modelElement = (IModelElement) changeSource;
 
-			if (model.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
-				SmartColoring.paint((IClass) model);
-				SmartColoring.smartPaint();
-			}
+				if (modelElement.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
+					SmartColoring.paint((IClass) modelElement);
+					SmartColoring.smartPaint();
+				}
 
-			if (model.getModelType().equals(IModelElementFactory.MODEL_TYPE_GENERALIZATION)) {
+				if (modelElement.getModelType().equals(IModelElementFactory.MODEL_TYPE_GENERALIZATION)) {
+					final IGeneralization generalization = (IGeneralization) modelElement;
+					final String sourceType = generalization.getFrom() != null ? generalization.getFrom().getModelType()
+							: null;
+					final String targetType = generalization.getTo() != null ? generalization.getTo().getModelType()
+							: null;
 
-				IGeneralization generalization = (IGeneralization) model;
-
-				if (generalization.getFrom() != null && generalization.getTo() != null) {
-					String fromType = generalization.getFrom().getModelType();
-					boolean isFromClass = fromType.equals(IModelElementFactory.MODEL_TYPE_CLASS);
-
-					String toType = generalization.getTo().getModelType();
-					boolean isToClass = toType.equals(IModelElementFactory.MODEL_TYPE_CLASS);
-
-					if ((isFromClass) && (isToClass)) {
+					if (sourceType != null && targetType != null
+							&& sourceType.equals(IModelElementFactory.MODEL_TYPE_CLASS)
+							&& targetType.equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
 						SmartColoring.paint((IClass) generalization.getFrom());
 						SmartColoring.paint((IClass) generalization.getTo());
 					}
-
-					SmartColoring.smartPaint();
 				}
-			}
 
+			}
+		} catch (Exception e) {
+			System.out.println("Exception caught while answering to a property change.");
+			System.out.println("Source: " + changeSource);
+			e.printStackTrace();
 		}
 	}
 
