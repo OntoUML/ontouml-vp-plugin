@@ -18,13 +18,6 @@ public class ModelListener implements PropertyChangeListener {
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
-		// TODO: Removing before merging into `development`
-		final StringBuilder msg = new StringBuilder();
-		msg.append("[MODEL ELEMENT PROPERTY CHANGE]");
-		msg.append(" EVENT | ");
-		msg.append(event);
-
-		System.out.println(msg.toString());
 
 		if (!Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled()) {
 			return;

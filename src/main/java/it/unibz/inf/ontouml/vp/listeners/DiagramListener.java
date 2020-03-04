@@ -25,7 +25,8 @@ public class DiagramListener implements IDiagramListener {
 		try {
 			final IModelElement shapeElement = shape.getModelElement();
 
-			if (shapeElement != null && shapeElement.getModelType().equals(IModelElementFactory.MODEL_TYPE_GENERALIZATION)) {
+			if (shapeElement != null
+					&& shapeElement.getModelType().equals(IModelElementFactory.MODEL_TYPE_GENERALIZATION)) {
 				final IGeneralization generalization = (IGeneralization) shapeElement;
 				final String sourceType = generalization.getFrom() != null ? generalization.getFrom().getModelType()
 						: null;
@@ -38,8 +39,6 @@ public class DiagramListener implements IDiagramListener {
 					SmartColoring.paint((IClass) generalization.getTo());
 				}
 
-				// TODO: check if this id indeed necessary
-				// SmartColoring.smartPaint();
 			}
 		} catch (Exception e) {
 			System.out.println("Exception caught while adding element to diagram.");
@@ -64,17 +63,6 @@ public class DiagramListener implements IDiagramListener {
 	@Override
 	public void diagramUIModelPropertyChanged(IDiagramUIModel diagram, String propertyName, Object originalProperty,
 			Object modifiedProperty) {
-		// TODO: Removing before merging into `development`
-		final StringBuilder msg = new StringBuilder();
-		msg.append("[DIAGRAM PROPERTY CHANGE]");
-		msg.append(" PROPERTY | ");
-		msg.append(propertyName);
-		msg.append(" ORIGINAL | ");
-		msg.append(originalProperty);
-		msg.append(" MODIFIED | ");
-		msg.append(modifiedProperty);
-
-		System.out.println(msg.toString());
 	}
 
 	@Override
