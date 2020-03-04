@@ -1,5 +1,8 @@
 package it.unibz.inf.ontouml.vp.utils;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,19 +21,19 @@ import java.net.URL;
  */
 public class OntoUMLServerUtils {
 
-	private static final String VERIFICATION_SERVICE_ENDPOINT = "/v1/verification";
+	private static final String VERIFICATION_SERVICE_ENDPOINT = "/v1/verify";
 
 	public static String requestModelVerification(String serializedModel) throws MalformedURLException, IOException {
+
 		final ProjectConfigurations configurations = Configurations.getInstance().getProjectConfigurations();
-		final URL url;	
-		
-		if(configurations.isCustomServerEnabled()) {
+		final URL url;
+
+		if (configurations.isCustomServerEnabled()) {
 			url = new URL(configurations.getServerURL());
-		}else {
+		} else {
 			url = new URL(ProjectConfigurations.DEFAULT_SERVER_URL + VERIFICATION_SERVICE_ENDPOINT);
 		}
-		
-		
+
 		final HttpURLConnection request = (HttpURLConnection) url.openConnection();
 
 		request.setRequestMethod("POST");
@@ -45,7 +48,7 @@ public class OntoUMLServerUtils {
 		final BufferedReader reader;
 
 		try {
-			ViewUtils.log("Sending model to the server: " + url, ViewUtils.SCOPE_PLUGIN);		
+			ViewUtils.log("Sending model to the server: " + url, ViewUtils.SCOPE_PLUGIN);
 			ViewUtils.log("Please wait. This might take a while.", ViewUtils.SCOPE_PLUGIN);
 
 			requestStream.write(requestBody, 0, requestBody.length);

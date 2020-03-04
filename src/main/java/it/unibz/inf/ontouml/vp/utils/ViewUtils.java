@@ -31,7 +31,6 @@ public class ViewUtils {
 //	public static final String SCOPE_ALL_PLUGINS = "";
 	public static final String SCOPE_VERIFICATION = "Verification Log";
 	public static final String SCOPE_DEVELOPMENT_LOG = "DevLog";
-	public static final String ONTOUML_SIMPLE_LOGO_PATH = "plugins\\ontouml-vp-plugin\\icons\\logo\\ontuml-simple-logo.png";
 
 	public static void log(String message) {
 		ApplicationManager.instance().getViewManager().showMessage(timestamp() + message);
@@ -58,20 +57,32 @@ public class ViewUtils {
 	}
 
 	public static void logVerificationResponse(String responseMessage) {
+		final File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();
+		final File logoFile = Paths.get(pluginDir.getAbsolutePath(), "icons", "logo", "ontouml-simple-logo.png")
+				.toFile();
+
 		try {
-			JsonObject response = (JsonObject) new JsonParser().parse(responseMessage).getAsJsonObject();
+			JsonArray response = (JsonArray) new JsonParser().parse(responseMessage).getAsJsonArray();
 
-			if (response.has("valid") && response.get("valid").getAsBoolean()) {
-				ViewUtils.simpleLog("The model was verified and no syntactical errors were found.\n", SCOPE_PLUGIN);
+			if (response.size() == 0) {
+
+				ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+						"The model was verified and no syntactical errors were found.", "Verification Service",
+						JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+						new ImageIcon(logoFile.getAbsolutePath()));
 			} else {
-				final JsonArray errors = response.get("meta").getAsJsonArray();
+				
+				ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+						"Verification found "+response.size() +" error(s). Please check the log panel.", "Verification Service",
+						JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+						new ImageIcon(logoFile.getAbsolutePath()));
 
-				for (JsonElement elem : errors) {
+				for (JsonElement elem : response) {
 					final JsonObject error = elem.getAsJsonObject();
-					final String line = '[' + error.get("title").getAsString() + "]\t " + error.get("detail")
-							.getAsString().replaceAll("ontouml/1.0/", "").replaceAll("ontouml/2.0/", "");
+					final String errorMessage = error.get("severity").getAsString() + ":" + " "
+							+ error.get("title").getAsString() + error.get("description").getAsString();
 
-					ViewUtils.simpleLog(line.trim(), SCOPE_PLUGIN);
+					ViewUtils.simpleLog(errorMessage, SCOPE_PLUGIN);
 				}
 			}
 		} catch (JsonSyntaxException e) {
@@ -86,24 +97,25 @@ public class ViewUtils {
 
 	public static int smartPaintEnableDialog() {
 		final File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();
-		final File logoFile = Paths.get(pluginDir.getAbsolutePath(),"icons","logo","ontouml-simple-logo.png").toFile();
+		final File logoFile = Paths.get(pluginDir.getAbsolutePath(), "icons", "logo", "ontouml-simple-logo.png")
+				.toFile();
 
 		return ApplicationManager.instance().getViewManager().showConfirmDialog(null,
-				"Smart Paint is disabled. Do you want to enable this feature?\n"+
-				"Warning: this feature will affect all diagrams within the project.", 
-				"Smart Paint", JOptionPane.YES_NO_OPTION,
-				JOptionPane.INFORMATION_MESSAGE, new ImageIcon(logoFile.getAbsolutePath()));
+				"Smart Paint is disabled. Do you want to enable this feature?\n"
+						+ "Warning: this feature will affect all diagrams within the project.",
+				"Smart Paint", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+				new ImageIcon(logoFile.getAbsolutePath()));
 	}
 
 	public static int smartPaintConfirmationDialog() {
 		final File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();
-		final File logoFile = Paths.get(pluginDir.getAbsolutePath(),"icons","logo","ontouml-simple-logo.png").toFile();
+		final File logoFile = Paths.get(pluginDir.getAbsolutePath(), "icons", "logo", "ontouml-simple-logo.png")
+				.toFile();
 
 		return ApplicationManager.instance().getViewManager().showConfirmDialog(null,
-				"Warning: this feature will affect all diagrams within the project.\n" +
-				"Do you want to proceed?",
-				"Smart Paint", JOptionPane.YES_NO_OPTION,
-				JOptionPane.INFORMATION_MESSAGE, new ImageIcon(logoFile.getAbsolutePath()));
+				"Warning: this feature will affect all diagrams within the project.\n" + "Do you want to proceed?",
+				"Smart Paint", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+				new ImageIcon(logoFile.getAbsolutePath()));
 	}
 
 }
