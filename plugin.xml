@@ -13,33 +13,44 @@
             <action 
                     id="it.unibz.inf.ontouml.vp.actions.ModelVerificationAction"
                     actionType="generalAction"
-                    description="Verify OntoUML Model."
+                    description="Tests if the model complies to OntoUML's syntactical constraints."
                     style="normal"
-                    tooltip="Verify model" 
-                    icon="icons/toolbar/magnifying-glass-with-check-mark-orange.png"
-                    label="Verify Model"
+                    tooltip="Tests if the model complies to OntoUML's syntactical constraints."
+                    icon="icons/toolbar/check-circle-orange.png"
+                    label="Verification"
                     toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ModelVerificationAction" />
             </action>
             <action 
                     id="it.unibz.inf.ontouml.vp.actions.ModelExportAction"
                     actionType="generalAction"
-                    description="Export OntoUML Model in both JSON and XMI."
+                    description="Exports the model into a JSON file formatted according to OntoUML JSON Schema."
                     style="normal"
-                    tooltip="Export Model" 
-                    icon="icons/toolbar/share-blue.png"
-                    label="Export Model"
+                    tooltip="Exports the model into a JSON file formatted according to OntoUML JSON Schema."
+                    icon="icons/toolbar/import-export-orange.png"
+                    label="Export JSON"
                     toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ModelExportAction" />
             </action>
             <action 
+                    id="it.unibz.inf.ontouml.vp.actions.PaintModel"
+                    actionType="generalAction"
+                    description="Applies the smart paint algorithm to the project."
+                    style="normal"
+                    tooltip="Applies the smart paint algorithm to the project."
+                    icon="icons/toolbar/format-paint-orange.png"
+                    label="Smart Paint"
+                    toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.PaintModelAction" />
+            </action>
+            <action 
                     id="it.unibz.inf.ontouml.vp.actions.OpenConfigurationsAction"
                     actionType="generalAction"
-                    description="Opens configurations menu."
+                    description="Opens the settings menu for the plugin."
                     style="normal"
-                    tooltip="Opens configurations menu"
-                    icon="icons/toolbar/list-orange.png"
-                    label="Configurations"
+                    tooltip="Opens the settings menu for the plugin."
+                    icon="icons/toolbar/gear-orange.png"
+                    label="Settings"
                     toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.OpenConfigurationsAction" />
             </action>
@@ -48,7 +59,7 @@
         <contextSensitiveActionSet id="it.unibz.inf.ontouml.vp.ClassStereotypes">
             <contextTypes all="false"/>
             <include type="Class"/>
-            <menu id="ontoUMLMenu1" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontuml-simple-logo-small.png"/>
+            <menu id="ontoUMLMenu1" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
             
 
             <action id="it.unibz.inf.ontouml.vp.addEnumerationStereotype" label="Enumeration" style="normal" menuPath="ontoUMLMenu1/#">
@@ -139,7 +150,7 @@
             <contextTypes all="false"/>
             <include type="Association"/>
             
-            <menu id="ontoUMLMenu2" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontuml-simple-logo-small.png"/>
+            <menu id="ontoUMLMenu2" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
                 
             <action id="it.unibz.inf.ontouml.vp.addInstantiationStereotype" label="Instantiation" style="normal" menuPath="ontoUMLMenu2/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
@@ -215,7 +226,7 @@
             <contextTypes all="false"/>
             <include type="Attribute"/>
             
-            <menu id="ontoUMLMenu3" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontuml-simple-logo-small.png"/>
+            <menu id="ontoUMLMenu3" label="OntoUML Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
                 
             <action id="it.unibz.inf.ontouml.vp.addEndStereotype" label="End" style="normal" menuPath="ontoUMLMenu3/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>

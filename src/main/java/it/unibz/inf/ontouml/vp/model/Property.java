@@ -307,7 +307,7 @@ public class Property implements ModelElement {
 
 	public void removeSubsettedProperty(Reference ref) {
 		if (this.subsettedProperties != null && this.subsettedProperties.contains(ref))
-			this.stereotypes.remove(ref);
+			this.subsettedProperties.remove(ref);
 	}
 
 	public List<Reference> getRedefinedProperties() {

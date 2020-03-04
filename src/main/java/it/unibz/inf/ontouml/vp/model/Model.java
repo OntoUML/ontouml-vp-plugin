@@ -156,17 +156,39 @@ public class Model implements ModelElement {
 
 			case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
 				IGeneralization gen = (IGeneralization) projectElement;
+				IModelElement fromElement = gen.getFrom();
+				
+				if(fromElement==null)
+					break;
 
-				String fromType = gen.getFrom().getModelType();
+				String fromType = fromElement.getModelType();
+
+				if(fromType==null)
+					break;
+
 				boolean isFromClass = fromType.equals(IModelElementFactory.MODEL_TYPE_CLASS);
 				boolean isFromAssociation = fromType.equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
 
-				String toType = gen.getTo().getModelType();
+				if (!isFromClass && !isFromAssociation)
+					break;
+
+				IModelElement toElement = gen.getTo();
+
+				if(toElement==null)
+					break;
+
+				String toType = toElement.getModelType();
+				
+				if(toType==null)
+					break;
+
 				boolean isToClass = toType.equals(IModelElementFactory.MODEL_TYPE_CLASS);
 				boolean isToAssociation = toType.equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
 
-				if ((isFromClass || isFromAssociation) && (isToClass || isToAssociation))
-					addElement(new Generalization((IGeneralization) projectElement));
+				if(!isToClass && !isToAssociation)
+					break;
+
+				addElement(new Generalization((IGeneralization) projectElement));
 				break;
 
 			case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
