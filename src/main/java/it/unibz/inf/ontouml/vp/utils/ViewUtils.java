@@ -18,7 +18,8 @@ import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 
 /**
  * 
- * Class responsible for facilitating display of messages on Visual Paradigm's log.
+ * Class responsible for facilitating display of messages on Visual Paradigm's
+ * log.
  * 
  * @author Claudenir Fonseca
  * @author Victor Viola
@@ -64,69 +65,72 @@ public class ViewUtils {
 		final File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();
 
 		switch (imageName) {
-		case SIMPLE_LOGO:
-			return Paths.get(pluginDir.getAbsolutePath(), "icons", "logo", SIMPLE_LOGO_FILENAME).toFile().getAbsolutePath();
-		default:
-			return null;
+			case SIMPLE_LOGO:
+				return Paths.get(pluginDir.getAbsolutePath(), "icons", "logo", SIMPLE_LOGO_FILENAME).toFile()
+						.getAbsolutePath();
+			default:
+				return null;
 		}
 
 	}
 
 	public static void logVerificationResponse(String responseMessage) {
-
 		try {
 			JsonArray response = (JsonArray) new JsonParser().parse(responseMessage).getAsJsonArray();
-			
-			
-			
-			if (response.size() == 0) {
 
-				ApplicationManager
-						.instance()
-						.getViewManager()
-						.showConfirmDialog(null, "The model was verified and no syntactical errors were found.", "Verification Service", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
-								new ImageIcon(getFilePath(SIMPLE_LOGO)));
+			if (response.size() == 0) {
+				verificationConcludedDialog(0);
 			} else {
-				
-				ApplicationManager
-						.instance()
-						.getViewManager()
-						.showConfirmDialog(null, "Verification found " + response.size() + " error(s). Please check the log panel.", "Verification Service", JOptionPane.DEFAULT_OPTION,
-								JOptionPane.WARNING_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
-				
+				verificationConcludedDialog(response.size());
+
 				ViewUtils.simpleLog("--------- Verification Service ---------", SCOPE_PLUGIN);
-				
 				for (JsonElement elem : response) {
 					final JsonObject error = elem.getAsJsonObject();
-					final String errorMessage = error.get("severity").getAsString() + ":" + " " + error.get("title").getAsString() + " " + error.get("description").getAsString();
+					final String errorMessage = error.get("severity").getAsString() + ":" + " "
+							+ error.get("title").getAsString() + " " + error.get("description").getAsString();
 
 					ViewUtils.simpleLog(errorMessage, SCOPE_PLUGIN);
 				}
-				
 				ViewUtils.simpleLog("-------------------------------------------", SCOPE_PLUGIN);
 			}
 		} catch (JsonSyntaxException e) {
 			ViewUtils.log("The requested server might be down. See response below:", SCOPE_PLUGIN);
 			ViewUtils.log(responseMessage, SCOPE_PLUGIN);
-			ViewUtils.log("Remote verification error. Please submit your Visual Paradigm's log and the time of the error our developers", SCOPE_PLUGIN);
+			ViewUtils.log(
+					"Remote verification error. Please submit your Visual Paradigm's log and the time of the error our developers",
+					SCOPE_PLUGIN);
 			e.printStackTrace();
 		}
 	}
 
+	public static void verificationConcludedDialog(int nIssues) {
+		if (nIssues > 0) {
+			ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+					"Verification found " + nIssues + " issue(s). \n"
+							+ "Please check the log at the right bottom corner.",
+					"Verification Service", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+					new ImageIcon(getFilePath(SIMPLE_LOGO)));
+		} else {
+			ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+					"The model was verified and no syntactical errors were found.", "Verification Service",
+					JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+					new ImageIcon(getFilePath(SIMPLE_LOGO)));
+		}
+	}
+
 	public static int smartPaintEnableDialog() {
-		return ApplicationManager
-				.instance()
-				.getViewManager()
-				.showConfirmDialog(null, "Smart Paint is disabled. Do you want to enable this feature?\n" + "Warning: this feature will affect all diagrams within the project.", "Smart Paint",
-						JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+		return ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+				"Smart Paint is disabled. Do you want to enable this feature?\n"
+						+ "Warning: this feature will affect all diagrams within the project.",
+				"Smart Paint", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+				new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
 
 	public static int smartPaintConfirmationDialog() {
-		return ApplicationManager
-				.instance()
-				.getViewManager()
-				.showConfirmDialog(null, "Warning: this feature will affect all diagrams within the project.\n" + "Do you want to proceed?", "Smart Paint", JOptionPane.YES_NO_OPTION,
-						JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+		return ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+				"Warning: this feature will affect all diagrams within the project.\n" + "Do you want to proceed?",
+				"Smart Paint", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+				new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
 
 }
