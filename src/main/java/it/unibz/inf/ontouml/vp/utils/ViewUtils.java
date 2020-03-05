@@ -106,4 +106,13 @@ public class ViewUtils {
 				JOptionPane.INFORMATION_MESSAGE, new ImageIcon(logoFile.getAbsolutePath()));
 	}
 
+	public static int exportToGUFOIssueDialog(String msg) {
+		final File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();
+		final File logoFile = Paths.get(pluginDir.getAbsolutePath(),"icons","logo","ontouml-simple-logo.png").toFile();
+
+		return ApplicationManager.instance().getViewManager().showConfirmDialog(null, msg,
+				"Export to gUFO", JOptionPane.DEFAULT_OPTION,
+				JOptionPane.ERROR_MESSAGE, new ImageIcon(logoFile.getAbsolutePath()));
+	}
+
 }

@@ -8,6 +8,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 /**
  * 
  * Class responsible for making requests to the OntoUML Server based on standard
@@ -19,6 +22,69 @@ import java.net.URL;
 public class OntoUMLServerUtils {
 
 	private static final String VERIFICATION_SERVICE_ENDPOINT = "/v1/verification";
+	private static final String TRANSFORM_GUFO_SERVICE_ENDPOINT = "/v1/transform/gufo";
+
+	public static BufferedReader transformToGUFO(String model, String baseIRI, String format, String uriFormatBy) {
+		final JsonObject optionsObj = new JsonObject();
+		optionsObj.addProperty("baseIRI", baseIRI);
+		optionsObj.addProperty("format", format);
+		optionsObj.addProperty("uriFormatBy", uriFormatBy);
+		
+		final JsonObject bodyObj = new JsonObject();
+		bodyObj.add("options", optionsObj);
+		bodyObj.addProperty("model", model);
+
+		final String body = (new Gson()).toJson(bodyObj);
+
+		try {
+			final HttpURLConnection request = request(
+					Configurations.getInstance().getProjectConfigurations().getServerURL()
+							+ TRANSFORM_GUFO_SERVICE_ENDPOINT,
+							body);
+			final BufferedReader responseReader = request.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST
+					? new BufferedReader(new InputStreamReader(request.getInputStream()))
+					: new BufferedReader(new InputStreamReader(request.getErrorStream()));
+
+			switch (request.getResponseCode()) {
+				case HttpURLConnection.HTTP_OK:
+					return responseReader;
+				case HttpURLConnection.HTTP_BAD_REQUEST:
+					ViewUtils.exportToGUFOIssueDialog("Unable to transform model due to plugin error.");
+					break;
+				case HttpURLConnection.HTTP_NOT_FOUND:
+					ViewUtils.exportToGUFOIssueDialog("Server not found.");
+					break;
+				case HttpURLConnection.HTTP_INTERNAL_ERROR:
+					ViewUtils.exportToGUFOIssueDialog("Server error.");
+					break;
+			}
+		} catch (MalformedURLException e) {
+			// TODO: handle exception
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
+
+		return null;
+	}
+
+	private static HttpURLConnection request(String urlString, String body) throws MalformedURLException, IOException {
+		final URL url = new URL(urlString);
+		final HttpURLConnection request = (HttpURLConnection) url.openConnection();
+		
+		request.setRequestMethod("POST");
+		request.setRequestProperty("Content-Type", "application/json");
+		request.setReadTimeout(60000);
+		request.setDoOutput(true);
+
+		final OutputStream requestStream = request.getOutputStream();
+		final byte[] requestBody = body.getBytes();
+
+		requestStream.write(requestBody, 0, requestBody.length);
+		requestStream.flush();
+		requestStream.close();
+
+		return request;
+	}
 
 	public static String requestModelVerification(String serializedModel) throws MalformedURLException, IOException {
 		final ProjectConfigurations configurations = Configurations.getInstance().getProjectConfigurations();

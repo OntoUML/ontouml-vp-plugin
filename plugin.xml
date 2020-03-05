@@ -33,6 +33,17 @@
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ModelExportAction" />
             </action>
             <action 
+                    id="it.unibz.inf.ontouml.vp.actions.ExportToGUFOAction"
+                    actionType="generalAction"
+                    description="Exports the OntoUML ontology to OWL gUFO."
+                    style="normal"
+                    tooltip="Exports the OntoUML ontology to OWL gUFO."
+                    icon="icons/toolbar/ufo-logo-cropped.png"
+                    label="Export to gUFO"
+                    toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ExportToGUFOAction" />
+            </action>
+            <action 
                     id="it.unibz.inf.ontouml.vp.actions.PaintModel"
                     actionType="generalAction"
                     description="Applies the smart paint algorithm to the project."
