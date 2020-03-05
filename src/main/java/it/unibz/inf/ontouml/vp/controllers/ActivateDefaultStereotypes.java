@@ -12,21 +12,9 @@ public class ActivateDefaultStereotypes implements VPActionController {
 		
 		ViewManager vm = ApplicationManager.instance().getViewManager();
 		vm.showMessage("Action \"" + action.getLabel() + "\" is currently disabled. No stereotypes are being removed.");
-		
-//		StereotypeUtils.removeAllModelStereotypesButOntoUML(IModelElementFactory.MODEL_TYPE_CLASS);
-//		StereotypeUtils.removeAllModelStereotypesButOntoUML(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
-
-//		TODO This won't help returning to the original set of stereotypes 
-		
-//		StereotypeUtils.setDefaultStereotypes(OntoUMLPluginForVP.allModelElements);
-//		OntoUMLPluginForVP.isPluginActive = false;
-		
 	}
 
 	@Override
-	public void update(VPAction action) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void update(VPAction action) {}
 	
 }

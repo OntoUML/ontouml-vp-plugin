@@ -1,8 +1,5 @@
 package it.unibz.inf.ontouml.vp.utils;
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,10 +26,12 @@ public class OntoUMLServerUtils {
 		final URL url;
 
 		if (configurations.isCustomServerEnabled()) {
-			url = new URL(configurations.getServerURL());
+			url = new URL(configurations.getServerURL() + VERIFICATION_SERVICE_ENDPOINT);
 		} else {
 			url = new URL(ProjectConfigurations.DEFAULT_SERVER_URL + VERIFICATION_SERVICE_ENDPOINT);
 		}
+
+		System.out.println(url);
 
 		final HttpURLConnection request = (HttpURLConnection) url.openConnection();
 
