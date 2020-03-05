@@ -48,9 +48,6 @@ public class OntoUMLServerUtils {
 		final BufferedReader reader;
 
 		try {
-			ViewUtils.log("Sending model to the server: " + url, ViewUtils.SCOPE_PLUGIN);
-			ViewUtils.log("Please wait. This might take a while.", ViewUtils.SCOPE_PLUGIN);
-
 			requestStream.write(requestBody, 0, requestBody.length);
 			requestStream.flush();
 			requestStream.close();
