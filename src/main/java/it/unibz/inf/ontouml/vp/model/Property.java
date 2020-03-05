@@ -99,7 +99,7 @@ public class Property implements ModelElement {
 		if (reference != null) {
 			setPropertyType(new Reference(reference));
 		} else {
-			System.out.println("Property type is a non-standard string: " + source.getTypeAsString());
+			System.out.println("Attribute "+source.getParent().getName()+"::"+source.getName()+" type is a non-standard string: " + source.getTypeAsString());
 		}
 
 		if (!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED)))
@@ -137,7 +137,7 @@ public class Property implements ModelElement {
 		if (reference != null) {
 			setPropertyType(new Reference(reference));
 		} else {
-			System.out.println("Property type is a non-standard string: " + source.getTypeAsString());
+			System.out.println("Association End "+source.getParent().getName()+"::"+source.getName()+" type is a non-standard string: " + source.getTypeAsString());
 		}
 
 		if (!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED)))
