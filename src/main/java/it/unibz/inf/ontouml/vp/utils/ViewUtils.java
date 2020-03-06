@@ -118,6 +118,13 @@ public class ViewUtils {
 		}
 	}
 
+	public static void verificationFailedDialog(String errorMessage) {
+		ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+				errorMessage,"Verification Service",
+				JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE,
+				new ImageIcon(getFilePath(SIMPLE_LOGO)));
+	}
+
 	public static int smartPaintEnableDialog() {
 		return ApplicationManager.instance().getViewManager().showConfirmDialog(null,
 				"Smart Paint is disabled. Do you want to enable this feature?\n"

@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.SocketException;
 import java.net.URL;
 
 /**
@@ -20,7 +21,7 @@ public class OntoUMLServerUtils {
 
 	private static final String VERIFICATION_SERVICE_ENDPOINT = "/v1/verify";
 	private static final String USER_MESSAGE_BAD_REQUEST = "There was a internal plugin error and the verification could not be completed.";
-	private static final String USER_MESSAGE_NOT_FOUND = "Service not found.";
+	private static final String USER_MESSAGE_NOT_FOUND = "Unable to reach the server.";
 	private static final String USER_MESSAGE_INTERNAL_ERROR = "Internal server error.";
 	private static final String USER_MESSAGE_UNKNOWN_ERROR_REQUEST = "Error sending model verification to the server.";
 	private static final String USER_MESSAGE_UNKNOWN_ERROR_RESPONSE = "Error receiving model verification response.";
@@ -37,7 +38,9 @@ public class OntoUMLServerUtils {
 				url = new URL(ProjectConfigurations.DEFAULT_SERVER_URL + VERIFICATION_SERVICE_ENDPOINT);
 			}
 		} catch (MalformedURLException e) {
-			return USER_MESSAGE_UNKNOWN_ERROR_REQUEST;
+			ViewUtils.verificationFailedDialog(USER_MESSAGE_NOT_FOUND);
+			e.printStackTrace();
+			return null;
 		}
 
 		try {
@@ -73,25 +76,31 @@ public class OntoUMLServerUtils {
 			case HttpURLConnection.HTTP_OK:
 				return response.toString();
 			case HttpURLConnection.HTTP_BAD_REQUEST:
-				return USER_MESSAGE_BAD_REQUEST;
+				ViewUtils.verificationFailedDialog(USER_MESSAGE_BAD_REQUEST);
+				return null;
 			case HttpURLConnection.HTTP_NOT_FOUND:
-				return USER_MESSAGE_NOT_FOUND;
+				ViewUtils.verificationFailedDialog(USER_MESSAGE_NOT_FOUND);
+				return null;
 			case HttpURLConnection.HTTP_INTERNAL_ERROR:
-				return USER_MESSAGE_INTERNAL_ERROR;
+				ViewUtils.verificationFailedDialog(USER_MESSAGE_INTERNAL_ERROR);
+				return null;
 			default:
-				return USER_MESSAGE_UNKNOWN_ERROR_RESPONSE;
+				ViewUtils.verificationFailedDialog(USER_MESSAGE_UNKNOWN_ERROR_RESPONSE);
+				return null;
 			}
 
-		} catch (IOException e) {
-			System.err.println("Error occurred during model verification request.");
+		} catch(SocketException e) {
+			ViewUtils.verificationFailedDialog(USER_MESSAGE_NOT_FOUND);
 			e.printStackTrace();
-
-			return USER_MESSAGE_UNKNOWN_ERROR_RESPONSE;
-
+		} catch (IOException e) {
+			ViewUtils.verificationFailedDialog(USER_MESSAGE_UNKNOWN_ERROR_RESPONSE);
+			e.printStackTrace();
 		} catch (Exception e) {
-			return USER_MESSAGE_UNKNOWN_ERROR_REQUEST;
+			ViewUtils.verificationFailedDialog(USER_MESSAGE_UNKNOWN_ERROR_REQUEST);
+			e.printStackTrace();
 		}
 
+		return null;
 	}
 
 }
