@@ -28,10 +28,13 @@ import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 public class ViewUtils {
 
 	public static final String SCOPE_PLUGIN = "OntoUML";
-//	public static final String SCOPE_ALL_PLUGINS = "";
+	// public static final String SCOPE_ALL_PLUGINS = "";
 	public static final String SCOPE_VERIFICATION = "Verification Log";
 	public static final String SCOPE_DEVELOPMENT_LOG = "DevLog";
-	public static final String ONTOUML_SIMPLE_LOGO_PATH = "plugins\\ontouml-vp-plugin\\icons\\logo\\ontuml-simple-logo.png";
+
+	// images
+	public static final String SIMPLE_LOGO = "simple_logo";
+	public static final String SIMPLE_LOGO_FILENAME = "ontouml-simple-logo.png";
 
 	public static void log(String message) {
 		ApplicationManager.instance().getViewManager().showMessage(timestamp() + message);
@@ -57,53 +60,84 @@ public class ViewUtils {
 		return "[" + (new Timestamp(System.currentTimeMillis())) + "] ";
 	}
 
+	private static String getFilePath(String imageName) {
+
+		final File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();
+
+		switch (imageName) {
+		case SIMPLE_LOGO:
+			return Paths.get(pluginDir.getAbsolutePath(), "icons", "logo", SIMPLE_LOGO_FILENAME).toFile()
+					.getAbsolutePath();
+		default:
+			return null;
+		}
+
+	}
+
 	public static void logVerificationResponse(String responseMessage) {
 		try {
-			JsonObject response = (JsonObject) new JsonParser().parse(responseMessage).getAsJsonObject();
+			JsonArray response = (JsonArray) new JsonParser().parse(responseMessage).getAsJsonArray();
 
-			if (response.has("valid") && response.get("valid").getAsBoolean()) {
-				ViewUtils.simpleLog("The model was verified and no syntactical errors were found.\n", SCOPE_PLUGIN);
+			if (response.size() == 0) {
+				verificationConcludedDialog(0);
 			} else {
-				final JsonArray errors = response.get("meta").getAsJsonArray();
+				verificationConcludedDialog(response.size());
 
-				for (JsonElement elem : errors) {
+				ViewUtils.simpleLog("--------- Verification Service ---------", SCOPE_PLUGIN);
+				for (JsonElement elem : response) {
 					final JsonObject error = elem.getAsJsonObject();
-					final String line = '[' + error.get("title").getAsString() + "]\t " + error.get("detail")
-							.getAsString().replaceAll("ontouml/1.0/", "").replaceAll("ontouml/2.0/", "");
+					final String errorMessage = error.get("severity").getAsString() + ":" + " "
+							+ error.get("title").getAsString() + " " + error.get("description").getAsString();
 
-					ViewUtils.simpleLog(line.trim(), SCOPE_PLUGIN);
+					ViewUtils.simpleLog(errorMessage, SCOPE_PLUGIN);
 				}
+				ViewUtils.simpleLog("-------------------------------------------", SCOPE_PLUGIN);
 			}
 		} catch (JsonSyntaxException e) {
-			ViewUtils.log("The requested server might be down. See response below:", SCOPE_PLUGIN);
-			ViewUtils.log(responseMessage, SCOPE_PLUGIN);
-			ViewUtils.log(
-					"Remote verification error. Please submit your Visual Paradigm's log and the time of the error our developers",
-					SCOPE_PLUGIN);
-			e.printStackTrace();
+			verificationServerErrorDialog(responseMessage);
 		}
 	}
 
-	public static int smartPaintEnableDialog() {
-		final File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();
-		final File logoFile = Paths.get(pluginDir.getAbsolutePath(),"icons","logo","ontouml-simple-logo.png").toFile();
+	public static void verificationServerErrorDialog(String userMessage) {
+		ApplicationManager.instance().getViewManager().showConfirmDialog(null, userMessage, "Verification Service",
+				JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+	}
 
+	public static void verificationConcludedDialog(int nIssues) {
+		if (nIssues > 0) {
+			ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+					"Verification found " + nIssues + " issue(s). \n"
+							+ "Please check the log at the right bottom corner.",
+					"Verification Service", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+					new ImageIcon(getFilePath(SIMPLE_LOGO)));
+		} else {
+			ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+					"The model was verified and no syntactical errors were found.", "Verification Service",
+					JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+					new ImageIcon(getFilePath(SIMPLE_LOGO)));
+		}
+	}
+
+	public static void verificationFailedDialog(String errorMessage) {
+		ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+				errorMessage,"Verification Service",
+				JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE,
+				new ImageIcon(getFilePath(SIMPLE_LOGO)));
+	}
+
+	public static int smartPaintEnableDialog() {
 		return ApplicationManager.instance().getViewManager().showConfirmDialog(null,
-				"Smart Paint is disabled. Do you want to enable this feature?\n"+
-				"Warning: this feature will affect all diagrams within the project.", 
-				"Smart Paint", JOptionPane.YES_NO_OPTION,
-				JOptionPane.INFORMATION_MESSAGE, new ImageIcon(logoFile.getAbsolutePath()));
+				"Smart Paint is disabled. Do you want to enable this feature?\n"
+						+ "Warning: this feature will affect all diagrams within the project.",
+				"Smart Paint", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+				new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
 
 	public static int smartPaintConfirmationDialog() {
-		final File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();
-		final File logoFile = Paths.get(pluginDir.getAbsolutePath(),"icons","logo","ontouml-simple-logo.png").toFile();
-
 		return ApplicationManager.instance().getViewManager().showConfirmDialog(null,
-				"Warning: this feature will affect all diagrams within the project.\n" +
-				"Do you want to proceed?",
-				"Smart Paint", JOptionPane.YES_NO_OPTION,
-				JOptionPane.INFORMATION_MESSAGE, new ImageIcon(logoFile.getAbsolutePath()));
+				"Warning: this feature will affect all diagrams within the project.\n" + "Do you want to proceed?",
+				"Smart Paint", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+				new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
 
 	public static int exportToGUFOIssueDialog(String msg) {

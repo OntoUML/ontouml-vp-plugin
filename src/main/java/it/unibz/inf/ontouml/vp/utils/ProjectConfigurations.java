@@ -17,7 +17,7 @@ public class ProjectConfigurations {
 	public static final boolean DEFAULT_IS_CUSTOM_SERVER_ENABLED = false;
 	public static final boolean DEFAULT_IS_EXPORT_ENABLED = true;
 	public static final boolean DEFAULT_IS_AUTOMATIC_COLORING_ENABLED = true;
-	public static final String DEFAULT_SERVER_URL = "https://api.ontouml.org";
+	public static final String DEFAULT_SERVER_URL = "http://api.ontouml.org";
 	public static final String DEFAULT_EXPORT_PATH = System.getProperty("user.home");
 	public static final String DEFAULT_EXPORT_FILENAME = "";
 	public static final String DEFAULT_GUFO_EXPORT_PATH = System.getProperty("user.home");
