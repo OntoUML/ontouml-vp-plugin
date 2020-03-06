@@ -10,6 +10,8 @@ public class ProjectModelListener implements IProjectModelListener {
 
 	@Override
 	public void modelAdded(IProject project, IModelElement modelElement) {
+		if(modelElement == null) { return ; }
+
 		modelElement.addPropertyChangeListener(OntoUMLPlugin.MODEL_LISTENER);
 	}
 

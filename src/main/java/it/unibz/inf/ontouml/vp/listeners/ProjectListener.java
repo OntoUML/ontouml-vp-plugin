@@ -18,14 +18,15 @@ public class ProjectListener implements IProjectListener {
 
 	@Override
 	public void projectNewed(IProject project) {
+		if(project == null) { return ; }
 
 		project.addProjectDiagramListener(OntoUMLPlugin.PROJECT_DIAGRAM_LISTENER);
 		project.addProjectModelListener(OntoUMLPlugin.PROJECT_MODEL_LISTENER);
-
 	}
 
 	@Override
 	public void projectOpened(IProject project) {
+		if(project == null) { return ; }
 
 		project.addProjectDiagramListener(OntoUMLPlugin.PROJECT_DIAGRAM_LISTENER);
 		project.addProjectModelListener(OntoUMLPlugin.PROJECT_MODEL_LISTENER);

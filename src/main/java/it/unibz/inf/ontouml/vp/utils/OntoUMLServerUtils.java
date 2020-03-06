@@ -7,9 +7,12 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 /**
  * 
@@ -24,7 +27,7 @@ public class OntoUMLServerUtils {
 	private static final String VERIFICATION_SERVICE_ENDPOINT = "/v1/verification";
 	private static final String TRANSFORM_GUFO_SERVICE_ENDPOINT = "/v1/transform/gufo";
 
-	public static BufferedReader transformToGUFO(String model, String baseIRI, String format, String uriFormatBy) {
+	public static BufferedReader transformToGUFO(String model, String baseIRI, String format, String uriFormatBy) throws Exception {
 		final JsonObject optionsObj = new JsonObject();
 		optionsObj.addProperty("baseIRI", baseIRI);
 		optionsObj.addProperty("format", format);
@@ -32,9 +35,11 @@ public class OntoUMLServerUtils {
 		
 		final JsonObject bodyObj = new JsonObject();
 		bodyObj.add("options", optionsObj);
-		bodyObj.addProperty("model", model);
+		bodyObj.add("model", new JsonParser().parse(model).getAsJsonObject());
 
-		final String body = (new Gson()).toJson(bodyObj);
+		final GsonBuilder builder = new GsonBuilder();
+		final Gson gson = builder.serializeNulls().setPrettyPrinting().create();
+		final String body = gson.toJson(bodyObj);
 
 		try {
 			final HttpURLConnection request = request(
@@ -49,19 +54,29 @@ public class OntoUMLServerUtils {
 				case HttpURLConnection.HTTP_OK:
 					return responseReader;
 				case HttpURLConnection.HTTP_BAD_REQUEST:
-					ViewUtils.exportToGUFOIssueDialog("Unable to transform model due to plugin error.");
-					break;
+					ViewUtils.exportToGUFOIssueDialog("Unable to transform model due to unexpected error.");
+					System.out.println(responseReader.lines().collect(Collectors.joining()));
+					new Exception("Unable to transform model due to unexpected error.").printStackTrace();
+					return null;
 				case HttpURLConnection.HTTP_NOT_FOUND:
 					ViewUtils.exportToGUFOIssueDialog("Server not found.");
-					break;
+					System.out.println(responseReader.lines().collect(Collectors.joining()));
+					new Exception("Server not found.").printStackTrace();
+					return null;
 				case HttpURLConnection.HTTP_INTERNAL_ERROR:
 					ViewUtils.exportToGUFOIssueDialog("Server error.");
-					break;
+					System.out.println(responseReader.lines().collect(Collectors.joining()));
+					new Exception("Server error.").printStackTrace();
+					return null;
+				default:
+					ViewUtils.exportToGUFOIssueDialog("Unexpected error.");
+					throw new Exception("Unknown error");
 			}
 		} catch (MalformedURLException e) {
-			// TODO: handle exception
+			ViewUtils.exportToGUFOIssueDialog("Server error.");
+			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 
 		return null;

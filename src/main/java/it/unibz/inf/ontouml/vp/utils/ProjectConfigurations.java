@@ -243,7 +243,7 @@ public class ProjectConfigurations {
 		this.exportGUFOFileName = exportFilename;
 	}
 	
-	public String getGUFOExportFilename() {
+	public String getExportGUFOFilename() {
 		return exportGUFOFileName;
 	}
 	
