@@ -19,34 +19,42 @@ import java.net.URL;
 public class OntoUMLServerUtils {
 
 	private static final String VERIFICATION_SERVICE_ENDPOINT = "/v1/verify";
+	private static final String USER_MESSAGE_BAD_REQUEST = "There was a internal plugin error and the verification could not be completed.";
+	private static final String USER_MESSAGE_NOT_FOUND = "Service not found.";
+	private static final String USER_MESSAGE_INTERNAL_ERROR = "Internal server error.";
+	private static final String USER_MESSAGE_UNKNOWN_ERROR_REQUEST = "Error sending model verification to the server.";
+	private static final String USER_MESSAGE_UNKNOWN_ERROR_RESPONSE = "Error receiving model verification response.";
 
-	public static String requestModelVerification(String serializedModel) throws MalformedURLException, IOException {
+	public static String requestModelVerification(String serializedModel) {
 
 		final ProjectConfigurations configurations = Configurations.getInstance().getProjectConfigurations();
 		final URL url;
 
-		if (configurations.isCustomServerEnabled()) {
-			url = new URL(configurations.getServerURL() + VERIFICATION_SERVICE_ENDPOINT);
-		} else {
-			url = new URL(ProjectConfigurations.DEFAULT_SERVER_URL + VERIFICATION_SERVICE_ENDPOINT);
+		try {
+			if (configurations.isCustomServerEnabled()) {
+				url = new URL(configurations.getServerURL() + VERIFICATION_SERVICE_ENDPOINT);
+			} else {
+				url = new URL(ProjectConfigurations.DEFAULT_SERVER_URL + VERIFICATION_SERVICE_ENDPOINT);
+			}
+		} catch (MalformedURLException e) {
+			return USER_MESSAGE_UNKNOWN_ERROR_REQUEST;
 		}
 
-		System.out.println(url);
-
-		final HttpURLConnection request = (HttpURLConnection) url.openConnection();
-
-		request.setRequestMethod("POST");
-		request.setRequestProperty("Content-Type", "application/json");
-		request.setReadTimeout(60000);
-		request.setDoOutput(true);
-
-		final OutputStream requestStream = request.getOutputStream();
-		final byte[] requestBody = serializedModel.getBytes();
-
-		final StringBuilder response = new StringBuilder();
-		final BufferedReader reader;
-
 		try {
+
+			final HttpURLConnection request = (HttpURLConnection) url.openConnection();
+
+			request.setRequestMethod("POST");
+			request.setRequestProperty("Content-Type", "application/json");
+			request.setReadTimeout(60000);
+			request.setDoOutput(true);
+
+			final OutputStream requestStream = request.getOutputStream();
+			final byte[] requestBody = serializedModel.getBytes();
+
+			final StringBuilder response = new StringBuilder();
+			final BufferedReader reader;
+
 			requestStream.write(requestBody, 0, requestBody.length);
 			requestStream.flush();
 			requestStream.close();
@@ -61,13 +69,29 @@ public class OntoUMLServerUtils {
 			}
 			reader.close();
 
+			switch (request.getResponseCode()) {
+			case HttpURLConnection.HTTP_OK:
+				return response.toString();
+			case HttpURLConnection.HTTP_BAD_REQUEST:
+				return USER_MESSAGE_BAD_REQUEST;
+			case HttpURLConnection.HTTP_NOT_FOUND:
+				return USER_MESSAGE_NOT_FOUND;
+			case HttpURLConnection.HTTP_INTERNAL_ERROR:
+				return USER_MESSAGE_INTERNAL_ERROR;
+			default:
+				return USER_MESSAGE_UNKNOWN_ERROR_RESPONSE;
+			}
+
 		} catch (IOException e) {
-			ViewUtils.log("Error receiving model verification response.", ViewUtils.SCOPE_PLUGIN);
 			System.err.println("Error occurred during model verification request.");
 			e.printStackTrace();
+
+			return USER_MESSAGE_UNKNOWN_ERROR_RESPONSE;
+
+		} catch (Exception e) {
+			return USER_MESSAGE_UNKNOWN_ERROR_REQUEST;
 		}
 
-		return response.toString();
 	}
 
 }

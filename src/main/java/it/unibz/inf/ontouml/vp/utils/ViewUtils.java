@@ -65,11 +65,11 @@ public class ViewUtils {
 		final File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();
 
 		switch (imageName) {
-			case SIMPLE_LOGO:
-				return Paths.get(pluginDir.getAbsolutePath(), "icons", "logo", SIMPLE_LOGO_FILENAME).toFile()
-						.getAbsolutePath();
-			default:
-				return null;
+		case SIMPLE_LOGO:
+			return Paths.get(pluginDir.getAbsolutePath(), "icons", "logo", SIMPLE_LOGO_FILENAME).toFile()
+					.getAbsolutePath();
+		default:
+			return null;
 		}
 
 	}
@@ -94,13 +94,13 @@ public class ViewUtils {
 				ViewUtils.simpleLog("-------------------------------------------", SCOPE_PLUGIN);
 			}
 		} catch (JsonSyntaxException e) {
-			ViewUtils.log("The requested server might be down. See response below:", SCOPE_PLUGIN);
-			ViewUtils.log(responseMessage, SCOPE_PLUGIN);
-			ViewUtils.log(
-					"Remote verification error. Please submit your Visual Paradigm's log and the time of the error our developers",
-					SCOPE_PLUGIN);
-			e.printStackTrace();
+			verificationServerErrorDialog(responseMessage);
 		}
+	}
+
+	public static void verificationServerErrorDialog(String userMessage) {
+		ApplicationManager.instance().getViewManager().showConfirmDialog(null, userMessage, "Verification Service",
+				JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
 
 	public static void verificationConcludedDialog(int nIssues) {
