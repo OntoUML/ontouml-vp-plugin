@@ -1,5 +1,7 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
+import java.awt.FileDialog;
+import java.awt.Frame;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,12 +13,11 @@ import java.util.stream.Collectors;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
+
 import it.unibz.inf.ontouml.vp.model.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.OntoUMLServerUtils;
 import it.unibz.inf.ontouml.vp.utils.ProjectConfigurations;
-import it.unibz.inf.ontouml.vp.utils.ViewUtils;
-import java.awt.*;
 
 /**
  * Implementation of toolbar button Export to gUFO.

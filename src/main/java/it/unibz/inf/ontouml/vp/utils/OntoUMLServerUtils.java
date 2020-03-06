@@ -60,9 +60,11 @@ public class OntoUMLServerUtils {
 				case HttpURLConnection.HTTP_OK:
 					return responseReader;
 				case HttpURLConnection.HTTP_BAD_REQUEST:
-					ViewUtils.exportToGUFOIssueDialog("Unable to transform model due to unexpected error.");
+					ViewUtils.exportToGUFOIssueDialog("Unable to transform model due to unexpected error."
+							+ "\nPlease check the model for nay syntactical errors.");
 					System.out.println(responseReader.lines().collect(Collectors.joining()));
-					new Exception("Unable to transform model due to unexpected error.").printStackTrace();
+					new Exception("Unable to transform model due to unexpected error."
+							+ "\nPlease check the model for nay syntactical errors.").printStackTrace();
 					return null;
 				case HttpURLConnection.HTTP_NOT_FOUND:
 					ViewUtils.exportToGUFOIssueDialog("Server not found.");
