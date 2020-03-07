@@ -75,12 +75,16 @@ public class OntoUMLServerUtils {
 						+ "\nPlease check the model for nay syntactical errors.").printStackTrace();
 				return null;
 			case HttpURLConnection.HTTP_NOT_FOUND:
-				ViewUtils.exportToGUFOIssueDialog("Server not found.");
+				if (ViewUtils.exportToGUFOIssueDialogWithOption("Server not found.", HttpURLConnection.HTTP_NOT_FOUND))
+					return transformToGUFO(model, baseIRI, format, uriFormatBy);
+
 				System.out.println(responseReader.lines().collect(Collectors.joining()));
 				new Exception("Server not found.").printStackTrace();
 				return null;
 			case HttpURLConnection.HTTP_INTERNAL_ERROR:
-				ViewUtils.exportToGUFOIssueDialog("Server error.");
+				if (ViewUtils.exportToGUFOIssueDialogWithOption("Server error.", HttpURLConnection.HTTP_INTERNAL_ERROR))
+					return transformToGUFO(model, baseIRI, format, uriFormatBy);
+
 				System.out.println(responseReader.lines().collect(Collectors.joining()));
 				new Exception("Server error.").printStackTrace();
 				return null;

@@ -1,6 +1,7 @@
 package it.unibz.inf.ontouml.vp.utils;
 
 import java.io.File;
+import java.net.HttpURLConnection;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 
@@ -12,6 +13,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import com.jidesoft.dialog.JideOptionPane;
 import com.vp.plugin.ApplicationManager;
 
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
@@ -119,10 +121,8 @@ public class ViewUtils {
 	}
 
 	public static void verificationFailedDialog(String errorMessage) {
-		ApplicationManager.instance().getViewManager().showConfirmDialog(null,
-				errorMessage,"Verification Service",
-				JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE,
-				new ImageIcon(getFilePath(SIMPLE_LOGO)));
+		ApplicationManager.instance().getViewManager().showConfirmDialog(null, errorMessage, "Verification Service",
+				JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
 
 	public static int smartPaintEnableDialog() {
@@ -140,13 +140,40 @@ public class ViewUtils {
 				new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
 
+	public static boolean exportToGUFOIssueDialogWithOption(String msg, int httpCode) {
+		final ProjectConfigurations configurations = Configurations.getInstance().getProjectConfigurations();
+		final File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();
+		final File logoFile = Paths.get(pluginDir.getAbsolutePath(), "icons", "logo", "ontouml-simple-logo.png")
+				.toFile();
+
+		if (configurations.isCustomServerEnabled() && (httpCode == HttpURLConnection.HTTP_NOT_FOUND
+				|| httpCode == HttpURLConnection.HTTP_INTERNAL_ERROR)) {
+
+			int option = ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+					msg + "\nDo you want to retry using the default server?", "Export to gUFO",
+					JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+					new ImageIcon(logoFile.getAbsolutePath()));
+
+			if (option == JOptionPane.OK_OPTION) {
+				configurations.setCustomServerEnabled(false);
+				return true;
+			}else {
+				return false;
+			}
+
+		}else {
+			exportToGUFOIssueDialog(msg);
+			return false;
+		}	
+	}
+
 	public static int exportToGUFOIssueDialog(String msg) {
 		final File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();
-		final File logoFile = Paths.get(pluginDir.getAbsolutePath(),"icons","logo","ontouml-simple-logo.png").toFile();
+		final File logoFile = Paths.get(pluginDir.getAbsolutePath(), "icons", "logo", "ontouml-simple-logo.png")
+				.toFile();
 
-		return ApplicationManager.instance().getViewManager().showConfirmDialog(null, msg,
-				"Export to gUFO", JOptionPane.DEFAULT_OPTION,
-				JOptionPane.ERROR_MESSAGE, new ImageIcon(logoFile.getAbsolutePath()));
+		return ApplicationManager.instance().getViewManager().showConfirmDialog(null, msg, "Export to gUFO",
+				JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, new ImageIcon(logoFile.getAbsolutePath()));
 	}
 
 }
