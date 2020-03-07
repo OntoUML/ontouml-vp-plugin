@@ -21,6 +21,7 @@ import com.google.gson.JsonParser;
  * end points and configured server URL.
  * 
  * @author Claudenir Fonseca
+ * @author Victor Viola
  *
  */
 public class OntoUMLServerUtils {
@@ -33,12 +34,13 @@ public class OntoUMLServerUtils {
 	private static final String USER_MESSAGE_UNKNOWN_ERROR_REQUEST = "Error sending model verification to the server.";
 	private static final String USER_MESSAGE_UNKNOWN_ERROR_RESPONSE = "Error receiving model verification response.";
 
-	public static BufferedReader transformToGUFO(String model, String baseIRI, String format, String uriFormatBy) throws Exception {
+	public static BufferedReader transformToGUFO(String model, String baseIRI, String format, String uriFormatBy)
+			throws Exception {
 		final JsonObject optionsObj = new JsonObject();
 		optionsObj.addProperty("baseIRI", baseIRI);
 		optionsObj.addProperty("format", format);
 		optionsObj.addProperty("uriFormatBy", uriFormatBy);
-		
+
 		final JsonObject bodyObj = new JsonObject();
 		bodyObj.add("options", optionsObj);
 		bodyObj.add("model", new JsonParser().parse(model).getAsJsonObject());
@@ -47,38 +49,44 @@ public class OntoUMLServerUtils {
 		final Gson gson = builder.serializeNulls().setPrettyPrinting().create();
 		final String body = gson.toJson(bodyObj);
 
+		final ProjectConfigurations configurations = Configurations.getInstance().getProjectConfigurations();
+		final String url;
+
+		if (configurations.isCustomServerEnabled()) {
+			url = configurations.getServerURL() + TRANSFORM_GUFO_SERVICE_ENDPOINT;
+		} else {
+			url = ProjectConfigurations.DEFAULT_SERVER_URL + TRANSFORM_GUFO_SERVICE_ENDPOINT;
+		}
+
 		try {
-			final HttpURLConnection request = request(
-					Configurations.getInstance().getProjectConfigurations().getServerURL()
-							+ TRANSFORM_GUFO_SERVICE_ENDPOINT,
-							body);
+			final HttpURLConnection request = request(url, body);
 			final BufferedReader responseReader = request.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST
 					? new BufferedReader(new InputStreamReader(request.getInputStream()))
 					: new BufferedReader(new InputStreamReader(request.getErrorStream()));
 
 			switch (request.getResponseCode()) {
-				case HttpURLConnection.HTTP_OK:
-					return responseReader;
-				case HttpURLConnection.HTTP_BAD_REQUEST:
-					ViewUtils.exportToGUFOIssueDialog("Unable to transform model due to unexpected error."
-							+ "\nPlease check the model for nay syntactical errors.");
-					System.out.println(responseReader.lines().collect(Collectors.joining()));
-					new Exception("Unable to transform model due to unexpected error."
-							+ "\nPlease check the model for nay syntactical errors.").printStackTrace();
-					return null;
-				case HttpURLConnection.HTTP_NOT_FOUND:
-					ViewUtils.exportToGUFOIssueDialog("Server not found.");
-					System.out.println(responseReader.lines().collect(Collectors.joining()));
-					new Exception("Server not found.").printStackTrace();
-					return null;
-				case HttpURLConnection.HTTP_INTERNAL_ERROR:
-					ViewUtils.exportToGUFOIssueDialog("Server error.");
-					System.out.println(responseReader.lines().collect(Collectors.joining()));
-					new Exception("Server error.").printStackTrace();
-					return null;
-				default:
-					ViewUtils.exportToGUFOIssueDialog("Unexpected error.");
-					throw new Exception("Unknown error");
+			case HttpURLConnection.HTTP_OK:
+				return responseReader;
+			case HttpURLConnection.HTTP_BAD_REQUEST:
+				ViewUtils.exportToGUFOIssueDialog("Unable to transform model due to unexpected error."
+						+ "\nPlease check the model for nay syntactical errors.");
+				System.out.println(responseReader.lines().collect(Collectors.joining()));
+				new Exception("Unable to transform model due to unexpected error."
+						+ "\nPlease check the model for nay syntactical errors.").printStackTrace();
+				return null;
+			case HttpURLConnection.HTTP_NOT_FOUND:
+				ViewUtils.exportToGUFOIssueDialog("Server not found.");
+				System.out.println(responseReader.lines().collect(Collectors.joining()));
+				new Exception("Server not found.").printStackTrace();
+				return null;
+			case HttpURLConnection.HTTP_INTERNAL_ERROR:
+				ViewUtils.exportToGUFOIssueDialog("Server error.");
+				System.out.println(responseReader.lines().collect(Collectors.joining()));
+				new Exception("Server error.").printStackTrace();
+				return null;
+			default:
+				ViewUtils.exportToGUFOIssueDialog("Unexpected error.");
+				throw new Exception("Unknown error");
 			}
 		} catch (MalformedURLException e) {
 			ViewUtils.exportToGUFOIssueDialog("Server error.");
@@ -90,62 +98,24 @@ public class OntoUMLServerUtils {
 		return null;
 	}
 
-	private static HttpURLConnection request(String urlString, String body) throws MalformedURLException, IOException {
-		final URL url = new URL(urlString);
-		final HttpURLConnection request = (HttpURLConnection) url.openConnection();
-		
-		request.setRequestMethod("POST");
-		request.setRequestProperty("Content-Type", "application/json");
-		request.setReadTimeout(60000);
-		request.setDoOutput(true);
-
-		final OutputStream requestStream = request.getOutputStream();
-		final byte[] requestBody = body.getBytes();
-
-		requestStream.write(requestBody, 0, requestBody.length);
-		requestStream.flush();
-		requestStream.close();
-
-		return request;
-	}
-
 	public static String requestModelVerification(String serializedModel) {
 
 		final ProjectConfigurations configurations = Configurations.getInstance().getProjectConfigurations();
-		final URL url;
+		final String url;
 
-		try {
-			if (configurations.isCustomServerEnabled()) {
-				url = new URL(configurations.getServerURL() + VERIFICATION_SERVICE_ENDPOINT);
-			} else {
-				url = new URL(ProjectConfigurations.DEFAULT_SERVER_URL + VERIFICATION_SERVICE_ENDPOINT);
-			}
-		} catch (MalformedURLException e) {
-			ViewUtils.verificationFailedDialog(USER_MESSAGE_NOT_FOUND);
-			e.printStackTrace();
-			return null;
+		if (configurations.isCustomServerEnabled()) {
+			url = configurations.getServerURL() + VERIFICATION_SERVICE_ENDPOINT;
+		} else {
+			url = ProjectConfigurations.DEFAULT_SERVER_URL + VERIFICATION_SERVICE_ENDPOINT;
 		}
 
 		try {
 
-			final HttpURLConnection request = (HttpURLConnection) url.openConnection();
-
-			request.setRequestMethod("POST");
-			request.setRequestProperty("Content-Type", "application/json");
-			request.setReadTimeout(60000);
-			request.setDoOutput(true);
-
-			final OutputStream requestStream = request.getOutputStream();
-			final byte[] requestBody = serializedModel.getBytes();
+			final HttpURLConnection request = request(url, serializedModel);
 
 			final StringBuilder response = new StringBuilder();
-			final BufferedReader reader;
 
-			requestStream.write(requestBody, 0, requestBody.length);
-			requestStream.flush();
-			requestStream.close();
-
-			reader = request.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST
+			final BufferedReader reader = request.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST
 					? new BufferedReader(new InputStreamReader(request.getInputStream()))
 					: new BufferedReader(new InputStreamReader(request.getErrorStream()));
 
@@ -172,7 +142,7 @@ public class OntoUMLServerUtils {
 				return null;
 			}
 
-		} catch(SocketException e) {
+		} catch (SocketException e) {
 			ViewUtils.verificationFailedDialog(USER_MESSAGE_NOT_FOUND);
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -184,6 +154,25 @@ public class OntoUMLServerUtils {
 		}
 
 		return null;
+	}
+
+	private static HttpURLConnection request(String urlString, String body) throws MalformedURLException, IOException {
+		final URL url = new URL(urlString);
+		final HttpURLConnection request = (HttpURLConnection) url.openConnection();
+
+		request.setRequestMethod("POST");
+		request.setRequestProperty("Content-Type", "application/json");
+		request.setReadTimeout(60000);
+		request.setDoOutput(true);
+
+		final OutputStream requestStream = request.getOutputStream();
+		final byte[] requestBody = body.getBytes();
+
+		requestStream.write(requestBody, 0, requestBody.length);
+		requestStream.flush();
+		requestStream.close();
+
+		return request;
 	}
 
 }
