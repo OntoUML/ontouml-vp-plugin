@@ -136,10 +136,14 @@ public class OntoUMLServerUtils {
 				ViewUtils.verificationFailedDialog(USER_MESSAGE_BAD_REQUEST);
 				return null;
 			case HttpURLConnection.HTTP_NOT_FOUND:
-				ViewUtils.verificationFailedDialog(USER_MESSAGE_NOT_FOUND);
+				if(ViewUtils.verificationFailedDialogWithOption(USER_MESSAGE_NOT_FOUND, HttpURLConnection.HTTP_NOT_FOUND))
+					return requestModelVerification(serializedModel);
+					
 				return null;
 			case HttpURLConnection.HTTP_INTERNAL_ERROR:
-				ViewUtils.verificationFailedDialog(USER_MESSAGE_INTERNAL_ERROR);
+				if(ViewUtils.verificationFailedDialogWithOption(USER_MESSAGE_INTERNAL_ERROR, HttpURLConnection.HTTP_INTERNAL_ERROR))
+					return requestModelVerification(serializedModel);
+					
 				return null;
 			default:
 				ViewUtils.verificationFailedDialog(USER_MESSAGE_UNKNOWN_ERROR_RESPONSE);

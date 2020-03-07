@@ -120,9 +120,62 @@ public class ViewUtils {
 		}
 	}
 
-	public static void verificationFailedDialog(String errorMessage) {
-		ApplicationManager.instance().getViewManager().showConfirmDialog(null, errorMessage, "Verification Service",
+	public static void verificationFailedDialog(String msg) {
+		ApplicationManager.instance().getViewManager().showConfirmDialog(null, msg, "Verification Service",
 				JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+	}
+
+	public static boolean verificationFailedDialogWithOption(String msg, int httpCode) {
+		final ProjectConfigurations configurations = Configurations.getInstance().getProjectConfigurations();
+
+		if (configurations.isCustomServerEnabled() && (httpCode == HttpURLConnection.HTTP_NOT_FOUND
+				|| httpCode == HttpURLConnection.HTTP_INTERNAL_ERROR)) {
+
+			int option = ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+					msg + "\nDo you want to retry using the default server?", "Verification Service",
+					JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+					new ImageIcon(getFilePath(SIMPLE_LOGO)));
+
+			if (option == JOptionPane.OK_OPTION) {
+				configurations.setCustomServerEnabled(false);
+				return true;
+			} else {
+				return false;
+			}
+
+		} else {
+			verificationFailedDialog(msg);
+			return false;
+		}
+	}
+
+	public static void exportToGUFOIssueDialog(String msg) {
+		ApplicationManager.instance().getViewManager().showConfirmDialog(null, msg, "Export to gUFO",
+				JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+	}
+
+	public static boolean exportToGUFOIssueDialogWithOption(String msg, int httpCode) {
+		final ProjectConfigurations configurations = Configurations.getInstance().getProjectConfigurations();
+
+		if (configurations.isCustomServerEnabled() && (httpCode == HttpURLConnection.HTTP_NOT_FOUND
+				|| httpCode == HttpURLConnection.HTTP_INTERNAL_ERROR)) {
+
+			int option = ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+					msg + "\nDo you want to retry using the default server?", "Export to gUFO",
+					JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+					new ImageIcon(getFilePath(SIMPLE_LOGO)));
+
+			if (option == JOptionPane.OK_OPTION) {
+				configurations.setCustomServerEnabled(false);
+				return true;
+			} else {
+				return false;
+			}
+
+		} else {
+			exportToGUFOIssueDialog(msg);
+			return false;
+		}
 	}
 
 	public static int smartPaintEnableDialog() {
@@ -138,42 +191,6 @@ public class ViewUtils {
 				"Warning: this feature will affect all diagrams within the project.\n" + "Do you want to proceed?",
 				"Smart Paint", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
 				new ImageIcon(getFilePath(SIMPLE_LOGO)));
-	}
-
-	public static boolean exportToGUFOIssueDialogWithOption(String msg, int httpCode) {
-		final ProjectConfigurations configurations = Configurations.getInstance().getProjectConfigurations();
-		final File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();
-		final File logoFile = Paths.get(pluginDir.getAbsolutePath(), "icons", "logo", "ontouml-simple-logo.png")
-				.toFile();
-
-		if (configurations.isCustomServerEnabled() && (httpCode == HttpURLConnection.HTTP_NOT_FOUND
-				|| httpCode == HttpURLConnection.HTTP_INTERNAL_ERROR)) {
-
-			int option = ApplicationManager.instance().getViewManager().showConfirmDialog(null,
-					msg + "\nDo you want to retry using the default server?", "Export to gUFO",
-					JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
-					new ImageIcon(logoFile.getAbsolutePath()));
-
-			if (option == JOptionPane.OK_OPTION) {
-				configurations.setCustomServerEnabled(false);
-				return true;
-			}else {
-				return false;
-			}
-
-		}else {
-			exportToGUFOIssueDialog(msg);
-			return false;
-		}	
-	}
-
-	public static int exportToGUFOIssueDialog(String msg) {
-		final File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();
-		final File logoFile = Paths.get(pluginDir.getAbsolutePath(), "icons", "logo", "ontouml-simple-logo.png")
-				.toFile();
-
-		return ApplicationManager.instance().getViewManager().showConfirmDialog(null, msg, "Export to gUFO",
-				JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, new ImageIcon(logoFile.getAbsolutePath()));
 	}
 
 }
