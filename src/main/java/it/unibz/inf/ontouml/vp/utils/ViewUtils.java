@@ -13,7 +13,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import com.jidesoft.dialog.JideOptionPane;
 import com.vp.plugin.ApplicationManager;
 
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
@@ -67,11 +66,11 @@ public class ViewUtils {
 		final File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();
 
 		switch (imageName) {
-		case SIMPLE_LOGO:
-			return Paths.get(pluginDir.getAbsolutePath(), "icons", "logo", SIMPLE_LOGO_FILENAME).toFile()
-					.getAbsolutePath();
-		default:
-			return null;
+			case SIMPLE_LOGO:
+				return Paths.get(pluginDir.getAbsolutePath(), "icons", "logo", SIMPLE_LOGO_FILENAME).toFile()
+						.getAbsolutePath();
+			default:
+				return null;
 		}
 
 	}

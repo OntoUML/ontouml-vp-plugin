@@ -66,7 +66,16 @@ public class OntoUMLServerUtils {
 
 			switch (request.getResponseCode()) {
 			case HttpURLConnection.HTTP_OK:
-				return responseReader;
+				if(!request.getContentType().equals("text/html")) {
+					return responseReader;
+				} else {
+					if(ViewUtils.exportToGUFOIssueDialogWithOption("Server not found.", HttpURLConnection.HTTP_NOT_FOUND))
+						return transformToGUFO(model, baseIRI, format, uriFormatBy);
+
+					System.out.println(responseReader.lines().collect(Collectors.joining()));
+					new Exception("Server not found.").printStackTrace();
+					return null;
+				}
 			case HttpURLConnection.HTTP_BAD_REQUEST:
 				ViewUtils.exportToGUFOIssueDialog("Unable to transform model due to unexpected error."
 						+ "\nPlease check the model for nay syntactical errors.");
@@ -116,9 +125,7 @@ public class OntoUMLServerUtils {
 		try {
 
 			final HttpURLConnection request = request(url, serializedModel);
-
 			final StringBuilder response = new StringBuilder();
-
 			final BufferedReader reader = request.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST
 					? new BufferedReader(new InputStreamReader(request.getInputStream()))
 					: new BufferedReader(new InputStreamReader(request.getErrorStream()));
@@ -131,7 +138,12 @@ public class OntoUMLServerUtils {
 
 			switch (request.getResponseCode()) {
 			case HttpURLConnection.HTTP_OK:
-				return response.toString();
+				if(!request.getContentType().equals("text/html")) {
+					return response.toString();
+				} else {
+					if(ViewUtils.verificationFailedDialogWithOption(USER_MESSAGE_NOT_FOUND, HttpURLConnection.HTTP_NOT_FOUND))
+						return requestModelVerification(serializedModel);
+				}
 			case HttpURLConnection.HTTP_BAD_REQUEST:
 				ViewUtils.verificationFailedDialog(USER_MESSAGE_BAD_REQUEST);
 				return null;
@@ -167,15 +179,15 @@ public class OntoUMLServerUtils {
 	private static HttpURLConnection request(String urlString, String body) throws MalformedURLException, IOException {
 		final URL url = new URL(urlString);
 		final HttpURLConnection request = (HttpURLConnection) url.openConnection();
-
+		
 		request.setRequestMethod("POST");
 		request.setRequestProperty("Content-Type", "application/json");
 		request.setReadTimeout(60000);
 		request.setDoOutput(true);
-
+		
 		final OutputStream requestStream = request.getOutputStream();
 		final byte[] requestBody = body.getBytes();
-
+		
 		requestStream.write(requestBody, 0, requestBody.length);
 		requestStream.flush();
 		requestStream.close();
