@@ -20,6 +20,8 @@ public class ProjectConfigurations {
 	public static final String DEFAULT_SERVER_URL = "http://api.ontouml.org";
 	public static final String DEFAULT_EXPORT_PATH = System.getProperty("user.home");
 	public static final String DEFAULT_EXPORT_FILENAME = "";
+	public static final String DEFAULT_GUFO_EXPORT_PATH = System.getProperty("user.home");
+	public static final String DEFAULT_GUFO_EXPORT_FILENAME = "";
 
 	@SerializedName("projectId")
 	@Expose()
@@ -44,6 +46,14 @@ public class ProjectConfigurations {
 	@SerializedName("exportFileName")
 	@Expose()
 	private String exportFileName;
+
+	@SerializedName("exportGUFOFolderPath")
+	@Expose()
+	private String exportGUFOFolderPath;
+	
+	@SerializedName("exportGUFOFileName")
+	@Expose()
+	private String exportGUFOFileName;
 	
 	@SerializedName("isExportEnabled")
 	@Expose()
@@ -90,6 +100,8 @@ public class ProjectConfigurations {
 		this.isModelExportEnabled = ProjectConfigurations.DEFAULT_IS_EXPORT_ENABLED;
 		this.exportFolderPath = ProjectConfigurations.DEFAULT_EXPORT_PATH;
 		this.exportFileName = ProjectConfigurations.DEFAULT_EXPORT_FILENAME;
+		this.exportGUFOFolderPath = ProjectConfigurations.DEFAULT_GUFO_EXPORT_PATH;
+		this.exportGUFOFileName = ProjectConfigurations.DEFAULT_GUFO_EXPORT_FILENAME;
 		
 		this.isAutomaticColoringEnabled = ProjectConfigurations.DEFAULT_IS_AUTOMATIC_COLORING_ENABLED;;
 	}
@@ -196,6 +208,7 @@ public class ProjectConfigurations {
 		this.exportFolderPath = exportFolderPath;
 	}
 	
+	
 	/**
 	 * 
 	 * Returns automatic export filename as a String.
@@ -206,7 +219,6 @@ public class ProjectConfigurations {
 	public String getExportFilename() {
 		return exportFileName;
 	}
-	
 
 	/**
 	 * 
@@ -218,6 +230,23 @@ public class ProjectConfigurations {
 	public void setExportFilename(String exportFileName) {
 		this.exportFileName = exportFileName;
 	}
+	
+	public void setExportGUFOFolderPath(String exportFolderPath) {
+		this.exportGUFOFolderPath = exportFolderPath;
+	}
+	
+	public String getExportGUFOFolderPath() {
+		return exportGUFOFolderPath;
+	}
+
+	public void setExportGUFOFilename(String exportFilename) {
+		this.exportGUFOFileName = exportFilename;
+	}
+	
+	public String getExportGUFOFilename() {
+		return exportGUFOFileName;
+	}
+	
 	
 	/**
 	 * 

@@ -11,6 +11,8 @@ public class ProjectDiagramListener implements IProjectDiagramListener {
 	
 	@Override
 	public void diagramAdded(IProject project, IDiagramUIModel diagram) {
+		if(diagram == null) { return ; }
+		
 		diagram.addDiagramListener(OntoUMLPlugin.DIAGRAM_LISTENER);
 	}
 
