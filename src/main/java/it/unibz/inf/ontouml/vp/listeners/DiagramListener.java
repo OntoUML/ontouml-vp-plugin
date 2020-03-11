@@ -10,6 +10,7 @@ import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.SmartColoring;
+import it.unibz.inf.ontouml.vp.utils.SmartProperties;
 
 public class DiagramListener implements IDiagramListener {
 
@@ -44,6 +45,8 @@ public class DiagramListener implements IDiagramListener {
 			System.out.println("Exception caught while adding element to diagram.");
 			e.printStackTrace();
 		}
+		
+		SmartProperties.smartMetaProperties();
 	}
 
 	@Override
