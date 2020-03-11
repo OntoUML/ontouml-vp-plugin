@@ -171,7 +171,9 @@ public class ApplyStereotype implements VPContextActionController {
 			break;
 		}
 		
-		SmartColoring.paint((IClass) element);
+		if(element.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS))
+			SmartColoring.paint((IClass) element);
+		
 		SmartColoring.smartPaint();
 	}
 
