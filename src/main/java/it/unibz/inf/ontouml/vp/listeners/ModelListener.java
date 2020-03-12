@@ -10,7 +10,7 @@ import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.SmartColoring;
-import it.unibz.inf.ontouml.vp.utils.SmartProperties;
+import it.unibz.inf.ontouml.vp.utils.SmartModelling;
 
 public class ModelListener implements PropertyChangeListener {
 
@@ -55,8 +55,6 @@ public class ModelListener implements PropertyChangeListener {
 			System.out.println("Source: " + changeSource);
 			e.printStackTrace();
 		}
-		
-		SmartProperties.smartMetaProperties();
 	}
 
 }

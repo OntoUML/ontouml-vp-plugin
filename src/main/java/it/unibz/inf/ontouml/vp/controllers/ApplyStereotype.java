@@ -18,6 +18,7 @@ import com.vp.plugin.model.factory.IModelElementFactory;
 import it.unibz.inf.ontouml.vp.features.constraints.ActionIds;
 import it.unibz.inf.ontouml.vp.features.constraints.AssociationConstraints;
 import it.unibz.inf.ontouml.vp.utils.SmartColoring;
+import it.unibz.inf.ontouml.vp.utils.SmartModelling;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 /**
@@ -62,7 +63,7 @@ public class ApplyStereotype implements VPContextActionController {
 			break;
 		case ActionIds.ROLE_MIXIN:
 			element.addStereotype(StereotypeUtils.STR_ROLE_MIXIN);
-			setAbstract(element);
+			SmartModelling.setAbstract(element);
 			break;
 		case ActionIds.ROLE:
 			element.addStereotype(StereotypeUtils.STR_ROLE);
@@ -78,7 +79,7 @@ public class ApplyStereotype implements VPContextActionController {
 			break;
 		case ActionIds.PHASE_MIXIN:
 			element.addStereotype(StereotypeUtils.STR_PHASE_MIXIN);
-			setAbstract(element);
+			SmartModelling.setAbstract(element);
 			break;
 		case ActionIds.PHASE:
 			element.addStereotype(StereotypeUtils.STR_PHASE);
@@ -88,7 +89,7 @@ public class ApplyStereotype implements VPContextActionController {
 			break;
 		case ActionIds.MIXIN:
 			element.addStereotype(StereotypeUtils.STR_MIXIN);
-			setAbstract(element);
+			SmartModelling.setAbstract(element);
 			break;
 		case ActionIds.KIND:
 			element.addStereotype(StereotypeUtils.STR_KIND);
@@ -101,67 +102,67 @@ public class ApplyStereotype implements VPContextActionController {
 			break;
 		case ActionIds.INSTANTIATION:
 			element.addStereotype(StereotypeUtils.STR_INSTANTIATION);
-			removeAggregationKind(element);
+			SmartModelling.removeAggregationKind(element);
 			break;
 		case ActionIds.TERMINATION:
 			element.addStereotype(StereotypeUtils.STR_TERMINATION);
-			removeAggregationKind(element);
+			SmartModelling.removeAggregationKind(element);
 			break;
 		case ActionIds.PARTICIPATIONAL:
 			element.addStereotype(StereotypeUtils.STR_PARTICIPATIONAL);
-			setAggregationKind(element);
+			SmartModelling.setAggregationKind(element);
 			break;
 		case ActionIds.PARTICIPATION:
 			element.addStereotype(StereotypeUtils.STR_PARTICIPATION);
-			removeAggregationKind(element);
+			SmartModelling.removeAggregationKind(element);
 			break;
 		case ActionIds.HISTORICAL_DEPENDENCE:
 			element.addStereotype(StereotypeUtils.STR_HISTORICAL_DEPENDENCE);
-			removeAggregationKind(element);
+			SmartModelling.removeAggregationKind(element);
 			break;
 		case ActionIds.CREATION:
 			element.addStereotype(StereotypeUtils.STR_CREATION);
-			removeAggregationKind(element);
+			SmartModelling.removeAggregationKind(element);
 			break;
 		case ActionIds.MANIFESTATION:
 			element.addStereotype(StereotypeUtils.STR_MANIFESTATION);
-			removeAggregationKind(element);
+			SmartModelling.removeAggregationKind(element);
 			break;
 		case ActionIds.MATERIAL:
 			element.addStereotype(StereotypeUtils.STR_MATERIAL);
-			removeAggregationKind(element);
+			SmartModelling.removeAggregationKind(element);
 			break;
 		case ActionIds.COMPARATIVE:
 			element.addStereotype(StereotypeUtils.STR_COMPARATIVE);
-			removeAggregationKind(element);
+			SmartModelling.removeAggregationKind(element);
 			break;
 		case ActionIds.MEDIATION:
 			element.addStereotype(StereotypeUtils.STR_MEDIATION);
-			removeAggregationKind(element);
+			SmartModelling.removeAggregationKind(element);
 			break;
 		case ActionIds.CHARACTERIZATION:
 			element.addStereotype(StereotypeUtils.STR_CHARACTERIZATION);
-			removeAggregationKind(element);
+			SmartModelling.removeAggregationKind(element);
 			break;
 		case ActionIds.EXTERNAL_DEPENDENCE:
 			element.addStereotype(StereotypeUtils.STR_EXTERNAL_DEPENDENCE);
-			removeAggregationKind(element);
+			SmartModelling.removeAggregationKind(element);
 			break;
 		case ActionIds.COMPONENT_OF:
 			element.addStereotype(StereotypeUtils.STR_COMPONENT_OF);
-			setAggregationKind(element);
+			SmartModelling.setAggregationKind(element);
 			break;
 		case ActionIds.MEMBER_OF:
 			element.addStereotype(StereotypeUtils.STR_MEMBER_OF);
-			setAggregationKind(element);
+			SmartModelling.setAggregationKind(element);
 			break;
 		case ActionIds.SUB_COLLECTION_OF:
 			element.addStereotype(StereotypeUtils.STR_SUB_COLLECTION_OF);
-			setAggregationKind(element);
+			SmartModelling.setAggregationKind(element);
 			break;
 		case ActionIds.SUB_QUANTITY_OF:
 			element.addStereotype(StereotypeUtils.STR_SUB_QUANTITY_OF);
-			setAggregationKind(element);
+			SmartModelling.setAggregationKind(element);
 			break;
 		case ActionIds.BEGIN:
 			element.addStereotype(StereotypeUtils.STR_BEGIN);
@@ -173,6 +174,9 @@ public class ApplyStereotype implements VPContextActionController {
 		
 		if(element.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS))
 			SmartColoring.paint((IClass) element);
+		
+		if(element.getModelType().equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION))
+			SmartModelling.smartMetaProperties();
 		
 		SmartColoring.smartPaint();
 	}
@@ -223,32 +227,4 @@ public class ApplyStereotype implements VPContextActionController {
 		}
 	}
 
-	private void setAggregationKind(IModelElement element) {
-		IAssociation association = (IAssociation) element;
-		IAssociationEnd compositionFromEnd = (IAssociationEnd) association.getFromEnd();
-		IAssociationEnd compositionToEnd = (IAssociationEnd) association.getToEnd();
-
-		if (compositionToEnd.getAggregationKind().equals(IAssociationEnd.AGGREGATION_KIND_NONE)) {
-			compositionToEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
-			compositionFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
-		}
-
-		return;
-	}
-
-	private void removeAggregationKind(IModelElement element) {
-		IAssociationEnd compositionFromEnd = (IAssociationEnd) ((IAssociation) element).getFromEnd();
-		IAssociationEnd compositionToEnd = (IAssociationEnd) ((IAssociation) element).getToEnd();
-
-		compositionFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
-		compositionToEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
-
-		return;
-	}
-
-	private void setAbstract(IModelElement element) {
-		((IClass) element).setAbstract(true);
-
-		return;
-	}
 }
