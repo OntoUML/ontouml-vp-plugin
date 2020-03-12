@@ -9,8 +9,18 @@ import com.vp.plugin.model.factory.IModelElementFactory;
 
 public class SmartProperties {
 
+	private static boolean setCardinalityIfEmpty(IAssociationEnd end, String cardinality) {
+
+		if (end.getMultiplicity() == null || end.getMultiplicity().equals("Unspecified")) {
+			end.setMultiplicity("1");
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	private static void setMetaProperties(IAssociation association) {
-		
+
 		IAssociationEnd source = (IAssociationEnd) association.getFromEnd();
 		IAssociationEnd target = (IAssociationEnd) association.getToEnd();
 
@@ -24,148 +34,100 @@ public class SmartProperties {
 
 		switch (stereotypes[0]) {
 		case StereotypeUtils.STR_CHARACTERIZATION:
-			if (source.getMultiplicity() == null || source.getMultiplicity().equals("Unspecified"))
-				source.setMultiplicity("1");
-			if (target.getMultiplicity() == null || target.getMultiplicity().equals("Unspecified"))
-				target.setMultiplicity("1");
-			
+			setCardinalityIfEmpty(source, "1");
+			setCardinalityIfEmpty(target, "1");
 			source.setReadOnly(false);
 			target.setReadOnly(true);
 			return;
 		case StereotypeUtils.STR_COMPARATIVE:
-			if (source.getMultiplicity() == null || source.getMultiplicity().equals("Unspecified"))
-				source.setMultiplicity("0..*");
-			if (target.getMultiplicity() == null || target.getMultiplicity().equals("Unspecified"))
-				target.setMultiplicity("0..*");
-			
+			setCardinalityIfEmpty(source, "0..*");
+			setCardinalityIfEmpty(target, "0..*");
 			source.setReadOnly(false);
 			target.setReadOnly(false);
 			association.setDerived(true);
 			return;
 		case StereotypeUtils.STR_COMPONENT_OF:
-			if (source.getMultiplicity() == null || source.getMultiplicity().equals("Unspecified"))
-				source.setMultiplicity("1..*");
-			if (target.getMultiplicity() == null || target.getMultiplicity().equals("Unspecified"))
-				target.setMultiplicity("1");
-			
+			setCardinalityIfEmpty(source, "1..*");
+			setCardinalityIfEmpty(target, "1");
 			source.setReadOnly(false);
 			target.setReadOnly(false);
 			return;
 		case StereotypeUtils.STR_MATERIAL:
-			if (source.getMultiplicity() == null || source.getMultiplicity().equals("Unspecified"))
-				source.setMultiplicity("1..*");
-			if (target.getMultiplicity() == null || target.getMultiplicity().equals("Unspecified"))
-				target.setMultiplicity("1..*");
-			
+			setCardinalityIfEmpty(source, "1..*");
+			setCardinalityIfEmpty(target, "1..*");
 			source.setReadOnly(false);
 			target.setReadOnly(false);
 			association.setDerived(true);
 			return;
 		case StereotypeUtils.STR_EXTERNAL_DEPENDENCE:
-			if (source.getMultiplicity() == null || source.getMultiplicity().equals("Unspecified"))
-				source.setMultiplicity("0..*");
-			if (target.getMultiplicity() == null || target.getMultiplicity().equals("Unspecified"))
-				target.setMultiplicity("1..*");
-			
+			setCardinalityIfEmpty(source, "0..*");
+			setCardinalityIfEmpty(target, "1..*");
 			source.setReadOnly(false);
 			target.setReadOnly(true);
 			return;
 		case StereotypeUtils.STR_MEDIATION:
-			if (source.getMultiplicity() == null || source.getMultiplicity().equals("Unspecified"))
-				source.setMultiplicity("1..*");
-			if (target.getMultiplicity() == null || target.getMultiplicity().equals("Unspecified"))
-				target.setMultiplicity("1");
-			
+			setCardinalityIfEmpty(source, "1..*");
+			setCardinalityIfEmpty(target, "1");
 			source.setReadOnly(false);
 			target.setReadOnly(true);
 			return;
 		case StereotypeUtils.STR_MEMBER_OF:
-			if (source.getMultiplicity() == null || source.getMultiplicity().equals("Unspecified"))
-				source.setMultiplicity("1..*");
-			if (target.getMultiplicity() == null || target.getMultiplicity().equals("Unspecified"))
-				target.setMultiplicity("1..*");
-			
+			setCardinalityIfEmpty(source, "1..*");
+			setCardinalityIfEmpty(target, "1..*");
 			source.setReadOnly(false);
 			target.setReadOnly(false);
 			return;
 		case StereotypeUtils.STR_SUB_COLLECTION_OF:
-			if (source.getMultiplicity() == null || source.getMultiplicity().equals("Unspecified"))
-				source.setMultiplicity("1");
-			if (target.getMultiplicity() == null || target.getMultiplicity().equals("Unspecified"))
-				target.setMultiplicity("1");
-			
+			setCardinalityIfEmpty(source, "1");
+			setCardinalityIfEmpty(target, "1");
 			source.setReadOnly(false);
 			target.setReadOnly(false);
 			return;
 		case StereotypeUtils.STR_SUB_QUANTITY_OF:
-			if (source.getMultiplicity() == null || source.getMultiplicity().equals("Unspecified"))
-				source.setMultiplicity("1");
-			if (target.getMultiplicity() == null || target.getMultiplicity().equals("Unspecified"))
-				target.setMultiplicity("1");
-			
+			setCardinalityIfEmpty(source, "1");
+			setCardinalityIfEmpty(target, "1");
 			source.setReadOnly(false);
 			target.setReadOnly(false);
 			return;
 		case StereotypeUtils.STR_CREATION:
-			if (source.getMultiplicity() == null || source.getMultiplicity().equals("Unspecified"))
-				source.setMultiplicity("1");
-			if (target.getMultiplicity() == null || target.getMultiplicity().equals("Unspecified"))
-				target.setMultiplicity("1");
-			
+			setCardinalityIfEmpty(source, "1");
+			setCardinalityIfEmpty(target, "1");
 			source.setReadOnly(true);
 			target.setReadOnly(true);
 			return;
 		case StereotypeUtils.STR_HISTORICAL_DEPENDENCE:
-			if (source.getMultiplicity() == null || source.getMultiplicity().equals("Unspecified"))
-				source.setMultiplicity("0..*");
-			if (target.getMultiplicity() == null || target.getMultiplicity().equals("Unspecified"))
-				target.setMultiplicity("1");
-			
+			setCardinalityIfEmpty(source, "0..*");
+			setCardinalityIfEmpty(target, "1");
 			source.setReadOnly(false);
 			target.setReadOnly(true);
 			return;
 		case StereotypeUtils.STR_MANIFESTATION:
-			if (source.getMultiplicity() == null || source.getMultiplicity().equals("Unspecified"))
-				source.setMultiplicity("0..*");
-			if (target.getMultiplicity() == null || target.getMultiplicity().equals("Unspecified"))
-				target.setMultiplicity("1..*");
-			
+			setCardinalityIfEmpty(source, "0..*");
+			setCardinalityIfEmpty(target, "1..*");
 			source.setReadOnly(false);
 			target.setReadOnly(true);
 			return;
 		case StereotypeUtils.STR_PARTICIPATION:
-			if (source.getMultiplicity() == null || source.getMultiplicity().equals("Unspecified"))
-				source.setMultiplicity("0..*");
-			if (target.getMultiplicity() == null || target.getMultiplicity().equals("Unspecified"))
-				target.setMultiplicity("1..*");
-			
+			setCardinalityIfEmpty(source, "0..*");
+			setCardinalityIfEmpty(target, "1..*");
 			source.setReadOnly(false);
 			target.setReadOnly(true);
 			return;
 		case StereotypeUtils.STR_PARTICIPATIONAL:
-			if (source.getMultiplicity() == null || source.getMultiplicity().equals("Unspecified"))
-				source.setMultiplicity("1..*");
-			if (target.getMultiplicity() == null || target.getMultiplicity().equals("Unspecified"))
-				target.setMultiplicity("1");
-			
+			setCardinalityIfEmpty(source, "1..*");
+			setCardinalityIfEmpty(target, "1");
 			source.setReadOnly(true);
 			target.setReadOnly(true);
 			return;
 		case StereotypeUtils.STR_TERMINATION:
-			if (source.getMultiplicity() == null || source.getMultiplicity().equals("Unspecified"))
-				source.setMultiplicity("1");
-			if (target.getMultiplicity() == null || target.getMultiplicity().equals("Unspecified"))
-				target.setMultiplicity("1");
-			
+			setCardinalityIfEmpty(source, "1");
+			setCardinalityIfEmpty(target, "1*");
 			source.setReadOnly(true);
 			target.setReadOnly(true);
 			return;
 		case StereotypeUtils.STR_INSTANTIATION:
-			if (source.getMultiplicity() == null || source.getMultiplicity().equals("Unspecified"))
-				source.setMultiplicity("0..*");
-			if (target.getMultiplicity() == null || target.getMultiplicity().equals("Unspecified"))
-				target.setMultiplicity("1..*");
-			
+			setCardinalityIfEmpty(source, "0..*");
+			setCardinalityIfEmpty(target, "1..*");
 			source.setReadOnly(true);
 			target.setReadOnly(true);
 			return;
@@ -178,8 +140,7 @@ public class SmartProperties {
 	 */
 	public static void smartMetaProperties() {
 		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
-		final IModelElement[] modelElements = project
-				.toAllLevelModelElementArray(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
+		final IModelElement[] modelElements = project.toAllLevelModelElementArray(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
 
 		for (int i = 0; modelElements != null && i < modelElements.length; i++)
 			setMetaProperties((IAssociation) modelElements[i]);
