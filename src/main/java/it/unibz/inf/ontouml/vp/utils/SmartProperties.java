@@ -12,7 +12,7 @@ public class SmartProperties {
 	private static boolean setCardinalityIfEmpty(IAssociationEnd end, String cardinality) {
 
 		if (end.getMultiplicity() == null || end.getMultiplicity().equals("Unspecified")) {
-			end.setMultiplicity("1");
+			end.setMultiplicity(cardinality);
 			return true;
 		} else {
 			return false;
