@@ -1,8 +1,5 @@
 package it.unibz.inf.ontouml.vp.utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
@@ -20,8 +17,9 @@ public class SmartModelling {
 
 		if (compositionToEnd.getAggregationKind().equals(IAssociationEnd.AGGREGATION_KIND_NONE)) {
 			compositionToEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
-			compositionFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
 		}
+
+		compositionFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
 
 		return;
 	}
@@ -52,119 +50,157 @@ public class SmartModelling {
 		}
 	}
 
-	private static void setMetaProperties(IAssociation association) {
-		IClass targetClass;
-		final ArrayList<String> targetClassStereotypes;
-		String targetStereotype="";
+	private static String getClassStereotype(IAssociationEnd associationEnd){
+		String noStereotype = "";
 		
-		if(association.getTo().getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
-			targetClass = (IClass) association.getTo();
-			targetClassStereotypes = new ArrayList<String>(Arrays.asList(targetClass.toStereotypeArray()));
+		try {
+			final IModelElement type = associationEnd.getTypeAsElement();
 			
-			if(targetClassStereotypes.size() == 1)
-				targetStereotype = targetClassStereotypes.get(0);
-		}
+			if(!type.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS))
+				return noStereotype;
+			
+			final String[] stereotypes = ((IClass) type).toStereotypeArray();
 
+			if(stereotypes!=null && stereotypes.length==1)
+				return stereotypes[0];
+			
+			return noStereotype;
+		}
+		catch(Exception e){
+			return noStereotype;
+		}
+	}
+
+	private static void setMetaProperties(IAssociation association) {
+		
 		IAssociationEnd source = (IAssociationEnd) association.getFromEnd();
 		IAssociationEnd target = (IAssociationEnd) association.getToEnd();
-
-		String[] stereotypes = association.toStereotypeArray();
 
 		if (source == null || target == null)
 			return;
 
-		if (stereotypes.length != 1)
+		String sourceStereotype = getClassStereotype(source);
+		String targetStereotype = getClassStereotype(target);
+
+		String[] stereotypes = association.toStereotypeArray();
+
+		if (stereotypes==null || stereotypes.length!=1)
 			return;
 
 		switch (stereotypes[0]) {
-		case StereotypeUtils.STR_CHARACTERIZATION:
-			setCardinalityIfEmpty(source, "1");
-			setCardinalityIfEmpty(target, "1");
-			target.setReadOnly(true);
-			return;
-		case StereotypeUtils.STR_COMPARATIVE:
-			setCardinalityIfEmpty(source, "0..*");
-			setCardinalityIfEmpty(target, "0..*");
-			association.setDerived(true);
-			return;
-		case StereotypeUtils.STR_COMPONENT_OF:
-			setCardinalityIfEmpty(source, "1..*");
-			setCardinalityIfEmpty(target, "1");
-			return;
-		case StereotypeUtils.STR_MATERIAL:
-			setCardinalityIfEmpty(source, "1..*");
-			setCardinalityIfEmpty(target, "1..*");
-			association.setDerived(true);
-			return;
-		case StereotypeUtils.STR_EXTERNAL_DEPENDENCE:
-			setCardinalityIfEmpty(source, "0..*");
-			setCardinalityIfEmpty(target, "1..*");
-			target.setReadOnly(true);
-			return;
-		case StereotypeUtils.STR_MEDIATION:
-			if(targetStereotype.equals(StereotypeUtils.STR_ROLE))
-				setCardinalityIfEmpty(source, "1..*");
-			else
+			case StereotypeUtils.STR_CHARACTERIZATION:
+				setCardinalityIfEmpty(source, "1");
+				setCardinalityIfEmpty(target, "1");
+				target.setReadOnly(true);
+				removeAggregationKind(association);
+				return;
+			case StereotypeUtils.STR_COMPARATIVE:
 				setCardinalityIfEmpty(source, "0..*");
-			
-			setCardinalityIfEmpty(target, "1");
-			target.setReadOnly(true);
-			return;
-		case StereotypeUtils.STR_MEMBER_OF:
-			setCardinalityIfEmpty(source, "1..*");
-			setCardinalityIfEmpty(target, "1..*");
-			return;
-		case StereotypeUtils.STR_SUB_COLLECTION_OF:
-			setCardinalityIfEmpty(source, "1");
-			setCardinalityIfEmpty(target, "1");
-			return;
-		case StereotypeUtils.STR_SUB_QUANTITY_OF:
-			setCardinalityIfEmpty(source, "1");
-			setCardinalityIfEmpty(target, "1");
-			return;
-		case StereotypeUtils.STR_CREATION:
-			setCardinalityIfEmpty(source, "1");
-			setCardinalityIfEmpty(target, "1");
-			source.setReadOnly(true);
-			target.setReadOnly(true);
-			return;
-		case StereotypeUtils.STR_HISTORICAL_DEPENDENCE:
-			setCardinalityIfEmpty(source, "0..*");
-			setCardinalityIfEmpty(target, "1");
-			target.setReadOnly(true);
-			return;
-		case StereotypeUtils.STR_MANIFESTATION:
-			setCardinalityIfEmpty(source, "0..*");
-			setCardinalityIfEmpty(target, "1..*");
-			target.setReadOnly(true);
-			return;
-		case StereotypeUtils.STR_PARTICIPATION:
-			if(targetStereotype.equals(StereotypeUtils.STR_HISTORICAL_ROLE))
+				setCardinalityIfEmpty(target, "0..*");
+				association.setDerived(true);
+				removeAggregationKind(association);
+				return;
+			case StereotypeUtils.STR_COMPONENT_OF:
 				setCardinalityIfEmpty(source, "1..*");
-			else
-				setCardinalityIfEmpty(source, "0");
-			
-			setCardinalityIfEmpty(target, "1..*");
-			target.setReadOnly(true);
-			return;
-		case StereotypeUtils.STR_PARTICIPATIONAL:
-			setCardinalityIfEmpty(source, "1..*");
-			setCardinalityIfEmpty(target, "1");
-			source.setReadOnly(true);
-			target.setReadOnly(true);
-			return;
-		case StereotypeUtils.STR_TERMINATION:
-			setCardinalityIfEmpty(source, "1");
-			setCardinalityIfEmpty(target, "1");
-			source.setReadOnly(true);
-			target.setReadOnly(true);
-			return;
-		case StereotypeUtils.STR_INSTANTIATION:
-			setCardinalityIfEmpty(source, "0..*");
-			setCardinalityIfEmpty(target, "1..*");
-			source.setReadOnly(true);
-			target.setReadOnly(true);
-			return;
+				setCardinalityIfEmpty(target, "1");
+				setAggregationKind(association);
+				return;
+			case StereotypeUtils.STR_MATERIAL:
+				if(targetStereotype.equals(StereotypeUtils.STR_ROLE))
+					setCardinalityIfEmpty(source, "1..*");
+				else
+					setCardinalityIfEmpty(source, "0..*");
+					
+				if(sourceStereotype.equals(StereotypeUtils.STR_ROLE))
+					setCardinalityIfEmpty(target, "1..*");
+				else
+					setCardinalityIfEmpty(target, "0..*");
+				
+					association.setDerived(true);
+					removeAggregationKind(association);
+				return;
+			case StereotypeUtils.STR_EXTERNAL_DEPENDENCE:
+				setCardinalityIfEmpty(source, "0..*");
+				setCardinalityIfEmpty(target, "1..*");
+				target.setReadOnly(true);
+				removeAggregationKind(association);
+				return;
+			case StereotypeUtils.STR_MEDIATION:
+				if(targetStereotype.equals(StereotypeUtils.STR_ROLE))
+					setCardinalityIfEmpty(source, "1..*");
+				else
+					setCardinalityIfEmpty(source, "0..*");
+				
+				setCardinalityIfEmpty(target, "1");
+				target.setReadOnly(true);
+				removeAggregationKind(association);
+				return;
+			case StereotypeUtils.STR_MEMBER_OF:
+				setCardinalityIfEmpty(source, "1..*");
+				setCardinalityIfEmpty(target, "1..*");
+				setAggregationKind(association);
+				return;
+			case StereotypeUtils.STR_SUB_COLLECTION_OF:
+				setCardinalityIfEmpty(source, "1");
+				setCardinalityIfEmpty(target, "1");
+				setAggregationKind(association);
+				return;
+			case StereotypeUtils.STR_SUB_QUANTITY_OF:
+				setCardinalityIfEmpty(source, "1");
+				setCardinalityIfEmpty(target, "1");
+				source.setReadOnly(true);
+				setAggregationKind(association);
+				return;
+			case StereotypeUtils.STR_CREATION:
+				setCardinalityIfEmpty(source, "1");
+				setCardinalityIfEmpty(target, "1");
+				source.setReadOnly(true);
+				target.setReadOnly(true);
+				removeAggregationKind(association);
+				return;
+			case StereotypeUtils.STR_HISTORICAL_DEPENDENCE:
+				setCardinalityIfEmpty(source, "0..*");
+				setCardinalityIfEmpty(target, "1");
+				target.setReadOnly(true);
+				removeAggregationKind(association);
+				return;
+			case StereotypeUtils.STR_MANIFESTATION:
+				setCardinalityIfEmpty(source, "0..*");
+				setCardinalityIfEmpty(target, "1..*");
+				target.setReadOnly(true);
+				removeAggregationKind(association);
+				return;
+			case StereotypeUtils.STR_PARTICIPATION:
+				if(targetStereotype.equals(StereotypeUtils.STR_HISTORICAL_ROLE))
+					setCardinalityIfEmpty(source, "1..*");
+				else
+					setCardinalityIfEmpty(source, "0..*");
+				
+				setCardinalityIfEmpty(target, "1..*");
+				target.setReadOnly(true);
+				removeAggregationKind(association);
+				return;
+			case StereotypeUtils.STR_PARTICIPATIONAL:
+				setCardinalityIfEmpty(source, "1..*");
+				setCardinalityIfEmpty(target, "1");
+				source.setReadOnly(true);
+				target.setReadOnly(true);
+				setAggregationKind(association);
+				return;
+			case StereotypeUtils.STR_TERMINATION:
+				setCardinalityIfEmpty(source, "1");
+				setCardinalityIfEmpty(target, "1");
+				source.setReadOnly(true);
+				target.setReadOnly(true);
+				removeAggregationKind(association);
+				return;
+			case StereotypeUtils.STR_INSTANTIATION:
+				setCardinalityIfEmpty(source, "0..*");
+				setCardinalityIfEmpty(target, "1..*");
+				source.setReadOnly(true);
+				target.setReadOnly(true);
+				removeAggregationKind(association);
+				return;
 		}
 
 	}

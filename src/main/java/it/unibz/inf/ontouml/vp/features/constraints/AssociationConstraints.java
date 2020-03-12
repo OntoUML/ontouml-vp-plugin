@@ -101,7 +101,7 @@ public class AssociationConstraints {
 		put(new SimpleEntry<String, String>(StereotypeUtils.STR_EVENT, StereotypeUtils.STR_MIXIN), new ArrayList<>(Arrays.asList(ActionIds.PARTICIPATION, ActionIds.CREATION, ActionIds.TERMINATION, ActionIds.MANIFESTATION)));
 		put(new SimpleEntry<String, String>(StereotypeUtils.STR_EVENT, StereotypeUtils.STR_ROLE_MIXIN), new ArrayList<>(Arrays.asList(ActionIds.PARTICIPATION, ActionIds.CREATION, ActionIds.TERMINATION, ActionIds.MANIFESTATION)));
 		put(new SimpleEntry<String, String>(StereotypeUtils.STR_EVENT, StereotypeUtils.STR_PHASE_MIXIN), new ArrayList<>(Arrays.asList(ActionIds.PARTICIPATION, ActionIds.CREATION, ActionIds.TERMINATION, ActionIds.MANIFESTATION)));
-		put(new SimpleEntry<String, String>(StereotypeUtils.STR_EVENT, StereotypeUtils.STR_HISTORICAL_ROLE), new ArrayList<>(Arrays.asList(ActionIds.PARTICIPATION)));
+		put(new SimpleEntry<String, String>(StereotypeUtils.STR_EVENT, StereotypeUtils.STR_HISTORICAL_ROLE), new ArrayList<>(Arrays.asList(ActionIds.PARTICIPATION, ActionIds.CREATION, ActionIds.TERMINATION, ActionIds.MANIFESTATION)));
 		put(new SimpleEntry<String, String>(StereotypeUtils.STR_EVENT, StereotypeUtils.STR_EVENT), new ArrayList<>(Arrays.asList(ActionIds.HISTORICAL_DEPENDENCE, ActionIds.PARTICIPATIONAL)));
 		put(new SimpleEntry<String, String>(StereotypeUtils.STR_EVENT, StereotypeUtils.STR_TYPE), new ArrayList<>(Arrays.asList(ActionIds.INSTANTIATION)));
 //		put(new SimpleEntry<String, String>(StereotypeUtils.STR_EVENT, StereotypeUtils.STR_DATATYPE), new ArrayList<>());

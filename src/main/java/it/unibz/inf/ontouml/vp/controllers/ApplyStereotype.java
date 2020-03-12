@@ -9,7 +9,6 @@ import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPContext;
 import com.vp.plugin.action.VPContextActionController;
 import com.vp.plugin.model.IAssociation;
-import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IStereotype;
@@ -102,67 +101,51 @@ public class ApplyStereotype implements VPContextActionController {
 			break;
 		case ActionIds.INSTANTIATION:
 			element.addStereotype(StereotypeUtils.STR_INSTANTIATION);
-			SmartModelling.removeAggregationKind(element);
 			break;
 		case ActionIds.TERMINATION:
 			element.addStereotype(StereotypeUtils.STR_TERMINATION);
-			SmartModelling.removeAggregationKind(element);
 			break;
 		case ActionIds.PARTICIPATIONAL:
 			element.addStereotype(StereotypeUtils.STR_PARTICIPATIONAL);
-			SmartModelling.setAggregationKind(element);
 			break;
 		case ActionIds.PARTICIPATION:
 			element.addStereotype(StereotypeUtils.STR_PARTICIPATION);
-			SmartModelling.removeAggregationKind(element);
 			break;
 		case ActionIds.HISTORICAL_DEPENDENCE:
 			element.addStereotype(StereotypeUtils.STR_HISTORICAL_DEPENDENCE);
-			SmartModelling.removeAggregationKind(element);
 			break;
 		case ActionIds.CREATION:
 			element.addStereotype(StereotypeUtils.STR_CREATION);
-			SmartModelling.removeAggregationKind(element);
 			break;
 		case ActionIds.MANIFESTATION:
 			element.addStereotype(StereotypeUtils.STR_MANIFESTATION);
-			SmartModelling.removeAggregationKind(element);
 			break;
 		case ActionIds.MATERIAL:
 			element.addStereotype(StereotypeUtils.STR_MATERIAL);
-			SmartModelling.removeAggregationKind(element);
 			break;
 		case ActionIds.COMPARATIVE:
 			element.addStereotype(StereotypeUtils.STR_COMPARATIVE);
-			SmartModelling.removeAggregationKind(element);
 			break;
 		case ActionIds.MEDIATION:
 			element.addStereotype(StereotypeUtils.STR_MEDIATION);
-			SmartModelling.removeAggregationKind(element);
 			break;
 		case ActionIds.CHARACTERIZATION:
 			element.addStereotype(StereotypeUtils.STR_CHARACTERIZATION);
-			SmartModelling.removeAggregationKind(element);
 			break;
 		case ActionIds.EXTERNAL_DEPENDENCE:
 			element.addStereotype(StereotypeUtils.STR_EXTERNAL_DEPENDENCE);
-			SmartModelling.removeAggregationKind(element);
 			break;
 		case ActionIds.COMPONENT_OF:
 			element.addStereotype(StereotypeUtils.STR_COMPONENT_OF);
-			SmartModelling.setAggregationKind(element);
 			break;
 		case ActionIds.MEMBER_OF:
 			element.addStereotype(StereotypeUtils.STR_MEMBER_OF);
-			SmartModelling.setAggregationKind(element);
 			break;
 		case ActionIds.SUB_COLLECTION_OF:
 			element.addStereotype(StereotypeUtils.STR_SUB_COLLECTION_OF);
-			SmartModelling.setAggregationKind(element);
 			break;
 		case ActionIds.SUB_QUANTITY_OF:
 			element.addStereotype(StereotypeUtils.STR_SUB_QUANTITY_OF);
-			SmartModelling.setAggregationKind(element);
 			break;
 		case ActionIds.BEGIN:
 			element.addStereotype(StereotypeUtils.STR_BEGIN);
