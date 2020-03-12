@@ -103,7 +103,7 @@ public class SmartProperties {
 			return;
 		case StereotypeUtils.STR_TERMINATION:
 			setCardinalityIfEmpty(source, "1");
-			setCardinalityIfEmpty(target, "1*");
+			setCardinalityIfEmpty(target, "1");
 			source.setReadOnly(true);
 			target.setReadOnly(true);
 			return;
