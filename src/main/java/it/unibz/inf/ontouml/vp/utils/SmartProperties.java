@@ -36,58 +36,43 @@ public class SmartProperties {
 		case StereotypeUtils.STR_CHARACTERIZATION:
 			setCardinalityIfEmpty(source, "1");
 			setCardinalityIfEmpty(target, "1");
-			source.setReadOnly(false);
 			target.setReadOnly(true);
 			return;
 		case StereotypeUtils.STR_COMPARATIVE:
 			setCardinalityIfEmpty(source, "0..*");
 			setCardinalityIfEmpty(target, "0..*");
-			source.setReadOnly(false);
-			target.setReadOnly(false);
 			association.setDerived(true);
 			return;
 		case StereotypeUtils.STR_COMPONENT_OF:
 			setCardinalityIfEmpty(source, "1..*");
 			setCardinalityIfEmpty(target, "1");
-			source.setReadOnly(false);
-			target.setReadOnly(false);
 			return;
 		case StereotypeUtils.STR_MATERIAL:
 			setCardinalityIfEmpty(source, "1..*");
 			setCardinalityIfEmpty(target, "1..*");
-			source.setReadOnly(false);
-			target.setReadOnly(false);
 			association.setDerived(true);
 			return;
 		case StereotypeUtils.STR_EXTERNAL_DEPENDENCE:
 			setCardinalityIfEmpty(source, "0..*");
 			setCardinalityIfEmpty(target, "1..*");
-			source.setReadOnly(false);
 			target.setReadOnly(true);
 			return;
 		case StereotypeUtils.STR_MEDIATION:
 			setCardinalityIfEmpty(source, "1..*");
 			setCardinalityIfEmpty(target, "1");
-			source.setReadOnly(false);
 			target.setReadOnly(true);
 			return;
 		case StereotypeUtils.STR_MEMBER_OF:
 			setCardinalityIfEmpty(source, "1..*");
 			setCardinalityIfEmpty(target, "1..*");
-			source.setReadOnly(false);
-			target.setReadOnly(false);
 			return;
 		case StereotypeUtils.STR_SUB_COLLECTION_OF:
 			setCardinalityIfEmpty(source, "1");
 			setCardinalityIfEmpty(target, "1");
-			source.setReadOnly(false);
-			target.setReadOnly(false);
 			return;
 		case StereotypeUtils.STR_SUB_QUANTITY_OF:
 			setCardinalityIfEmpty(source, "1");
 			setCardinalityIfEmpty(target, "1");
-			source.setReadOnly(false);
-			target.setReadOnly(false);
 			return;
 		case StereotypeUtils.STR_CREATION:
 			setCardinalityIfEmpty(source, "1");
@@ -98,19 +83,16 @@ public class SmartProperties {
 		case StereotypeUtils.STR_HISTORICAL_DEPENDENCE:
 			setCardinalityIfEmpty(source, "0..*");
 			setCardinalityIfEmpty(target, "1");
-			source.setReadOnly(false);
 			target.setReadOnly(true);
 			return;
 		case StereotypeUtils.STR_MANIFESTATION:
 			setCardinalityIfEmpty(source, "0..*");
 			setCardinalityIfEmpty(target, "1..*");
-			source.setReadOnly(false);
 			target.setReadOnly(true);
 			return;
 		case StereotypeUtils.STR_PARTICIPATION:
 			setCardinalityIfEmpty(source, "0..*");
 			setCardinalityIfEmpty(target, "1..*");
-			source.setReadOnly(false);
 			target.setReadOnly(true);
 			return;
 		case StereotypeUtils.STR_PARTICIPATIONAL:
