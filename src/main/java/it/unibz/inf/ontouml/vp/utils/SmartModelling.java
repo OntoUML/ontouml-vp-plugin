@@ -206,24 +206,6 @@ public class SmartModelling {
 			return;
 
 		switch (stereotypes[0]) {
-			// case StereotypeUtils.STR_KIND:
-			// 	break;
-			// case StereotypeUtils.STR_COLLECTIVE:
-			// 	break;
-			// case StereotypeUtils.STR_QUANTITY:
-			// 	break;
-			// case StereotypeUtils.STR_MODE:
-			// 	break;
-			// case StereotypeUtils.STR_QUALITY:
-			// 	break;
-			// case StereotypeUtils.STR_RELATOR:
-			// 	break;
-			// case StereotypeUtils.STR_SUBKIND:
-			// 	break;
-			// case StereotypeUtils.STR_ROLE:
-			// 	break;
-			// case StereotypeUtils.STR_PHASE:
-			// 	break;
 			case StereotypeUtils.STR_CATEGORY:
 				_class.setAbstract(true);
 				break;
@@ -236,16 +218,6 @@ public class SmartModelling {
 			case StereotypeUtils.STR_MIXIN:
 				_class.setAbstract(true);
 				break;
-			// case StereotypeUtils.STR_EVENT:
-			// 	break;
-			// case StereotypeUtils.STR_HISTORICAL_ROLE:
-			// 	break;
-			// case StereotypeUtils.STR_TYPE:
-			// 	break;
-			// case StereotypeUtils.STR_ENUMERATION:
-			// 	break;
-			// case StereotypeUtils.STR_DATATYPE:
-			// 	break;
 		}
 	}
 
