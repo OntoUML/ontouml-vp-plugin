@@ -274,12 +274,9 @@ public class SmartModelling {
 		final ISimpleRelationship[] relationshipsTo = _class.toToRelationshipArray();
 		final ISimpleRelationship[] relationshipsFrom = _class.toFromRelationshipArray();
 		
-		System.out.println("ENTREI MANAGE CLASS ");
-		
 		action.setEnabled(true);
 
 		for (int i = 0; relationshipsTo != null && i < relationshipsTo.length; i++) {
-			System.out.println("ENTREI NO PRIMEIRO FOR ");
 			final ISimpleRelationship relationshipTo = relationshipsTo[i];
 			final String relationshipTypeTo = relationshipTo.getModelType();
 			final String superClassType = relationshipTo.getFrom() != null ? relationshipTo.getFrom().getModelType() : "";
@@ -299,8 +296,6 @@ public class SmartModelling {
 				action.setEnabled(false);
 				continue;
 			}
-			
-			System.out.println("PRIMEIRO FOR STEREOTYPE " + superClassStereotypes.get(0));
 				
 			final String superStereotype = superClassStereotypes.get(0);
 			final ArrayList<String> allowedCombinationsSub = ClassConstraints.allowedSubCombinations.get(superStereotype);
@@ -314,7 +309,6 @@ public class SmartModelling {
 		}
 
 		for (int i = 0; relationshipsFrom != null && i < relationshipsFrom.length; i++) {
-			System.out.println("ENTREI NO SEGUNDO FOR ");
 			final ISimpleRelationship relationshipFrom = relationshipsFrom[i];
 			final String relationshipTypeFrom = relationshipFrom.getModelType();
 			final String subClassType = relationshipFrom.getTo() != null ? relationshipFrom.getFrom().getModelType() : "";
@@ -334,8 +328,6 @@ public class SmartModelling {
 				action.setEnabled(false);
 				continue;
 			}
-			
-			System.out.println("SEGUNDO FOR STEREOTYPE " + subClassStereotypes.get(0));
 
 			final String subStereotype = subClassStereotypes.get(0);
 			final ArrayList<String> allowedCombinationsSuper = ClassConstraints.allowedSuperCombinations.get(subStereotype);
