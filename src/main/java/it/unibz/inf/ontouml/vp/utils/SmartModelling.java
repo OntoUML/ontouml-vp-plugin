@@ -1,11 +1,9 @@
 package it.unibz.inf.ontouml.vp.utils;
 
-import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 public class SmartModelling {
@@ -34,12 +32,6 @@ public class SmartModelling {
 		return;
 	}
 
-	public static void setAbstract(IModelElement element) {
-		((IClass) element).setAbstract(true);
-
-		return;
-	}
-
 	private static boolean setCardinalityIfEmpty(IAssociationEnd end, String cardinality) {
 
 		if (end.getMultiplicity() == null || end.getMultiplicity().equals("Unspecified")) {
@@ -50,7 +42,7 @@ public class SmartModelling {
 		}
 	}
 
-	private static String getClassStereotype(IAssociationEnd associationEnd){
+	private static String getTypeStereotype(IAssociationEnd associationEnd){
 		String noStereotype = "";
 		
 		try {
@@ -71,7 +63,7 @@ public class SmartModelling {
 		}
 	}
 
-	private static void setMetaProperties(IAssociation association) {
+	public static void setAssociationMetaProperties(IAssociation association) {
 		
 		IAssociationEnd source = (IAssociationEnd) association.getFromEnd();
 		IAssociationEnd target = (IAssociationEnd) association.getToEnd();
@@ -79,8 +71,8 @@ public class SmartModelling {
 		if (source == null || target == null)
 			return;
 
-		String sourceStereotype = getClassStereotype(source);
-		String targetStereotype = getClassStereotype(target);
+		String sourceStereotype = getTypeStereotype(source);
+		String targetStereotype = getTypeStereotype(target);
 
 		String[] stereotypes = association.toStereotypeArray();
 
@@ -202,20 +194,59 @@ public class SmartModelling {
 				removeAggregationKind(association);
 				return;
 		}
-
 	}
 
-	/**
-	 * Runs over the diagram to set default meta-properties
-	 */
-	public static void smartMetaProperties() {
-		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
-		final IModelElement[] modelElements = project
-				.toAllLevelModelElementArray(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
+	public static void setClassMetaProperties(IClass _class) {
+		if(_class==null)
+			return;
+			
+		String[] stereotypes = _class.toStereotypeArray();
 
-		for (int i = 0; modelElements != null && i < modelElements.length; i++)
-			setMetaProperties((IAssociation) modelElements[i]);
+		if (stereotypes==null || stereotypes.length!=1)
+			return;
 
+		switch (stereotypes[0]) {
+			// case StereotypeUtils.STR_KIND:
+			// 	break;
+			// case StereotypeUtils.STR_COLLECTIVE:
+			// 	break;
+			// case StereotypeUtils.STR_QUANTITY:
+			// 	break;
+			// case StereotypeUtils.STR_MODE:
+			// 	break;
+			// case StereotypeUtils.STR_QUALITY:
+			// 	break;
+			// case StereotypeUtils.STR_RELATOR:
+			// 	break;
+			// case StereotypeUtils.STR_SUBKIND:
+			// 	break;
+			// case StereotypeUtils.STR_ROLE:
+			// 	break;
+			// case StereotypeUtils.STR_PHASE:
+			// 	break;
+			case StereotypeUtils.STR_CATEGORY:
+				_class.setAbstract(true);
+				break;
+			case StereotypeUtils.STR_ROLE_MIXIN:
+				_class.setAbstract(true);
+				break;
+			case StereotypeUtils.STR_PHASE_MIXIN:
+				_class.setAbstract(true);
+				break;
+			case StereotypeUtils.STR_MIXIN:
+				_class.setAbstract(true);
+				break;
+			// case StereotypeUtils.STR_EVENT:
+			// 	break;
+			// case StereotypeUtils.STR_HISTORICAL_ROLE:
+			// 	break;
+			// case StereotypeUtils.STR_TYPE:
+			// 	break;
+			// case StereotypeUtils.STR_ENUMERATION:
+			// 	break;
+			// case StereotypeUtils.STR_DATATYPE:
+			// 	break;
+		}
 	}
 
 }
