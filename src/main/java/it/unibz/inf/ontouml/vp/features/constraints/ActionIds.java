@@ -41,7 +41,6 @@ public final class ActionIds {
 	public static final String MEMBER_OF = "it.unibz.inf.ontouml.vp.addMemberOfStereotype";
 	public static final String MEDIATION = "it.unibz.inf.ontouml.vp.addMediationStereotype";
 	public static final String MATERIAL = "it.unibz.inf.ontouml.vp.addMaterialStereotype";
-	public static final String HISTORICAL = "it.unibz.inf.ontouml.vp.addHistoricalStereotype";
 	public static final String EXTERNAL_DEPENDENCE = "it.unibz.inf.ontouml.vp.addExternalDependenceStereotype";
 	public static final String COMPONENT_OF = "it.unibz.inf.ontouml.vp.addComponentOfStereotype";
 	public static final String COMPARATIVE = "it.unibz.inf.ontouml.vp.addComparativeStereotype";
