@@ -27,6 +27,7 @@ public class ConfigurationsView extends JPanel {
 	private JTextField _txtServerAddress;
 	
 	private JCheckBox _chckbxEnableAutoColoring;
+	private JCheckBox _chckbxEnableSmartModelling;
 	
 	private JButton _btnApply;
 	private JButton _btnResetDefaults;
@@ -97,7 +98,9 @@ public class ConfigurationsView extends JPanel {
 		_exportPanel.setLayout(gbl__exportPanel);
 		
 		_chckbxEnableAutoColoring = new JCheckBox("Enable Smart Paint");
+		_chckbxEnableSmartModelling = new JCheckBox("Enable Smart Modelling");
 		_optionsPanel.add(_chckbxEnableAutoColoring);
+		_optionsPanel.add(_chckbxEnableSmartModelling);
 		
 		JPanel _controlButtonsPanel = new JPanel();
 		GridBagConstraints gbc__controlButtonsPanel = new GridBagConstraints();
@@ -171,6 +174,7 @@ public class ConfigurationsView extends JPanel {
 		configurations.setServerURL(_txtServerAddress.getText());
 		
 		configurations.setAutomaticColoringEnabled(_chckbxEnableAutoColoring.isSelected());
+		configurations.setSmartModellingEnabled(_chckbxEnableSmartModelling.isSelected());
 	}
 	
 	/**
@@ -185,6 +189,7 @@ public class ConfigurationsView extends JPanel {
 		_txtServerAddress.setText(configurations.getServerURL());
 		
 		_chckbxEnableAutoColoring.setSelected(configurations.isAutomaticColoringEnabled());
+		_chckbxEnableSmartModelling.setSelected(configurations.isSmartModellingEnabled());
 	}
 	
 	/**
@@ -197,6 +202,7 @@ public class ConfigurationsView extends JPanel {
 		_txtServerAddress.setText(ProjectConfigurations.DEFAULT_SERVER_URL);
 
 		_chckbxEnableAutoColoring.setSelected(ProjectConfigurations.DEFAULT_IS_AUTOMATIC_COLORING_ENABLED);
+		_chckbxEnableSmartModelling.setSelected(ProjectConfigurations.DEFAULT_IS_AUTOMATIC_COLORING_ENABLED);
 	}
 	
 	/**
@@ -208,6 +214,7 @@ public class ConfigurationsView extends JPanel {
 		_chckbxEnableCustomServer.setEnabled(true);
 		_txtServerAddress.setEnabled(_chckbxEnableCustomServer.isSelected());
 		_chckbxEnableAutoColoring.setEnabled(true);	
+		_chckbxEnableSmartModelling.setEnabled(true);	
 	}
 
 }

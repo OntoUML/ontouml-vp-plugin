@@ -17,6 +17,7 @@ public class ProjectConfigurations {
 	public static final boolean DEFAULT_IS_CUSTOM_SERVER_ENABLED = false;
 	public static final boolean DEFAULT_IS_EXPORT_ENABLED = true;
 	public static final boolean DEFAULT_IS_AUTOMATIC_COLORING_ENABLED = true;
+	public static final boolean DEFAULT_IS_AUTOMATIC_MODELLING_ENABLED = true;
 	public static final String DEFAULT_SERVER_URL = "http://api.ontouml.org";
 	public static final String DEFAULT_EXPORT_PATH = System.getProperty("user.home");
 	public static final String DEFAULT_EXPORT_FILENAME = "";
@@ -62,6 +63,10 @@ public class ProjectConfigurations {
 	@SerializedName("isAutomaticColoringEnabled")
 	@Expose()
 	private boolean isAutomaticColoringEnabled;
+	
+	@SerializedName("isSmartModellingEnabled")
+	@Expose()
+	private boolean isSmartModellingEnabled;
 
 	/**
 	 *
@@ -103,7 +108,8 @@ public class ProjectConfigurations {
 		this.exportGUFOFolderPath = ProjectConfigurations.DEFAULT_GUFO_EXPORT_PATH;
 		this.exportGUFOFileName = ProjectConfigurations.DEFAULT_GUFO_EXPORT_FILENAME;
 		
-		this.isAutomaticColoringEnabled = ProjectConfigurations.DEFAULT_IS_AUTOMATIC_COLORING_ENABLED;;
+		this.isAutomaticColoringEnabled = ProjectConfigurations.DEFAULT_IS_AUTOMATIC_COLORING_ENABLED;
+		this.isSmartModellingEnabled = ProjectConfigurations.DEFAULT_IS_AUTOMATIC_MODELLING_ENABLED;
 	}
 	
 	/**
@@ -294,6 +300,30 @@ public class ProjectConfigurations {
 	 */
 	public void setAutomaticColoringEnabled(boolean isAutomaticColoringEnabled) {
 		this.isAutomaticColoringEnabled = isAutomaticColoringEnabled;
+	}
+	
+	/**
+	 * 
+	 * Checks if class stereotypes should be automatically disabled..
+	 * 
+	 * @return <code>true</code> if plugin is enabled <b>and</b> smart modelling is enabled.
+	 * 
+	 * @see <code>{@link #isOntoUMLPluginEnabled()}</code>
+	 * 
+	 */
+	public boolean isSmartModellingEnabled() {
+		return isOntoUMLPluginEnabled() && isSmartModellingEnabled;
+	}
+	
+	/**
+	 * 
+	 * Sets if class stereotypes should be automatically disabled.
+	 * 
+	 * @param isSmartModellingEnabled
+	 * 
+	 */
+	public void setSmartModellingEnabled(boolean isSmartModellingEnabled) {
+		this.isSmartModellingEnabled = isSmartModellingEnabled;
 	}
 	
 	

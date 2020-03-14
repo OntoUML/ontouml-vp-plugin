@@ -12,13 +12,15 @@ import com.vp.plugin.model.IStereotype;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.features.constraints.ActionIds;
+import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.SmartColoring;
 import it.unibz.inf.ontouml.vp.utils.SmartModelling;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 /**
  * 
- * Implementation of context sensitive action of change OntoUML stereotypes in model elements.
+ * Implementation of context sensitive action of change OntoUML stereotypes in
+ * model elements.
  * 
  * @author Claudenir Fonseca
  *
@@ -146,14 +148,20 @@ public class ApplyStereotype implements VPContextActionController {
 		}
 
 		if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
-			SmartModelling.setClassMetaProperties((IClass) element);
+
+			if (Configurations.getInstance().getProjectConfigurations().isSmartModellingEnabled())
+				SmartModelling.setClassMetaProperties((IClass) element);
+			else
+				action.setEnabled(true);
+
 			SmartColoring.paint((IClass) element);
 		}
 
 		if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION))
 			SmartModelling.setAssociationMetaProperties((IAssociation) element);
 
-		SmartColoring.smartPaint();
+		if (Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled())
+			SmartColoring.smartPaint();
 	}
 
 	@Override
@@ -167,10 +175,17 @@ public class ApplyStereotype implements VPContextActionController {
 		}
 
 		if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
-			final IClass _class = (IClass) element;
-			SmartModelling.manageClassStereotypes(_class, action);
+
+			if (Configurations.getInstance().getProjectConfigurations().isSmartModellingEnabled()) {
+				final IClass _class = (IClass) element;
+				SmartModelling.manageClassStereotypes(_class, action);
+			} else {
+				action.setEnabled(true);
+			}
+			
 			return;
 		}
+
 	}
 
 }
