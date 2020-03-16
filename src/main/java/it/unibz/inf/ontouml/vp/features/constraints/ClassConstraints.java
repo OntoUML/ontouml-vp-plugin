@@ -42,7 +42,7 @@ public class ClassConstraints {
 			put(StereotypeUtils.STR_RELATOR, new ArrayList<>(Arrays.asList(ActionIds.CATEGORY, ActionIds.MIXIN)));
 			put(StereotypeUtils.STR_MODE, new ArrayList<>(Arrays.asList(ActionIds.CATEGORY, ActionIds.MIXIN)));
 			put(StereotypeUtils.STR_QUALITY, new ArrayList<>(Arrays.asList(ActionIds.CATEGORY, ActionIds.MIXIN)));
-			put(StereotypeUtils.STR_SUBKIND, new ArrayList<>(Arrays.asList(ActionIds.KIND, ActionIds.QUANTITY, ActionIds.COLLECTIVE, ActionIds.RELATOR, ActionIds.MODE, ActionIds.QUALITY, ActionIds.SUBKIND, ActionIds.CATEGORY, ActionIds.MIXIN, ActionIds.ROLE_MIXIN, ActionIds.HISTORICAL_ROLE, ActionIds.TYPE)));
+			put(StereotypeUtils.STR_SUBKIND, new ArrayList<>(Arrays.asList(ActionIds.KIND, ActionIds.QUANTITY, ActionIds.COLLECTIVE, ActionIds.RELATOR, ActionIds.MODE, ActionIds.QUALITY, ActionIds.SUBKIND, ActionIds.CATEGORY, ActionIds.MIXIN, ActionIds.TYPE)));
 			put(StereotypeUtils.STR_ROLE, new ArrayList<>(Arrays.asList(ActionIds.KIND, ActionIds.QUANTITY, ActionIds.COLLECTIVE, ActionIds.RELATOR, ActionIds.MODE, ActionIds.QUALITY, ActionIds.SUBKIND, ActionIds.ROLE, ActionIds.PHASE, ActionIds.MIXIN, ActionIds.ROLE_MIXIN, ActionIds.HISTORICAL_ROLE, ActionIds.TYPE)));
 			put(StereotypeUtils.STR_PHASE, new ArrayList<>(Arrays.asList(ActionIds.KIND, ActionIds.QUANTITY, ActionIds.COLLECTIVE, ActionIds.RELATOR, ActionIds.MODE, ActionIds.QUALITY, ActionIds.SUBKIND, ActionIds.PHASE, ActionIds.MIXIN, ActionIds.PHASE_MIXIN, ActionIds.TYPE)));
 			put(StereotypeUtils.STR_CATEGORY, new ArrayList<>(Arrays.asList(ActionIds.CATEGORY, ActionIds.MIXIN)));
