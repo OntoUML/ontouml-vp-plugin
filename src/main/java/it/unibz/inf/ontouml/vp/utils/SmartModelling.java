@@ -287,25 +287,14 @@ public class SmartModelling {
 			final IClass superClass = (IClass) relationshipTo.getFrom();
 			final ArrayList<String> superClassStereotypes = new ArrayList<String>(Arrays.asList(superClass.toStereotypeArray()));
 
-			if (superClassStereotypes.size() == 0){
-				action.setEnabled(true);
-				continue;
-			}
-
-			if (superClassStereotypes.size() > 1){
+			if (superClassStereotypes.size() > 1)
 				action.setEnabled(false);
-				continue;
-			}
-				
+			
 			final String superStereotype = superClassStereotypes.get(0);
 			final ArrayList<String> allowedCombinationsSub = ClassConstraints.allowedSubCombinations.get(superStereotype);
 
-			if (allowedCombinationsSub == null || !allowedCombinationsSub.contains(action.getActionId())) {
+			if (allowedCombinationsSub == null || !allowedCombinationsSub.contains(action.getActionId()))
 				action.setEnabled(false);
-			} else {
-				action.setEnabled(true);
-			}
-
 		}
 
 		for (int i = 0; relationshipsFrom != null && i < relationshipsFrom.length; i++) {
@@ -319,27 +308,16 @@ public class SmartModelling {
 			final IClass subClass = (IClass) relationshipFrom.getTo();
 			final ArrayList<String> subClassStereotypes = new ArrayList<String>(Arrays.asList(subClass.toStereotypeArray()));
 
-			if (subClassStereotypes.size() == 0){
-				action.setEnabled(true);
-				continue;
-			}
-
-			if (subClassStereotypes.size() > 1){
+			if (subClassStereotypes.size() > 1)
 				action.setEnabled(false);
-				continue;
-			}
 
 			final String subStereotype = subClassStereotypes.get(0);
 			final ArrayList<String> allowedCombinationsSuper = ClassConstraints.allowedSuperCombinations.get(subStereotype);
 
-			if (allowedCombinationsSuper == null || !allowedCombinationsSuper.contains(action.getActionId())) {
+			if (allowedCombinationsSuper == null || !allowedCombinationsSuper.contains(action.getActionId()))
 				action.setEnabled(false);
-			} else {
-				action.setEnabled(true);
-			}
-
 		}
-
+		
 		return;
 	}
 
