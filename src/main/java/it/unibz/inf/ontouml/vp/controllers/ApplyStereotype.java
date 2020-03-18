@@ -147,18 +147,17 @@ public class ApplyStereotype implements VPContextActionController {
 			break;
 		}
 
+		boolean isSmartModelingEnabled = Configurations.getInstance().getProjectConfigurations().isSmartModellingEnabled();
+
 		if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
-
-			if (Configurations.getInstance().getProjectConfigurations().isSmartModellingEnabled())
+			if (isSmartModelingEnabled)
 				SmartModelling.setClassMetaProperties((IClass) element);
-			else
-				action.setEnabled(true);
-
-			SmartColoring.paint((IClass) element);
 		}
 
-		if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION))
-			SmartModelling.setAssociationMetaProperties((IAssociation) element);
+		if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION)) {
+			if (isSmartModelingEnabled)
+				SmartModelling.setAssociationMetaProperties((IAssociation) element);
+		}
 
 		if (Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled())
 			SmartColoring.smartPaint();
