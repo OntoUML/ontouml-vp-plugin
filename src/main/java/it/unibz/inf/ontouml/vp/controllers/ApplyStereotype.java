@@ -166,24 +166,22 @@ public class ApplyStereotype implements VPContextActionController {
 
 	@Override
 	public void update(VPAction action, VPContext context) {
-		final IModelElement element = context.getModelElement();
+		if (Configurations.getInstance().getProjectConfigurations().isSmartModellingEnabled()) {
+			final IModelElement element = context.getModelElement();
 
-		if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION)) {
-			final IAssociation association = (IAssociation) element;
-			SmartModelling.manageAssociationStereotypes(association, action);
-			return;
-		}
-
-		if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
-
-			if (Configurations.getInstance().getProjectConfigurations().isSmartModellingEnabled()) {
+			if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION)) {
+				final IAssociation association = (IAssociation) element;
+				SmartModelling.manageAssociationStereotypes(association, action);
+				return;
+			}
+			if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
 				final IClass _class = (IClass) element;
 				SmartModelling.manageClassStereotypes(_class, action);
-			} else {
-				action.setEnabled(true);
+				return;
 			}
-			
-			return;
+		}
+		else {
+			action.setEnabled(true);
 		}
 
 	}
