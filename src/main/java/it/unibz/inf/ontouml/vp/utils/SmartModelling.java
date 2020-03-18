@@ -287,6 +287,9 @@ public class SmartModelling {
 			final IClass superClass = (IClass) relationshipTo.getFrom();
 			final ArrayList<String> superClassStereotypes = new ArrayList<String>(Arrays.asList(superClass.toStereotypeArray()));
 
+			if (superClassStereotypes.size()==0)
+				continue;
+
 			if (superClassStereotypes.size() > 1)
 				action.setEnabled(false);
 			
@@ -307,6 +310,9 @@ public class SmartModelling {
 
 			final IClass subClass = (IClass) relationshipFrom.getTo();
 			final ArrayList<String> subClassStereotypes = new ArrayList<String>(Arrays.asList(subClass.toStereotypeArray()));
+
+			if (subClassStereotypes.size()==0)
+				continue;
 
 			if (subClassStereotypes.size() > 1)
 				action.setEnabled(false);
