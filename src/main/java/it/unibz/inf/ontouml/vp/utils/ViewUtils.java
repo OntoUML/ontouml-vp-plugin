@@ -14,6 +14,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.vp.plugin.ApplicationManager;
+import com.vp.plugin.diagram.IClassDiagramUIModel;
+import com.vp.plugin.diagram.IDiagramElement;
+import com.vp.plugin.diagram.IDiagramUIModel;
 
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 
@@ -75,6 +78,33 @@ public class ViewUtils {
 
 	}
 
+	public static void logDiagramVerificationResponse(String responseMessage) {
+		try {
+			JsonArray response = (JsonArray) new JsonParser().parse(responseMessage).getAsJsonArray();
+			final int errorCount = errorCountInCurrentDiagram(responseMessage);
+
+			if (errorCount == 0) {
+				verificationConcludedDialog(0);
+			} else {
+				verificationConcludedDialog(errorCount);
+
+				ViewUtils.simpleLog("--------- Diagram Verification Service ---------", SCOPE_PLUGIN);
+				for (JsonElement elem : response) {
+					final JsonObject error = elem.getAsJsonObject();
+					final String id = error.getAsJsonObject("source").get("id").getAsString();
+					if (isElementInCurrentDiagram(id)) {
+						final String errorMessage = error.get("severity").getAsString() + ":" + " " + error.get("title").getAsString() + " " + error.get("description").getAsString();
+
+						ViewUtils.simpleLog(errorMessage, SCOPE_PLUGIN);
+					}
+				}
+				ViewUtils.simpleLog("---------------------------------------------------", SCOPE_PLUGIN);
+			}
+		} catch (JsonSyntaxException e) {
+			verificationServerErrorDialog(responseMessage);
+		}
+	}
+	
 	public static void logVerificationResponse(String responseMessage) {
 		try {
 			JsonArray response = (JsonArray) new JsonParser().parse(responseMessage).getAsJsonArray();
@@ -87,6 +117,7 @@ public class ViewUtils {
 				ViewUtils.simpleLog("--------- Verification Service ---------", SCOPE_PLUGIN);
 				for (JsonElement elem : response) {
 					final JsonObject error = elem.getAsJsonObject();
+					
 					final String errorMessage = error.get("severity").getAsString() + ":" + " "
 							+ error.get("title").getAsString() + " " + error.get("description").getAsString();
 
@@ -113,7 +144,7 @@ public class ViewUtils {
 					new ImageIcon(getFilePath(SIMPLE_LOGO)));
 		} else {
 			ApplicationManager.instance().getViewManager().showConfirmDialog(null,
-					"The model was verified and no syntactical errors were found.", "Verification Service",
+					"No syntactical errors were found.", "Verification Service",
 					JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
 					new ImageIcon(getFilePath(SIMPLE_LOGO)));
 		}
@@ -191,5 +222,54 @@ public class ViewUtils {
 				"Smart Paint", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
 				new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
+	
+	public static String getCurrentClassDiagramId() {
+		final IDiagramUIModel[] diagramArray = ApplicationManager.instance().getProjectManager().getProject().toDiagramArray();
 
+		if (diagramArray == null)
+			return null;
+
+		for (IDiagramUIModel diagram : diagramArray) {
+			if (diagram instanceof IClassDiagramUIModel && diagram.isOpened())
+				return diagram.getId();
+		}
+
+		return null;
+	}
+	
+	public static IDiagramUIModel getCurrentDiagram() {
+
+		return ApplicationManager.instance().getProjectManager().getProject().getDiagramById(getCurrentClassDiagramId());
+	}
+	
+	public static boolean isElementInCurrentDiagram(String id) {
+		
+		if(getCurrentDiagram() == null)
+			return false;
+		
+		
+		for(IDiagramElement element : getCurrentDiagram().toDiagramElementArray()){
+			if(element.getModelElement().getId().equals(id))
+				return true;
+		}
+
+		return false;
+	}
+	
+	public static int errorCountInCurrentDiagram(String responseMessage) {
+		int errorCount = 0;
+
+		try {
+			JsonArray response = (JsonArray) new JsonParser().parse(responseMessage).getAsJsonArray();
+
+			for (JsonElement elem : response) {
+				if (isElementInCurrentDiagram(elem.getAsJsonObject().getAsJsonObject("source").get("id").getAsString()))
+					errorCount++;
+			}
+		} catch (JsonSyntaxException e) {
+			return 0;
+		}
+		
+		return errorCount;
+	}
 }
