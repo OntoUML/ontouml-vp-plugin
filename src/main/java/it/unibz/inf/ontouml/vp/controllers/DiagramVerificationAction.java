@@ -30,7 +30,7 @@ public class DiagramVerificationAction implements VPActionController {
 	public void performAction(VPAction action) {
 
 		if (!hasOpenedClassDiagram()) {
-			ViewUtils.simpleDialog("Diagram Verification", "Diagram Verification could not be started.\nPlease open a class diagram first.");
+			ViewUtils.simpleDialog("Diagram Verification", "Please open a diagram before running this command.");
 			return;
 		}
 		

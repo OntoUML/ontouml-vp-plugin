@@ -85,25 +85,21 @@ public class ViewUtils {
 	public static void logDiagramVerificationResponse(String responseMessage) {
 		try {
 			JsonArray response = (JsonArray) new JsonParser().parse(responseMessage).getAsJsonArray();
+
 			final int errorCount = errorCountInCurrentDiagram(responseMessage);
+			verificationDiagramConcludedDialog(errorCount, getCurrentClassDiagramName());
 
-			if (errorCount == 0) {
-				verificationConcludedDialog(0);
-			} else {
-				verificationDiagramConcludedDialog(errorCount, getCurrentClassDiagramName());
+			ViewUtils.simpleLog("--------- Diagram Verification Service ---------", SCOPE_PLUGIN);
+			for (JsonElement elem : response) {
+				final JsonObject error = elem.getAsJsonObject();
+				final String id = error.getAsJsonObject("source").get("id").getAsString();
+				if (isElementInCurrentDiagram(id)) {
+					final String errorMessage = error.get("severity").getAsString() + ":" + " " + error.get("title").getAsString() + " " + error.get("description").getAsString();
 
-				ViewUtils.simpleLog("--------- Diagram Verification Service ---------", SCOPE_PLUGIN);
-				for (JsonElement elem : response) {
-					final JsonObject error = elem.getAsJsonObject();
-					final String id = error.getAsJsonObject("source").get("id").getAsString();
-					if (isElementInCurrentDiagram(id)) {
-						final String errorMessage = error.get("severity").getAsString() + ":" + " " + error.get("title").getAsString() + " " + error.get("description").getAsString();
-
-						ViewUtils.simpleLog(errorMessage, SCOPE_PLUGIN);
-					}
+					ViewUtils.simpleLog(errorMessage, SCOPE_PLUGIN);
 				}
-				ViewUtils.simpleLog("---------------------------------------------------", SCOPE_PLUGIN);
 			}
+			ViewUtils.simpleLog("---------------------------------------------------", SCOPE_PLUGIN);
 		} catch (JsonSyntaxException e) {
 			verificationServerErrorDialog(responseMessage);
 		}
@@ -112,23 +108,18 @@ public class ViewUtils {
 	public static void logVerificationResponse(String responseMessage) {
 		try {
 			JsonArray response = (JsonArray) new JsonParser().parse(responseMessage).getAsJsonArray();
+			verificationConcludedDialog(response.size());
 
-			if (response.size() == 0) {
-				verificationConcludedDialog(0);
-			} else {
-				verificationConcludedDialog(response.size());
+			ViewUtils.simpleLog("--------- Verification Service ---------", SCOPE_PLUGIN);
+			for (JsonElement elem : response) {
+				final JsonObject error = elem.getAsJsonObject();
 
-				ViewUtils.simpleLog("--------- Verification Service ---------", SCOPE_PLUGIN);
-				for (JsonElement elem : response) {
-					final JsonObject error = elem.getAsJsonObject();
-					
-					final String errorMessage = error.get("severity").getAsString() + ":" + " "
-							+ error.get("title").getAsString() + " " + error.get("description").getAsString();
+				final String errorMessage = error.get("severity").getAsString() + ":" + " "
+						+ error.get("title").getAsString() + " " + error.get("description").getAsString();
 
-					ViewUtils.simpleLog(errorMessage, SCOPE_PLUGIN);
-				}
-				ViewUtils.simpleLog("-------------------------------------------", SCOPE_PLUGIN);
+				ViewUtils.simpleLog(errorMessage, SCOPE_PLUGIN);
 			}
+			ViewUtils.simpleLog("-------------------------------------------", SCOPE_PLUGIN);
 		} catch (JsonSyntaxException e) {
 			verificationServerErrorDialog(responseMessage);
 		}
@@ -142,13 +133,13 @@ public class ViewUtils {
 	public static void verificationConcludedDialog(int nIssues) {
 		if (nIssues > 0) {
 			ApplicationManager.instance().getViewManager().showConfirmDialog(null,
-					"Verification found " + nIssues + " issue(s) in this project. \n"
-							+ "Please check the log at the right bottom corner.",
+					"Issues found in your project: " + nIssues +".\n" +
+							"For details, click on the \"Show Message\" icon on the bottom right corner of the app.",
 					"Verification Service", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
 					new ImageIcon(getFilePath(SIMPLE_LOGO)));
 		} else {
 			ApplicationManager.instance().getViewManager().showConfirmDialog(null,
-					"No syntatical errors found!\nAll diagrams verified and no syntatical issues were found.", "Verification Service",
+					"No issues were found in your project.", "Verification Service",
 					JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
 					new ImageIcon(getFilePath(SIMPLE_LOGO)));
 		}
@@ -157,13 +148,15 @@ public class ViewUtils {
 	public static void verificationDiagramConcludedDialog(int nIssues, String diagramName) {
 		if (nIssues > 0) {
 			ApplicationManager.instance().getViewManager().showConfirmDialog(null,
-					"Verification found " + nIssues + " issue(s) in the " + diagramName + " diagram.\n"
-							+ "Please check the log at the right bottom corner.",
+					"Issues found in diagram \"" + diagramName + "\": " + nIssues + ".\n" +
+							"For details, click on the \"Show Message\" icon on the bottom right corner of the app.",
 					"Verification Service", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
 					new ImageIcon(getFilePath(SIMPLE_LOGO)));
 		} else {
 			ApplicationManager.instance().getViewManager().showConfirmDialog(null,
-					"No syntatical errors found!\n" + "Diagram " + diagramName + " was verified and no syntatical issues were found.", "Verification Service",
+					"No issues were found in diagram \"" + diagramName + "\".\n " +
+							"Other issues may still exist in your project.",
+					"Verification Service",
 					JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
 					new ImageIcon(getFilePath(SIMPLE_LOGO)));
 		}
