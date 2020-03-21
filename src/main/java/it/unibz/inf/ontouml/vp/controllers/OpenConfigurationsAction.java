@@ -55,7 +55,7 @@ public class OpenConfigurationsAction implements VPActionController {
 	 * Java components in Visual Paradigm.
 	 * 
 	 * More information available at
-	 *  {@link https://images.visual-paradigm.com/docs/plugin_user_guide/Plug-in_Users_Guide.pdf} .
+	 *  @link https://images.visual-paradigm.com/docs/plugin_user_guide/Plug-in_Users_Guide.pdf .
 	 * 
 	 * @author Claudenir Fonseca
 	 *

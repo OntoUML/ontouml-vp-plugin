@@ -135,7 +135,7 @@ public class ConfigurationsView extends JPanel {
 		gbl__controlButtonsPanel.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		_controlButtonsPanel.setLayout(gbl__controlButtonsPanel);
 		
-		_btnApply = new JButton("Apply and Close");
+		_btnApply = new JButton("Save");
 		_btnApply.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

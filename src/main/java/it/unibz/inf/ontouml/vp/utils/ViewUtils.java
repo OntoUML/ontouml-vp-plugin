@@ -14,6 +14,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.vp.plugin.ApplicationManager;
+import com.vp.plugin.diagram.IClassDiagramUIModel;
+import com.vp.plugin.diagram.IDiagramElement;
+import com.vp.plugin.diagram.IDiagramUIModel;
 
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 
@@ -56,6 +59,10 @@ public class ViewUtils {
 	public static void clearLog(String scope) {
 		ApplicationManager.instance().getViewManager().clearMessages(scope);
 	}
+	
+	public static void simpleDialog(String title, String message) {
+		ApplicationManager.instance().getViewManager().showConfirmDialog(null, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+	}
 
 	private static String timestamp() {
 		return "[" + (new Timestamp(System.currentTimeMillis())) + "] ";
@@ -75,24 +82,53 @@ public class ViewUtils {
 
 	}
 
-	public static void logVerificationResponse(String responseMessage) {
+	public static void logDiagramVerificationResponse(String responseMessage) {
 		try {
 			JsonArray response = (JsonArray) new JsonParser().parse(responseMessage).getAsJsonArray();
 
-			if (response.size() == 0) {
-				verificationConcludedDialog(0);
-			} else {
-				verificationConcludedDialog(response.size());
+			final int errorCount = errorCountInCurrentDiagram(responseMessage);
+			final String diagramName =  getCurrentClassDiagramName();
 
-				ViewUtils.simpleLog("--------- Verification Service ---------", SCOPE_PLUGIN);
-				for (JsonElement elem : response) {
-					final JsonObject error = elem.getAsJsonObject();
-					final String errorMessage = error.get("severity").getAsString() + ":" + " "
-							+ error.get("title").getAsString() + " " + error.get("description").getAsString();
+			verificationDiagramConcludedDialog(errorCount, diagramName);
+
+			ViewUtils.simpleLog("--------- Diagram Verification Service ---------", SCOPE_PLUGIN);
+
+			if(errorCount==0)
+				ViewUtils.simpleLog("No issues were found in diagram \"" + diagramName + "\".", SCOPE_PLUGIN);
+
+			for (JsonElement elem : response) {
+				final JsonObject error = elem.getAsJsonObject();
+				final String id = error.getAsJsonObject("source").get("id").getAsString();
+				if (isElementInCurrentDiagram(id)) {
+					final String errorMessage = error.get("severity").getAsString() + ":" + " " + error.get("title").getAsString() + " " + error.get("description").getAsString();
 
 					ViewUtils.simpleLog(errorMessage, SCOPE_PLUGIN);
 				}
-				ViewUtils.simpleLog("-------------------------------------------", SCOPE_PLUGIN);
+			}
+		} catch (JsonSyntaxException e) {
+			verificationServerErrorDialog(responseMessage);
+		}
+	}
+	
+	public static void logVerificationResponse(String responseMessage) {
+		try {
+			JsonArray response = (JsonArray) new JsonParser().parse(responseMessage).getAsJsonArray();
+			final int errorCount = response.size();
+
+			verificationConcludedDialog(errorCount);
+
+			ViewUtils.simpleLog("--------- Verification Service ---------", SCOPE_PLUGIN);
+
+			if(errorCount==0)
+				ViewUtils.simpleLog("No issues were found in your project.", SCOPE_PLUGIN);
+
+			for (JsonElement elem : response) {
+				final JsonObject error = elem.getAsJsonObject();
+
+				final String errorMessage = error.get("severity").getAsString() + ":" + " "
+						+ error.get("title").getAsString() + " " + error.get("description").getAsString();
+
+				ViewUtils.simpleLog(errorMessage, SCOPE_PLUGIN);
 			}
 		} catch (JsonSyntaxException e) {
 			verificationServerErrorDialog(responseMessage);
@@ -107,13 +143,30 @@ public class ViewUtils {
 	public static void verificationConcludedDialog(int nIssues) {
 		if (nIssues > 0) {
 			ApplicationManager.instance().getViewManager().showConfirmDialog(null,
-					"Verification found " + nIssues + " issue(s). \n"
-							+ "Please check the log at the right bottom corner.",
+					"Issues found in your project: " + nIssues +".\n" +
+							"For details, click on the \"Show Message\" icon on the bottom right corner of the app.",
 					"Verification Service", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
 					new ImageIcon(getFilePath(SIMPLE_LOGO)));
 		} else {
 			ApplicationManager.instance().getViewManager().showConfirmDialog(null,
-					"The model was verified and no syntactical errors were found.", "Verification Service",
+					"No issues were found in your project.", "Verification Service",
+					JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+					new ImageIcon(getFilePath(SIMPLE_LOGO)));
+		}
+	}
+	
+	public static void verificationDiagramConcludedDialog(int nIssues, String diagramName) {
+		if (nIssues > 0) {
+			ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+					"Issues found in diagram \"" + diagramName + "\": " + nIssues + ".\n" +
+							"For details, click on the \"Show Message\" icon on the bottom right corner of the app.",
+					"Verification Service", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+					new ImageIcon(getFilePath(SIMPLE_LOGO)));
+		} else {
+			ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+					"No issues were found in diagram \"" + diagramName + "\".\n" +
+							"Other issues may still exist in your project.",
+					"Verification Service",
 					JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
 					new ImageIcon(getFilePath(SIMPLE_LOGO)));
 		}
@@ -191,5 +244,68 @@ public class ViewUtils {
 				"Smart Paint", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
 				new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
+	
+	public static String getCurrentClassDiagramName() {
+		final IDiagramUIModel[] diagramArray = ApplicationManager.instance().getProjectManager().getProject().toDiagramArray();
 
+		if (diagramArray == null)
+			return null;
+
+		for (IDiagramUIModel diagram : diagramArray) {
+			if (diagram instanceof IClassDiagramUIModel && diagram.isOpened())
+				return diagram.getName();
+		}
+
+		return null;
+	}
+	
+	public static String getCurrentClassDiagramId() {
+		final IDiagramUIModel[] diagramArray = ApplicationManager.instance().getProjectManager().getProject().toDiagramArray();
+
+		if (diagramArray == null)
+			return null;
+
+		for (IDiagramUIModel diagram : diagramArray) {
+			if (diagram instanceof IClassDiagramUIModel && diagram.isOpened())
+				return diagram.getId();
+		}
+
+		return null;
+	}
+	
+	public static IDiagramUIModel getCurrentClassDiagram() {
+
+		return ApplicationManager.instance().getProjectManager().getProject().getDiagramById(getCurrentClassDiagramId());
+	}
+	
+	public static boolean isElementInCurrentDiagram(String id) {
+		
+		if(getCurrentClassDiagram() == null)
+			return false;
+		
+		
+		for(IDiagramElement element : getCurrentClassDiagram().toDiagramElementArray()){
+			if(element.getModelElement().getId().equals(id))
+				return true;
+		}
+
+		return false;
+	}
+	
+	public static int errorCountInCurrentDiagram(String responseMessage) {
+		int errorCount = 0;
+
+		try {
+			JsonArray response = (JsonArray) new JsonParser().parse(responseMessage).getAsJsonArray();
+
+			for (JsonElement elem : response) {
+				if (isElementInCurrentDiagram(elem.getAsJsonObject().getAsJsonObject("source").get("id").getAsString()))
+					errorCount++;
+			}
+		} catch (JsonSyntaxException e) {
+			return 0;
+		}
+		
+		return errorCount;
+	}
 }

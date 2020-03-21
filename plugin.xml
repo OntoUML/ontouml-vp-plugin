@@ -22,6 +22,17 @@
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ModelVerificationAction" />
             </action>
             <action 
+                    id="it.unibz.inf.ontouml.vp.actions.DiagramVerificationAction"
+                    actionType="generalAction"
+                    description="Tests if the current diagram complies to OntoUML's syntactical constraints."
+                    style="normal"
+                    tooltip="Tests if the current diagram complies to OntoUML's syntactical constraints."
+                    icon="icons/toolbar/check-mark-orange.png"
+                    label="Diagram Verification"
+                    toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
+                 <actionController class="it.unibz.inf.ontouml.vp.controllers.DiagramVerificationAction" />
+            </action>
+            <action 
                     id="it.unibz.inf.ontouml.vp.actions.ModelExportAction"
                     actionType="generalAction"
                     description="Exports the model into a JSON file formatted according to OntoUML JSON Schema."
