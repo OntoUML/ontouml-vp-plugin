@@ -59,6 +59,10 @@ public class ViewUtils {
 	public static void clearLog(String scope) {
 		ApplicationManager.instance().getViewManager().clearMessages(scope);
 	}
+	
+	public static void simpleDialog(String title, String message) {
+		ApplicationManager.instance().getViewManager().showConfirmDialog(null, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+	}
 
 	private static String timestamp() {
 		return "[" + (new Timestamp(System.currentTimeMillis())) + "] ";
@@ -86,7 +90,7 @@ public class ViewUtils {
 			if (errorCount == 0) {
 				verificationConcludedDialog(0);
 			} else {
-				verificationConcludedDialog(errorCount);
+				verificationDiagramConcludedDialog(errorCount, getCurrentClassDiagramName());
 
 				ViewUtils.simpleLog("--------- Diagram Verification Service ---------", SCOPE_PLUGIN);
 				for (JsonElement elem : response) {
@@ -138,13 +142,28 @@ public class ViewUtils {
 	public static void verificationConcludedDialog(int nIssues) {
 		if (nIssues > 0) {
 			ApplicationManager.instance().getViewManager().showConfirmDialog(null,
-					"Verification found " + nIssues + " issue(s). \n"
+					"Verification found " + nIssues + " issue(s) in this project. \n"
 							+ "Please check the log at the right bottom corner.",
 					"Verification Service", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
 					new ImageIcon(getFilePath(SIMPLE_LOGO)));
 		} else {
 			ApplicationManager.instance().getViewManager().showConfirmDialog(null,
-					"No syntactical errors were found.", "Verification Service",
+					"No syntatical errors found!\nAll diagrams verified and no syntatical issues were found.", "Verification Service",
+					JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+					new ImageIcon(getFilePath(SIMPLE_LOGO)));
+		}
+	}
+	
+	public static void verificationDiagramConcludedDialog(int nIssues, String diagramName) {
+		if (nIssues > 0) {
+			ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+					"Verification found " + nIssues + " issue(s) in the " + diagramName + " diagram.\n"
+							+ "Please check the log at the right bottom corner.",
+					"Verification Service", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+					new ImageIcon(getFilePath(SIMPLE_LOGO)));
+		} else {
+			ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+					"No syntatical errors found!\n" + "Diagram " + diagramName + " was verified and no syntatical issues were found.", "Verification Service",
 					JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
 					new ImageIcon(getFilePath(SIMPLE_LOGO)));
 		}
@@ -223,6 +242,20 @@ public class ViewUtils {
 				new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
 	
+	public static String getCurrentClassDiagramName() {
+		final IDiagramUIModel[] diagramArray = ApplicationManager.instance().getProjectManager().getProject().toDiagramArray();
+
+		if (diagramArray == null)
+			return null;
+
+		for (IDiagramUIModel diagram : diagramArray) {
+			if (diagram instanceof IClassDiagramUIModel && diagram.isOpened())
+				return diagram.getName();
+		}
+
+		return null;
+	}
+	
 	public static String getCurrentClassDiagramId() {
 		final IDiagramUIModel[] diagramArray = ApplicationManager.instance().getProjectManager().getProject().toDiagramArray();
 
@@ -237,18 +270,18 @@ public class ViewUtils {
 		return null;
 	}
 	
-	public static IDiagramUIModel getCurrentDiagram() {
+	public static IDiagramUIModel getCurrentClassDiagram() {
 
 		return ApplicationManager.instance().getProjectManager().getProject().getDiagramById(getCurrentClassDiagramId());
 	}
 	
 	public static boolean isElementInCurrentDiagram(String id) {
 		
-		if(getCurrentDiagram() == null)
+		if(getCurrentClassDiagram() == null)
 			return false;
 		
 		
-		for(IDiagramElement element : getCurrentDiagram().toDiagramElementArray()){
+		for(IDiagramElement element : getCurrentClassDiagram().toDiagramElementArray()){
 			if(element.getModelElement().getId().equals(id))
 				return true;
 		}
