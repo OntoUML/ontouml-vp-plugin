@@ -87,9 +87,15 @@ public class ViewUtils {
 			JsonArray response = (JsonArray) new JsonParser().parse(responseMessage).getAsJsonArray();
 
 			final int errorCount = errorCountInCurrentDiagram(responseMessage);
-			verificationDiagramConcludedDialog(errorCount, getCurrentClassDiagramName());
+			final String diagramName =  getCurrentClassDiagramName();
+
+			verificationDiagramConcludedDialog(errorCount, diagramName);
 
 			ViewUtils.simpleLog("--------- Diagram Verification Service ---------", SCOPE_PLUGIN);
+
+			if(errorCount==0)
+				ViewUtils.simpleLog("No issues were found in diagram \"" + diagramName + "\".", SCOPE_PLUGIN);
+
 			for (JsonElement elem : response) {
 				final JsonObject error = elem.getAsJsonObject();
 				final String id = error.getAsJsonObject("source").get("id").getAsString();
@@ -99,7 +105,6 @@ public class ViewUtils {
 					ViewUtils.simpleLog(errorMessage, SCOPE_PLUGIN);
 				}
 			}
-			ViewUtils.simpleLog("---------------------------------------------------", SCOPE_PLUGIN);
 		} catch (JsonSyntaxException e) {
 			verificationServerErrorDialog(responseMessage);
 		}
@@ -108,9 +113,15 @@ public class ViewUtils {
 	public static void logVerificationResponse(String responseMessage) {
 		try {
 			JsonArray response = (JsonArray) new JsonParser().parse(responseMessage).getAsJsonArray();
-			verificationConcludedDialog(response.size());
+			final int errorCount = response.size();
+
+			verificationConcludedDialog(errorCount);
 
 			ViewUtils.simpleLog("--------- Verification Service ---------", SCOPE_PLUGIN);
+
+			if(errorCount==0)
+				ViewUtils.simpleLog("No issues were found in your project.", SCOPE_PLUGIN);
+
 			for (JsonElement elem : response) {
 				final JsonObject error = elem.getAsJsonObject();
 
@@ -119,7 +130,6 @@ public class ViewUtils {
 
 				ViewUtils.simpleLog(errorMessage, SCOPE_PLUGIN);
 			}
-			ViewUtils.simpleLog("-------------------------------------------", SCOPE_PLUGIN);
 		} catch (JsonSyntaxException e) {
 			verificationServerErrorDialog(responseMessage);
 		}
@@ -154,7 +164,7 @@ public class ViewUtils {
 					new ImageIcon(getFilePath(SIMPLE_LOGO)));
 		} else {
 			ApplicationManager.instance().getViewManager().showConfirmDialog(null,
-					"No issues were found in diagram \"" + diagramName + "\".\n " +
+					"No issues were found in diagram \"" + diagramName + "\".\n" +
 							"Other issues may still exist in your project.",
 					"Verification Service",
 					JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
