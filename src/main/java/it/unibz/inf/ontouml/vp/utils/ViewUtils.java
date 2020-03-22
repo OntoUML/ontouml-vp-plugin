@@ -1,12 +1,23 @@
 package it.unibz.inf.ontouml.vp.utils;
 
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.net.HttpURLConnection;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -14,9 +25,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.vp.plugin.ApplicationManager;
+import com.vp.plugin.DiagramManager;
 import com.vp.plugin.diagram.IClassDiagramUIModel;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
+import com.vp.plugin.model.IModelElement;
 
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 
@@ -39,6 +52,9 @@ public class ViewUtils {
 	// images
 	public static final String SIMPLE_LOGO = "simple_logo";
 	public static final String SIMPLE_LOGO_FILENAME = "ontouml-simple-logo.png";
+	public static final String NAVIGATION_LOGO = "navigation";
+	public static final String NAVIGATION_LOGO_FILENAME = "navigation.png";
+	
 
 	public static void log(String message) {
 		ApplicationManager.instance().getViewManager().showMessage(timestamp() + message);
@@ -68,13 +84,16 @@ public class ViewUtils {
 		return "[" + (new Timestamp(System.currentTimeMillis())) + "] ";
 	}
 
-	private static String getFilePath(String imageName) {
+	public static String getFilePath(String imageName) {
 
 		final File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();
 
 		switch (imageName) {
 			case SIMPLE_LOGO:
 				return Paths.get(pluginDir.getAbsolutePath(), "icons", "logo", SIMPLE_LOGO_FILENAME).toFile()
+						.getAbsolutePath();
+			case NAVIGATION_LOGO:
+				return Paths.get(pluginDir.getAbsolutePath(), "icons", NAVIGATION_LOGO_FILENAME).toFile()
 						.getAbsolutePath();
 			default:
 				return null;
@@ -83,53 +102,111 @@ public class ViewUtils {
 	}
 
 	public static void logDiagramVerificationResponse(String responseMessage) {
+		JPanel box;
+		JTextArea textArea;
+		JPanel container = new JPanel();
+		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+		container.setOpaque(true);
 		try {
 			JsonArray response = (JsonArray) new JsonParser().parse(responseMessage).getAsJsonArray();
 
 			final int errorCount = errorCountInCurrentDiagram(responseMessage);
-			final String diagramName =  getCurrentClassDiagramName();
+			final String diagramName = getCurrentClassDiagramName();
 
 			verificationDiagramConcludedDialog(errorCount, diagramName);
+			
+			if(errorCount==0){
+				box = new JPanel();
+				box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+				box.setBackground(Color.WHITE);
+				box.setOpaque(false);
 
-			ViewUtils.simpleLog("--------- Diagram Verification Service ---------", SCOPE_PLUGIN);
-
-			if(errorCount==0)
-				ViewUtils.simpleLog("No issues were found in diagram \"" + diagramName + "\".", SCOPE_PLUGIN);
+				textArea = new JTextArea();
+				textArea.append("No issues were found in diagram \"" + diagramName + "\".");
+				box.add(textArea);
+				box.doLayout();
+				container.add(box);
+			}
 
 			for (JsonElement elem : response) {
 				final JsonObject error = elem.getAsJsonObject();
 				final String id = error.getAsJsonObject("source").get("id").getAsString();
+				
+				box = new JPanel();
+				box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+				box.setBackground(Color.WHITE);
+				box.setOpaque(false);
+
+				textArea = new JTextArea();
+				textArea.addMouseListener(new ContextMenuListener(id));
+				
 				if (isElementInCurrentDiagram(id)) {
 					final String errorMessage = error.get("severity").getAsString() + ":" + " " + error.get("title").getAsString() + " " + error.get("description").getAsString();
-
-					ViewUtils.simpleLog(errorMessage, SCOPE_PLUGIN);
+					textArea.append(timestamp() + errorMessage);
+					box.add(textArea);
+					box.doLayout();
+					container.add(box);
 				}
 			}
+			container.doLayout();
+			JScrollPane parentContainer = new JScrollPane(container);
+			ApplicationManager.instance().getViewManager().showMessagePaneComponent(OntoUMLPlugin.PLUGIN_ID, SCOPE_PLUGIN, parentContainer);
+
 		} catch (JsonSyntaxException e) {
 			verificationServerErrorDialog(responseMessage);
 		}
 	}
 	
 	public static void logVerificationResponse(String responseMessage) {
+		JPanel box;
+		JTextArea textArea;
+		JPanel container = new JPanel();
+		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+		container.setOpaque(true);
 		try {
 			JsonArray response = (JsonArray) new JsonParser().parse(responseMessage).getAsJsonArray();
 			final int errorCount = response.size();
 
 			verificationConcludedDialog(errorCount);
 
-			ViewUtils.simpleLog("--------- Verification Service ---------", SCOPE_PLUGIN);
+			if(errorCount==0){
+				box = new JPanel();
+				box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+				box.setBackground(Color.WHITE);
+				box.setOpaque(false);
 
-			if(errorCount==0)
-				ViewUtils.simpleLog("No issues were found in your project.", SCOPE_PLUGIN);
+				textArea = new JTextArea();
+				textArea.append("No issues were found in your project.");
+				box.add(textArea);
+				box.doLayout();
+				container.add(box);
+			}
 
 			for (JsonElement elem : response) {
 				final JsonObject error = elem.getAsJsonObject();
+				final String id = error.getAsJsonObject("source").get("id").getAsString();
+				
+				box = new JPanel();
+				box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+				box.setBackground(Color.WHITE);
+				box.setOpaque(false);
+
+				textArea = new JTextArea();
+				textArea.addMouseListener(new ContextMenuListener(id));
 
 				final String errorMessage = error.get("severity").getAsString() + ":" + " "
 						+ error.get("title").getAsString() + " " + error.get("description").getAsString();
 
-				ViewUtils.simpleLog(errorMessage, SCOPE_PLUGIN);
+				textArea.append(timestamp() + errorMessage);
+				box.add(textArea);
+				box.doLayout();
+				container.add(box);
 			}
+			
+			container.doLayout();
+			JScrollPane parentContainer = new JScrollPane(container);
+			ApplicationManager.instance().getViewManager().showMessagePaneComponent(OntoUMLPlugin.PLUGIN_ID, SCOPE_PLUGIN, parentContainer);
+			
 		} catch (JsonSyntaxException e) {
 			verificationServerErrorDialog(responseMessage);
 		}
@@ -307,5 +384,69 @@ public class ViewUtils {
 		}
 		
 		return errorCount;
+	}
+	
+	public static void highlightDiagramElement(String elementId) {
+		
+		final IDiagramUIModel[] diagramArray = ApplicationManager.instance().getProjectManager().getProject().toDiagramArray();
+		DiagramManager diagramManager = ApplicationManager.instance().getDiagramManager();
+		
+		if (diagramArray == null)
+			return;
+
+		for (IDiagramUIModel diagram : diagramArray) {
+			if (diagram instanceof IClassDiagramUIModel) {
+				for (IDiagramElement diagramElement : diagram.toDiagramElementArray()) {
+					IModelElement modelElement = diagramElement.getMetaModelElement();
+					if (modelElement.getId() != null && modelElement.getId().equals(elementId)) {
+						diagramManager.highlight(diagramElement);
+						return;
+					}
+				}
+			}
+		}
+	}
+}
+
+@SuppressWarnings("serial")
+final class ContextMenu extends JPopupMenu {
+	JMenuItem item;
+	ActionListener menuListener;
+
+	public ContextMenu(String idModelElement) {
+		menuListener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ViewUtils.highlightDiagramElement(idModelElement);
+			}
+		};
+		
+		item = new JMenuItem("Take me there!", new ImageIcon(ViewUtils.getFilePath(ViewUtils.NAVIGATION_LOGO)));
+		item.addActionListener(menuListener);
+		add(item);
+	}
+}
+
+final class ContextMenuListener extends MouseAdapter {
+	String idModelElement;
+	
+	ContextMenuListener(String id){
+		super();
+		idModelElement = id;
+	}
+	
+	public void mousePressed(MouseEvent e) {
+		if (e.isPopupTrigger())
+			doPop(e);
+	}
+
+	public void mouseReleased(MouseEvent e) {
+		if (e.isPopupTrigger())
+			doPop(e);
+	}
+
+	private void doPop(MouseEvent e) {
+		ContextMenu menu = new ContextMenu(idModelElement);
+		menu.show(e.getComponent(), e.getX(), e.getY());
 	}
 }
