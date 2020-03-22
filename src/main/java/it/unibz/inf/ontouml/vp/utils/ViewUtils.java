@@ -520,21 +520,24 @@ final class ContextMenuListener extends MouseAdapter {
 		super();
 		idModelElement = id;
 	}
-	
-	public void mousePressed(MouseEvent e) {
-		if (e.isPopupTrigger())
-			doPop(e);
-	}
 
 	public void mouseReleased(MouseEvent e) {
-		if (e.isPopupTrigger())
-			doPop(e);
+		doPop(e);
+	}
+
+	public void mouseEntered(MouseEvent e) {
+		e.getComponent().setBackground(Color.LIGHT_GRAY);
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		e.getComponent().setBackground(Color.WHITE);
 	}
 
 	private void doPop(MouseEvent e) {
 		ContextMenu menu = new ContextMenu(idModelElement);
-		// if(!ViewUtils.isElementInAnyDiagram(idModelElement))
-		// 	menu.disableItem("Take me there!");
+		if(!ViewUtils.isElementInAnyDiagram(idModelElement))
+			menu.disableItem("Take me there!");
 		
 		menu.show(e.getComponent(), e.getX(), e.getY());
 	}
