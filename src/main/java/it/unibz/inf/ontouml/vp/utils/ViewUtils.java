@@ -1,6 +1,8 @@
 package it.unibz.inf.ontouml.vp.utils;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -10,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
@@ -57,7 +60,6 @@ public class ViewUtils {
 	public static final String MORE_HORIZ_LOGO = "more_horiz";
 	public static final String MORE_HORIZ_LOGO_FILENAME = "more_horiz.png";
 	
-
 	public static void log(String message) {
 		ApplicationManager.instance().getViewManager().showMessage(timestamp() + message);
 	}
@@ -103,7 +105,6 @@ public class ViewUtils {
 			default:
 				return null;
 		}
-
 	}
 
 	public static void logDiagramVerificationResponse(String responseMessage) {
@@ -138,18 +139,20 @@ public class ViewUtils {
 				final JsonObject error = elem.getAsJsonObject();
 				final String id = error.getAsJsonObject("source").get("id").getAsString();
 				
-				box = new JPanel();
-				box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
-				box.setBackground(Color.WHITE);
-				box.setOpaque(false);
-
-				textArea = new JTextArea();
-				textArea.setEditable(false);
-				textArea.addMouseListener(new ContextMenuListener(id));
-				
 				if (isElementInCurrentDiagram(id)) {
 					final String errorMessage = error.get("severity").getAsString() + ":" + " " + error.get("title").getAsString() + " " + error.get("description").getAsString();
+					
+					box = new JPanel();
+					box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+					box.setBackground(Color.WHITE);
+					box.setOpaque(false);
+
+					textArea = new JTextArea();
+					textArea.setEditable(false);
+					textArea.addMouseListener(new ContextMenuListener(id));
+					
 					textArea.append(timestamp() + errorMessage);
+					box.setBorder(BorderFactory.createEmptyBorder(6,3,6,3));
 					box.add(textArea);
 					box.doLayout();
 					container.add(box);
@@ -207,6 +210,7 @@ public class ViewUtils {
 						+ error.get("title").getAsString() + " " + error.get("description").getAsString();
 
 				textArea.append(timestamp() + errorMessage);
+				box.setBorder(BorderFactory.createEmptyBorder(6,3,6,3));
 				box.add(textArea);
 				box.doLayout();
 				container.add(box);
