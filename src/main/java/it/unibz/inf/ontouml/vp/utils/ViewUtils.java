@@ -11,6 +11,7 @@ import java.io.File;
 import java.net.HttpURLConnection;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
+import java.util.Iterator;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -29,6 +30,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.DiagramManager;
+import com.vp.plugin.ViewManager;
 import com.vp.plugin.diagram.IClassDiagramUIModel;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
@@ -420,42 +422,45 @@ public class ViewUtils {
 	}
 
 	public static void openSpecDiagramElement(String elementId) {
-		final IDiagramUIModel[] diagramArray = ApplicationManager.instance().getProjectManager().getProject().toDiagramArray();
+		final ApplicationManager app = ApplicationManager.instance();
+		final IModelElement element = app.getProjectManager().getProject().getModelElementById(elementId);
+		final ViewManager viewManager = app.getViewManager();
 
-		if (diagramArray == null)
-			return;
-
-		for (IDiagramUIModel diagram : diagramArray) {
-			if (diagram instanceof IClassDiagramUIModel) {
-				for (IDiagramElement diagramElement : diagram.toDiagramElementArray()) {
-					IModelElement modelElement = diagramElement.getMetaModelElement();
-					if (modelElement.getId() != null && modelElement.getId().equals(elementId)) {
-						ApplicationManager.instance().getViewManager().openSpec(modelElement, ApplicationManager.instance().getViewManager().getRootFrame());
-						return;
-					}
-				}
-			}
-		}
+		viewManager.openSpec(element, viewManager.getRootFrame());
 	}
 
 	public static void highlightDiagramElement(String elementId) {
+		final ApplicationManager app = ApplicationManager.instance();
+		final IModelElement element = app.getProjectManager().getProject().getModelElementById(elementId);
+		final DiagramManager diagramManager = app.getDiagramManager();
+		IDiagramElement diagramElement = null;
 
-		final IDiagramUIModel[] diagramArray = ApplicationManager.instance().getProjectManager().getProject().toDiagramArray();
-		DiagramManager diagramManager = ApplicationManager.instance().getDiagramManager();
-
-		if (diagramArray == null)
-			return;
-
-		for (IDiagramUIModel diagram : diagramArray) {
-			if (diagram instanceof IClassDiagramUIModel) {
-				for (IDiagramElement diagramElement : diagram.toDiagramElementArray()) {
-					IModelElement modelElement = diagramElement.getMetaModelElement();
-					if (modelElement.getId() != null && modelElement.getId().equals(elementId)) {
-						diagramManager.highlight(diagramElement);
-						return;
-					}
+		// Checks if the active diagram contains the element
+		if(diagramManager.getActiveDiagram() != null) {
+			final Iterator<?> iter = diagramManager.getActiveDiagram().diagramElementIterator();
+			while (iter.hasNext()) {
+				final IDiagramElement current = (IDiagramElement) iter.next();
+				if(current.getModelElement().equals(element)){
+					diagramElement = current;
+					continue;
 				}
 			}
+		}
+
+		// In case the active diagram does not contain it, get the master view or the first diagram element for that element
+		if(diagramElement == null) {
+			if(element.getMasterView() != null) {
+				diagramElement = element.getMasterView();
+			}
+			else {
+				final IDiagramElement[] diagramElements = element.getDiagramElements();
+				diagramElement = diagramElements != null ? diagramElements[0] : null;
+			}
+		}
+
+		// Highlights the diagram element if it is not null
+		if(diagramElement != null) {
+			diagramManager.highlight(diagramElement);
 		}
 	}
 }
@@ -473,9 +478,11 @@ final class ContextMenu extends JPopupMenu {
 			public void actionPerformed(ActionEvent e) {
 				switch (e.getActionCommand()) {
 				case "Take me there!":
+					System.out.println("Firing 'Highlight'");
 					ViewUtils.highlightDiagramElement(idModelElement);
 					break;
 				case "Open Specification":
+					System.out.println("Firing 'Open Specification'");
 					ViewUtils.openSpecDiagramElement(idModelElement);
 					break;
 				default:
@@ -487,6 +494,7 @@ final class ContextMenu extends JPopupMenu {
 		takeMeThere = new JMenuItem("Take me there!", new ImageIcon(ViewUtils.getFilePath(ViewUtils.NAVIGATION_LOGO)));
 		takeMeThere.addActionListener(menuListener);
 		openSpec = new JMenuItem("Open Specification", new ImageIcon(ViewUtils.getFilePath(ViewUtils.MORE_HORIZ_LOGO)));
+		openSpec.addActionListener(menuListener);
 		add(takeMeThere);
 		add(openSpec);
 	}
@@ -525,8 +533,8 @@ final class ContextMenuListener extends MouseAdapter {
 
 	private void doPop(MouseEvent e) {
 		ContextMenu menu = new ContextMenu(idModelElement);
-		if(!ViewUtils.isElementInAnyDiagram(idModelElement))
-			menu.disableItem("Take me there!");
+		// if(!ViewUtils.isElementInAnyDiagram(idModelElement))
+		// 	menu.disableItem("Take me there!");
 		
 		menu.show(e.getComponent(), e.getX(), e.getY());
 	}
