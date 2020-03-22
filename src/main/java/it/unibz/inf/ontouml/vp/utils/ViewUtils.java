@@ -122,6 +122,7 @@ public class ViewUtils {
 				box.setOpaque(false);
 
 				textArea = new JTextArea();
+				textArea.setEditable(false);
 				textArea.append("No issues were found in diagram \"" + diagramName + "\".");
 				box.add(textArea);
 				box.doLayout();
@@ -138,6 +139,7 @@ public class ViewUtils {
 				box.setOpaque(false);
 
 				textArea = new JTextArea();
+				textArea.setEditable(false);
 				textArea.addMouseListener(new ContextMenuListener(id));
 				
 				if (isElementInCurrentDiagram(id)) {
@@ -176,6 +178,7 @@ public class ViewUtils {
 				box.setOpaque(false);
 
 				textArea = new JTextArea();
+				textArea.setEditable(false);
 				textArea.append("No issues were found in your project.");
 				box.add(textArea);
 				box.doLayout();
@@ -192,6 +195,7 @@ public class ViewUtils {
 				box.setOpaque(false);
 
 				textArea = new JTextArea();
+				textArea.setEditable(false);
 				textArea.addMouseListener(new ContextMenuListener(id));
 
 				final String errorMessage = error.get("severity").getAsString() + ":" + " "
