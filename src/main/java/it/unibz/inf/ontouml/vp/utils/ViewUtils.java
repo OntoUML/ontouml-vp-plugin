@@ -54,6 +54,8 @@ public class ViewUtils {
 	public static final String SIMPLE_LOGO_FILENAME = "ontouml-simple-logo.png";
 	public static final String NAVIGATION_LOGO = "navigation";
 	public static final String NAVIGATION_LOGO_FILENAME = "navigation.png";
+	public static final String MORE_HORIZ_LOGO = "more_horiz";
+	public static final String MORE_HORIZ_LOGO_FILENAME = "more_horiz.png";
 	
 
 	public static void log(String message) {
@@ -94,6 +96,9 @@ public class ViewUtils {
 						.getAbsolutePath();
 			case NAVIGATION_LOGO:
 				return Paths.get(pluginDir.getAbsolutePath(), "icons", NAVIGATION_LOGO_FILENAME).toFile()
+						.getAbsolutePath();
+			case MORE_HORIZ_LOGO:
+				return Paths.get(pluginDir.getAbsolutePath(), "icons", MORE_HORIZ_LOGO_FILENAME).toFile()
 						.getAbsolutePath();
 			default:
 				return null;
@@ -390,11 +395,50 @@ public class ViewUtils {
 		return errorCount;
 	}
 	
+	public static boolean isElementInAnyDiagram(String elementId) {
+		final IDiagramUIModel[] diagramArray = ApplicationManager.instance().getProjectManager().getProject().toDiagramArray();
+
+		if (diagramArray == null)
+			return false;
+
+		for (IDiagramUIModel diagram : diagramArray) {
+			if (diagram instanceof IClassDiagramUIModel) {
+				for (IDiagramElement diagramElement : diagram.toDiagramElementArray()) {
+					IModelElement modelElement = diagramElement.getMetaModelElement();
+					if (modelElement.getId() != null && modelElement.getId().equals(elementId)) {
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
+	public static void openSpecDiagramElement(String elementId) {
+		final IDiagramUIModel[] diagramArray = ApplicationManager.instance().getProjectManager().getProject().toDiagramArray();
+
+		if (diagramArray == null)
+			return;
+
+		for (IDiagramUIModel diagram : diagramArray) {
+			if (diagram instanceof IClassDiagramUIModel) {
+				for (IDiagramElement diagramElement : diagram.toDiagramElementArray()) {
+					IModelElement modelElement = diagramElement.getMetaModelElement();
+					if (modelElement.getId() != null && modelElement.getId().equals(elementId)) {
+						ApplicationManager.instance().getViewManager().openSpec(modelElement, ApplicationManager.instance().getViewManager().getRootFrame());
+						return;
+					}
+				}
+			}
+		}
+	}
+
 	public static void highlightDiagramElement(String elementId) {
-		
+
 		final IDiagramUIModel[] diagramArray = ApplicationManager.instance().getProjectManager().getProject().toDiagramArray();
 		DiagramManager diagramManager = ApplicationManager.instance().getDiagramManager();
-		
+
 		if (diagramArray == null)
 			return;
 
@@ -414,20 +458,46 @@ public class ViewUtils {
 
 @SuppressWarnings("serial")
 final class ContextMenu extends JPopupMenu {
-	JMenuItem item;
-	ActionListener menuListener;
+	private JMenuItem takeMeThere;
+	private JMenuItem openSpec;
+	private ActionListener menuListener;
 
 	public ContextMenu(String idModelElement) {
+		
 		menuListener = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ViewUtils.highlightDiagramElement(idModelElement);
+				switch (e.getActionCommand()) {
+				case "Take me there!":
+					ViewUtils.highlightDiagramElement(idModelElement);
+					break;
+				case "Open Specification":
+					ViewUtils.openSpecDiagramElement(idModelElement);
+					break;
+				default:
+					break;
+				}
 			}
 		};
-		
-		item = new JMenuItem("Take me there!", new ImageIcon(ViewUtils.getFilePath(ViewUtils.NAVIGATION_LOGO)));
-		item.addActionListener(menuListener);
-		add(item);
+
+		takeMeThere = new JMenuItem("Take me there!", new ImageIcon(ViewUtils.getFilePath(ViewUtils.NAVIGATION_LOGO)));
+		takeMeThere.addActionListener(menuListener);
+		openSpec = new JMenuItem("Open Specification", new ImageIcon(ViewUtils.getFilePath(ViewUtils.MORE_HORIZ_LOGO)));
+		add(takeMeThere);
+		add(openSpec);
+	}
+	
+	public void disableItem(String item){
+		switch (item) {
+		case "Take me there!":
+			takeMeThere.setEnabled(false);
+			break;
+		case "Open Specification":
+			openSpec.setEnabled(false);
+			break;
+		default:
+			break;
+		}
 	}
 }
 
@@ -451,6 +521,9 @@ final class ContextMenuListener extends MouseAdapter {
 
 	private void doPop(MouseEvent e) {
 		ContextMenu menu = new ContextMenu(idModelElement);
+		if(!ViewUtils.isElementInAnyDiagram(idModelElement))
+			menu.disableItem("Take me there!");
+		
 		menu.show(e.getComponent(), e.getX(), e.getY());
 	}
 }
