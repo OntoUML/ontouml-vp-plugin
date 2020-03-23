@@ -1,8 +1,6 @@
 package it.unibz.inf.ontouml.vp.utils;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -11,11 +9,13 @@ import java.io.File;
 import java.net.HttpURLConnection;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -110,11 +110,9 @@ public class ViewUtils {
 	}
 
 	public static void logDiagramVerificationResponse(String responseMessage) {
-		JPanel box;
-		JTextArea textArea;
-		JPanel container = new JPanel();
-		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
-		container.setOpaque(true);
+		ArrayList<String> errorList = new ArrayList<String>();
+		ArrayList<String> idModelElementList = new ArrayList<String>();
+		
 		try {
 			JsonArray response = (JsonArray) new JsonParser().parse(responseMessage).getAsJsonArray();
 
@@ -123,19 +121,9 @@ public class ViewUtils {
 
 			verificationDiagramConcludedDialog(errorCount, diagramName);
 			
-			if(errorCount==0){
-				box = new JPanel();
-				box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
-				box.setBackground(Color.WHITE);
-				box.setOpaque(false);
-
-				textArea = new JTextArea();
-				textArea.setEditable(false);
-				textArea.append("No issues were found in diagram \"" + diagramName + "\".");
-				box.add(textArea);
-				box.doLayout();
-				container.add(box);
-			}
+			if(errorCount==0)
+				errorList.add("No issues were found in diagram \"" + diagramName + "\".");
+			
 
 			for (JsonElement elem : response) {
 				final JsonObject error = elem.getAsJsonObject();
@@ -143,25 +131,15 @@ public class ViewUtils {
 				
 				if (isElementInCurrentDiagram(id)) {
 					final String errorMessage = error.get("severity").getAsString() + ":" + " " + error.get("title").getAsString() + " " + error.get("description").getAsString();
-					
-					box = new JPanel();
-					box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
-					box.setBackground(Color.WHITE);
-					box.setOpaque(false);
-
-					textArea = new JTextArea();
-					textArea.setEditable(false);
-					textArea.addMouseListener(new ContextMenuListener(id));
-					
-					textArea.append(timestamp() + errorMessage);
-					box.setBorder(BorderFactory.createEmptyBorder(6,3,6,3));
-					box.add(textArea);
-					box.doLayout();
-					container.add(box);
+					errorList.add(timestamp() + errorMessage);
+					idModelElementList.add(id);
 				}
 			}
-			container.doLayout();
-			JScrollPane parentContainer = new JScrollPane(container);
+			
+			JList<Object> list = new JList<>(errorList.toArray());
+			list.addMouseListener(new ContextMenuListener(idModelElementList, list));
+			
+			JScrollPane parentContainer = new JScrollPane(list);
 			ApplicationManager.instance().getViewManager().showMessagePaneComponent(OntoUMLPlugin.PLUGIN_ID, SCOPE_PLUGIN, parentContainer);
 
 		} catch (JsonSyntaxException e) {
@@ -170,56 +148,32 @@ public class ViewUtils {
 	}
 	
 	public static void logVerificationResponse(String responseMessage) {
-		JPanel box;
-		JTextArea textArea;
-		JPanel container = new JPanel();
-		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
-		container.setOpaque(true);
+		ArrayList<String> errorList = new ArrayList<String>();
+		ArrayList<String> idModelElementList = new ArrayList<String>();
 		try {
 			JsonArray response = (JsonArray) new JsonParser().parse(responseMessage).getAsJsonArray();
 			final int errorCount = response.size();
 
 			verificationConcludedDialog(errorCount);
 
-			if(errorCount==0){
-				box = new JPanel();
-				box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
-				box.setBackground(Color.WHITE);
-				box.setOpaque(false);
-
-				textArea = new JTextArea();
-				textArea.setEditable(false);
-				textArea.append("No issues were found in your project.");
-				box.add(textArea);
-				box.doLayout();
-				container.add(box);
-			}
-
+			if(errorCount==0)
+				errorList.add("No issues were found in your project.");
+			
 			for (JsonElement elem : response) {
 				final JsonObject error = elem.getAsJsonObject();
 				final String id = error.getAsJsonObject("source").get("id").getAsString();
-				
-				box = new JPanel();
-				box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
-				box.setBackground(Color.WHITE);
-				box.setOpaque(false);
-
-				textArea = new JTextArea();
-				textArea.setEditable(false);
-				textArea.addMouseListener(new ContextMenuListener(id));
 
 				final String errorMessage = error.get("severity").getAsString() + ":" + " "
 						+ error.get("title").getAsString() + " " + error.get("description").getAsString();
 
-				textArea.append(timestamp() + errorMessage);
-				box.setBorder(BorderFactory.createEmptyBorder(6,3,6,3));
-				box.add(textArea);
-				box.doLayout();
-				container.add(box);
+				errorList.add(timestamp() + errorMessage);
+				idModelElementList.add(id);
 			}
 			
-			container.doLayout();
-			JScrollPane parentContainer = new JScrollPane(container);
+			JList<Object> list = new JList<>(errorList.toArray());
+			list.addMouseListener(new ContextMenuListener(idModelElementList, list));
+			
+			JScrollPane parentContainer = new JScrollPane(list);
 			ApplicationManager.instance().getViewManager().showMessagePaneComponent(OntoUMLPlugin.PLUGIN_ID, SCOPE_PLUGIN, parentContainer);
 			
 		} catch (JsonSyntaxException e) {
@@ -470,6 +424,10 @@ final class ContextMenu extends JPopupMenu {
 	private JMenuItem takeMeThere;
 	private JMenuItem openSpec;
 	private ActionListener menuListener;
+	
+	public ContextMenu(){
+		
+	}
 
 	public ContextMenu(String idModelElement) {
 		
@@ -514,31 +472,37 @@ final class ContextMenu extends JPopupMenu {
 }
 
 final class ContextMenuListener extends MouseAdapter {
-	String idModelElement;
-	
-	ContextMenuListener(String id){
+	private ArrayList<String> idModelElementList;
+	private JList<Object> messageList;
+
+	ContextMenuListener(ArrayList<String> list, JList<Object> messages) {
 		super();
-		idModelElement = id;
+		idModelElementList = list;
+		messageList = messages;
 	}
 
 	public void mouseReleased(MouseEvent e) {
-		doPop(e);
+		if (e.isPopupTrigger())
+			doPop(e);
 	}
 
-	public void mouseEntered(MouseEvent e) {
-		e.getComponent().setBackground(Color.LIGHT_GRAY);
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		e.getComponent().setBackground(Color.WHITE);
+	public void mousePressed(MouseEvent e) {
+		if (e.isPopupTrigger())
+			doPop(e);
 	}
 
 	private void doPop(MouseEvent e) {
-		ContextMenu menu = new ContextMenu(idModelElement);
-		if(!ViewUtils.isElementInAnyDiagram(idModelElement))
-			menu.disableItem("Take me there!");
-		
+		ContextMenu menu;
+		String idModelElement = idModelElementList.get(messageList.locationToIndex(e.getPoint()));
+
+		if (idModelElement == null) {
+			menu = new ContextMenu();
+		} else {
+			menu = new ContextMenu(idModelElement);
+			if (!ViewUtils.isElementInAnyDiagram(idModelElement))
+				menu.disableItem("Take me there!");
+		}
+
 		menu.show(e.getComponent(), e.getX(), e.getY());
 	}
 }
