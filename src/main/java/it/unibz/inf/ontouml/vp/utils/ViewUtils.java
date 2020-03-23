@@ -1,6 +1,7 @@
 package it.unibz.inf.ontouml.vp.utils;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -137,7 +138,9 @@ public class ViewUtils {
 			}
 			
 			JList<Object> list = new JList<>(errorList.toArray());
-			list.addMouseListener(new ContextMenuListener(idModelElementList, list));
+			ContextMenuListener listener = new ContextMenuListener(idModelElementList, list);
+			list.addMouseListener(listener);
+			list.addMouseMotionListener(listener);
 			
 			JScrollPane parentContainer = new JScrollPane(list);
 			ApplicationManager.instance().getViewManager().showMessagePaneComponent(OntoUMLPlugin.PLUGIN_ID, SCOPE_PLUGIN, parentContainer);
@@ -171,7 +174,9 @@ public class ViewUtils {
 			}
 			
 			JList<Object> list = new JList<>(errorList.toArray());
-			list.addMouseListener(new ContextMenuListener(idModelElementList, list));
+			ContextMenuListener listener = new ContextMenuListener(idModelElementList, list);
+			list.addMouseListener(listener);
+			list.addMouseMotionListener(listener);
 			
 			JScrollPane parentContainer = new JScrollPane(list);
 			ApplicationManager.instance().getViewManager().showMessagePaneComponent(OntoUMLPlugin.PLUGIN_ID, SCOPE_PLUGIN, parentContainer);
@@ -481,14 +486,21 @@ final class ContextMenuListener extends MouseAdapter {
 		messageList = messages;
 	}
 
-	public void mouseReleased(MouseEvent e) {
-		if (e.isPopupTrigger())
-			doPop(e);
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		final Point p = e.getPoint();
+		final int index = messageList.locationToIndex(p);
+
+		messageList.setSelectedIndex(index);
 	}
 
-	public void mousePressed(MouseEvent e) {
-		if (e.isPopupTrigger())
-			doPop(e);
+	@Override
+	public void mouseExited(MouseEvent e) {
+		messageList.clearSelection();
+	}
+
+	public void mouseReleased(MouseEvent e) {
+		doPop(e);
 	}
 
 	private void doPop(MouseEvent e) {
