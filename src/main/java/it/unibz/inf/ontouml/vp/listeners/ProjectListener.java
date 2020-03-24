@@ -6,6 +6,7 @@ import com.vp.plugin.model.IProjectListener;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
+import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 public class ProjectListener implements IProjectListener {
 
@@ -14,11 +15,22 @@ public class ProjectListener implements IProjectListener {
 
 	@Override
 	public void projectAfterOpened(IProject project) {
+		try {
+			StereotypeUtils.generate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void projectNewed(IProject project) {
 		if(project == null) { return ; }
+
+		try {
+			StereotypeUtils.generate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		project.addProjectDiagramListener(OntoUMLPlugin.PROJECT_DIAGRAM_LISTENER);
 		project.addProjectModelListener(OntoUMLPlugin.PROJECT_MODEL_LISTENER);

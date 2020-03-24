@@ -29,6 +29,8 @@ public class ApplyStereotype implements VPContextActionController {
 
 	@Override
 	public void performAction(VPAction action, VPContext context, ActionEvent event) {
+		StereotypeUtils.generate();
+		
 		final IModelElement element = context.getModelElement();
 		final IStereotype[] stereotypes = element.toStereotypeModelArray();
 
