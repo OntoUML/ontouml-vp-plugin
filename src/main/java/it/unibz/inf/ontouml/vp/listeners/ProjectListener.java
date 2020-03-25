@@ -15,8 +15,6 @@ public class ProjectListener implements IProjectListener {
 
 	@Override
 	public void projectAfterOpened(IProject project) {
-		System.out.println("After Opened... ----------------");
-
 		if(project == null) { return ; }
 
 		try {
@@ -28,8 +26,6 @@ public class ProjectListener implements IProjectListener {
 
 	@Override
 	public void projectNewed(IProject project) {
-		System.out.println("Newed... ----------------");
-
 		if(project == null) { return ; }
 
 		project.addProjectDiagramListener(OntoUMLPlugin.PROJECT_DIAGRAM_LISTENER);

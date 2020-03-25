@@ -1,17 +1,5 @@
 package it.unibz.inf.ontouml.vp.utils;
 
-import com.vp.plugin.ApplicationManager;
-import com.vp.plugin.ProjectManager;
-import com.vp.plugin.model.IClass;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IProject;
-import com.vp.plugin.model.IStereotype;
-import com.vp.plugin.model.ITaggedValue;
-import com.vp.plugin.model.ITaggedValueContainer;
-import com.vp.plugin.model.ITaggedValueDefinition;
-import com.vp.plugin.model.ITaggedValueDefinitionContainer;
-import com.vp.plugin.model.factory.IModelElementFactory;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,6 +7,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.vp.plugin.ApplicationManager;
+import com.vp.plugin.ProjectManager;
+import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.IProject;
+import com.vp.plugin.model.IStereotype;
+import com.vp.plugin.model.ITaggedValueDefinition;
+import com.vp.plugin.model.ITaggedValueDefinitionContainer;
+import com.vp.plugin.model.factory.IModelElementFactory;
 
 public class StereotypeUtils {
 
@@ -79,6 +76,16 @@ public class StereotypeUtils {
 			STR_MEMBER_OF, STR_SUB_COLLECTION_OF, STR_SUB_QUANTITY_OF, STR_INSTANTIATION, STR_TERMINATION,
 			STR_PARTICIPATIONAL, STR_PARTICIPATION, STR_HISTORICAL_DEPENDENCE, STR_CREATION, STR_MANIFESTATION,
 			STR_BEGIN, STR_END);
+
+	// Allowed ontological natures
+	public static final String ALLOWED_OBJECT = "object";
+	public static final String ALLOWED_COLLECTIVE = "collective";
+	public static final String ALLOWED_QUANTITY = "quantity";
+	public static final String ALLOWED_RELATOR = "relator";
+	public static final String ALLOWED_MODE = "mode";
+	public static final String ALLOWED_QUALITY = "quality";
+	public static final String ALLOWED_EVENT = "event";
+	public static final String ALLOWED_TYPE = "type";
 
 	public static void removeAllModelStereotypes(String modelType) {
 
@@ -225,9 +232,6 @@ public class StereotypeUtils {
 		ontoUMLClassStereotypes.remove(STR_DATATYPE);
 		ontoUMLClassStereotypes.remove(STR_ENUMERATION);
 
-		System.out.println("Executing generate()");
-
-		System.out.println("Retrieving installed stereotypes");
 		// Retrieves IStereotype objects for OntoUML classes
 		for (IModelElement installedStereotype : installedStereotypes) {
 			if (ontoUMLClassStereotypes.contains(installedStereotype.getName())) {
@@ -235,7 +239,6 @@ public class StereotypeUtils {
 			}
 		}
 
-		System.out.println("Creating missing stereotypes");
 		// Creates missing IStereotype objects for OntoUML classes
 		for (String ontoUMLClassStereotype : ontoUMLClassStereotypes) {
 			if (stereotypesMap.get(ontoUMLClassStereotype) == null) {
@@ -246,13 +249,11 @@ public class StereotypeUtils {
 			}
 		}
 
-		System.out.println("Adding missing tagged values");
 		// Checks and adds missing tagged value definitions to IStereotype objects
 		for (IStereotype current : stereotypesMap.values()) {
 			ITaggedValueDefinitionContainer container = current.getTaggedValueDefinitions();
 
 			if (container == null) {
-				System.out.println("Missing container detected");
 				container = IModelElementFactory.instance().createTaggedValueDefinitionContainer();
 			}
 
@@ -265,7 +266,6 @@ public class StereotypeUtils {
 
 			// Adds "allowed" natures to all IStereotype objects
 			if (!definitions.containsKey("allowed")) {
-				System.out.println("Adding 'allowed' to the container");
 				final ITaggedValueDefinition allowed = IModelElementFactory.instance().createTaggedValueDefinition();
 				allowed.setName("allowed");
 				allowed.setType(ITaggedValueDefinition.TYPE_TEXT);
@@ -275,7 +275,6 @@ public class StereotypeUtils {
 
 			// Adds "isExtensional" to all STR_COLLECTIVE IStereotype
 			if (current.getName().equals(STR_COLLECTIVE) && !definitions.containsKey("isExtensional")) {
-				System.out.println("Adding 'isExtensional' to the container");
 				final ITaggedValueDefinition isExtensional = IModelElementFactory.instance()
 						.createTaggedValueDefinition();
 				isExtensional.setName("isExtensional");
@@ -286,7 +285,6 @@ public class StereotypeUtils {
 
 			// Adds "isPowertype" to all STR_TYPE IStereotype
 			if (current.getName().equals(STR_TYPE) && !definitions.containsKey("isPowertype")) {
-				System.out.println("Adding 'isPowertype' to the container");
 				final ITaggedValueDefinition isPowertype = IModelElementFactory.instance()
 						.createTaggedValueDefinition();
 				isPowertype.setName("isPowertype");
@@ -297,7 +295,6 @@ public class StereotypeUtils {
 
 			// Adds "order" to all STR_TYPE IStereotype
 			if (current.getName().equals(STR_TYPE) && !definitions.containsKey("order")) {
-				System.out.println("Adding 'order' to the container");
 				final ITaggedValueDefinition order = IModelElementFactory.instance().createTaggedValueDefinition();
 				order.setName("order");
 				order.setType(ITaggedValueDefinition.TYPE_TEXT);
@@ -310,6 +307,30 @@ public class StereotypeUtils {
 	}
 
 	public static String getAllowedNatures() {
-		return "[ \"object\", \"collective\", \"quantity\", \"relator\",\"mode\", \"quality\", \"type\", \"event\" ]";
+		return toAllowedNaturesString(
+				ALLOWED_COLLECTIVE, ALLOWED_EVENT, ALLOWED_MODE, ALLOWED_OBJECT,
+				ALLOWED_QUALITY, ALLOWED_QUANTITY, ALLOWED_RELATOR, ALLOWED_TYPE);
+	}
+
+	public static String toAllowedNaturesString(String... strings) {
+		if(strings == null || strings.length == 0) {
+			return "[]";
+		} else {
+			final StringBuilder allowed = new StringBuilder();
+
+			allowed.append("[");
+			
+			for (int i = 0; i < strings.length; i++) {
+				allowed.append("\""+strings[i]+"\"");
+
+				if(i < strings.length - 1) {
+					allowed.append(",");
+				}
+			}
+
+			allowed.append("]");
+
+			return allowed.toString();
+		}
 	}
 }
