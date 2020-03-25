@@ -1,10 +1,13 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
 import java.awt.event.ActionEvent;
+import java.util.HashSet;
 
+import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPContext;
 import com.vp.plugin.action.VPContextActionController;
+import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IModelElement;
@@ -19,8 +22,7 @@ import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 /**
  * 
- * Implementation of context sensitive action of change OntoUML stereotypes in
- * model elements.
+ * Implementation of context sensitive action of change OntoUML stereotypes in model elements.
  * 
  * @author Claudenir Fonseca
  *
@@ -29,7 +31,33 @@ public class ApplyStereotype implements VPContextActionController {
 
 	@Override
 	public void performAction(VPAction action, VPContext context, ActionEvent event) {
-		final IModelElement element = context.getModelElement();
+
+		if(!isSelectionSameModelType()){
+			applyStereotype(action, context.getModelElement());
+			return;
+		}
+		
+		IDiagramElement[] diagramElements = ApplicationManager.instance().getDiagramManager().getActiveDiagram().getSelectedDiagramElement();
+
+		if (diagramElements == null)
+			return;
+
+		for (IDiagramElement diagramElement : diagramElements)
+			applyStereotype(action, diagramElement.getModelElement());
+
+	}
+
+	@Override
+	public void update(VPAction action, VPContext context) {
+
+		if (Configurations.getInstance().getProjectConfigurations().isSmartModellingEnabled())
+			defineActionBehavior(action);
+		else
+			action.setEnabled(true);
+	}
+
+	private void applyStereotype(VPAction action, IModelElement element) {
+
 		final IStereotype[] stereotypes = element.toStereotypeModelArray();
 
 		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
@@ -163,26 +191,45 @@ public class ApplyStereotype implements VPContextActionController {
 			SmartColoring.smartPaint();
 	}
 
-	@Override
-	public void update(VPAction action, VPContext context) {
-		if (Configurations.getInstance().getProjectConfigurations().isSmartModellingEnabled()) {
-			final IModelElement element = context.getModelElement();
+	private void defineActionBehavior(VPAction action) {
+		
+		IDiagramElement[] diagramElements = ApplicationManager.instance().getDiagramManager().getActiveDiagram().getSelectedDiagramElement();
+
+		if (diagramElements == null)
+			return;
+
+		for (IDiagramElement diagramElement : diagramElements) {
+			final IModelElement element = diagramElement.getModelElement();
 
 			if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION)) {
 				final IAssociation association = (IAssociation) element;
 				SmartModelling.manageAssociationStereotypes(association, action);
 				return;
 			}
+
 			if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
 				final IClass _class = (IClass) element;
 				SmartModelling.manageClassStereotypes(_class, action);
 				return;
 			}
 		}
-		else {
-			action.setEnabled(true);
-		}
+	}
 
+	private boolean isSelectionSameModelType() {
+		
+		IDiagramElement[] diagramElements = ApplicationManager.instance().getDiagramManager().getActiveDiagram().getSelectedDiagramElement();
+		HashSet<String> elementTypes = new HashSet<String>();
+
+		if (diagramElements == null)
+			return false;
+
+		for (IDiagramElement diagramElement : diagramElements)
+			elementTypes.add(diagramElement.getModelElement().getModelType());
+		
+		if(elementTypes.size() == 1)
+			return true;
+		else
+			return false;
 	}
 
 }
