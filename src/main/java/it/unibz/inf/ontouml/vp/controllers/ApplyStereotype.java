@@ -32,11 +32,11 @@ public class ApplyStereotype implements VPContextActionController {
 	@Override
 	public void performAction(VPAction action, VPContext context, ActionEvent event) {
 
-		if(!isSelectionSameModelType()){
+		if (!isSelectionSameModelType()) {
 			applyStereotype(action, context.getModelElement());
 			return;
 		}
-		
+
 		IDiagramElement[] diagramElements = ApplicationManager.instance().getDiagramManager().getActiveDiagram().getSelectedDiagramElement();
 
 		if (diagramElements == null)
@@ -50,10 +50,23 @@ public class ApplyStereotype implements VPContextActionController {
 	@Override
 	public void update(VPAction action, VPContext context) {
 
-		if (Configurations.getInstance().getProjectConfigurations().isSmartModellingEnabled())
-			defineActionBehavior(action);
-		else
+		if (!isSelectionSameModelType()) {
+			defineActionBehavior(action, context.getModelElement());
+			return;
+		}
+
+		IDiagramElement[] diagramElements = ApplicationManager.instance().getDiagramManager().getActiveDiagram().getSelectedDiagramElement();
+
+		if (diagramElements == null)
+			return;
+
+		if (Configurations.getInstance().getProjectConfigurations().isSmartModellingEnabled()) {
+
+			for (IDiagramElement diagramElement : diagramElements)
+				defineActionBehavior(action, diagramElement.getModelElement());
+		} else {
 			action.setEnabled(true);
+		}
 	}
 
 	private void applyStereotype(VPAction action, IModelElement element) {
@@ -191,32 +204,23 @@ public class ApplyStereotype implements VPContextActionController {
 			SmartColoring.smartPaint();
 	}
 
-	private void defineActionBehavior(VPAction action) {
-		
-		IDiagramElement[] diagramElements = ApplicationManager.instance().getDiagramManager().getActiveDiagram().getSelectedDiagramElement();
+	private void defineActionBehavior(VPAction action, IModelElement element) {
 
-		if (diagramElements == null)
+		if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION)) {
+			final IAssociation association = (IAssociation) element;
+			SmartModelling.manageAssociationStereotypes(association, action);
 			return;
+		}
 
-		for (IDiagramElement diagramElement : diagramElements) {
-			final IModelElement element = diagramElement.getModelElement();
-
-			if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION)) {
-				final IAssociation association = (IAssociation) element;
-				SmartModelling.manageAssociationStereotypes(association, action);
-				return;
-			}
-
-			if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
-				final IClass _class = (IClass) element;
-				SmartModelling.manageClassStereotypes(_class, action);
-				return;
-			}
+		if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
+			final IClass _class = (IClass) element;
+			SmartModelling.manageClassStereotypes(_class, action);
+			return;
 		}
 	}
 
 	private boolean isSelectionSameModelType() {
-		
+
 		IDiagramElement[] diagramElements = ApplicationManager.instance().getDiagramManager().getActiveDiagram().getSelectedDiagramElement();
 		HashSet<String> elementTypes = new HashSet<String>();
 
@@ -225,8 +229,8 @@ public class ApplyStereotype implements VPContextActionController {
 
 		for (IDiagramElement diagramElement : diagramElements)
 			elementTypes.add(diagramElement.getModelElement().getModelType());
-		
-		if(elementTypes.size() == 1)
+
+		if (elementTypes.size() == 1)
 			return true;
 		else
 			return false;
