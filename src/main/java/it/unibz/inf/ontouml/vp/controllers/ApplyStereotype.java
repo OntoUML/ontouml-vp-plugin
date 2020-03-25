@@ -1,7 +1,10 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
 import java.awt.event.ActionEvent;
+import java.util.Iterator;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPContext;
 import com.vp.plugin.action.VPContextActionController;
@@ -9,6 +12,7 @@ import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IStereotype;
+import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.features.constraints.ActionIds;
@@ -30,6 +34,10 @@ public class ApplyStereotype implements VPContextActionController {
 	@Override
 	public void performAction(VPAction action, VPContext context, ActionEvent event) {
 		StereotypeUtils.generate();
+
+		final JsonParser parser = new JsonParser();
+		final JsonElement jsonElement = parser.parse("[ \"object\" ]");
+		System.out.println("JSON Element: isArray: "+jsonElement.isJsonArray()+"; element: "+jsonElement);
 		
 		final IModelElement element = context.getModelElement();
 		final IStereotype[] stereotypes = element.toStereotypeModelArray();
@@ -41,12 +49,15 @@ public class ApplyStereotype implements VPContextActionController {
 		switch (action.getActionId()) {
 		case ActionIds.TYPE:
 			element.addStereotype(StereotypeUtils.STR_TYPE);
+			setAllowed(element, "[\"type\"]");
 			break;
 		case ActionIds.HISTORICAL_ROLE:
 			element.addStereotype(StereotypeUtils.STR_HISTORICAL_ROLE);
+			setAllowed(element, "[]");
 			break;
 		case ActionIds.EVENT:
 			element.addStereotype(StereotypeUtils.STR_EVENT);
+			setAllowed(element, "[\"event\"]");
 			break;
 		case ActionIds.ENUMERATION:
 			element.addStereotype(StereotypeUtils.STR_ENUMERATION);
@@ -56,39 +67,48 @@ public class ApplyStereotype implements VPContextActionController {
 			break;
 		case ActionIds.SUBKIND:
 			element.addStereotype(StereotypeUtils.STR_SUBKIND);
+			setAllowed(element, "[]");
 			break;
 		case ActionIds.ROLE_MIXIN:
 			element.addStereotype(StereotypeUtils.STR_ROLE_MIXIN);
 			break;
 		case ActionIds.ROLE:
 			element.addStereotype(StereotypeUtils.STR_ROLE);
+			setAllowed(element, "[]");
 			break;
 		case ActionIds.RELATOR:
 			element.addStereotype(StereotypeUtils.STR_RELATOR);
+			setAllowed(element, "[\"relator\"]");
 			break;
 		case ActionIds.QUANTITY:
 			element.addStereotype(StereotypeUtils.STR_QUANTITY);
+			setAllowed(element, "[\"quantity\"]");
 			break;
 		case ActionIds.QUALITY:
 			element.addStereotype(StereotypeUtils.STR_QUALITY);
+			setAllowed(element, "[\"quality\"]");
 			break;
 		case ActionIds.PHASE_MIXIN:
 			element.addStereotype(StereotypeUtils.STR_PHASE_MIXIN);
 			break;
 		case ActionIds.PHASE:
 			element.addStereotype(StereotypeUtils.STR_PHASE);
+			setAllowed(element, "[]");
 			break;
 		case ActionIds.MODE:
 			element.addStereotype(StereotypeUtils.STR_MODE);
+			setAllowed(element, "[\"mode\"]");
 			break;
 		case ActionIds.MIXIN:
 			element.addStereotype(StereotypeUtils.STR_MIXIN);
 			break;
 		case ActionIds.KIND:
 			element.addStereotype(StereotypeUtils.STR_KIND);
+			setAllowed(element, "[\"object\"]");
 			break;
 		case ActionIds.COLLECTIVE:
 			element.addStereotype(StereotypeUtils.STR_COLLECTIVE);
+			setAllowed(element, "[\"collective\"]");
 			break;
 		case ActionIds.CATEGORY:
 			element.addStereotype(StereotypeUtils.STR_CATEGORY);
@@ -185,6 +205,19 @@ public class ApplyStereotype implements VPContextActionController {
 			action.setEnabled(true);
 		}
 
+	}
+
+	public void setAllowed(IModelElement element, String allowed) {
+		if(element.getTaggedValues() == null) { return ; }
+
+		Iterator<?> values = element.getTaggedValues().taggedValueIterator();
+			
+		while(values.hasNext()) {
+			final ITaggedValue value = (ITaggedValue) values.next();
+			if(value.getName().equals("allowed")) {
+				value.setValue(allowed);
+			}
+		}
 	}
 
 }

@@ -15,6 +15,10 @@ public class ProjectListener implements IProjectListener {
 
 	@Override
 	public void projectAfterOpened(IProject project) {
+		System.out.println("After Opened... ----------------");
+
+		if(project == null) { return ; }
+
 		try {
 			StereotypeUtils.generate();
 		} catch (Exception e) {
@@ -24,13 +28,9 @@ public class ProjectListener implements IProjectListener {
 
 	@Override
 	public void projectNewed(IProject project) {
-		if(project == null) { return ; }
+		System.out.println("Newed... ----------------");
 
-		try {
-			StereotypeUtils.generate();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		if(project == null) { return ; }
 
 		project.addProjectDiagramListener(OntoUMLPlugin.PROJECT_DIAGRAM_LISTENER);
 		project.addProjectModelListener(OntoUMLPlugin.PROJECT_MODEL_LISTENER);
