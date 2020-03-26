@@ -31,7 +31,7 @@ public class ApplyStereotype implements VPContextActionController {
 
 	@Override
 	public void performAction(VPAction action, VPContext context, ActionEvent event) {
-		
+
 		IDiagramElement[] diagramElements = ApplicationManager.instance().getDiagramManager().getActiveDiagram().getSelectedDiagramElement();
 
 		if (diagramElements == null)
@@ -47,11 +47,6 @@ public class ApplyStereotype implements VPContextActionController {
 	@Override
 	public void update(VPAction action, VPContext context) {
 
-		if (!isSelectionSameModelType()) {
-			defineActionBehavior(action, context.getModelElement());
-			return;
-		}
-
 		IDiagramElement[] diagramElements = ApplicationManager.instance().getDiagramManager().getActiveDiagram().getSelectedDiagramElement();
 
 		if (diagramElements == null)
@@ -59,8 +54,10 @@ public class ApplyStereotype implements VPContextActionController {
 
 		if (Configurations.getInstance().getProjectConfigurations().isSmartModellingEnabled()) {
 
-			for (IDiagramElement diagramElement : diagramElements)
-				defineActionBehavior(action, diagramElement.getModelElement());
+			for (IDiagramElement diagramElement : diagramElements) {
+				if (diagramElement.getModelElement().getModelType().equals(context.getModelElement().getModelType()))
+					defineActionBehavior(action, diagramElement.getModelElement());
+			}
 		} else {
 			action.setEnabled(true);
 		}
@@ -215,22 +212,4 @@ public class ApplyStereotype implements VPContextActionController {
 			return;
 		}
 	}
-
-	private boolean isSelectionSameModelType() {
-
-		IDiagramElement[] diagramElements = ApplicationManager.instance().getDiagramManager().getActiveDiagram().getSelectedDiagramElement();
-		HashSet<String> elementTypes = new HashSet<String>();
-
-		if (diagramElements == null)
-			return false;
-
-		for (IDiagramElement diagramElement : diagramElements)
-			elementTypes.add(diagramElement.getModelElement().getModelType());
-
-		if (elementTypes.size() == 1)
-			return true;
-		else
-			return false;
-	}
-
 }
