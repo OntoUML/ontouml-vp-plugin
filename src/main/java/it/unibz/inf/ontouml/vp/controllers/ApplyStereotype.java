@@ -31,19 +31,16 @@ public class ApplyStereotype implements VPContextActionController {
 
 	@Override
 	public void performAction(VPAction action, VPContext context, ActionEvent event) {
-
-		if (!isSelectionSameModelType()) {
-			applyStereotype(action, context.getModelElement());
-			return;
-		}
-
+		
 		IDiagramElement[] diagramElements = ApplicationManager.instance().getDiagramManager().getActiveDiagram().getSelectedDiagramElement();
 
 		if (diagramElements == null)
 			return;
 
-		for (IDiagramElement diagramElement : diagramElements)
-			applyStereotype(action, diagramElement.getModelElement());
+		for (IDiagramElement diagramElement : diagramElements) {
+			if (diagramElement.getModelElement().getModelType().equals(context.getModelElement().getModelType()))
+				applyStereotype(action, diagramElement.getModelElement());
+		}
 
 	}
 
