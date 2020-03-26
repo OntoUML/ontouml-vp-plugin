@@ -25,6 +25,7 @@ import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
  * Implementation of context sensitive action of change OntoUML stereotypes in model elements.
  * 
  * @author Claudenir Fonseca
+ * @author Victor Viola
  *
  */
 public class ApplyStereotype implements VPContextActionController {
@@ -46,21 +47,15 @@ public class ApplyStereotype implements VPContextActionController {
 
 	@Override
 	public void update(VPAction action, VPContext context) {
-
+		action.setEnabled(true);
+		
 		IDiagramElement[] diagramElements = ApplicationManager.instance().getDiagramManager().getActiveDiagram().getSelectedDiagramElement();
-
-		if (diagramElements == null)
+		
+		if (diagramElements == null || diagramElements.length > 1)
 			return;
+		
+		defineActionBehavior(action, context.getModelElement());
 
-		if (Configurations.getInstance().getProjectConfigurations().isSmartModellingEnabled()) {
-
-			for (IDiagramElement diagramElement : diagramElements) {
-				if (diagramElement.getModelElement().getModelType().equals(context.getModelElement().getModelType()))
-					defineActionBehavior(action, diagramElement.getModelElement());
-			}
-		} else {
-			action.setEnabled(true);
-		}
 	}
 
 	private void applyStereotype(VPAction action, IModelElement element) {
@@ -212,4 +207,5 @@ public class ApplyStereotype implements VPContextActionController {
 			return;
 		}
 	}
+	
 }
