@@ -11,7 +11,6 @@ import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IStereotype;
 import com.vp.plugin.model.ITaggedValue;
-import com.vp.plugin.model.ITaggedValueContainer;
 import com.vp.plugin.model.ITaggedValueDefinition;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
@@ -33,201 +32,168 @@ public class ApplyStereotype implements VPContextActionController {
 
 	@Override
 	public void performAction(VPAction action, VPContext context, ActionEvent event) {
-		StereotypeUtils.generate();
+		// StereotypeUtils.generate();
 
 		final IModelElement element = context.getModelElement();
-		final IStereotype[] originalStereotypes = element.toStereotypeModelArray();
 		String addedStereotype = "";
 
 		switch (action.getActionId()) {
 			case ActionIds.TYPE:
 				addedStereotype = StereotypeUtils.STR_TYPE;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				setAllowed(element, addedStereotype, StereotypeUtils.toAllowedNaturesString(StereotypeUtils.ALLOWED_TYPE));
 				break;
 			case ActionIds.HISTORICAL_ROLE:
 				addedStereotype = StereotypeUtils.STR_HISTORICAL_ROLE;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				setAllowed(element, addedStereotype, StereotypeUtils.toAllowedNaturesString());
-				// setAllowed(element, addedStereotype, "[]");
 				break;
 			case ActionIds.EVENT:
 				addedStereotype = StereotypeUtils.STR_EVENT;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				setAllowed(element, addedStereotype, StereotypeUtils.toAllowedNaturesString(StereotypeUtils.ALLOWED_EVENT));
-				// setAllowed(element, addedStereotype, "[\"event\"]");
 				break;
 			case ActionIds.ENUMERATION:
 				addedStereotype = StereotypeUtils.STR_ENUMERATION;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
 			case ActionIds.DATATYPE:
 				addedStereotype = StereotypeUtils.STR_DATATYPE;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
 			case ActionIds.SUBKIND:
 				addedStereotype = StereotypeUtils.STR_SUBKIND;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				setAllowed(element, addedStereotype, StereotypeUtils.toAllowedNaturesString());
-				// setAllowed(element, addedStereotype, "[]");
 				break;
 			case ActionIds.ROLE_MIXIN:
 				addedStereotype = StereotypeUtils.STR_ROLE_MIXIN;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
 			case ActionIds.ROLE:
 				addedStereotype = StereotypeUtils.STR_ROLE;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				setAllowed(element, addedStereotype, StereotypeUtils.toAllowedNaturesString());
-				// setAllowed(element, addedStereotype, "[]");
 				break;
 			case ActionIds.RELATOR:
 				addedStereotype = StereotypeUtils.STR_RELATOR;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				setAllowed(element, addedStereotype, StereotypeUtils.toAllowedNaturesString(StereotypeUtils.ALLOWED_RELATOR));
-				// setAllowed(element, addedStereotype, "[\"relator\"]");
 				break;
 			case ActionIds.QUANTITY:
 				addedStereotype = StereotypeUtils.STR_QUANTITY;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				setAllowed(element, addedStereotype, StereotypeUtils.toAllowedNaturesString(StereotypeUtils.ALLOWED_QUANTITY));
-				// setAllowed(element, addedStereotype, "[\"quantity\"]");
 				break;
 			case ActionIds.QUALITY:
 				addedStereotype = StereotypeUtils.STR_QUALITY;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				setAllowed(element, addedStereotype, StereotypeUtils.toAllowedNaturesString(StereotypeUtils.ALLOWED_QUALITY));
-				// setAllowed(element, addedStereotype, "[\"quality\"]");
 				break;
 			case ActionIds.PHASE_MIXIN:
 				addedStereotype = StereotypeUtils.STR_PHASE_MIXIN;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
 			case ActionIds.PHASE:
 				addedStereotype = StereotypeUtils.STR_PHASE;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				setAllowed(element, addedStereotype, StereotypeUtils.toAllowedNaturesString());
-				// setAllowed(element, addedStereotype, "[]");
 				break;
 			case ActionIds.MODE:
 				addedStereotype = StereotypeUtils.STR_MODE;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				setAllowed(element, addedStereotype, StereotypeUtils.toAllowedNaturesString(StereotypeUtils.ALLOWED_MODE));
-				// setAllowed(element, addedStereotype, "[\"mode\"]");
 				break;
 			case ActionIds.MIXIN:
 				addedStereotype = StereotypeUtils.STR_MIXIN;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
 			case ActionIds.KIND:
 				addedStereotype = StereotypeUtils.STR_KIND;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				setAllowed(element, addedStereotype, StereotypeUtils.toAllowedNaturesString(StereotypeUtils.ALLOWED_OBJECT));
-				// setAllowed(element, addedStereotype, "[\"object\"]");
 				break;
 			case ActionIds.COLLECTIVE:
 				addedStereotype = StereotypeUtils.STR_COLLECTIVE;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				setAllowed(element, addedStereotype, StereotypeUtils.toAllowedNaturesString(StereotypeUtils.ALLOWED_COLLECTIVE));
-				// setAllowed(element, addedStereotype, "[\"collective\"]");
 				break;
 			case ActionIds.CATEGORY:
 				addedStereotype = StereotypeUtils.STR_CATEGORY;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
 			case ActionIds.INSTANTIATION:
 				addedStereotype = StereotypeUtils.STR_INSTANTIATION;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
 			case ActionIds.TERMINATION:
 				addedStereotype = StereotypeUtils.STR_TERMINATION;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
 			case ActionIds.PARTICIPATIONAL:
 				addedStereotype = StereotypeUtils.STR_PARTICIPATIONAL;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
 			case ActionIds.PARTICIPATION:
 				addedStereotype = StereotypeUtils.STR_PARTICIPATION;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
 			case ActionIds.HISTORICAL_DEPENDENCE:
 				addedStereotype = StereotypeUtils.STR_HISTORICAL_DEPENDENCE;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
 			case ActionIds.CREATION:
 				addedStereotype = StereotypeUtils.STR_CREATION;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
 			case ActionIds.MANIFESTATION:
 				addedStereotype = StereotypeUtils.STR_MANIFESTATION;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
 			case ActionIds.MATERIAL:
 				addedStereotype = StereotypeUtils.STR_MATERIAL;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
 			case ActionIds.COMPARATIVE:
 				addedStereotype = StereotypeUtils.STR_COMPARATIVE;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
 			case ActionIds.MEDIATION:
 				addedStereotype = StereotypeUtils.STR_MEDIATION;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
 			case ActionIds.CHARACTERIZATION:
 				addedStereotype = StereotypeUtils.STR_CHARACTERIZATION;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
 			case ActionIds.EXTERNAL_DEPENDENCE:
 				addedStereotype = StereotypeUtils.STR_EXTERNAL_DEPENDENCE;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
 			case ActionIds.COMPONENT_OF:
 				addedStereotype = StereotypeUtils.STR_COMPONENT_OF;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
 			case ActionIds.MEMBER_OF:
 				addedStereotype = StereotypeUtils.STR_MEMBER_OF;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
 			case ActionIds.SUB_COLLECTION_OF:
 				addedStereotype = StereotypeUtils.STR_SUB_COLLECTION_OF;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
 			case ActionIds.SUB_QUANTITY_OF:
 				addedStereotype = StereotypeUtils.STR_SUB_QUANTITY_OF;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
 			case ActionIds.BEGIN:
 				addedStereotype = StereotypeUtils.STR_BEGIN;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
 			case ActionIds.END:
 				addedStereotype = StereotypeUtils.STR_END;
-				element.addStereotype(addedStereotype);
+				StereotypeUtils.applyStereotype(element, addedStereotype);
 				break;
-		}
-
-		for (int i = 0; originalStereotypes != null && i < originalStereotypes.length; i++) {
-			final IStereotype originalStereotype = originalStereotypes[i];
-			final ITaggedValueContainer container = originalStereotype.getTaggedValues();
-			final Iterator<?> values = container != null ? container.taggedValueIterator() : null;
-
-			if (!originalStereotype.getName().equals(addedStereotype)) {
-				while(values != null && values.hasNext()) {
-					final ITaggedValue value = (ITaggedValue) values.next();
-					final ITaggedValueDefinition definition = value != null ? value.getTagDefinition() : null;
-					final IStereotype stereotype = definition != null ? definition.getTagDefStereotype() : null;
-					
-					if(stereotype != null && stereotype.equals(originalStereotype)) {
-						container.removeTaggedValue(value);
-						value.delete();
-					}
-				}
-
-				// element.removeStereotype(originalStereotype);
-			}
 		}
 
 		boolean isSmartModelingEnabled = Configurations.getInstance().getProjectConfigurations()
@@ -269,19 +235,23 @@ public class ApplyStereotype implements VPContextActionController {
 	}
 
 	public void setAllowed(IModelElement element, String stereotypeName, String allowed) {
-		if(element.getTaggedValues() == null) { return ; }
+		if(element.getTaggedValues() == null) { 
+			return ; 
+		}
 
 		Iterator<?> values = element.getTaggedValues().taggedValueIterator();
 			
 		while(values.hasNext()) {
 			final ITaggedValue value = (ITaggedValue) values.next();
 			final ITaggedValueDefinition definition = value != null ? value.getTagDefinition() : null;
-			final IStereotype str = definition != null ? definition.getTagDefStereotype() : null;
-			final String strName = str != null ? str.getName() : null;
+			final IStereotype valueStereotype = definition != null ? 
+					value.getTagDefinitionStereotype() : null;
+			final String valueStereotypeName = valueStereotype != null ?
+					valueStereotype.getName() : null;
 			
 			if(
 				value.getName().equals("allowed") && 
-				stereotypeName.equals(strName)
+				stereotypeName.equals(valueStereotypeName)
 			) {
 				value.setValue(allowed);
 			}

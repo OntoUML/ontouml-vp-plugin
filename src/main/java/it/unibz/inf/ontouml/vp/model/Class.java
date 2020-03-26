@@ -137,7 +137,10 @@ public class Class implements ModelElement {
 					final JsonParser parser = new JsonParser();
 	
 					if(value.getName().equals("allowed")){
-						final JsonElement allowed = parser.parse(value.getValueAsString());
+						String valueString = value.getValueAsString();
+						valueString.replace(" ", "").replace(",", "\",\"");
+						
+						final JsonElement allowed = parser.parse("[" + valueString + "]");
 						this.allowed = allowed.isJsonArray() && ((JsonArray) allowed).size() > 0 ?
 								(JsonArray) allowed : null;
 					}
