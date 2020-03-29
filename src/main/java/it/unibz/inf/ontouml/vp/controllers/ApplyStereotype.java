@@ -56,8 +56,10 @@ public class ApplyStereotype implements VPContextActionController {
 
 		IDiagramElement[] diagramElements = ApplicationManager.instance().getDiagramManager().getActiveDiagram().getSelectedDiagramElement();
 
-		if (diagramElements == null )
+		if (diagramElements == null ) {
+			defineActionBehavior(action, context.getModelElement());
 			return;
+		}
 		
 		for (IDiagramElement diagramElement : diagramElements) {
 			if (diagramElement.getModelElement().getModelType().equals(context.getModelElement().getModelType()))
@@ -222,7 +224,7 @@ public class ApplyStereotype implements VPContextActionController {
 		LinkedList<String> superClasses = new LinkedList<String>();
 
 		if (diagramElements == null)
-			return false;
+			return true;
 
 		if (diagramElements.length == 1)
 			return true;
