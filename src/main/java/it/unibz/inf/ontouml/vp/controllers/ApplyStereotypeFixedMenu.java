@@ -26,8 +26,10 @@ public class ApplyStereotypeFixedMenu implements VPContextActionController {
 
 		IDiagramElement[] diagramElements = ApplicationManager.instance().getDiagramManager().getActiveDiagram().getSelectedDiagramElement();
 
-		if (diagramElements == null)
+		if (diagramElements == null) {
+			applyStereotype(action, context.getModelElement());
 			return;
+		}
 
 		for (IDiagramElement diagramElement : diagramElements) {
 			if (diagramElement.getModelElement().getModelType().equals(context.getModelElement().getModelType()))
@@ -38,9 +40,9 @@ public class ApplyStereotypeFixedMenu implements VPContextActionController {
 
 	@Override
 	public void update(VPAction arg0, VPContext arg1) {
-		
+
 	}
-	
+
 	private void applyStereotype(VPAction action, IModelElement element) {
 
 		final IStereotype[] stereotypes = element.toStereotypeModelArray();

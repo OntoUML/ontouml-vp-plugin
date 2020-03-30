@@ -36,8 +36,10 @@ public class ApplyStereotype implements VPContextActionController {
 
 		IDiagramElement[] diagramElements = ApplicationManager.instance().getDiagramManager().getActiveDiagram().getSelectedDiagramElement();
 
-		if (diagramElements == null)
+		if (diagramElements == null){
+			applyStereotype(action, context.getModelElement());
 			return;
+		}
 
 		for (IDiagramElement diagramElement : diagramElements) {
 			if (diagramElement.getModelElement().getModelType().equals(context.getModelElement().getModelType()))
