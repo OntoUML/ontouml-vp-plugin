@@ -1,5 +1,7 @@
 package it.unibz.inf.ontouml.vp.utils;
 
+import it.unibz.inf.ontouml.vp.views.ProgressBar;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,8 +19,7 @@ import com.google.gson.JsonParser;
 
 /**
  * 
- * Class responsible for making requests to the OntoUML Server based on standard
- * end points and configured server URL.
+ * Class responsible for making requests to the OntoUML Server based on standard end points and configured server URL.
  * 
  * @author Claudenir Fonseca
  * @author Victor Viola
@@ -34,8 +35,7 @@ public class OntoUMLServerUtils {
 	private static final String USER_MESSAGE_UNKNOWN_ERROR_REQUEST = "Error sending model verification to the server.";
 	private static final String USER_MESSAGE_UNKNOWN_ERROR_RESPONSE = "Error receiving model verification response.";
 
-	public static BufferedReader transformToGUFO(String model, String baseIRI, String format, String uriFormatBy)
-			throws Exception {
+	public static BufferedReader transformToGUFO(String model, String baseIRI, String format, String uriFormatBy) throws Exception {
 		final JsonObject optionsObj = new JsonObject();
 		optionsObj.addProperty("baseIRI", baseIRI);
 		optionsObj.addProperty("format", format);
@@ -60,16 +60,15 @@ public class OntoUMLServerUtils {
 
 		try {
 			final HttpURLConnection request = request(url, body);
-			final BufferedReader responseReader = request.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST
-					? new BufferedReader(new InputStreamReader(request.getInputStream()))
+			final BufferedReader responseReader = request.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST ? new BufferedReader(new InputStreamReader(request.getInputStream()))
 					: new BufferedReader(new InputStreamReader(request.getErrorStream()));
 
 			switch (request.getResponseCode()) {
 			case HttpURLConnection.HTTP_OK:
-				if(!request.getContentType().equals("text/html")) {
+				if (!request.getContentType().equals("text/html")) {
 					return responseReader;
 				} else {
-					if(ViewUtils.exportToGUFOIssueDialogWithOption("Server not found.", HttpURLConnection.HTTP_NOT_FOUND))
+					if (ViewUtils.exportToGUFOIssueDialogWithOption("Server not found.", HttpURLConnection.HTTP_NOT_FOUND))
 						return transformToGUFO(model, baseIRI, format, uriFormatBy);
 
 					System.out.println(responseReader.lines().collect(Collectors.joining()));
@@ -77,11 +76,9 @@ public class OntoUMLServerUtils {
 					return null;
 				}
 			case HttpURLConnection.HTTP_BAD_REQUEST:
-				ViewUtils.exportToGUFOIssueDialog("Unable to transform model due to unexpected error."
-						+ "\nPlease check the model for nay syntactical errors.");
+				ViewUtils.exportToGUFOIssueDialog("Unable to transform model due to unexpected error." + "\nPlease check the model for nay syntactical errors.");
 				System.out.println(responseReader.lines().collect(Collectors.joining()));
-				new Exception("Unable to transform model due to unexpected error."
-						+ "\nPlease check the model for nay syntactical errors.").printStackTrace();
+				new Exception("Unable to transform model due to unexpected error." + "\nPlease check the model for nay syntactical errors.").printStackTrace();
 				return null;
 			case HttpURLConnection.HTTP_NOT_FOUND:
 				if (ViewUtils.exportToGUFOIssueDialogWithOption("Server not found.", HttpURLConnection.HTTP_NOT_FOUND))
@@ -113,8 +110,21 @@ public class OntoUMLServerUtils {
 
 	public static String requestModelVerification(String serializedModel) {
 
+		ProgressBar progressBar = new ProgressBar("Loading...");
+		progressBar.openFrame();
+
+		progressBar.setValueProgress(10);
+
 		final ProjectConfigurations configurations = Configurations.getInstance().getProjectConfigurations();
 		final String url;
+
+		progressBar.setLabel("Loading URL..");
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+		progressBar.setValueProgress(15);
 
 		if (configurations.isCustomServerEnabled()) {
 			url = configurations.getServerURL() + VERIFICATION_SERVICE_ENDPOINT;
@@ -124,44 +134,65 @@ public class OntoUMLServerUtils {
 
 		try {
 
+			progressBar.setLabel("Connecting to server...");
+
+			Thread.sleep(500);
+
+			progressBar.setValueProgress(50);
 			final HttpURLConnection request = request(url, serializedModel);
 			final StringBuilder response = new StringBuilder();
-			final BufferedReader reader = request.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST
-					? new BufferedReader(new InputStreamReader(request.getInputStream()))
-					: new BufferedReader(new InputStreamReader(request.getErrorStream()));
+			progressBar.setLabel("Connected Successfully");
+
+			Thread.sleep(500);
+
+			progressBar.setValueProgress(70);
+
+			Thread.sleep(500);
+
+			final BufferedReader reader = request.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST ? new BufferedReader(new InputStreamReader(request.getInputStream())) : new BufferedReader(
+					new InputStreamReader(request.getErrorStream()));
 
 			String line = null;
+
+			progressBar.setValueProgress(70);
 			while ((line = reader.readLine()) != null) {
 				response.append(line.trim());
 			}
-			reader.close();
+			progressBar.setValueProgress(100);
+			progressBar.setLabel("Finished.");
 
+			Thread.sleep(500);
+
+			progressBar.closeFrame();
+			reader.close();
 			switch (request.getResponseCode()) {
 			case HttpURLConnection.HTTP_OK:
-				if(!request.getContentType().equals("text/html")) {
+				if (!request.getContentType().equals("text/html")) {
 					return response.toString();
 				} else {
-					if(ViewUtils.verificationFailedDialogWithOption(USER_MESSAGE_NOT_FOUND, HttpURLConnection.HTTP_NOT_FOUND))
+					if (ViewUtils.verificationFailedDialogWithOption(USER_MESSAGE_NOT_FOUND, HttpURLConnection.HTTP_NOT_FOUND))
 						return requestModelVerification(serializedModel);
 				}
 			case HttpURLConnection.HTTP_BAD_REQUEST:
 				ViewUtils.verificationFailedDialog(USER_MESSAGE_BAD_REQUEST);
 				return null;
 			case HttpURLConnection.HTTP_NOT_FOUND:
-				if(ViewUtils.verificationFailedDialogWithOption(USER_MESSAGE_NOT_FOUND, HttpURLConnection.HTTP_NOT_FOUND))
+				if (ViewUtils.verificationFailedDialogWithOption(USER_MESSAGE_NOT_FOUND, HttpURLConnection.HTTP_NOT_FOUND))
 					return requestModelVerification(serializedModel);
-					
+
 				return null;
 			case HttpURLConnection.HTTP_INTERNAL_ERROR:
-				if(ViewUtils.verificationFailedDialogWithOption(USER_MESSAGE_INTERNAL_ERROR, HttpURLConnection.HTTP_INTERNAL_ERROR))
+				if (ViewUtils.verificationFailedDialogWithOption(USER_MESSAGE_INTERNAL_ERROR, HttpURLConnection.HTTP_INTERNAL_ERROR))
 					return requestModelVerification(serializedModel);
-					
+
 				return null;
 			default:
 				ViewUtils.verificationFailedDialog(USER_MESSAGE_UNKNOWN_ERROR_RESPONSE);
 				return null;
 			}
 
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
 		} catch (SocketException e) {
 			ViewUtils.verificationFailedDialog(USER_MESSAGE_NOT_FOUND);
 			e.printStackTrace();
@@ -179,15 +210,15 @@ public class OntoUMLServerUtils {
 	private static HttpURLConnection request(String urlString, String body) throws MalformedURLException, IOException {
 		final URL url = new URL(urlString);
 		final HttpURLConnection request = (HttpURLConnection) url.openConnection();
-		
+
 		request.setRequestMethod("POST");
 		request.setRequestProperty("Content-Type", "application/json");
 		request.setReadTimeout(60000);
 		request.setDoOutput(true);
-		
+
 		final OutputStream requestStream = request.getOutputStream();
 		final byte[] requestBody = body.getBytes();
-		
+
 		requestStream.write(requestBody, 0, requestBody.length);
 		requestStream.flush();
 		requestStream.close();

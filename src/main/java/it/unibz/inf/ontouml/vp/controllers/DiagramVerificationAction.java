@@ -1,7 +1,13 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
+import java.nio.file.Paths;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;
@@ -9,9 +15,11 @@ import com.vp.plugin.action.VPActionController;
 import com.vp.plugin.diagram.IClassDiagramUIModel;
 import com.vp.plugin.diagram.IDiagramUIModel;
 
+import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 import it.unibz.inf.ontouml.vp.model.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.OntoUMLServerUtils;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
+import it.unibz.inf.ontouml.vp.views.ProgressBar;
 
 /**
  * Implementation of toolbar button action responsible for performing diagram verification.
@@ -28,11 +36,16 @@ public class DiagramVerificationAction implements VPActionController {
 	 */
 	@Override
 	public void performAction(VPAction action) {
+		
+		
 
+		
+		
 		if (!hasOpenedClassDiagram()) {
 			ViewUtils.simpleDialog("Diagram Verification", "Please open a diagram before running this command.");
 			return;
-		}
+		} 
+		
 		
 		ExecutorService executor = Executors.newFixedThreadPool(10);
 		executor.execute(new Runnable() {
@@ -52,6 +65,8 @@ public class DiagramVerificationAction implements VPActionController {
 			}
 
 		});
+		
+		
 	}
 
 	/**
