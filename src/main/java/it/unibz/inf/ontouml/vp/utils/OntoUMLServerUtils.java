@@ -1,7 +1,5 @@
 package it.unibz.inf.ontouml.vp.utils;
 
-import it.unibz.inf.ontouml.vp.views.ProgressBar;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -109,22 +107,8 @@ public class OntoUMLServerUtils {
 	}
 
 	public static String requestModelVerification(String serializedModel) {
-
-		ProgressBar progressBar = new ProgressBar("Loading...");
-		progressBar.openFrame();
-
-		progressBar.setValueProgress(10);
-
 		final ProjectConfigurations configurations = Configurations.getInstance().getProjectConfigurations();
 		final String url;
-
-		progressBar.setLabel("Loading URL..");
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
-		progressBar.setValueProgress(15);
 
 		if (configurations.isCustomServerEnabled()) {
 			url = configurations.getServerURL() + VERIFICATION_SERVICE_ENDPOINT;
@@ -134,36 +118,17 @@ public class OntoUMLServerUtils {
 
 		try {
 
-			progressBar.setLabel("Connecting to server...");
-
-			Thread.sleep(500);
-
-			progressBar.setValueProgress(50);
 			final HttpURLConnection request = request(url, serializedModel);
 			final StringBuilder response = new StringBuilder();
-			progressBar.setLabel("Connected Successfully");
-
-			Thread.sleep(500);
-
-			progressBar.setValueProgress(70);
-
-			Thread.sleep(500);
-
 			final BufferedReader reader = request.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST ? new BufferedReader(new InputStreamReader(request.getInputStream())) : new BufferedReader(
 					new InputStreamReader(request.getErrorStream()));
 
 			String line = null;
 
-			progressBar.setValueProgress(70);
 			while ((line = reader.readLine()) != null) {
 				response.append(line.trim());
 			}
-			progressBar.setValueProgress(100);
-			progressBar.setLabel("Finished.");
-
-			Thread.sleep(500);
-
-			progressBar.closeFrame();
+			
 			reader.close();
 			switch (request.getResponseCode()) {
 			case HttpURLConnection.HTTP_OK:
@@ -191,8 +156,6 @@ public class OntoUMLServerUtils {
 				return null;
 			}
 
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
 		} catch (SocketException e) {
 			ViewUtils.verificationFailedDialog(USER_MESSAGE_NOT_FOUND);
 			e.printStackTrace();
