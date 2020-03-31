@@ -1,13 +1,17 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
 import java.awt.event.ActionEvent;
+import java.util.LinkedList;
 
+import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPContext;
 import com.vp.plugin.action.VPContextActionController;
+import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.ISimpleRelationship;
 import com.vp.plugin.model.IStereotype;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
@@ -19,17 +23,55 @@ import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 /**
  * 
- * Implementation of context sensitive action of change OntoUML stereotypes in
- * model elements.
+ * Implementation of context sensitive action of change OntoUML stereotypes in model elements.
  * 
  * @author Claudenir Fonseca
+ * @author Victor Viola
  *
  */
 public class ApplyStereotype implements VPContextActionController {
 
 	@Override
 	public void performAction(VPAction action, VPContext context, ActionEvent event) {
-		final IModelElement element = context.getModelElement();
+
+		IDiagramElement[] diagramElements = ApplicationManager.instance().getDiagramManager().getActiveDiagram().getSelectedDiagramElement();
+
+		if (diagramElements == null){
+			applyStereotype(action, context.getModelElement());
+			return;
+		}
+
+		for (IDiagramElement diagramElement : diagramElements) {
+			if (diagramElement.getModelElement().getModelType().equals(context.getModelElement().getModelType()))
+				applyStereotype(action, diagramElement.getModelElement());
+		}
+
+	}
+
+	@Override
+	public void update(VPAction action, VPContext context) {
+		
+		action.setEnabled(true);
+		
+		if(context.getModelElement().getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS) && !isClassSelectionAllowed() )
+			action.setEnabled(false);
+
+		IDiagramElement[] diagramElements = ApplicationManager.instance().getDiagramManager().getActiveDiagram().getSelectedDiagramElement();
+
+		if (diagramElements == null ) {
+			defineActionBehavior(action, context.getModelElement());
+			return;
+		}
+		
+		for (IDiagramElement diagramElement : diagramElements) {
+			if (diagramElement.getModelElement().getModelType().equals(context.getModelElement().getModelType()))
+				defineActionBehavior(action, diagramElement.getModelElement());
+		}
+
+	}
+
+	private void applyStereotype(VPAction action, IModelElement element) {
+
 		final IStereotype[] stereotypes = element.toStereotypeModelArray();
 
 		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
@@ -163,26 +205,88 @@ public class ApplyStereotype implements VPContextActionController {
 			SmartColoring.smartPaint();
 	}
 
-	@Override
-	public void update(VPAction action, VPContext context) {
-		if (Configurations.getInstance().getProjectConfigurations().isSmartModellingEnabled()) {
-			final IModelElement element = context.getModelElement();
+	private void defineActionBehavior(VPAction action, IModelElement element) {
 
-			if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION)) {
-				final IAssociation association = (IAssociation) element;
-				SmartModelling.manageAssociationStereotypes(association, action);
-				return;
-			}
-			if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
-				final IClass _class = (IClass) element;
-				SmartModelling.manageClassStereotypes(_class, action);
-				return;
-			}
-		}
-		else {
-			action.setEnabled(true);
+		if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION)) {
+			final IAssociation association = (IAssociation) element;
+			SmartModelling.manageAssociationStereotypes(association, action);
+			return;
 		}
 
+		if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
+			final IClass _class = (IClass) element;
+			SmartModelling.manageClassStereotypes(_class, action);
+			return;
+		}
+	}
+
+	private boolean isClassSelectionAllowed() {
+
+		IDiagramElement[] diagramElements = ApplicationManager.instance().getDiagramManager().getActiveDiagram().getSelectedDiagramElement();
+		LinkedList<String> superClasses = new LinkedList<String>();
+
+		if (diagramElements == null)
+			return true;
+
+		if (diagramElements.length == 1)
+			return true;
+
+		//build list of Ids of all classes selected
+		for (IDiagramElement diagramElement : diagramElements) {
+
+			ISimpleRelationship[] relationshipsTo = diagramElement.getModelElement().toToRelationshipArray();
+
+			for (int i = 0; relationshipsTo != null && i < relationshipsTo.length; i++) {
+				ISimpleRelationship relationshipTo = relationshipsTo[i];
+				String superClassType = relationshipTo.getFrom() != null ? relationshipTo.getFrom().getModelType() : "";
+
+				if (!(superClassType.equals(IModelElementFactory.MODEL_TYPE_CLASS)))
+					continue;
+
+				IClass superClass = (IClass) relationshipTo.getFrom();
+
+				superClasses.add(superClass.getId());
+			}
+		}
+
+		//Iterates over the list of the superclasses Id
+		//then iterate over the list again to count if the id
+		//was inserted the same amount as the amount of selected classes
+		int counter = 0;
+
+		for (int i = 0; i < superClasses.size(); i++) {
+			String id = superClasses.get(i);
+
+			for (int j = 0; j < superClasses.size(); j++) {
+				String idAux = superClasses.get(j);
+
+				if (id.equals(idAux))
+					counter++;
+			}
+
+			if (counter == countClassesSelected())
+				return true;
+			else
+				counter = 0;
+		}
+
+		return false;
+	}
+
+	private int countClassesSelected() {
+
+		IDiagramElement[] diagramElements = ApplicationManager.instance().getDiagramManager().getActiveDiagram().getSelectedDiagramElement();
+		int count = 0;
+
+		if (diagramElements == null)
+			return count;
+
+		for (IDiagramElement diagramElement : diagramElements) {
+			if (diagramElement.getModelElement().getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS))
+				count++;
+		}
+
+		return count++;
 	}
 
 }

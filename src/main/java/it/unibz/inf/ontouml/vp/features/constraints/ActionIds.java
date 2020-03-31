@@ -49,4 +49,52 @@ public final class ActionIds {
 	// Attribute stereotypes (ordered as in plugin.xml)
 	public static final String END = "it.unibz.inf.ontouml.vp.addEndStereotype";
 	public static final String BEGIN = "it.unibz.inf.ontouml.vp.addBeginStereotype";
+	
+	//Fixed Menu ActionIds
+	public static final String TYPE_FIXEDMENU = "it.unibz.inf.ontouml.vp.addTypeStereotype.fixedMenu";
+	public static final String POWERTYPE_FIXEDMENU = "it.unibz.inf.ontouml.vp.addPowertypeStereotype.fixedMenu";
+
+	public static final String HISTORICAL_ROLE_FIXEDMENU = "it.unibz.inf.ontouml.vp.addHistoricalRoleStereotype.fixedMenu";
+	public static final String EVENT_FIXEDMENU = "it.unibz.inf.ontouml.vp.addEventStereotype.fixedMenu";
+
+	public static final String ENUMERATION_FIXEDMENU = "it.unibz.inf.ontouml.vp.addEnumerationStereotype.fixedMenu";
+	public static final String DATATYPE_FIXEDMENU = "it.unibz.inf.ontouml.vp.addDatatypeStereotype.fixedMenu";
+
+	public static final String SUBKIND_FIXEDMENU = "it.unibz.inf.ontouml.vp.addSubkindStereotype.fixedMenu";
+	public static final String ROLE_MIXIN_FIXEDMENU = "it.unibz.inf.ontouml.vp.addRoleMixinStereotype.fixedMenu";
+	public static final String ROLE_FIXEDMENU = "it.unibz.inf.ontouml.vp.addRoleStereotype.fixedMenu";
+	public static final String RELATOR_FIXEDMENU = "it.unibz.inf.ontouml.vp.addRelatorStereotype.fixedMenu";
+	public static final String QUANTITY_FIXEDMENU = "it.unibz.inf.ontouml.vp.addQuantityStereotype.fixedMenu";
+	public static final String QUALITY_FIXEDMENU = "it.unibz.inf.ontouml.vp.addQualityStereotype.fixedMenu";
+	public static final String PHASE_MIXIN_FIXEDMENU = "it.unibz.inf.ontouml.vp.addPhaseMixinStereotype.fixedMenu";
+	public static final String PHASE_FIXEDMENU = "it.unibz.inf.ontouml.vp.addPhaseStereotype.fixedMenu";
+	public static final String MODE_FIXEDMENU = "it.unibz.inf.ontouml.vp.addModeStereotype.fixedMenu";
+	public static final String MIXIN_FIXEDMENU = "it.unibz.inf.ontouml.vp.addMixinStereotype.fixedMenu";
+	public static final String KIND_FIXEDMENU = "it.unibz.inf.ontouml.vp.addKindStereotype.fixedMenu";
+	public static final String COLLECTIVE_FIXEDMENU = "it.unibz.inf.ontouml.vp.addCollectiveStereotype.fixedMenu";
+	public static final String CATEGORY_FIXEDMENU = "it.unibz.inf.ontouml.vp.addCategoryStereotype.fixedMenu";
+
+	// Association stereotypes (ordered as in plugin.xml)
+	public static final String INSTANTIATION_FIXEDMENU = "it.unibz.inf.ontouml.vp.addInstantiationStereotype.fixedMenu";
+
+	public static final String TERMINATION_FIXEDMENU = "it.unibz.inf.ontouml.vp.addTerminationStereotype.fixedMenu";
+	public static final String PARTICIPATIONAL_FIXEDMENU = "it.unibz.inf.ontouml.vp.addParticipationalStereotype.fixedMenu";
+	public static final String PARTICIPATION_FIXEDMENU = "it.unibz.inf.ontouml.vp.addParticipationStereotype.fixedMenu";
+	public static final String HISTORICAL_DEPENDENCE_FIXEDMENU = "it.unibz.inf.ontouml.vp.addHistoricalDependenceStereotype.fixedMenu";
+	public static final String CREATION_FIXEDMENU = "it.unibz.inf.ontouml.vp.addCreationStereotype.fixedMenu";
+	public static final String MANIFESTATION_FIXEDMENU = "it.unibz.inf.ontouml.vp.addManifestationStereotype.fixedMenu";
+
+	public static final String SUB_QUANTITY_OF_FIXEDMENU = "it.unibz.inf.ontouml.vp.addSubQuantityStereotype.fixedMenu";
+	public static final String SUB_COLLECTION_OF_FIXEDMENU = "it.unibz.inf.ontouml.vp.addSubCollectionStereotype.fixedMenu";
+	public static final String MEMBER_OF_FIXEDMENU = "it.unibz.inf.ontouml.vp.addMemberOfStereotype.fixedMenu";
+	public static final String MEDIATION_FIXEDMENU = "it.unibz.inf.ontouml.vp.addMediationStereotype.fixedMenu";
+	public static final String MATERIAL_FIXEDMENU = "it.unibz.inf.ontouml.vp.addMaterialStereotype.fixedMenu";
+	public static final String EXTERNAL_DEPENDENCE_FIXEDMENU = "it.unibz.inf.ontouml.vp.addExternalDependenceStereotype.fixedMenu";
+	public static final String COMPONENT_OF_FIXEDMENU = "it.unibz.inf.ontouml.vp.addComponentOfStereotype.fixedMenu";
+	public static final String COMPARATIVE_FIXEDMENU = "it.unibz.inf.ontouml.vp.addComparativeStereotype.fixedMenu";
+	public static final String CHARACTERIZATION_FIXEDMENU = "it.unibz.inf.ontouml.vp.addCharacterizationStereotype.fixedMenu";
+
+	// Attribute stereotypes (ordered as in plugin.xml)
+	public static final String END_FIXEDMENU = "it.unibz.inf.ontouml.vp.addEndStereotype.fixedMenu";
+	public static final String BEGIN_FIXEDMENU = "it.unibz.inf.ontouml.vp.addBeginStereotype.fixedMenu";
 }
