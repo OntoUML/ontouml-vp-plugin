@@ -133,6 +133,8 @@ public class ExportToGUFOAction implements VPActionController {
 							saveFile(gufo);
 							ViewUtils.cleanAndShowMessage("Model exported successfuly.");
 							request.doStop();
+						} else {
+							loading.canClosed();
 						}
 					} else {
 						loading.canClosed();

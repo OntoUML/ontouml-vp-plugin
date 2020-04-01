@@ -37,9 +37,9 @@ public class ModelVerificationAction implements VPActionController {
 	 */
 	@Override
 	public void performAction(VPAction action) {
-		
+
 		request = new ModelVerificationRequest();
-		
+
 		loading = new ProgressDialog();
 		ApplicationManager.instance().getViewManager().showDialog(loading);
 
@@ -101,11 +101,13 @@ public class ModelVerificationAction implements VPActionController {
 							mainDialog.close();
 							ViewUtils.logDiagramVerificationResponse(response);
 							request.doStop();
+						} else {
+							loading.canClosed();
 						}
 					} else {
 						loading.canClosed();
 					}
-					
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

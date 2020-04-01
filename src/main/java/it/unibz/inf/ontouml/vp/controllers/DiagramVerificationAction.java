@@ -119,6 +119,8 @@ public class DiagramVerificationAction implements VPActionController {
 							mainDialog.close();
 							ViewUtils.logDiagramVerificationResponse(response);
 							request.doStop();
+						} else {
+							loading.canClosed();
 						}
 					} else {
 						loading.canClosed();
