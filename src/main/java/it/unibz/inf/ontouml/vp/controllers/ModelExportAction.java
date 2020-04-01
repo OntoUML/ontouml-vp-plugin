@@ -3,15 +3,22 @@ package it.unibz.inf.ontouml.vp.controllers;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
+import com.vp.plugin.view.IDialog;
+import com.vp.plugin.view.IDialogHandler;
+
+import it.unibz.inf.ontouml.vp.controllers.DiagramVerificationAction.DiagramVerificationRequest;
+import it.unibz.inf.ontouml.vp.controllers.DiagramVerificationAction.ProgressDialog;
 import it.unibz.inf.ontouml.vp.model.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.ProjectConfigurations;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
+import it.unibz.inf.ontouml.vp.views.ProgressPanel;
 
 import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.concurrent.ExecutorService;
 
 /**
  * 
@@ -23,6 +30,12 @@ import java.nio.file.Paths;
  */
 public class ModelExportAction implements VPActionController {
 
+	private ProgressPanel progressPanel;
+	private ProgressDialog loading;
+	private IDialog mainDialog;
+	
+	Thread thread;
+	
 	/**
 	 * 
 	 * Performs model export in JSON format.
@@ -56,21 +69,27 @@ public class ModelExportAction implements VPActionController {
 		if(!fileName.endsWith(".json"))
 			fileName+=".json";
 
+		
+		
 		if (fileDirectory != null) {
+			loading = new ProgressDialog();
+			ApplicationManager.instance().getViewManager().showDialog(loading);
 			try {
+				
 				final String jsonModel = ModelElement.generateModel(true);
 				Files.write(Paths.get(fileDirectory, fileName), jsonModel.getBytes());
 				projectConfigurations.setExportFolderPath(fileDirectory);
 				projectConfigurations.setExportFilename(fileName);
 				configs.save();
+				ViewUtils.cleanAndShowMessage("Model exported successfuly.");
 			} catch (IOException e) {
-				ViewUtils.log(
-						"Export Failed. Please submit your Visual Paradigm's log and the time of the error our developers.",
-						ViewUtils.SCOPE_PLUGIN);
+				ViewUtils.cleanAndShowMessage("Export Failed. Please submit your Visual Paradigm's log and the time of the error our developers.");
 				e.printStackTrace();
 			}
+			
+			mainDialog.close();
 		}
-
+		
 	}
 
 	/**
@@ -82,5 +101,33 @@ public class ModelExportAction implements VPActionController {
 	@Override
 	public void update(VPAction action) {
 	}
+	
+	protected class ProgressDialog implements IDialogHandler {
 
+		@Override
+		public Component getComponent() {
+			progressPanel = new ProgressPanel("Building model...");
+			return progressPanel;
+		}
+
+		@Override
+		public void prepare(IDialog dialog) {
+			mainDialog = dialog;
+			mainDialog.setTitle("Export to JSON");
+			mainDialog.setModal(false);
+			mainDialog.setResizable(false);
+			dialog.setSize(progressPanel.getWidth(), progressPanel.getHeight() + 20);
+			progressPanel.setContainerDialog(mainDialog);
+		}
+
+		@Override
+		public void shown() {
+		}
+
+		@Override
+		public boolean canClosed() {
+			return false;
+		}
+
+	}
 }

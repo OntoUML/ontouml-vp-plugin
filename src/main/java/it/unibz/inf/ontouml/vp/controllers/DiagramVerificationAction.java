@@ -1,11 +1,6 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
 import java.awt.Component;
-import java.util.concurrent.ExecutorService;
-
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
@@ -14,7 +9,6 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.view.IDialog;
 import com.vp.plugin.view.IDialogHandler;
 
-import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 import it.unibz.inf.ontouml.vp.model.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.OntoUMLServerUtils;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
@@ -29,7 +23,6 @@ public class DiagramVerificationAction implements VPActionController {
 	private ProgressPanel progressPanel;
 	private ProgressDialog loading;
 	private IDialog mainDialog;
-	ExecutorService executor;
 	DiagramVerificationRequest request;
 	Thread thread;
 
@@ -56,7 +49,6 @@ public class DiagramVerificationAction implements VPActionController {
 		ApplicationManager.instance().getViewManager().showDialog(loading);
 
 		Thread thread = new Thread(request);
-
 		thread.start();
 	}
 

@@ -25,29 +25,26 @@ public class ProgressPanel extends JPanel {
 	private JButton btnCancel;
 	private IDialog _dialog;
 
-	public ProgressPanel() {
+	public ProgressPanel(String text) {
 		setSize(new Dimension(200, 100));
 
 		label = new JLabel();
-		label.setText("Contacting Server...");
+		label.setText(text);
 
 		progressBar = new JProgressBar();
 		progressBar.setIndeterminate(true);
-
-		btnCancel = new JButton("Cancel");
 
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.anchor = GridBagConstraints.CENTER;
 
 		add(label, constraints);
 		add(progressBar, constraints);
-		
-
 	}
 
 	public ProgressPanel(ModelVerificationRequest request) {		
-		this();
+		this("Contacting Server...");
 
+		btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -61,8 +58,9 @@ public class ProgressPanel extends JPanel {
 	}
 
 	public ProgressPanel(DiagramVerificationRequest request) {
-		this();
+		this("Contacting Server...");
 
+		btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
