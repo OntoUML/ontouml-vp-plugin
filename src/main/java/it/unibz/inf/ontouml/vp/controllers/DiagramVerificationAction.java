@@ -1,6 +1,7 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
 import java.awt.Component;
+
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
@@ -11,6 +12,7 @@ import com.vp.plugin.view.IDialogHandler;
 
 import it.unibz.inf.ontouml.vp.model.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.OntoUMLServerUtils;
+import it.unibz.inf.ontouml.vp.utils.ServerRequest;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 import it.unibz.inf.ontouml.vp.views.ProgressPanel;
 
@@ -104,17 +106,7 @@ public class DiagramVerificationAction implements VPActionController {
 
 	}
 
-	public class DiagramVerificationRequest implements Runnable {
-
-		private boolean doStop = false;
-
-		public synchronized void doStop() {
-			this.doStop = true;
-		}
-
-		private synchronized boolean keepRunning() {
-			return this.doStop == false;
-		}
+	public class DiagramVerificationRequest extends ServerRequest {
 
 		@Override
 		public void run() {

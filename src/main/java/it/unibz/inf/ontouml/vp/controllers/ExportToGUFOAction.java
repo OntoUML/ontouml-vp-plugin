@@ -7,8 +7,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import com.vp.plugin.ApplicationManager;
@@ -17,13 +15,11 @@ import com.vp.plugin.action.VPActionController;
 import com.vp.plugin.view.IDialog;
 import com.vp.plugin.view.IDialogHandler;
 
-import it.unibz.inf.ontouml.vp.controllers.DiagramVerificationAction.DiagramVerificationRequest;
-import it.unibz.inf.ontouml.vp.controllers.ModelVerificationAction.ModelVerificationRequest;
-import it.unibz.inf.ontouml.vp.controllers.ModelVerificationAction.ProgressDialog;
 import it.unibz.inf.ontouml.vp.model.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.OntoUMLServerUtils;
 import it.unibz.inf.ontouml.vp.utils.ProjectConfigurations;
+import it.unibz.inf.ontouml.vp.utils.ServerRequest;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 import it.unibz.inf.ontouml.vp.views.ProgressPanel;
 
@@ -123,17 +119,7 @@ public class ExportToGUFOAction implements VPActionController {
 
 	}
 
-	public class ExportToGUFORequest implements Runnable {
-
-		private boolean doStop = false;
-
-		public synchronized void doStop() {
-			this.doStop = true;
-		}
-
-		private synchronized boolean keepRunning() {
-			return this.doStop == false;
-		}
+	public class ExportToGUFORequest extends ServerRequest {
 
 		@Override
 		public void run() {
