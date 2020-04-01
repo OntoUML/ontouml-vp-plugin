@@ -3,6 +3,9 @@ package it.unibz.inf.ontouml.vp.controllers;
 import java.awt.Component;
 import java.util.concurrent.ExecutorService;
 
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
@@ -11,6 +14,7 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.view.IDialog;
 import com.vp.plugin.view.IDialogHandler;
 
+import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 import it.unibz.inf.ontouml.vp.model.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.OntoUMLServerUtils;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
@@ -39,14 +43,16 @@ public class DiagramVerificationAction implements VPActionController {
 	@Override
 	public void performAction(VPAction action) {
 
+		ViewUtils.clearLog(ViewUtils.SCOPE_PLUGIN);
+
 		if (!hasOpenedClassDiagram()) {
 			ViewUtils.simpleDialog("Diagram Verification", "Please open a diagram before running this command.");
 			return;
 		}
 
 		request = new DiagramVerificationRequest();
-		loading = new ProgressDialog();
 
+		loading = new ProgressDialog();
 		ApplicationManager.instance().getViewManager().showDialog(loading);
 
 		Thread thread = new Thread(request);
@@ -102,6 +108,7 @@ public class DiagramVerificationAction implements VPActionController {
 		public boolean canClosed() {
 			request.doStop();
 			mainDialog.close();
+			ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
 			return true;
 		}
 
@@ -123,15 +130,17 @@ public class DiagramVerificationAction implements VPActionController {
 		public void run() {
 			while (keepRunning()) {
 				try {
-					ViewUtils.clearLog(ViewUtils.SCOPE_PLUGIN);
 					final String response = OntoUMLServerUtils.requestModelVerification(ModelElement.generateModel(true));
 
 					if (keepRunning()) {
-						if (response != null)
+						if (response != null) {
 							ViewUtils.logDiagramVerificationResponse(response);
+							request.doStop();
+							mainDialog.close();
+						}
+					} else {
+						loading.canClosed();
 					}
-
-					loading.canClosed();
 
 				} catch (Exception e) {
 					e.printStackTrace();

@@ -40,8 +40,10 @@ public class ModelVerificationAction implements VPActionController {
 	@Override
 	public void performAction(VPAction action) {
 
+		ViewUtils.clearLog(ViewUtils.SCOPE_PLUGIN);
+		
 		request = new ModelVerificationRequest();
-
+		
 		loading = new ProgressDialog();
 		ApplicationManager.instance().getViewManager().showDialog(loading);
 
@@ -85,6 +87,7 @@ public class ModelVerificationAction implements VPActionController {
 		public boolean canClosed() {
 			request.doStop();
 			mainDialog.close();
+			ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
 			return true;
 		}
 
@@ -106,15 +109,17 @@ public class ModelVerificationAction implements VPActionController {
 		public void run() {
 			while (keepRunning()) {
 				try {
-					ViewUtils.clearLog(ViewUtils.SCOPE_PLUGIN);
 					final String response = OntoUMLServerUtils.requestModelVerification(ModelElement.generateModel(true));
 
 					if (keepRunning()) {
-						if (response != null)
-							ViewUtils.logVerificationResponse(response);
+						if (response != null) {
+							ViewUtils.logDiagramVerificationResponse(response);
+							request.doStop();
+							mainDialog.close();
+						}
+					} else {
+						loading.canClosed();
 					}
-					
-					loading.canClosed();
 					
 				} catch (Exception e) {
 					e.printStackTrace();

@@ -2,11 +2,13 @@ package it.unibz.inf.ontouml.vp.views;
 
 import it.unibz.inf.ontouml.vp.controllers.DiagramVerificationAction.DiagramVerificationRequest;
 import it.unibz.inf.ontouml.vp.controllers.ModelVerificationAction.ModelVerificationRequest;
+import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -51,6 +53,7 @@ public class ProgressPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				request.doStop();
 				_dialog.close();
+				ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
 			}
 		});
 		
@@ -65,6 +68,7 @@ public class ProgressPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				request.doStop();
 				_dialog.close();
+				ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
 			}
 		});
 		
