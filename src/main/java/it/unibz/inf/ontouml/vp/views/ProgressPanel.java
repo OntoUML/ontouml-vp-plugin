@@ -1,6 +1,7 @@
 package it.unibz.inf.ontouml.vp.views;
 
 import it.unibz.inf.ontouml.vp.controllers.DiagramVerificationAction.DiagramVerificationRequest;
+import it.unibz.inf.ontouml.vp.controllers.ExportToGUFOAction.ExportToGUFORequest;
 import it.unibz.inf.ontouml.vp.controllers.ModelVerificationAction.ModelVerificationRequest;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 
@@ -58,6 +59,22 @@ public class ProgressPanel extends JPanel {
 	}
 
 	public ProgressPanel(DiagramVerificationRequest request) {
+		this("Contacting Server...");
+
+		btnCancel = new JButton("Cancel");
+		btnCancel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				request.doStop();
+				_dialog.close();
+				ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
+			}
+		});
+		
+		add(btnCancel);
+	}
+	
+	public ProgressPanel(ExportToGUFORequest request) {
 		this("Contacting Server...");
 
 		btnCancel = new JButton("Cancel");

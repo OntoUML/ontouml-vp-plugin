@@ -35,8 +35,6 @@ public class ModelVerificationAction implements VPActionController {
 	 */
 	@Override
 	public void performAction(VPAction action) {
-
-		ViewUtils.clearLog(ViewUtils.SCOPE_PLUGIN);
 		
 		request = new ModelVerificationRequest();
 		

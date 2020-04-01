@@ -36,8 +36,6 @@ public class DiagramVerificationAction implements VPActionController {
 	@Override
 	public void performAction(VPAction action) {
 
-		ViewUtils.clearLog(ViewUtils.SCOPE_PLUGIN);
-
 		if (!hasOpenedClassDiagram()) {
 			ViewUtils.simpleDialog("Diagram Verification", "Please open a diagram before running this command.");
 			return;
