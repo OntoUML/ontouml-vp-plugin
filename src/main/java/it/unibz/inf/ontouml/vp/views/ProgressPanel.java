@@ -1,12 +1,12 @@
 package it.unibz.inf.ontouml.vp.views;
 
+import it.unibz.inf.ontouml.vp.controllers.DiagramVerificationAction.DiagramVerificationRequest;
+import it.unibz.inf.ontouml.vp.controllers.ModelVerificationAction.ModelVerificationRequest;
+
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -33,21 +33,42 @@ public class ProgressPanel extends JPanel {
 		progressBar.setIndeterminate(true);
 
 		btnCancel = new JButton("Cancel");
-		btnCancel.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				_dialog.close();
-			}
 
-		});
-		
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.anchor = GridBagConstraints.CENTER;
 
 		add(label, constraints);
 		add(progressBar, constraints);
-		add(btnCancel, constraints);
 		
+
+	}
+
+	public ProgressPanel(ModelVerificationRequest request) {		
+		this();
+
+		btnCancel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				request.doStop();
+				_dialog.close();
+			}
+		});
+		
+		add(btnCancel);
+	}
+
+	public ProgressPanel(DiagramVerificationRequest request) {
+		this();
+
+		btnCancel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				request.doStop();
+				_dialog.close();
+			}
+		});
+		
+		add(btnCancel);
 	}
 
 	public void setContainerDialog(IDialog dialog) {

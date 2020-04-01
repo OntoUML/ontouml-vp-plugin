@@ -1,9 +1,7 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
 import java.awt.Component;
-import java.sql.Timestamp;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;
@@ -25,7 +23,11 @@ import it.unibz.inf.ontouml.vp.views.ProgressPanel;
 public class DiagramVerificationAction implements VPActionController {
 
 	private ProgressPanel progressPanel;
+	private ProgressDialog loading;
 	private IDialog mainDialog;
+	ExecutorService executor;
+	DiagramVerificationRequest request;
+	Thread thread;
 
 	/**
 	 * 
@@ -42,28 +44,14 @@ public class DiagramVerificationAction implements VPActionController {
 			return;
 		}
 
-		ProgressDialog loading = new ProgressDialog();
+		request = new DiagramVerificationRequest();
+		loading = new ProgressDialog();
+
 		ApplicationManager.instance().getViewManager().showDialog(loading);
 
-		ExecutorService executor = Executors.newFixedThreadPool(10);
-		executor.execute(new Runnable() {
+		Thread thread = new Thread(request);
 
-			@Override
-			public void run() {
-				try {
-					ViewUtils.clearLog(ViewUtils.SCOPE_PLUGIN);
-					final String response = OntoUMLServerUtils.requestModelVerification(ModelElement.generateModel(true));
-
-					if (response != null) {
-						ViewUtils.logDiagramVerificationResponse(response);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-
-		});
-
+		thread.start();
 	}
 
 	/**
@@ -92,7 +80,7 @@ public class DiagramVerificationAction implements VPActionController {
 
 		@Override
 		public Component getComponent() {
-			progressPanel = new ProgressPanel();
+			progressPanel = new ProgressPanel(request);
 			return progressPanel;
 		}
 
@@ -103,7 +91,7 @@ public class DiagramVerificationAction implements VPActionController {
 			mainDialog.setModal(false);
 			mainDialog.setResizable(false);
 			dialog.setSize(progressPanel.getWidth(), progressPanel.getHeight() + 20);
-			progressPanel.setContainerDialog(dialog);
+			progressPanel.setContainerDialog(mainDialog);
 		}
 
 		@Override
@@ -112,9 +100,43 @@ public class DiagramVerificationAction implements VPActionController {
 
 		@Override
 		public boolean canClosed() {
+			request.doStop();
+			mainDialog.close();
 			return true;
 		}
 
 	}
 
+	public class DiagramVerificationRequest implements Runnable {
+
+		private boolean doStop = false;
+
+		public synchronized void doStop() {
+			this.doStop = true;
+		}
+
+		private synchronized boolean keepRunning() {
+			return this.doStop == false;
+		}
+
+		@Override
+		public void run() {
+			while (keepRunning()) {
+				try {
+					ViewUtils.clearLog(ViewUtils.SCOPE_PLUGIN);
+					final String response = OntoUMLServerUtils.requestModelVerification(ModelElement.generateModel(true));
+
+					if (keepRunning()) {
+						if (response != null) {
+							loading.canClosed();
+							ViewUtils.logDiagramVerificationResponse(response);
+						}
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 }
