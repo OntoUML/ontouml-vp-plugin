@@ -110,11 +110,12 @@ public class ModelVerificationAction implements VPActionController {
 					final String response = OntoUMLServerUtils.requestModelVerification(ModelElement.generateModel(true));
 
 					if (keepRunning()) {
-						if (response != null) {
-							loading.canClosed();
+						if (response != null)
 							ViewUtils.logVerificationResponse(response);
-						}
 					}
+					
+					loading.canClosed();
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
