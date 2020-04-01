@@ -1,6 +1,7 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
 import java.awt.Component;
+import java.sql.Timestamp;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -12,7 +13,6 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.view.IDialog;
 import com.vp.plugin.view.IDialogHandler;
 
-import it.unibz.inf.ontouml.vp.controllers.OpenConfigurationsAction.ConfigurationsDialog;
 import it.unibz.inf.ontouml.vp.model.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.OntoUMLServerUtils;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
@@ -42,8 +42,11 @@ public class DiagramVerificationAction implements VPActionController {
 			return;
 		}
 		
-		ApplicationManager.instance().getViewManager().showDialog(new ProgressDialog());
-/*
+		
+		
+		ProgressDialog loading = new ProgressDialog();
+		ApplicationManager.instance().getViewManager().showDialog(loading);
+		
 		ExecutorService executor = Executors.newFixedThreadPool(10);
 		executor.execute(new Runnable() {
 
@@ -51,18 +54,24 @@ public class DiagramVerificationAction implements VPActionController {
 			public void run() {
 				try {
 					ViewUtils.clearLog(ViewUtils.SCOPE_PLUGIN);
-					final String response = OntoUMLServerUtils.requestModelVerification(ModelElement.generateModel(true));
+					while(true)
+						System.out.println("doideira " + "[" + (new Timestamp(System.currentTimeMillis())) + "] ");
+					//final String response = OntoUMLServerUtils.requestModelVerification(ModelElement.generateModel(true));
 
-					if (response != null) {
-						ViewUtils.logDiagramVerificationResponse(response);
-					}
+				//	if (response != null) {
+				//		ViewUtils.logDiagramVerificationResponse(response);
+				//	}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 
-		});*/
-
+		});
+		
+		if(progressPanel.open == false)
+			loading.canClosed();
+		
+		
 	}
 
 	/**

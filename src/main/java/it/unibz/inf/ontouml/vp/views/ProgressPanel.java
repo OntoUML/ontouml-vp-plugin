@@ -1,13 +1,11 @@
 package it.unibz.inf.ontouml.vp.views;
 
-import it.unibz.inf.ontouml.vp.utils.Configurations;
-
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -49,6 +47,7 @@ public class ProgressPanel extends JPanel {
 		add(label, constraints);
 		add(progressBar, constraints);
 		add(btnCancel, constraints);
+		
 	}
 
 	public void setContainerDialog(IDialog dialog) {
