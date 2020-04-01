@@ -41,12 +41,10 @@ public class DiagramVerificationAction implements VPActionController {
 			ViewUtils.simpleDialog("Diagram Verification", "Please open a diagram before running this command.");
 			return;
 		}
-		
-		
-		
+
 		ProgressDialog loading = new ProgressDialog();
 		ApplicationManager.instance().getViewManager().showDialog(loading);
-		
+
 		ExecutorService executor = Executors.newFixedThreadPool(10);
 		executor.execute(new Runnable() {
 
@@ -54,24 +52,18 @@ public class DiagramVerificationAction implements VPActionController {
 			public void run() {
 				try {
 					ViewUtils.clearLog(ViewUtils.SCOPE_PLUGIN);
-					while(true)
-						System.out.println("doideira " + "[" + (new Timestamp(System.currentTimeMillis())) + "] ");
-					//final String response = OntoUMLServerUtils.requestModelVerification(ModelElement.generateModel(true));
+					final String response = OntoUMLServerUtils.requestModelVerification(ModelElement.generateModel(true));
 
-				//	if (response != null) {
-				//		ViewUtils.logDiagramVerificationResponse(response);
-				//	}
+					if (response != null) {
+						ViewUtils.logDiagramVerificationResponse(response);
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 
 		});
-		
-		if(progressPanel.open == false)
-			loading.canClosed();
-		
-		
+
 	}
 
 	/**
