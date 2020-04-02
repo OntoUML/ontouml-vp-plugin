@@ -87,7 +87,7 @@ public class ExportToGUFOAction implements VPActionController {
 		}
 	}
 
-	protected class ProgressDialog implements IDialogHandler {
+	public class ProgressDialog implements IDialogHandler {
 
 		@Override
 		public Component getComponent() {
@@ -111,12 +111,9 @@ public class ExportToGUFOAction implements VPActionController {
 
 		@Override
 		public boolean canClosed() {
-			request.doStop();
 			mainDialog.close();
-			ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
 			return true;
 		}
-
 	}
 
 	public class ExportToGUFORequest extends ServerRequest {
@@ -125,19 +122,22 @@ public class ExportToGUFOAction implements VPActionController {
 		public void run() {
 			while (keepRunning()) {
 				try {
-					final BufferedReader gufo = OntoUMLServerUtils.transformToGUFO(ModelElement.generateModel(true), "http://api.ontouml.org/", "turtle", "name");
+					final BufferedReader gufo = OntoUMLServerUtils.transformToGUFO(ModelElement.generateModel(true), "http://api.ontouml.org/", "turtle", "name", loading);
 
 					if (keepRunning()) {
 						if (gufo != null) {
-							mainDialog.close();
 							saveFile(gufo);
-							ViewUtils.cleanAndShowMessage("Model exported successfuly.");
+							ViewUtils.cleanAndShowMessage("Model exported successfully.");
 							request.doStop();
 						} else {
 							loading.canClosed();
+							request.doStop();
+							ViewUtils.cleanAndShowMessage("Unable to transform to GUFO. Please check your model.");
 						}
 					} else {
 						loading.canClosed();
+						request.doStop();
+						ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
 					}
 
 				} catch (Exception e) {

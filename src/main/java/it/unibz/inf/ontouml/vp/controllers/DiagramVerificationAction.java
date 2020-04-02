@@ -98,9 +98,7 @@ public class DiagramVerificationAction implements VPActionController {
 
 		@Override
 		public boolean canClosed() {
-			request.doStop();
 			mainDialog.close();
-			ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
 			return true;
 		}
 
@@ -112,7 +110,7 @@ public class DiagramVerificationAction implements VPActionController {
 		public void run() {
 			while (keepRunning()) {
 				try {
-					final String response = OntoUMLServerUtils.requestModelVerification(ModelElement.generateModel(true));
+					final String response = OntoUMLServerUtils.requestModelVerification(ModelElement.generateModel(true), loading);
 
 					if (keepRunning()) {
 						if (response != null) {
@@ -124,6 +122,7 @@ public class DiagramVerificationAction implements VPActionController {
 						}
 					} else {
 						loading.canClosed();
+						ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
 					}
 
 				} catch (Exception e) {

@@ -1,16 +1,22 @@
 package it.unibz.inf.ontouml.vp.utils;
 
+import java.awt.FileDialog;
+import java.awt.Frame;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.stream.Collectors;
 
 import javax.swing.ImageIcon;
 import javax.swing.JList;
@@ -18,6 +24,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -295,6 +302,37 @@ public class ViewUtils {
 				.getViewManager()
 				.showConfirmDialog(null, "Warning: this feature will affect all diagrams within the project.\n" + "Do you want to proceed?", "Smart Paint", JOptionPane.YES_NO_OPTION,
 						JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+	}
+
+	public static void saveFile(BufferedReader buffer) throws IOException {
+		final Configurations configs = Configurations.getInstance();
+		final ProjectConfigurations projectConfigurations = configs.getProjectConfigurations();
+		final FileDialog fd = new FileDialog((Frame) ApplicationManager.instance().getViewManager().getRootFrame(), "Choose destination", FileDialog.SAVE);
+
+		String suggestedFolderPath = projectConfigurations.getExportGUFOFolderPath();
+		String suggestedFileName = projectConfigurations.getExportGUFOFilename();
+
+		if (suggestedFileName.isEmpty()) {
+			String projectName = ApplicationManager.instance().getProjectManager().getProject().getName();
+			suggestedFileName = projectName + ".ttl";
+		}
+
+		fd.setDirectory(suggestedFolderPath);
+		fd.setFile(suggestedFileName);
+		fd.setVisible(true);
+
+		if (fd.getDirectory() != null && fd.getFile() != null) {
+			final String fileDirectory = fd.getDirectory();
+			final String fileName = !fd.getFile().endsWith(".ttl") ? fd.getFile() + ".ttl" : fd.getFile();
+			final String output = buffer.lines().collect(Collectors.joining("\n"));
+
+			Files.write(Paths.get(fileDirectory, fileName), output.getBytes());
+			projectConfigurations.setExportGUFOFolderPath(fileDirectory);
+			projectConfigurations.setExportGUFOFilename(fileName);
+			configs.save();
+		}
+		
+		ViewUtils.cleanAndShowMessage("File saved successfuly.");
 	}
 
 	public static String getCurrentClassDiagramName() {

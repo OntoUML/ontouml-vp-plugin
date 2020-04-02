@@ -80,9 +80,7 @@ public class ModelVerificationAction implements VPActionController {
 
 		@Override
 		public boolean canClosed() {
-			request.doStop();
 			mainDialog.close();
-			ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
 			return true;
 		}
 
@@ -94,18 +92,21 @@ public class ModelVerificationAction implements VPActionController {
 		public void run() {
 			while (keepRunning()) {
 				try {
-					final String response = OntoUMLServerUtils.requestModelVerification(ModelElement.generateModel(true));
+					final String response = OntoUMLServerUtils.requestModelVerification(ModelElement.generateModel(true), loading);
 
 					if (keepRunning()) {
 						if (response != null) {
-							mainDialog.close();
+							loading.canClosed();
 							ViewUtils.logVerificationResponse(response);
 							request.doStop();
 						} else {
 							loading.canClosed();
+							request.doStop();
 						}
 					} else {
 						loading.canClosed();
+						request.doStop();
+						ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
 					}
 
 				} catch (Exception e) {
