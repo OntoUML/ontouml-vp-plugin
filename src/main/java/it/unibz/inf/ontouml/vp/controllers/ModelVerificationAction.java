@@ -99,7 +99,7 @@ public class ModelVerificationAction implements VPActionController {
 					if (keepRunning()) {
 						if (response != null) {
 							mainDialog.close();
-							ViewUtils.logDiagramVerificationResponse(response);
+							ViewUtils.logVerificationResponse(response);
 							request.doStop();
 						} else {
 							loading.canClosed();
