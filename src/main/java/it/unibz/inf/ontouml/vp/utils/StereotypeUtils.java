@@ -394,6 +394,7 @@ public class StereotypeUtils {
 
 			// Deletes old tags that are not user-defined
 			if(oldValue.getTagDefinition() != null) {
+				oldContainer.removeTaggedValue(oldValue);
 				oldValue.delete();
 			}
 		}
