@@ -167,12 +167,15 @@ public class OntoUMLServerUtils {
 			}
 
 		} catch (SocketException e) {
+			loading.canClosed();
 			ViewUtils.verificationFailedDialog(USER_MESSAGE_NOT_FOUND);
 			e.printStackTrace();
 		} catch (IOException e) {
+			loading.canClosed();
 			ViewUtils.verificationFailedDialog(USER_MESSAGE_UNKNOWN_ERROR_RESPONSE);
 			e.printStackTrace();
 		} catch (Exception e) {
+			loading.canClosed();
 			ViewUtils.verificationFailedDialog(USER_MESSAGE_UNKNOWN_ERROR_REQUEST);
 			e.printStackTrace();
 		}

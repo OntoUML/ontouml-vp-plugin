@@ -97,8 +97,8 @@ public class ModelVerificationAction implements VPActionController {
 					if (keepRunning()) {
 						if (response != null) {
 							loading.canClosed();
-							ViewUtils.logVerificationResponse(response);
 							request.doStop();
+							ViewUtils.logVerificationResponse(response);
 						} else {
 							loading.canClosed();
 							request.doStop();
