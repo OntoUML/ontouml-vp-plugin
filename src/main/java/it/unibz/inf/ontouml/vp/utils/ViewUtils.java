@@ -1,22 +1,35 @@
 package it.unibz.inf.ontouml.vp.utils;
 
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.net.HttpURLConnection;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.ImageIcon;
+import javax.swing.JList;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.vp.plugin.ApplicationManager;
+import com.vp.plugin.DiagramManager;
+import com.vp.plugin.ViewManager;
 import com.vp.plugin.diagram.IClassDiagramUIModel;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
+import com.vp.plugin.model.IModelElement;
 
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 
@@ -39,7 +52,11 @@ public class ViewUtils {
 	// images
 	public static final String SIMPLE_LOGO = "simple_logo";
 	public static final String SIMPLE_LOGO_FILENAME = "ontouml-simple-logo.png";
-
+	public static final String NAVIGATION_LOGO = "navigation";
+	public static final String NAVIGATION_LOGO_FILENAME = "navigation.png";
+	public static final String MORE_HORIZ_LOGO = "more_horiz";
+	public static final String MORE_HORIZ_LOGO_FILENAME = "more_horiz.png";
+	
 	public static void log(String message) {
 		ApplicationManager.instance().getViewManager().showMessage(timestamp() + message);
 	}
@@ -68,7 +85,7 @@ public class ViewUtils {
 		return "[" + (new Timestamp(System.currentTimeMillis())) + "] ";
 	}
 
-	private static String getFilePath(String imageName) {
+	public static String getFilePath(String imageName) {
 
 		final File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();
 
@@ -76,60 +93,88 @@ public class ViewUtils {
 			case SIMPLE_LOGO:
 				return Paths.get(pluginDir.getAbsolutePath(), "icons", "logo", SIMPLE_LOGO_FILENAME).toFile()
 						.getAbsolutePath();
+			case NAVIGATION_LOGO:
+				return Paths.get(pluginDir.getAbsolutePath(), "icons", NAVIGATION_LOGO_FILENAME).toFile()
+						.getAbsolutePath();
+			case MORE_HORIZ_LOGO:
+				return Paths.get(pluginDir.getAbsolutePath(), "icons", MORE_HORIZ_LOGO_FILENAME).toFile()
+						.getAbsolutePath();
 			default:
 				return null;
 		}
-
 	}
 
 	public static void logDiagramVerificationResponse(String responseMessage) {
+		ArrayList<String> errorList = new ArrayList<String>();
+		ArrayList<String> idModelElementList = new ArrayList<String>();
+		
 		try {
 			JsonArray response = (JsonArray) new JsonParser().parse(responseMessage).getAsJsonArray();
 
 			final int errorCount = errorCountInCurrentDiagram(responseMessage);
-			final String diagramName =  getCurrentClassDiagramName();
+			final String diagramName = getCurrentClassDiagramName();
 
 			verificationDiagramConcludedDialog(errorCount, diagramName);
-
-			ViewUtils.simpleLog("--------- Diagram Verification Service ---------", SCOPE_PLUGIN);
-
+			
 			if(errorCount==0)
-				ViewUtils.simpleLog("No issues were found in diagram \"" + diagramName + "\".", SCOPE_PLUGIN);
+				errorList.add("No issues were found in diagram \"" + diagramName + "\".");
+			
 
 			for (JsonElement elem : response) {
 				final JsonObject error = elem.getAsJsonObject();
 				final String id = error.getAsJsonObject("source").get("id").getAsString();
+				
 				if (isElementInCurrentDiagram(id)) {
 					final String errorMessage = error.get("severity").getAsString() + ":" + " " + error.get("title").getAsString() + " " + error.get("description").getAsString();
-
-					ViewUtils.simpleLog(errorMessage, SCOPE_PLUGIN);
+					errorList.add(timestamp() + errorMessage);
+					idModelElementList.add(id);
 				}
 			}
+			
+			JList<Object> list = new JList<>(errorList.toArray());
+			ContextMenuListener listener = new ContextMenuListener(idModelElementList, list);
+			list.addMouseListener(listener);
+			list.addMouseMotionListener(listener);
+			
+			JScrollPane parentContainer = new JScrollPane(list);
+			ApplicationManager.instance().getViewManager().showMessagePaneComponent(OntoUMLPlugin.PLUGIN_ID, SCOPE_PLUGIN, parentContainer);
+
 		} catch (JsonSyntaxException e) {
 			verificationServerErrorDialog(responseMessage);
 		}
 	}
 	
 	public static void logVerificationResponse(String responseMessage) {
+		ArrayList<String> errorList = new ArrayList<String>();
+		ArrayList<String> idModelElementList = new ArrayList<String>();
 		try {
 			JsonArray response = (JsonArray) new JsonParser().parse(responseMessage).getAsJsonArray();
 			final int errorCount = response.size();
 
 			verificationConcludedDialog(errorCount);
 
-			ViewUtils.simpleLog("--------- Verification Service ---------", SCOPE_PLUGIN);
-
 			if(errorCount==0)
-				ViewUtils.simpleLog("No issues were found in your project.", SCOPE_PLUGIN);
-
+				errorList.add("No issues were found in your project.");
+			
 			for (JsonElement elem : response) {
 				final JsonObject error = elem.getAsJsonObject();
+				final String id = error.getAsJsonObject("source").get("id").getAsString();
 
 				final String errorMessage = error.get("severity").getAsString() + ":" + " "
 						+ error.get("title").getAsString() + " " + error.get("description").getAsString();
 
-				ViewUtils.simpleLog(errorMessage, SCOPE_PLUGIN);
+				errorList.add(timestamp() + errorMessage);
+				idModelElementList.add(id);
 			}
+			
+			JList<Object> list = new JList<>(errorList.toArray());
+			ContextMenuListener listener = new ContextMenuListener(idModelElementList, list);
+			list.addMouseListener(listener);
+			list.addMouseMotionListener(listener);
+			
+			JScrollPane parentContainer = new JScrollPane(list);
+			ApplicationManager.instance().getViewManager().showMessagePaneComponent(OntoUMLPlugin.PLUGIN_ID, SCOPE_PLUGIN, parentContainer);
+			
 		} catch (JsonSyntaxException e) {
 			verificationServerErrorDialog(responseMessage);
 		}
@@ -307,5 +352,163 @@ public class ViewUtils {
 		}
 		
 		return errorCount;
+	}
+	
+	public static boolean isElementInAnyDiagram(String elementId) {
+		final IDiagramUIModel[] diagramArray = ApplicationManager.instance().getProjectManager().getProject().toDiagramArray();
+
+		if (diagramArray == null)
+			return false;
+
+		for (IDiagramUIModel diagram : diagramArray) {
+			if (diagram instanceof IClassDiagramUIModel) {
+				for (IDiagramElement diagramElement : diagram.toDiagramElementArray()) {
+					IModelElement modelElement = diagramElement.getMetaModelElement();
+					if (modelElement.getId() != null && modelElement.getId().equals(elementId)) {
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
+	public static void openSpecDiagramElement(String elementId) {
+		final ApplicationManager app = ApplicationManager.instance();
+		final IModelElement element = app.getProjectManager().getProject().getModelElementById(elementId);
+		final ViewManager viewManager = app.getViewManager();
+
+		viewManager.openSpec(element, viewManager.getRootFrame());
+	}
+
+	public static void highlightDiagramElement(String elementId) {
+		final ApplicationManager app = ApplicationManager.instance();
+		final IModelElement element = app.getProjectManager().getProject().getModelElementById(elementId);
+		final DiagramManager diagramManager = app.getDiagramManager();
+		IDiagramElement diagramElement = null;
+
+		// Checks if the active diagram contains the element
+		if(diagramManager.getActiveDiagram() != null) {
+			final Iterator<?> iter = diagramManager.getActiveDiagram().diagramElementIterator();
+			while (iter.hasNext()) {
+				final IDiagramElement current = (IDiagramElement) iter.next();
+				if(current.getModelElement().equals(element)){
+					diagramElement = current;
+					continue;
+				}
+			}
+		}
+
+		// In case the active diagram does not contain it, get the master view or the first diagram element for that element
+		if(diagramElement == null) {
+			if(element.getMasterView() != null) {
+				diagramElement = element.getMasterView();
+			}
+			else {
+				final IDiagramElement[] diagramElements = element.getDiagramElements();
+				diagramElement = diagramElements != null ? diagramElements[0] : null;
+			}
+		}
+
+		// Highlights the diagram element if it is not null
+		if(diagramElement != null) {
+			diagramManager.highlight(diagramElement);
+		}
+	}
+}
+
+@SuppressWarnings("serial")
+final class ContextMenu extends JPopupMenu {
+	private JMenuItem takeMeThere;
+	private JMenuItem openSpec;
+	private ActionListener menuListener;
+	
+	public ContextMenu(){
+		
+	}
+
+	public ContextMenu(String idModelElement) {
+		
+		menuListener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				switch (e.getActionCommand()) {
+				case "Take me there!":
+					System.out.println("Firing 'Highlight'");
+					ViewUtils.highlightDiagramElement(idModelElement);
+					break;
+				case "Open Specification":
+					System.out.println("Firing 'Open Specification'");
+					ViewUtils.openSpecDiagramElement(idModelElement);
+					break;
+				default:
+					break;
+				}
+			}
+		};
+
+		takeMeThere = new JMenuItem("Take me there!", new ImageIcon(ViewUtils.getFilePath(ViewUtils.NAVIGATION_LOGO)));
+		takeMeThere.addActionListener(menuListener);
+		openSpec = new JMenuItem("Open Specification", new ImageIcon(ViewUtils.getFilePath(ViewUtils.MORE_HORIZ_LOGO)));
+		openSpec.addActionListener(menuListener);
+		add(takeMeThere);
+		add(openSpec);
+	}
+	
+	public void disableItem(String item){
+		switch (item) {
+		case "Take me there!":
+			takeMeThere.setEnabled(false);
+			break;
+		case "Open Specification":
+			openSpec.setEnabled(false);
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+final class ContextMenuListener extends MouseAdapter {
+	private ArrayList<String> idModelElementList;
+	private JList<Object> messageList;
+
+	ContextMenuListener(ArrayList<String> list, JList<Object> messages) {
+		super();
+		idModelElementList = list;
+		messageList = messages;
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		final Point p = e.getPoint();
+		final int index = messageList.locationToIndex(p);
+
+		messageList.setSelectedIndex(index);
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		messageList.clearSelection();
+	}
+
+	public void mouseReleased(MouseEvent e) {
+		doPop(e);
+	}
+
+	private void doPop(MouseEvent e) {
+		ContextMenu menu;
+		String idModelElement = idModelElementList.get(messageList.locationToIndex(e.getPoint()));
+
+		if (idModelElement == null) {
+			menu = new ContextMenu();
+		} else {
+			menu = new ContextMenu(idModelElement);
+			if (!ViewUtils.isElementInAnyDiagram(idModelElement))
+				menu.disableItem("Take me there!");
+		}
+
+		menu.show(e.getComponent(), e.getX(), e.getY());
 	}
 }

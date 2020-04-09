@@ -243,12 +243,6 @@ public class SmartModelling {
 		final ArrayList<String> sourceStereotypes = new ArrayList<String>(Arrays.asList(source.toStereotypeArray()));
 		final ArrayList<String> targetStereotypes = new ArrayList<String>(Arrays.asList(target.toStereotypeArray()));
 
-		if (sourceStereotypes.size() == 0 || targetStereotypes.size() == 0) {
-			// if any end has no stereotypes everything is allowed
-			action.setEnabled(true);
-			return;
-		}
-
 		if (sourceStereotypes.size() > 1 || targetStereotypes.size() > 1) {
 			// if any end has more than 1 stereotypes nothing is allowed
 			action.setEnabled(false);
@@ -260,11 +254,8 @@ public class SmartModelling {
 		final String targetStereotype = targetStereotypes.get(0);
 		final ArrayList<String> allowedCombinations = AssociationConstraints.allowedCombinations.get(new SimpleEntry<String, String>(sourceStereotype, targetStereotype));
 
-		if (allowedCombinations == null || !allowedCombinations.contains(action.getActionId())) {
+		if (allowedCombinations == null || !allowedCombinations.contains(action.getActionId()))
 			action.setEnabled(false);
-		} else {
-			action.setEnabled(true);
-		}
 
 		return;
 	}
@@ -273,8 +264,6 @@ public class SmartModelling {
 
 		final ISimpleRelationship[] relationshipsTo = _class.toToRelationshipArray();
 		final ISimpleRelationship[] relationshipsFrom = _class.toFromRelationshipArray();
-		
-		action.setEnabled(true);
 
 		for (int i = 0; relationshipsTo != null && i < relationshipsTo.length; i++) {
 			final ISimpleRelationship relationshipTo = relationshipsTo[i];
