@@ -422,4 +422,28 @@ public class StereotypeUtils {
 			}
 		}
 	}
+
+	public static void setAllowed(IModelElement element, String stereotypeName, String allowed) {
+		if(element.getTaggedValues() == null) { 
+			return ; 
+		}
+
+		Iterator<?> values = element.getTaggedValues().taggedValueIterator();
+			
+		while(values.hasNext()) {
+			final ITaggedValue value = (ITaggedValue) values.next();
+			final ITaggedValueDefinition definition = value != null ? value.getTagDefinition() : null;
+			final IStereotype valueStereotype = definition != null ? 
+					value.getTagDefinitionStereotype() : null;
+			final String valueStereotypeName = valueStereotype != null ?
+					valueStereotype.getName() : null;
+			
+			if(
+				value.getName().equals("allowed") && 
+				stereotypeName.equals(valueStereotypeName)
+			) {
+				value.setValue(allowed);
+			}
+		}
+	}
 }
