@@ -13,10 +13,4 @@
 			<outputDirectory>./</outputDirectory>
 		</fileSet>
 	</fileSets>
-	<files>
-		<file>
-			<source>${project.basedir}/plugin.xml</source>
-			<outputDirectory>./</outputDirectory>
-		</file>
-	</files>
 </assembly>

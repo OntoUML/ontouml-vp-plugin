@@ -22,6 +22,9 @@ Requirements:
 * Java 8 or later
 
 Build instructions:
+
+1. Clone the repository  
+
 * Clone this project within Visual Paradigm's `plugins` folder, typically:
 	* `~/.config/VisualParadigm/plugins/` in **Linux**
 	* `C:\Users\<YOUR_USER_NAME>\AppData\Roaming\VisualParadigm\plugins\` in **Windows**

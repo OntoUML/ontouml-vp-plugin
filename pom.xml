@@ -195,12 +195,6 @@
                                 <resource>
                                     <directory>${project.build.directory}/classes</directory>
                                 </resource>
-                                <resource>
-                                    <directory>${project.basedir}</directory>
-                                    <includes>
-                                        <include>plugin.xml</include>
-                                    </includes>
-                                </resource>
                             </resources>
                         </configuration>
                     </execution>
