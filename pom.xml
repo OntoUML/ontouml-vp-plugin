@@ -8,8 +8,8 @@
 	<name>OntoUML-2.0-for-Visual-Paradigm</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<classes.dir>${project.basedir}/classes</classes.dir>
-		<visualparadigm.app.dir>C:\Program Files\Visual Paradigm CE 16.1</visualparadigm.app.dir>
+<!--		<classes.dir>${project.basedir}/classes</classes.dir>-->
+		<visualparadigm.app.dir>/Applications/Visual Paradigm.app/Contents/Resources/app</visualparadigm.app.dir>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -84,10 +84,10 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<outputDirectory>${classes.dir}</outputDirectory>
+<!--		<outputDirectory>${classes.dir}</outputDirectory>-->
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
+				<!--This plugin's configuration is used to store Eclipse m2e settings
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
