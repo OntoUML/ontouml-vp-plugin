@@ -2,13 +2,15 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<groupId>it.unibz.inf.ontouml</groupId>
-	<artifactId>it.unibz.inf.ontouml.vp</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>OntoUML-2.0-for-Visual-Paradigm</name>
+	<artifactId>ontouml-vp-plugin</artifactId>
+	<version>0.0.2-SNAPSHOT</version>
+
+	<name>OntoUML 2 Plugin for Visual Paradigm</name>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-<!--		<classes.dir>${project.basedir}/classes</classes.dir>-->
 		<visualparadigm.app.dir>/Applications/Visual Paradigm.app/Contents/Resources/app</visualparadigm.app.dir>
 	</properties>
 	<dependencies>
@@ -84,7 +86,6 @@
 		</dependency>
 	</dependencies>
 	<build>
-<!--		<outputDirectory>${classes.dir}</outputDirectory>-->
 		<pluginManagement>
 			<plugins>
 				<!--This plugin's configuration is used to store Eclipse m2e settings
@@ -352,9 +353,7 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>3.2.0</version>
 				<configuration>
-					<finalName>ontouml-vp-plugin</finalName>
 					<appendAssemblyId>false</appendAssemblyId>
-					<outputDirectory>${project.basedir}</outputDirectory>
 					<descriptors>
 						<descriptor>${project.basedir}/assembly.xml</descriptor>
 					</descriptors>
