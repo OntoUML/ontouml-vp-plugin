@@ -176,23 +176,20 @@ public class JCheckBoxTree extends JTree {
 			
 			if (obj instanceof IDiagramUIModel)
 				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.PACKAGE_LOGO)));
-			if (obj instanceof IClass)
+			else if (obj instanceof IClass)
 				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.CLASS_LOGO)));
-
-			if (obj instanceof IAttribute)
+			else if (obj instanceof IAttribute)
 				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.CLASS_LOGO)));
-
-			if (obj instanceof IAssociation)
+			else if (obj instanceof IAssociation)
 				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.ASSOCIATION_LOGO)));
-
-			if (obj instanceof IAssociationEnd)
+			else if (obj instanceof IAssociationEnd)
 				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.CLASS_LOGO)));
-
-			if (obj instanceof IGeneralization)
+			else if (obj instanceof IGeneralization)
 				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.GENERALIZATION_LOGO)));
-
-			if (obj instanceof IAssociationClass)
-				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.ASSOCIATION_LOGO)));
+			else if (obj instanceof IAssociationClass)
+				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.ASSOCIATION_LOGO)));	
+			else
+				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.PACKAGE_LOGO)));
 			
 
 			checkBox.setSelected(cn.isSelected);
