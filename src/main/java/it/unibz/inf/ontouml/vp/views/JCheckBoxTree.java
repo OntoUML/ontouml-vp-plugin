@@ -4,17 +4,22 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Enumeration;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTree;
+import javax.swing.UIManager;
 import javax.swing.event.EventListenerList;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreeCellRenderer;
@@ -39,6 +44,7 @@ import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.model.Model;
 import it.unibz.inf.ontouml.vp.model.ModelElement;
+import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 
 public class JCheckBoxTree extends JTree {
 
@@ -144,11 +150,14 @@ public class JCheckBoxTree extends JTree {
 	private class CheckBoxCellRenderer extends JPanel implements TreeCellRenderer {
 		private static final long serialVersionUID = -7341833835878991719L;
 		JCheckBox checkBox;
+		JLabel label;
 
 		public CheckBoxCellRenderer() {
 			super();
 			this.setLayout(new BorderLayout());
 			checkBox = new JCheckBox();
+			label = new JLabel();
+			add(label, BorderLayout.WEST);
 			add(checkBox, BorderLayout.CENTER);
 			setOpaque(false);
 		}
@@ -160,20 +169,148 @@ public class JCheckBoxTree extends JTree {
 			Object obj = node.getUserObject();
 			TreePath tp = new TreePath(node.getPath());
 			CheckedNode cn = nodesCheckingState.get(tp);
+
 			if (cn == null) {
 				return this;
 			}
+			
+			if (obj instanceof IDiagramUIModel)
+				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.PACKAGE_LOGO)));
+			if (obj instanceof IClass)
+				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.CLASS_LOGO)));
+
+			if (obj instanceof IAttribute)
+				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.CLASS_LOGO)));
+
+			if (obj instanceof IAssociation)
+				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.ASSOCIATION_LOGO)));
+
+			if (obj instanceof IAssociationEnd)
+				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.CLASS_LOGO)));
+
+			if (obj instanceof IGeneralization)
+				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.GENERALIZATION_LOGO)));
+
+			if (obj instanceof IAssociationClass)
+				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.ASSOCIATION_LOGO)));
+			
+
 			checkBox.setSelected(cn.isSelected);
-			checkBox.setText(obj.toString());
+			checkBox.setText(getNameNode(node));
+
+			tree.repaint();
+
 			checkBox.setOpaque(cn.isSelected && cn.hasChildren && !cn.allChildrenSelected);
+
 			return this;
 		}
+
 	}
+
+	private String getNameNode(DefaultMutableTreeNode node) {
+		String nameNode = "";
+
+		Object obj = ((DefaultMutableTreeNode) node).getUserObject();
+
+		if (obj instanceof IDiagramUIModel) {
+			nameNode = "Diagram";
+			if (((IDiagramUIModel) obj).getName() != null && !((IDiagramUIModel) obj).getName().equals(""))
+				nameNode = ((IDiagramUIModel) obj).getName();
+		}
+
+		if (obj instanceof IClass) {
+			nameNode = "Class";
+
+			if (((IClass) obj).getName() != null && !((IClass) obj).getName().equals(""))
+				nameNode = ((IClass) obj).getName();
+		}
+
+		if (obj instanceof IAttribute) {
+			nameNode = "Attribute";
+
+			String attributeName = "";
+			String attributeType = "";
+
+			if (((IAttribute) obj).getName() != null)
+				attributeName = ((IAttribute) obj).getName();
+
+			if (((IAttribute) obj).getType() != null)
+				attributeType = ((IAttribute) obj).getTypeAsString();
+
+			nameNode = attributeName + " : " + attributeType;
+
+		}
+
+		if (obj instanceof IAssociation) {
+			nameNode = "Association";
+			String nameFrom = "associationFrom";
+			String nameTo = "associationTo";
+
+			if (((IAssociation) obj).getFrom().getName() != null
+					&& !((IAssociation) obj).getFrom().getName().equals(""))
+				nameFrom = ((IAssociation) obj).getFrom().getName();
+
+			if (((IAssociation) obj).getTo().getName() != null && !((IAssociation) obj).getTo().getName().equals(""))
+				nameTo = ((IAssociation) obj).getTo().getName();
+
+			nameNode = "(" + nameFrom + " -> " + nameTo + ")";
+		}
+
+		if (obj instanceof IAssociationEnd) {
+			nameNode = "AssociationEnd";
+
+			if (((IAssociationEnd) obj).getName() != null && !((IAssociationEnd) obj).getName().equals(""))
+				nameNode = ((IAssociationEnd) obj).getName();
+		}
+
+		if (obj instanceof IGeneralization) {
+			nameNode = "Generalization";
+			String nameFrom = "generalizationFrom";
+			String nameTo = "generalizationTo";
+
+			if (((IGeneralization) obj).getFrom().getName() != null
+					&& !((IGeneralization) obj).getFrom().getName().equals(""))
+				nameFrom = ((IGeneralization) obj).getFrom().getName();
+
+			if (((IGeneralization) obj).getTo().getName() != null
+					&& !((IGeneralization) obj).getTo().getName().equals(""))
+				nameTo = ((IGeneralization) obj).getTo().getName();
+
+			nameNode = "(" + nameFrom + " -> " + nameTo + ")";
+		}
+
+		if (obj instanceof IAssociationClass) {
+			nameNode = "AssociationClass";
+			String nameFrom = "associationClassFrom";
+			String nameTo = "associationClassTo";
+
+			if (((IAssociationClass) obj).getFrom().getName() != null
+					&& !((IAssociationClass) obj).getFrom().getName().equals(""))
+				nameFrom = ((IAssociationClass) obj).getFrom().getName();
+
+			if (((IAssociationClass) obj).getTo().getName() != null
+					&& !((IAssociationClass) obj).getTo().getName().equals(""))
+				nameTo = ((IAssociationClass) obj).getTo().getName();
+
+			nameNode = "(" + nameFrom + " -> " + nameTo + ")";
+		}
+
+		return nameNode;
+	}
+
+	/*
+	 * private void visitAllNodes(DefaultMutableTreeNode node) {
+	 * 
+	 * Object obj = ((DefaultMutableTreeNode) node).getUserObject();
+	 * 
+	 * if (node.getChildCount() >= 0) { for (Enumeration<? extends TreeNode> e =
+	 * node.children(); e.hasMoreElements();) { DefaultMutableTreeNode n =
+	 * (DefaultMutableTreeNode) e.nextElement(); visitAllNodes(n); } } }
+	 */
 
 	public JCheckBoxTree(String type) {
 
 		super(getTreeModel(type));
-
 		// Disabling toggling by double-click
 		this.setToggleClickCount(0);
 		// Overriding cell renderer by new one defined above
@@ -296,6 +433,7 @@ public class JCheckBoxTree extends JTree {
 			DefaultMutableTreeNode parent;
 			parent = new DefaultMutableTreeNode(modelElements[i].getName());
 			root.add(parent);
+
 		}
 
 		return new DefaultTreeModel(root);
@@ -313,7 +451,7 @@ public class JCheckBoxTree extends JTree {
 
 				if (diagram instanceof IClassDiagramUIModel) {
 					DefaultMutableTreeNode parent;
-					parent = new DefaultMutableTreeNode(diagram.getName());
+					parent = new DefaultMutableTreeNode(diagram);
 					root.add(parent);
 					setChildrenFromDiagrams(diagram, parent);
 				}
@@ -336,31 +474,16 @@ public class JCheckBoxTree extends JTree {
 		for (int i = 0; classes != null && i < classes.length; i++) {
 			if (classes[i].getModelElement() != null) {
 				IClass _class = (IClass) classes[i].getModelElement();
-				String className="";
-				
-				if(_class.getName()!=null)
-					className = _class.getName();
 
 				DefaultMutableTreeNode newParent;
-				newParent = new DefaultMutableTreeNode(className);
+				newParent = new DefaultMutableTreeNode(_class);
 
 				IAttribute[] attributes = _class.toAttributeArray();
-				
-				for (int j = 0; attributes != null && j < attributes.length; j++) {
-					String attributeName = "";
-					String attributeType = "";
-					
-					if(attributes[j].getName()!=null)
-						attributeName = attributes[j].getName();
-					
-					if(attributes[j].getType()!=null)
-						attributeType = attributes[j].getTypeAsString();
-					
-					newParent.add(new DefaultMutableTreeNode(attributeName + " : " + attributeType));
-				}
+
+				for (int j = 0; attributes != null && j < attributes.length; j++)
+					newParent.add(new DefaultMutableTreeNode(attributes[j]));
 
 				newRoot.add(newParent);
-
 			}
 		}
 
@@ -369,80 +492,40 @@ public class JCheckBoxTree extends JTree {
 				IAssociation association = (IAssociation) associations[i].getModelElement();
 				DefaultMutableTreeNode newParent;
 
-				String nameFrom = "";
-				String nameTo = "";
-
-				if (association.getFrom().getName() != null)
-					nameFrom = association.getFrom().getName();
-
-				if (association.getTo().getName() != null)
-					nameTo = association.getTo().getName();
-
-				newParent = new DefaultMutableTreeNode("(" + nameFrom + " -> " + nameTo + ")");
-
-				nameFrom = "fromEnd";
-				nameTo = "toEnd";
+				newParent = new DefaultMutableTreeNode(association);
 
 				IAssociationEnd fromEnd = (IAssociationEnd) association.getFromEnd();
 				IAssociationEnd toEnd = (IAssociationEnd) association.getToEnd();
 
-				if (fromEnd != null) {
+				if (fromEnd != null)
+					newParent.add(new DefaultMutableTreeNode(fromEnd));
 
-					if (fromEnd.getName() != null)
-						nameFrom = fromEnd.getName();
-
-					newParent.add(new DefaultMutableTreeNode(nameFrom));
-				}
-
-				if (toEnd != null) {
-
-					if (toEnd.getName() != null)
-						nameTo = toEnd.getName();
-
-					newParent.add(new DefaultMutableTreeNode(nameTo));
-				}
+				if (toEnd != null)
+					newParent.add(new DefaultMutableTreeNode(toEnd));
 
 				newRoot.add(newParent);
 
 			}
 		}
-		
+
 		for (int i = 0; generalizations != null && i < generalizations.length; i++) {
 			if (generalizations[i].getModelElement() != null) {
 				IGeneralization generalization = (IGeneralization) generalizations[i].getModelElement();
 				DefaultMutableTreeNode newParent;
 
-				String nameFrom = "";
-				String nameTo = "";
-
-				if (generalization.getFrom().getName() != null)
-					nameFrom = generalization.getFrom().getName();
-
-				if (generalization.getTo().getName() != null)
-					nameTo = generalization.getTo().getName();
-
-				newParent = new DefaultMutableTreeNode("(" + nameFrom + " -> " + nameTo + ")");
+				newParent = new DefaultMutableTreeNode(generalization);
 
 				newRoot.add(newParent);
 
 			}
 		}
-		
+
 		for (int i = 0; associationClasses != null && i < associationClasses.length; i++) {
 			if (associationClasses[i].getModelElement() != null) {
 				IAssociationClass associationClass = (IAssociationClass) associationClasses[i].getModelElement();
 				DefaultMutableTreeNode newParent;
 
-				String nameFrom = "";
-				String nameTo = "";
-
-				if (associationClass.getFrom().getName() != null)
-					nameFrom = associationClass.getFrom().getName();
-
-				if (associationClass.getTo().getName() != null)
-					nameTo = associationClass.getTo().getName();
-
-				newParent = new DefaultMutableTreeNode("(" + nameFrom + " -> " + nameTo + ")");
+				newParent = new DefaultMutableTreeNode(associationClass);
 
 				newRoot.add(newParent);
 

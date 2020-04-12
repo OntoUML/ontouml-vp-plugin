@@ -62,6 +62,14 @@ public class ViewUtils {
 	public static final String NAVIGATION_LOGO_FILENAME = "navigation.png";
 	public static final String MORE_HORIZ_LOGO = "more_horiz";
 	public static final String MORE_HORIZ_LOGO_FILENAME = "more_horiz.png";
+	public static final String PACKAGE_LOGO = "package";
+	public static final String PACKAGE_LOGO_FILENAME = "package.png";
+	public static final String CLASS_LOGO = "class";
+	public static final String CLASS_LOGO_FILENAME = "class.png";
+	public static final String ASSOCIATION_LOGO = "association";
+	public static final String ASSOCIATION_LOGO_FILENAME = "association.png";
+	public static final String GENERALIZATION_LOGO = "generalization";
+	public static final String GENERALIZATION_LOGO_FILENAME = "generalization.png";
 
 	public static void log(String message) {
 		ApplicationManager.instance().getViewManager().showMessage(timestamp() + message);
@@ -114,6 +122,14 @@ public class ViewUtils {
 			return Paths.get(pluginDir.getAbsolutePath(), "icons", NAVIGATION_LOGO_FILENAME).toFile().getAbsolutePath();
 		case MORE_HORIZ_LOGO:
 			return Paths.get(pluginDir.getAbsolutePath(), "icons", MORE_HORIZ_LOGO_FILENAME).toFile().getAbsolutePath();
+		case PACKAGE_LOGO:
+			return Paths.get(pluginDir.getAbsolutePath(), "icons", PACKAGE_LOGO_FILENAME).toFile().getAbsolutePath();
+		case CLASS_LOGO:
+			return Paths.get(pluginDir.getAbsolutePath(), "icons", CLASS_LOGO_FILENAME).toFile().getAbsolutePath();
+		case ASSOCIATION_LOGO:
+			return Paths.get(pluginDir.getAbsolutePath(), "icons", ASSOCIATION_LOGO_FILENAME).toFile().getAbsolutePath();
+		case GENERALIZATION_LOGO:
+			return Paths.get(pluginDir.getAbsolutePath(), "icons", GENERALIZATION_LOGO_FILENAME).toFile().getAbsolutePath();
 		default:
 			return null;
 		}
