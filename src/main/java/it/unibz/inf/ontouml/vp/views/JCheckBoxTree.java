@@ -1,0 +1,455 @@
+package it.unibz.inf.ontouml.vp.views;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.EventListener;
+import java.util.EventObject;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+import javax.swing.JTree;
+import javax.swing.event.EventListenerList;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.DefaultTreeSelectionModel;
+import javax.swing.tree.TreeCellRenderer;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+
+import com.vp.plugin.ApplicationManager;
+import com.vp.plugin.diagram.IClassDiagramUIModel;
+import com.vp.plugin.diagram.IDiagramElement;
+import com.vp.plugin.diagram.IDiagramUIModel;
+import com.vp.plugin.model.IAssociation;
+import com.vp.plugin.model.IAssociationClass;
+import com.vp.plugin.model.IAssociationEnd;
+import com.vp.plugin.model.IAttribute;
+import com.vp.plugin.model.IClass;
+import com.vp.plugin.model.IGeneralization;
+import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.IPackage;
+import com.vp.plugin.model.IProject;
+import com.vp.plugin.model.factory.IModelElementFactory;
+
+import it.unibz.inf.ontouml.vp.model.Model;
+import it.unibz.inf.ontouml.vp.model.ModelElement;
+
+public class JCheckBoxTree extends JTree {
+
+	private static final long serialVersionUID = -4194122328392241790L;
+
+	JCheckBoxTree selfPointer = this;
+
+	// Defining data structure that will enable to fast check-indicate the state of
+	// each node
+	// It totally replaces the "selection" mechanism of the JTree
+	private class CheckedNode {
+		boolean isSelected;
+		boolean hasChildren;
+		boolean allChildrenSelected;
+
+		public CheckedNode(boolean isSelected_, boolean hasChildren_, boolean allChildrenSelected_) {
+			isSelected = isSelected_;
+			hasChildren = hasChildren_;
+			allChildrenSelected = allChildrenSelected_;
+		}
+	}
+
+	HashMap<TreePath, CheckedNode> nodesCheckingState;
+	HashSet<TreePath> checkedPaths = new HashSet<TreePath>();
+
+	// Defining a new event type for the checking mechanism and preparing
+	// event-handling mechanism
+	protected EventListenerList listenerList = new EventListenerList();
+
+	public class CheckChangeEvent extends EventObject {
+		private static final long serialVersionUID = -8100230309044193368L;
+
+		public CheckChangeEvent(Object source) {
+			super(source);
+		}
+	}
+
+	public interface CheckChangeEventListener extends EventListener {
+		public void checkStateChanged(CheckChangeEvent event);
+	}
+
+	public void addCheckChangeEventListener(CheckChangeEventListener listener) {
+		listenerList.add(CheckChangeEventListener.class, listener);
+	}
+
+	public void removeCheckChangeEventListener(CheckChangeEventListener listener) {
+		listenerList.remove(CheckChangeEventListener.class, listener);
+	}
+
+	void fireCheckChangeEvent(CheckChangeEvent evt) {
+		Object[] listeners = listenerList.getListenerList();
+		for (int i = 0; i < listeners.length; i++) {
+			if (listeners[i] == CheckChangeEventListener.class) {
+				((CheckChangeEventListener) listeners[i + 1]).checkStateChanged(evt);
+			}
+		}
+	}
+
+	// Override
+	public void setModel(TreeModel newModel) {
+		super.setModel(newModel);
+		resetCheckingState();
+	}
+
+	// New method that returns only the checked paths (totally ignores original
+	// "selection" mechanism)
+	public TreePath[] getCheckedPaths() {
+		return checkedPaths.toArray(new TreePath[checkedPaths.size()]);
+	}
+
+	// Returns true in case that the node is selected, has children but not all of
+	// them are selected
+	public boolean isSelectedPartially(TreePath path) {
+		CheckedNode cn = nodesCheckingState.get(path);
+		return cn.isSelected && cn.hasChildren && !cn.allChildrenSelected;
+	}
+
+	private void resetCheckingState() {
+		nodesCheckingState = new HashMap<TreePath, CheckedNode>();
+		checkedPaths = new HashSet<TreePath>();
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) getModel().getRoot();
+		if (node == null) {
+			return;
+		}
+		addSubtreeToCheckingStateTracking(node);
+	}
+
+	// Creating data structure of the current model for the checking mechanism
+	private void addSubtreeToCheckingStateTracking(DefaultMutableTreeNode node) {
+		TreeNode[] path = node.getPath();
+		TreePath tp = new TreePath(path);
+		CheckedNode cn = new CheckedNode(false, node.getChildCount() > 0, false);
+		nodesCheckingState.put(tp, cn);
+		for (int i = 0; i < node.getChildCount(); i++) {
+			addSubtreeToCheckingStateTracking(
+					(DefaultMutableTreeNode) tp.pathByAddingChild(node.getChildAt(i)).getLastPathComponent());
+		}
+	}
+
+	// Overriding cell renderer by a class that ignores the original "selection"
+	// mechanism
+	// It decides how to show the nodes due to the checking-mechanism
+	private class CheckBoxCellRenderer extends JPanel implements TreeCellRenderer {
+		private static final long serialVersionUID = -7341833835878991719L;
+		JCheckBox checkBox;
+
+		public CheckBoxCellRenderer() {
+			super();
+			this.setLayout(new BorderLayout());
+			checkBox = new JCheckBox();
+			add(checkBox, BorderLayout.CENTER);
+			setOpaque(false);
+		}
+
+		@Override
+		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,
+				boolean leaf, int row, boolean hasFocus) {
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+			Object obj = node.getUserObject();
+			TreePath tp = new TreePath(node.getPath());
+			CheckedNode cn = nodesCheckingState.get(tp);
+			if (cn == null) {
+				return this;
+			}
+			checkBox.setSelected(cn.isSelected);
+			checkBox.setText(obj.toString());
+			checkBox.setOpaque(cn.isSelected && cn.hasChildren && !cn.allChildrenSelected);
+			return this;
+		}
+	}
+
+	public JCheckBoxTree(String type) {
+
+		super(getTreeModel(type));
+
+		// Disabling toggling by double-click
+		this.setToggleClickCount(0);
+		// Overriding cell renderer by new one defined above
+		CheckBoxCellRenderer cellRenderer = new CheckBoxCellRenderer();
+		this.setCellRenderer(cellRenderer);
+
+		// Overriding selection model by an empty one
+		DefaultTreeSelectionModel dtsm = new DefaultTreeSelectionModel() {
+			private static final long serialVersionUID = -8190634240451667286L;
+
+			// Totally disabling the selection mechanism
+			public void setSelectionPath(TreePath path) {
+			}
+
+			public void addSelectionPath(TreePath path) {
+			}
+
+			public void removeSelectionPath(TreePath path) {
+			}
+
+			public void setSelectionPaths(TreePath[] pPaths) {
+			}
+		};
+		// Calling checking mechanism on mouse click
+		this.addMouseListener(new MouseListener() {
+			public void mouseClicked(MouseEvent arg0) {
+				TreePath tp = selfPointer.getPathForLocation(arg0.getX(), arg0.getY());
+				if (tp == null) {
+					return;
+				}
+				boolean checkMode = !nodesCheckingState.get(tp).isSelected;
+				checkSubTree(tp, checkMode);
+				updatePredecessorsWithCheckMode(tp, checkMode);
+				// Firing the check change event
+				fireCheckChangeEvent(new CheckChangeEvent(new Object()));
+				// Repainting tree after the data structures were updated
+				selfPointer.repaint();
+			}
+
+			public void mouseEntered(MouseEvent arg0) {
+			}
+
+			public void mouseExited(MouseEvent arg0) {
+			}
+
+			public void mousePressed(MouseEvent arg0) {
+			}
+
+			public void mouseReleased(MouseEvent arg0) {
+			}
+		});
+		this.setSelectionModel(dtsm);
+	}
+
+	// When a node is checked/unchecked, updating the states of the predecessors
+	protected void updatePredecessorsWithCheckMode(TreePath tp, boolean check) {
+		TreePath parentPath = tp.getParentPath();
+		// If it is the root, stop the recursive calls and return
+		if (parentPath == null) {
+			return;
+		}
+		CheckedNode parentCheckedNode = nodesCheckingState.get(parentPath);
+		DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) parentPath.getLastPathComponent();
+		parentCheckedNode.allChildrenSelected = true;
+		parentCheckedNode.isSelected = false;
+		for (int i = 0; i < parentNode.getChildCount(); i++) {
+			TreePath childPath = parentPath.pathByAddingChild(parentNode.getChildAt(i));
+			CheckedNode childCheckedNode = nodesCheckingState.get(childPath);
+			// It is enough that even one subtree is not fully selected
+			// to determine that the parent is not fully selected
+			if (!childCheckedNode.allChildrenSelected) {
+				parentCheckedNode.allChildrenSelected = false;
+			}
+			// If at least one child is selected, selecting also the parent
+			if (childCheckedNode.isSelected) {
+				parentCheckedNode.isSelected = true;
+			}
+		}
+		if (parentCheckedNode.isSelected) {
+			checkedPaths.add(parentPath);
+		} else {
+			checkedPaths.remove(parentPath);
+		}
+		// Go to upper predecessor
+		updatePredecessorsWithCheckMode(parentPath, check);
+	}
+
+	// Recursively checks/unchecks a subtree
+	protected void checkSubTree(TreePath tp, boolean check) {
+		CheckedNode cn = nodesCheckingState.get(tp);
+		cn.isSelected = check;
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) tp.getLastPathComponent();
+		for (int i = 0; i < node.getChildCount(); i++) {
+			checkSubTree(tp.pathByAddingChild(node.getChildAt(i)), check);
+		}
+		cn.allChildrenSelected = check;
+		if (check) {
+			checkedPaths.add(tp);
+		} else {
+			checkedPaths.remove(tp);
+		}
+	}
+
+	private static TreeModel getTreeModel(String type) {
+		if (type.equals("package"))
+			return getTreeModelPackage();
+		else
+			return getTreeModelDiagram();
+	}
+
+	private static TreeModel getTreeModelPackage() {
+		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
+		final String[] rootLevelElements = { IModelElementFactory.MODEL_TYPE_PACKAGE,
+				IModelElementFactory.MODEL_TYPE_MODEL };
+
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode("All Models");
+
+		IModelElement[] modelElements = project.toModelElementArray(rootLevelElements);
+		for (int i = 0; modelElements != null && i < modelElements.length; i++) {
+			DefaultMutableTreeNode parent;
+			parent = new DefaultMutableTreeNode(modelElements[i].getName());
+			root.add(parent);
+		}
+
+		return new DefaultTreeModel(root);
+	}
+
+	private static TreeModel getTreeModelDiagram() {
+		final IDiagramUIModel[] diagramArray = ApplicationManager.instance().getProjectManager().getProject()
+				.toDiagramArray();
+
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Class Diagram");
+
+		if (diagramArray != null) {
+
+			for (IDiagramUIModel diagram : diagramArray) {
+
+				if (diagram instanceof IClassDiagramUIModel) {
+					DefaultMutableTreeNode parent;
+					parent = new DefaultMutableTreeNode(diagram.getName());
+					root.add(parent);
+					setChildrenFromDiagrams(diagram, parent);
+				}
+			}
+		}
+
+		return new DefaultTreeModel(root);
+	}
+
+	private static DefaultMutableTreeNode setChildrenFromDiagrams(IDiagramUIModel diagram,
+			DefaultMutableTreeNode parent) {
+		DefaultMutableTreeNode newRoot = parent;
+		IDiagramElement[] classes = diagram.toDiagramElementArray(IModelElementFactory.MODEL_TYPE_CLASS);
+		IDiagramElement[] associations = diagram.toDiagramElementArray(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
+		IDiagramElement[] generalizations = diagram
+				.toDiagramElementArray(IModelElementFactory.MODEL_TYPE_GENERALIZATION);
+		IDiagramElement[] associationClasses = diagram
+				.toDiagramElementArray(IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS);
+
+		for (int i = 0; classes != null && i < classes.length; i++) {
+			if (classes[i].getModelElement() != null) {
+				IClass _class = (IClass) classes[i].getModelElement();
+				String className="";
+				
+				if(_class.getName()!=null)
+					className = _class.getName();
+
+				DefaultMutableTreeNode newParent;
+				newParent = new DefaultMutableTreeNode(className);
+
+				IAttribute[] attributes = _class.toAttributeArray();
+				
+				for (int j = 0; attributes != null && j < attributes.length; j++) {
+					String attributeName = "";
+					String attributeType = "";
+					
+					if(attributes[j].getName()!=null)
+						attributeName = attributes[j].getName();
+					
+					if(attributes[j].getType()!=null)
+						attributeType = attributes[j].getTypeAsString();
+					
+					newParent.add(new DefaultMutableTreeNode(attributeName + " : " + attributeType));
+				}
+
+				newRoot.add(newParent);
+
+			}
+		}
+
+		for (int i = 0; associations != null && i < associations.length; i++) {
+			if (associations[i].getModelElement() != null) {
+				IAssociation association = (IAssociation) associations[i].getModelElement();
+				DefaultMutableTreeNode newParent;
+
+				String nameFrom = "";
+				String nameTo = "";
+
+				if (association.getFrom().getName() != null)
+					nameFrom = association.getFrom().getName();
+
+				if (association.getTo().getName() != null)
+					nameTo = association.getTo().getName();
+
+				newParent = new DefaultMutableTreeNode("(" + nameFrom + " -> " + nameTo + ")");
+
+				nameFrom = "fromEnd";
+				nameTo = "toEnd";
+
+				IAssociationEnd fromEnd = (IAssociationEnd) association.getFromEnd();
+				IAssociationEnd toEnd = (IAssociationEnd) association.getToEnd();
+
+				if (fromEnd != null) {
+
+					if (fromEnd.getName() != null)
+						nameFrom = fromEnd.getName();
+
+					newParent.add(new DefaultMutableTreeNode(nameFrom));
+				}
+
+				if (toEnd != null) {
+
+					if (toEnd.getName() != null)
+						nameTo = toEnd.getName();
+
+					newParent.add(new DefaultMutableTreeNode(nameTo));
+				}
+
+				newRoot.add(newParent);
+
+			}
+		}
+		
+		for (int i = 0; generalizations != null && i < generalizations.length; i++) {
+			if (generalizations[i].getModelElement() != null) {
+				IGeneralization generalization = (IGeneralization) generalizations[i].getModelElement();
+				DefaultMutableTreeNode newParent;
+
+				String nameFrom = "";
+				String nameTo = "";
+
+				if (generalization.getFrom().getName() != null)
+					nameFrom = generalization.getFrom().getName();
+
+				if (generalization.getTo().getName() != null)
+					nameTo = generalization.getTo().getName();
+
+				newParent = new DefaultMutableTreeNode("(" + nameFrom + " -> " + nameTo + ")");
+
+				newRoot.add(newParent);
+
+			}
+		}
+		
+		for (int i = 0; associationClasses != null && i < associationClasses.length; i++) {
+			if (associationClasses[i].getModelElement() != null) {
+				IAssociationClass associationClass = (IAssociationClass) associationClasses[i].getModelElement();
+				DefaultMutableTreeNode newParent;
+
+				String nameFrom = "";
+				String nameTo = "";
+
+				if (associationClass.getFrom().getName() != null)
+					nameFrom = associationClass.getFrom().getName();
+
+				if (associationClass.getTo().getName() != null)
+					nameTo = associationClass.getTo().getName();
+
+				newParent = new DefaultMutableTreeNode("(" + nameFrom + " -> " + nameTo + ")");
+
+				newRoot.add(newParent);
+
+			}
+		}
+
+		return newRoot;
+	}
+
+}

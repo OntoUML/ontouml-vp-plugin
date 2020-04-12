@@ -15,12 +15,14 @@ import com.vp.plugin.action.VPActionController;
 import com.vp.plugin.view.IDialog;
 import com.vp.plugin.view.IDialogHandler;
 
+import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 import it.unibz.inf.ontouml.vp.model.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.OntoUMLServerUtils;
 import it.unibz.inf.ontouml.vp.utils.ProjectConfigurations;
 import it.unibz.inf.ontouml.vp.utils.ServerRequest;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
+import it.unibz.inf.ontouml.vp.views.ExportToGUFOView;
 import it.unibz.inf.ontouml.vp.views.ProgressPanel;
 
 /**
@@ -36,10 +38,16 @@ public class ExportToGUFOAction implements VPActionController {
 	private ProgressDialog loading;
 	private IDialog mainDialog;
 	ExportToGUFORequest request;
+	
+	private ExportToGUFOView _exportMenuView;
+	private IDialog _dialog;
 
 	@Override
 	public void performAction(VPAction action) {
-
+		
+		ApplicationManager.instance().getViewManager().showDialog(new ExportDialog());
+		
+        /*
 		request = new ExportToGUFORequest();
 
 		loading = new ProgressDialog();
@@ -47,6 +55,7 @@ public class ExportToGUFOAction implements VPActionController {
 
 		Thread thread = new Thread(request);
 		thread.start();
+		*/
 	}
 
 	/**
@@ -122,6 +131,8 @@ public class ExportToGUFOAction implements VPActionController {
 		public void run() {
 			while (keepRunning()) {
 				try {
+					
+					
 					final BufferedReader gufo = OntoUMLServerUtils.transformToGUFO(ModelElement.generateModel(true), "http://api.ontouml.org/", "turtle", "name", loading);
 
 					if (keepRunning()) {
@@ -145,6 +156,59 @@ public class ExportToGUFOAction implements VPActionController {
 				}
 			}
 		}
+	}
+	
+	protected class ExportDialog implements IDialogHandler {	
+		
+		/**
+		 * 
+		 * Called once before the dialog is shown. Developer should return the
+		 * content of the dialog (similar to the content pane).
+		 *  
+		 */
+		@Override
+		public Component getComponent() {
+			_exportMenuView = new ExportToGUFOView(
+					Configurations.getInstance().getProjectConfigurations());
+			return _exportMenuView;
+		}
+		
+		/**
+		 * 
+		 *  Called after the getComponent(). A dialog is created on Visual 
+		 *  Paradigm internally (it still not shown out). Developer can set the 
+		 *  outlook of the dialog on prepare().
+		 *  
+		 */
+		@Override
+		public void prepare(IDialog dialog) {
+			_dialog = dialog;
+			_dialog.setTitle(OntoUMLPlugin.PLUGIN_NAME + " Configurations");
+			_dialog.setModal(false);
+			_dialog.setResizable(true);
+			_dialog.setSize(_exportMenuView.getWidth(), _exportMenuView.getHeight() + 20);
+			_exportMenuView.setContainerDialog(_dialog);
+		}
+		
+		/**
+		 * 
+		 *  Called when the dialog is shown.
+		 *  
+		 */
+		@Override
+		public void shown() {}
+		
+		/**
+		 * 
+		 *  Called when the dialog is closed by the user clicking on the 
+		 *  close button of the frame.
+		 * 
+		 */
+		@Override
+		public boolean canClosed() {
+			return true;
+		}
+		
 	}
 
 }
