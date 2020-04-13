@@ -22,11 +22,14 @@ public class ExportToGUFOView extends JPanel {
 
 	private JLabel IRILabel;
 	private JTextField IRItxt;
-	private JComboBox formatBox;
-	private JComboBox uriFormatBox;
+	private JComboBox<String> formatBox;
+	private JComboBox<String> uriFormatBox;
+	private JComboBox<String> treeBox;
 	private JCheckBoxTree packageCBT;
 	private JCheckBoxTree diagramCBT;
-	
+
+	JPanel treePanelPackage;
+	JPanel treePanelDiagram;
 
 	private JButton _btnApply;
 	private JButton _btnResetDefaults;
@@ -94,14 +97,40 @@ public class ExportToGUFOView extends JPanel {
 		gbc_uriFormatBox.gridx = 0;
 		gbc_uriFormatBox.gridy = 2;
 		mainPanel.add(uriFormatBox, gbc_uriFormatBox);
-		
-		
-		JPanel treePanelPackage = new JPanel();
-		
+
+		String[] treeBoxString = { "Diagram Explorer" , "Package Explorer" };
+
+		treeBox = new JComboBox<String>(treeBoxString);
+		treeBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				JComboBox<?> cb = (JComboBox<?>) e.getSource();
+				String option = (String) cb.getSelectedItem();
+				
+				if(option.equals("Package Explorer")) {
+					treePanelPackage.setVisible(true);
+					treePanelDiagram.setVisible(false);
+				}else {
+					treePanelPackage.setVisible(false);
+					treePanelDiagram.setVisible(true);
+				}
+			}
+		});
+
+		GridBagConstraints gbc_treeBox = new GridBagConstraints();
+		gbc_treeBox.anchor = GridBagConstraints.WEST;
+		gbc_treeBox.gridx = 0;
+		gbc_treeBox.gridy = 3;
+		mainPanel.add(treeBox, gbc_treeBox);
+
+		treePanelPackage = new JPanel();
+		treePanelPackage.setVisible(false);
+
 		GridBagConstraints gbc__treePanelPackage = new GridBagConstraints();
 		gbc__treePanelPackage.fill = GridBagConstraints.WEST;
 		gbc__treePanelPackage.gridx = 0;
-		gbc__treePanelPackage.gridy = 3;
+		gbc__treePanelPackage.gridy = 4;
 		mainPanel.add(treePanelPackage, gbc__treePanelPackage);
 
 		packageCBT = new JCheckBoxTree("package");
@@ -109,15 +138,15 @@ public class ExportToGUFOView extends JPanel {
 		JScrollPane scrollableTextAreaPackage = new JScrollPane(packageCBT);
 		scrollableTextAreaPackage.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		scrollableTextAreaPackage.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		
+
 		treePanelPackage.add(scrollableTextAreaPackage);
-		
-		JPanel treePanelDiagram = new JPanel();
-		
+
+		treePanelDiagram = new JPanel();
+
 		GridBagConstraints gbc__treePanelDiagram = new GridBagConstraints();
 		gbc__treePanelDiagram.fill = GridBagConstraints.WEST;
-		gbc__treePanelDiagram.gridx = 1;
-		gbc__treePanelDiagram.gridy = 3;
+		gbc__treePanelDiagram.gridx = 0;
+		gbc__treePanelDiagram.gridy = 4;
 		mainPanel.add(treePanelDiagram, gbc__treePanelDiagram);
 
 		diagramCBT = new JCheckBoxTree("diagram");
@@ -125,7 +154,7 @@ public class ExportToGUFOView extends JPanel {
 		JScrollPane scrollableTextAreaDiagram = new JScrollPane(diagramCBT);
 		scrollableTextAreaDiagram.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		scrollableTextAreaDiagram.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		
+
 		treePanelDiagram.add(scrollableTextAreaDiagram);
 
 		JPanel _controlButtonsPanel = new JPanel();

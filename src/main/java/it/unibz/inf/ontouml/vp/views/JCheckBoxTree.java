@@ -37,6 +37,7 @@ import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IAttribute;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IGeneralization;
+import com.vp.plugin.model.IModel;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IPackage;
 import com.vp.plugin.model.IProject;
@@ -208,6 +209,18 @@ public class JCheckBoxTree extends JTree {
 		String nameNode = "";
 
 		Object obj = ((DefaultMutableTreeNode) node).getUserObject();
+		
+		if (obj instanceof IPackage) {
+			nameNode = "Package";
+			if (((IPackage) obj).getName() != null && !((IPackage) obj).getName().equals(""))
+				nameNode = ((IPackage) obj).getName();
+		}
+		
+		if (obj instanceof IModel) {
+			nameNode = "Package";
+			if (((IModel) obj).getName() != null && !((IModel) obj).getName().equals(""))
+				nameNode = ((IModel) obj).getName();
+		}
 
 		if (obj instanceof IDiagramUIModel) {
 			nameNode = "Diagram";
@@ -291,6 +304,9 @@ public class JCheckBoxTree extends JTree {
 
 			nameNode = "(" + nameFrom + " -> " + nameTo + ")";
 		}
+		
+		if (obj instanceof String)
+			nameNode = obj.toString();
 
 		return nameNode;
 	}
@@ -420,15 +436,15 @@ public class JCheckBoxTree extends JTree {
 
 	private static TreeModel getTreeModelPackage() {
 		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
-		final String[] rootLevelElements = { IModelElementFactory.MODEL_TYPE_PACKAGE,
+		final String[] elementTypes = { IModelElementFactory.MODEL_TYPE_PACKAGE,
 				IModelElementFactory.MODEL_TYPE_MODEL };
 
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode("All Models");
 
-		IModelElement[] modelElements = project.toModelElementArray(rootLevelElements);
+		IModelElement[] modelElements = project.toAllLevelModelElementArray(elementTypes);
 		for (int i = 0; modelElements != null && i < modelElements.length; i++) {
 			DefaultMutableTreeNode parent;
-			parent = new DefaultMutableTreeNode(modelElements[i].getName());
+			parent = new DefaultMutableTreeNode(modelElements[i]);
 			root.add(parent);
 
 		}
