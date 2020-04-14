@@ -1,15 +1,10 @@
 #!/bin/bash
 
-#user=$(whoami)
-#appDir=${appDir:-"/Applications/Visual Paradigm.app/Contents/Resources/app"}
-#pluginDir=${pluginsDir:-"/Users/${user}/Library/Application Support/VisualParadigm/plugins/ontouml-vp-plugin-0.0.2-SNAPSHOT/classes"}
-
 while [ $# -gt 0 ]; do
 
    if [[ $1 == *"--"* ]]; then
         param="${1/--/}"
         declare $param="$2"
-        # echo $1 $2 // Optional to see the parameter:value result
    fi
 
   shift
