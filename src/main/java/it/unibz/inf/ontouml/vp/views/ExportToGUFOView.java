@@ -98,7 +98,7 @@ public class ExportToGUFOView extends JPanel {
 		gbc_uriFormatBox.gridy = 2;
 		mainPanel.add(uriFormatBox, gbc_uriFormatBox);
 
-		String[] treeBoxString = { "Diagram Explorer" , "Package Explorer" };
+		String[] treeBoxString = { "Diagram Explorer", "Package Explorer" };
 
 		treeBox = new JComboBox<String>(treeBoxString);
 		treeBox.addActionListener(new ActionListener() {
@@ -107,11 +107,11 @@ public class ExportToGUFOView extends JPanel {
 
 				JComboBox<?> cb = (JComboBox<?>) e.getSource();
 				String option = (String) cb.getSelectedItem();
-				
-				if(option.equals("Package Explorer")) {
+
+				if (option.equals("Package Explorer")) {
 					treePanelPackage.setVisible(true);
 					treePanelDiagram.setVisible(false);
-				}else {
+				} else {
 					treePanelPackage.setVisible(false);
 					treePanelDiagram.setVisible(true);
 				}
@@ -170,7 +170,7 @@ public class ExportToGUFOView extends JPanel {
 		gbl__controlButtonsPanel.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
 		_controlButtonsPanel.setLayout(gbl__controlButtonsPanel);
 
-		_btnApply = new JButton("Save");
+		_btnApply = new JButton("Export");
 		_btnApply.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -187,12 +187,12 @@ public class ExportToGUFOView extends JPanel {
 		gbc__btnApply.gridy = 0;
 		_controlButtonsPanel.add(_btnApply, gbc__btnApply);
 
-		_btnResetDefaults = new JButton("Reset Defaults");
+		_btnResetDefaults = new JButton("Cancel");
 		_btnResetDefaults.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				resetComponentsValues();
 				updateComponentsStatus();
+				_dialog.close();
 			}
 
 		});
@@ -203,7 +203,6 @@ public class ExportToGUFOView extends JPanel {
 		_controlButtonsPanel.add(_btnResetDefaults, gbc__btnResetDefaults);
 
 		updateComponentsValues(configurations);
-		updateComponentsStatus();
 	}
 
 	/**
@@ -225,6 +224,9 @@ public class ExportToGUFOView extends JPanel {
 	 * 
 	 */
 	private void updateConfigurationsValues(ProjectConfigurations configurations) {
+		configurations.setExportGUFOIRI(IRItxt.getText());
+		configurations.setExportGUFOFormat(formatBox.getSelectedItem().toString());
+		configurations.setExportGUFOURIFormat(uriFormatBox.getSelectedItem().toString());
 	}
 
 	/**
@@ -235,6 +237,15 @@ public class ExportToGUFOView extends JPanel {
 	 * 
 	 */
 	private void updateComponentsValues(ProjectConfigurations configurations) {
+		
+		if (configurations.getExportGUFOIRI() != null && !configurations.getExportGUFOIRI().equals(""))
+			IRItxt.setText(configurations.getExportGUFOIRI());
+
+		if (configurations.getExportGUFOFormat() != null && !configurations.getExportGUFOFormat().equals(""))
+			formatBox.setSelectedItem(configurations.getExportGUFOFormat());
+
+		if (configurations.getExportGUFOURIFormat() != null && !configurations.getExportGUFOURIFormat().equals(""))
+			uriFormatBox.setSelectedItem(configurations.getExportGUFOURIFormat());
 	}
 
 	/**

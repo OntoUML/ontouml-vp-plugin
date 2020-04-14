@@ -11,6 +11,10 @@ import com.google.gson.annotations.SerializedName;
  * @author Victor Viola
  *
  */
+/**
+ * @author Victor Viola
+ *
+ */
 public class ProjectConfigurations {
 	
 	public static final boolean DEFAULT_IS_PLUGIN_ENABLED = true;
@@ -55,6 +59,18 @@ public class ProjectConfigurations {
 	@SerializedName("exportGUFOFileName")
 	@Expose()
 	private String exportGUFOFileName;
+	
+	@SerializedName("exportGUFOIRI")
+	@Expose()
+	private String exportGUFOIRI;
+	
+	@SerializedName("exportGUFOFormat")
+	@Expose()
+	private String exportGUFOFormat;
+	
+	@SerializedName("exportGUFOURIFormat")
+	@Expose()
+	private String exportGUFOURIFormat;
 	
 	@SerializedName("isExportEnabled")
 	@Expose()
@@ -253,7 +269,30 @@ public class ProjectConfigurations {
 		return exportGUFOFileName;
 	}
 	
-	
+	public String getExportGUFOIRI() {
+		return exportGUFOIRI;
+	}
+
+	public void setExportGUFOIRI(String exportGUFOIRI) {
+		this.exportGUFOIRI = exportGUFOIRI;
+	}
+
+	public String getExportGUFOFormat() {
+		return exportGUFOFormat;
+	}
+
+	public void setExportGUFOFormat(String exportGUFOFormat) {
+		this.exportGUFOFormat = exportGUFOFormat;
+	}
+
+	public String getExportGUFOURIFormat() {
+		return exportGUFOURIFormat;
+	}
+
+	public void setExportGUFOURIFormat(String exportGUFOURIFormat) {
+		this.exportGUFOURIFormat = exportGUFOURIFormat;
+	}
+
 	/**
 	 * 
 	 * Checks if an export folder is set for automatic model export.
