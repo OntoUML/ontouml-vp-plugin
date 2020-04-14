@@ -9,6 +9,31 @@
 
     <name>OntoUML 2 Plugin for Visual Paradigm</name>
 
+    <profiles>
+        <profile>
+            <id>Windows</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                </os>
+            </activation>
+            <properties>
+                <script.executable>run-vp.cmd</script.executable>
+            </properties>
+        </profile>
+        <profile>
+            <id>unix</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <properties>
+                <script.executable>run-vp</script.executable>
+            </properties>
+        </profile>
+    </profiles>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <visualparadigm.app.dir>
@@ -18,6 +43,7 @@
             ~/Library/Application Support/VisualParadigm/plugins
         </visualparadigm.plugin.dir>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -116,6 +142,7 @@
             <systemPath>${visualparadigm.app.dir}/ormlib/orm.jar</systemPath>
         </dependency>
     </dependencies>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -221,7 +248,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <executable>${project.basedir}/scripts/run.sh</executable>
+                    <executable>${project.basedir}/scripts/${script.executable}</executable>
                     <arguments>
                         <argument>--appDir</argument>
                         <argument>${visualparadigm.app.dir}</argument>
