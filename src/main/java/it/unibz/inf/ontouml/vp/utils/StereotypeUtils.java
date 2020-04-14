@@ -330,7 +330,7 @@ public class StereotypeUtils {
 			if (current.getName().equals(STR_TYPE) && !definitions.containsKey("order")) {
 				final ITaggedValueDefinition order = IModelElementFactory.instance().createTaggedValueDefinition();
 				order.setName("order");
-				order.setType(ITaggedValueDefinition.TYPE_TEXT);
+				order.setType(ITaggedValueDefinition.TYPE_INTEGER);
 				order.setDefaultValue("2");
 				definitionsContainer.addTaggedValueDefinition(order);
 			}

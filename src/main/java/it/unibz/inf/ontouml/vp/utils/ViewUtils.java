@@ -416,6 +416,13 @@ public class ViewUtils {
 			diagramManager.highlight(diagramElement);
 		}
 	}
+
+	public static String setOrderDialog(String current) {
+		final ViewManager vm = ApplicationManager.instance().getViewManager();
+		return vm.showInputDialog(current);
+		// ApplicationManager.instance().getViewManager().showConfirmDialog(null, msg, "Export to gUFO",
+		// 		JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+	}
 }
 
 @SuppressWarnings("serial")
