@@ -62,8 +62,13 @@ To install the **OntoUML Plugin for Visual Paradigm**, please go to our [release
 
 #### Maven Commands
 
-* To **compile** the plugin, run: 
+The commands listed below invoke Maven through the Maven Wrapper. 
+On Windows, replace `./mvnw` for `./mvnw.cmd`
 
+In any OS, to invoke your local Maven installation instead of the wrapper, replace `./mvnw` with `mvn`.
+
+* To **compile** the plugin, run: 
+    
      ```shell script
     $ ./mvnw compile
     ```
@@ -86,7 +91,7 @@ To install the **OntoUML Plugin for Visual Paradigm**, please go to our [release
   
     In addition to the previous results, this command will copy the compiled files to Visual Paradigm's `plugins` folder.
 
-* To **run** Visual Paradigm while being able to see the output in the command line, run:
+* *(Only for macOS and Linux)* To **run** Visual Paradigm while being able to see the output in the command line, run:
 
     ```shell script
     $ ./mvnw exec:exec
@@ -105,7 +110,4 @@ To install the **OntoUML Plugin for Visual Paradigm**, please go to our [release
     ```
   
     This does not remove the installed files, just the `target` folder and its contents.
-
-**Note**: if you have Maven installed locally, you can replace `./mvnw` with `mvn` in the instructions above.
-
 
