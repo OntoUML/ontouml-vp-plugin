@@ -9,18 +9,8 @@
 	<includeBaseDirectory>false</includeBaseDirectory>
 	<fileSets>
 		<fileSet>
-			<directory>${project.basedir}/classes</directory>
+			<directory>${project.build.directory}/classes</directory>
 			<outputDirectory>./</outputDirectory>
-		</fileSet>
-		<fileSet>
-			<directory>${project.basedir}/icons</directory>
-			<outputDirectory>./icons/</outputDirectory>
 		</fileSet>
 	</fileSets>
-	<files>
-		<file>
-			<source>${project.basedir}/plugin.xml</source>
-			<outputDirectory>./</outputDirectory>
-		</file>
-	</files>
 </assembly>
