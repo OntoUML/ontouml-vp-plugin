@@ -69,6 +69,31 @@ public class Model implements ModelElement {
 		this.addModelElements(project.toModelElementArray(rootLevelElements));
 		this.addModelElements(project.toAllLevelModelElementArray(anyLevelElements));
 	}
+	
+	/**
+	 * 
+	 * Constructs a model based on the model elements defined by the user
+	 *
+	 * 
+	 */
+	public Model(IModelElement[] modelElements) {
+		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
+		
+		this.sourceModelElement = null;
+		this.type = ModelElement.TYPE_PACKAGE;
+		this.id = project.getId();
+		this.setName(project.getName());
+		
+		this.addModelElements(modelElements);
+			
+		for (int i = 0; modelElements != null && i < modelElements.length; i++) {
+			if(modelElements[i] instanceof IPackage)
+				this.addModelElements(((IPackage)modelElements[i]).toChildArray());
+			
+			if(modelElements[i] instanceof IModel)
+				this.addModelElements(((IModel)modelElements[i]).toChildArray());
+		}
+	}
 
 	/**
 	 * 

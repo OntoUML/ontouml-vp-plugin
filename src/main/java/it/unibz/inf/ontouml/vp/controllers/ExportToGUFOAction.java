@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
+import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.view.IDialog;
 import com.vp.plugin.view.IDialogHandler;
 
@@ -38,28 +39,35 @@ public class ExportToGUFOAction implements VPActionController {
 	private ProgressDialog loading;
 	private IDialog mainDialog;
 	ExportToGUFORequest request;
-	
+
+	private ExportDialog menu;
 	private ExportToGUFOView _exportMenuView;
 	private IDialog _dialog;
+	MenuExport requestMenu;
 
 	@Override
 	public void performAction(VPAction action) {
-		
-		ApplicationManager.instance().getViewManager().showDialog(new ExportDialog());
-		
-        /*
-		request = new ExportToGUFORequest();
 
-		loading = new ProgressDialog();
-		ApplicationManager.instance().getViewManager().showDialog(loading);
+		requestMenu = new MenuExport();
+		menu = new ExportDialog();
+		ApplicationManager.instance().getViewManager().showDialog(menu);
 
-		Thread thread = new Thread(request);
+		Thread thread = new Thread(requestMenu);
+
 		thread.start();
-		*/
+
+//		request = new ExportToGUFORequest();
+//		loading = new ProgressDialog();
+//		ApplicationManager.instance().getViewManager().showDialog(loading);
+//
+//		Thread thread = new Thread(request);
+//		thread.start();
+
 	}
 
 	/**
-	 * Called when the menu containing the button is accessed allowing for action manipulation, such as enable/disable or selecting the button.
+	 * Called when the menu containing the button is accessed allowing for action
+	 * manipulation, such as enable/disable or selecting the button.
 	 * 
 	 * OBS: DOES NOT apply to this class.
 	 */
@@ -70,7 +78,8 @@ public class ExportToGUFOAction implements VPActionController {
 	private void saveFile(BufferedReader buffer) throws IOException {
 		final Configurations configs = Configurations.getInstance();
 		final ProjectConfigurations projectConfigurations = configs.getProjectConfigurations();
-		final FileDialog fd = new FileDialog((Frame) ApplicationManager.instance().getViewManager().getRootFrame(), "Choose destination", FileDialog.SAVE);
+		final FileDialog fd = new FileDialog((Frame) ApplicationManager.instance().getViewManager().getRootFrame(),
+				"Choose destination", FileDialog.SAVE);
 
 		String suggestedFolderPath = projectConfigurations.getExportGUFOFolderPath();
 		String suggestedFileName = projectConfigurations.getExportGUFOFilename();
@@ -126,14 +135,20 @@ public class ExportToGUFOAction implements VPActionController {
 	}
 
 	public class ExportToGUFORequest extends ServerRequest {
+		
+		private IModelElement[] elements;
+		
+		public ExportToGUFORequest(IModelElement[] elements) {
+			this.elements = elements;
+		}
 
 		@Override
 		public void run() {
 			while (keepRunning()) {
 				try {
-					
-					
-					final BufferedReader gufo = OntoUMLServerUtils.transformToGUFO(ModelElement.generateModel(true), "http://api.ontouml.org/", "turtle", "name", loading);
+					final BufferedReader gufo = OntoUMLServerUtils.transformToGUFO(
+							ModelElement.generateModel(elements, true),
+							"http://api.ontouml.org/", "turtle", "name", loading);
 
 					if (keepRunning()) {
 						if (gufo != null) {
@@ -157,28 +172,28 @@ public class ExportToGUFOAction implements VPActionController {
 			}
 		}
 	}
-	
-	protected class ExportDialog implements IDialogHandler {	
-		
+
+	protected class ExportDialog implements IDialogHandler {
+
 		/**
 		 * 
-		 * Called once before the dialog is shown. Developer should return the
-		 * content of the dialog (similar to the content pane).
-		 *  
+		 * Called once before the dialog is shown. Developer should return the content
+		 * of the dialog (similar to the content pane).
+		 * 
 		 */
 		@Override
 		public Component getComponent() {
-			_exportMenuView = new ExportToGUFOView(
-					Configurations.getInstance().getProjectConfigurations());
+			_exportMenuView = new ExportToGUFOView(Configurations.getInstance().getProjectConfigurations(),
+					requestMenu);
 			return _exportMenuView;
 		}
-		
+
 		/**
 		 * 
-		 *  Called after the getComponent(). A dialog is created on Visual 
-		 *  Paradigm internally (it still not shown out). Developer can set the 
-		 *  outlook of the dialog on prepare().
-		 *  
+		 * Called after the getComponent(). A dialog is created on Visual Paradigm
+		 * internally (it still not shown out). Developer can set the outlook of the
+		 * dialog on prepare().
+		 * 
 		 */
 		@Override
 		public void prepare(IDialog dialog) {
@@ -189,26 +204,64 @@ public class ExportToGUFOAction implements VPActionController {
 			_dialog.setSize(_exportMenuView.getWidth(), _exportMenuView.getHeight() + 20);
 			_exportMenuView.setContainerDialog(_dialog);
 		}
-		
+
 		/**
 		 * 
-		 *  Called when the dialog is shown.
-		 *  
+		 * Called when the dialog is shown.
+		 * 
 		 */
 		@Override
-		public void shown() {}
-		
+		public void shown() {
+		}
+
 		/**
 		 * 
-		 *  Called when the dialog is closed by the user clicking on the 
-		 *  close button of the frame.
+		 * Called when the dialog is closed by the user clicking on the close button of
+		 * the frame.
 		 * 
 		 */
 		@Override
 		public boolean canClosed() {
 			return true;
 		}
-		
+
+	}
+
+	public class MenuExport extends ServerRequest {
+
+		@Override
+		public void run() {
+			while (keepRunning()) {
+				try {
+
+					if (keepRunning()) {
+						if (!_exportMenuView.getIsOpen()) {
+
+							if (_exportMenuView.getIsToExport()) {
+								
+								request = new ExportToGUFORequest(_exportMenuView.getSavedElements());
+								loading = new ProgressDialog();
+								ApplicationManager.instance().getViewManager().showDialog(loading);
+
+								Thread thread = new Thread(request);
+								thread.start();
+							} else {
+								ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
+							}
+
+							menu.canClosed();
+							requestMenu.doStop();
+						}
+					} else {
+						menu.canClosed();
+						requestMenu.doStop();
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 }

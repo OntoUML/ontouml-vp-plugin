@@ -1,15 +1,19 @@
 package it.unibz.inf.ontouml.vp.views;
 
+import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.view.IDialog;
 import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.ProjectConfigurations;
+import it.unibz.inf.ontouml.vp.utils.ServerRequest;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashSet;
 
 /**
  * 
@@ -36,7 +40,11 @@ public class ExportToGUFOView extends JPanel {
 
 	private IDialog _dialog;
 
-	public ExportToGUFOView(ProjectConfigurations configurations) {
+	private boolean isToExport;
+	private boolean isOpen;
+	private IModelElement[] elements;
+
+	public ExportToGUFOView(ProjectConfigurations configurations, ServerRequest request) {
 		setSize(new Dimension(850, 600));
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 670 };
@@ -176,6 +184,10 @@ public class ExportToGUFOView extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				updateConfigurationsValues(configurations);
 				Configurations.getInstance().save();
+				saveSelectedElements();
+				isToExport = true;
+				isOpen = false;
+				request.doStop();
 				_dialog.close();
 			}
 
@@ -191,7 +203,9 @@ public class ExportToGUFOView extends JPanel {
 		_btnResetDefaults.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				updateComponentsStatus();
+				isToExport = false;
+				isOpen = false;
+				request.doStop();
 				_dialog.close();
 			}
 
@@ -202,7 +216,17 @@ public class ExportToGUFOView extends JPanel {
 		gbc__btnResetDefaults.gridy = 0;
 		_controlButtonsPanel.add(_btnResetDefaults, gbc__btnResetDefaults);
 
+		isToExport = false;
+		isOpen = true;
 		updateComponentsValues(configurations);
+	}
+
+	public boolean getIsToExport() {
+		return isToExport;
+	}
+
+	public boolean getIsOpen() {
+		return isOpen;
 	}
 
 	/**
@@ -237,7 +261,7 @@ public class ExportToGUFOView extends JPanel {
 	 * 
 	 */
 	private void updateComponentsValues(ProjectConfigurations configurations) {
-		
+
 		if (configurations.getExportGUFOIRI() != null && !configurations.getExportGUFOIRI().equals(""))
 			IRItxt.setText(configurations.getExportGUFOIRI());
 
@@ -248,20 +272,44 @@ public class ExportToGUFOView extends JPanel {
 			uriFormatBox.setSelectedItem(configurations.getExportGUFOURIFormat());
 	}
 
-	/**
-	 * 
-	 * Updates components with default values.
-	 * 
-	 */
-	private void resetComponentsValues() {
+	private void saveSelectedElements() {
+
+		TreePath[] paths;
+		HashSet<IModelElement> set = new HashSet<IModelElement>();
+
+		if (treeBox.getSelectedItem().equals("Package Explorer"))
+			paths = packageCBT.getCheckedPaths();
+		else
+			paths = diagramCBT.getCheckedPaths();
+
+		paths = diagramCBT.getCheckedPaths();
+
+		for (TreePath path : paths) {
+			Object[] object = path.getPath();
+			for (int j = 0; j < object.length; j++) {
+
+				if (object[j] instanceof DefaultMutableTreeNode) {
+
+					DefaultMutableTreeNode node = (DefaultMutableTreeNode) object[j];
+
+					if (node.getUserObject() instanceof IModelElement)
+						set.add((IModelElement) node.getUserObject());
+				}
+
+			}
+		}
+
+		int i = 0;
+		this.elements = new IModelElement[set.size()];
+		for (IModelElement element : set) {
+
+			this.elements[i] = element;
+			i++;
+		}
+
 	}
 
-	/**
-	 * 
-	 * Updates enable/editable status of components based on their information.
-	 * 
-	 */
-	private void updateComponentsStatus() {
+	public IModelElement[] getSavedElements() {
+		return this.elements;
 	}
-
 }

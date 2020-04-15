@@ -131,6 +131,19 @@ public interface ModelElement {
 					.serializeNulls().create().toJson(model);
 		}
 	}
+	
+	public static String generateModel(IModelElement[] elements, boolean pretty) {
+		
+		final Model model = new Model(elements);
+
+		if (pretty) {
+			return new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
+					.serializeNulls().setPrettyPrinting().create().toJson(model);
+		} else {
+			return new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
+					.serializeNulls().create().toJson(model);
+		}
+	}
 
 	public static String safeGetString(String s){
 		if (s != null && s.length() != 0)

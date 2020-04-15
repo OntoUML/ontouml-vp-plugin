@@ -174,7 +174,7 @@ public class JCheckBoxTree extends JTree {
 			if (cn == null) {
 				return this;
 			}
-			
+
 			if (obj instanceof IDiagramUIModel)
 				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.PACKAGE_LOGO)));
 			else if (obj instanceof IClass)
@@ -188,10 +188,9 @@ public class JCheckBoxTree extends JTree {
 			else if (obj instanceof IGeneralization)
 				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.GENERALIZATION_LOGO)));
 			else if (obj instanceof IAssociationClass)
-				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.ASSOCIATION_LOGO)));	
+				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.ASSOCIATION_LOGO)));
 			else
 				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.PACKAGE_LOGO)));
-			
 
 			checkBox.setSelected(cn.isSelected);
 			checkBox.setText(getNameNode(node));
@@ -209,13 +208,13 @@ public class JCheckBoxTree extends JTree {
 		String nameNode = "";
 
 		Object obj = ((DefaultMutableTreeNode) node).getUserObject();
-		
+
 		if (obj instanceof IPackage) {
 			nameNode = "Package";
 			if (((IPackage) obj).getName() != null && !((IPackage) obj).getName().equals(""))
 				nameNode = ((IPackage) obj).getName();
 		}
-		
+
 		if (obj instanceof IModel) {
 			nameNode = "Package";
 			if (((IModel) obj).getName() != null && !((IModel) obj).getName().equals(""))
@@ -304,7 +303,7 @@ public class JCheckBoxTree extends JTree {
 
 			nameNode = "(" + nameFrom + " -> " + nameTo + ")";
 		}
-		
+
 		if (obj instanceof String)
 			nameNode = obj.toString();
 
@@ -330,12 +329,17 @@ public class JCheckBoxTree extends JTree {
 		CheckBoxCellRenderer cellRenderer = new CheckBoxCellRenderer();
 		this.setCellRenderer(cellRenderer);
 
-		// Overriding selection model by an empty one
 		DefaultTreeSelectionModel dtsm = new DefaultTreeSelectionModel() {
 			private static final long serialVersionUID = -8190634240451667286L;
 
-			// Totally disabling the selection mechanism
 			public void setSelectionPath(TreePath path) {
+				boolean checkMode = !nodesCheckingState.get(path).isSelected;
+				checkSubTree(path, checkMode);
+				updatePredecessorsWithCheckMode(path, checkMode);
+				// Firing the check change event
+				fireCheckChangeEvent(new CheckChangeEvent(new Object()));
+				// Repainting tree after the data structures were updated
+				selfPointer.repaint();
 			}
 
 			public void addSelectionPath(TreePath path) {
@@ -347,34 +351,7 @@ public class JCheckBoxTree extends JTree {
 			public void setSelectionPaths(TreePath[] pPaths) {
 			}
 		};
-		// Calling checking mechanism on mouse click
-		this.addMouseListener(new MouseListener() {
-			public void mouseClicked(MouseEvent arg0) {
-				TreePath tp = selfPointer.getPathForLocation(arg0.getX(), arg0.getY());
-				if (tp == null) {
-					return;
-				}
-				boolean checkMode = !nodesCheckingState.get(tp).isSelected;
-				checkSubTree(tp, checkMode);
-				updatePredecessorsWithCheckMode(tp, checkMode);
-				// Firing the check change event
-				fireCheckChangeEvent(new CheckChangeEvent(new Object()));
-				// Repainting tree after the data structures were updated
-				selfPointer.repaint();
-			}
-
-			public void mouseEntered(MouseEvent arg0) {
-			}
-
-			public void mouseExited(MouseEvent arg0) {
-			}
-
-			public void mousePressed(MouseEvent arg0) {
-			}
-
-			public void mouseReleased(MouseEvent arg0) {
-			}
-		});
+		
 		this.setSelectionModel(dtsm);
 	}
 
