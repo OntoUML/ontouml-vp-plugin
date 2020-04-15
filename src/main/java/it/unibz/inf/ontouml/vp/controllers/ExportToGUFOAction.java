@@ -222,6 +222,8 @@ public class ExportToGUFOAction implements VPActionController {
 		 */
 		@Override
 		public boolean canClosed() {
+			requestMenu.doStop();
+			ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
 			return true;
 		}
 
@@ -246,11 +248,10 @@ public class ExportToGUFOAction implements VPActionController {
 								Thread thread = new Thread(request);
 								thread.start();
 							} else {
+								menu.canClosed();
+								requestMenu.doStop();
 								ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
 							}
-
-							menu.canClosed();
-							requestMenu.doStop();
 						}
 					} else {
 						menu.canClosed();
