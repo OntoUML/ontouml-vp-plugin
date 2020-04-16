@@ -42,7 +42,7 @@ public class ExportToGUFOView extends JPanel {
 
 	private boolean isToExport;
 	private boolean isOpen;
-	private IModelElement[] elements;
+	private HashSet<IModelElement> elements = new HashSet<IModelElement>();
 
 	public ExportToGUFOView(ProjectConfigurations configurations, ServerRequest request) {
 		setSize(new Dimension(850, 600));
@@ -275,7 +275,6 @@ public class ExportToGUFOView extends JPanel {
 	private void saveSelectedElements() {
 
 		TreePath[] paths;
-		HashSet<IModelElement> set = new HashSet<IModelElement>();
 
 		if (treeBox.getSelectedItem().equals("Package Explorer"))
 			paths = packageCBT.getCheckedPaths();
@@ -293,23 +292,18 @@ public class ExportToGUFOView extends JPanel {
 					DefaultMutableTreeNode node = (DefaultMutableTreeNode) object[j];
 
 					if (node.getUserObject() instanceof IModelElement)
-						set.add((IModelElement) node.getUserObject());
+						this.elements.add((IModelElement) node.getUserObject());
 				}
 
 			}
 		}
 
-		int i = 0;
-		this.elements = new IModelElement[set.size()];
-		for (IModelElement element : set) {
-
-			this.elements[i] = element;
-			i++;
-		}
-
 	}
 
-	public IModelElement[] getSavedElements() {
+	public HashSet<IModelElement> getSavedElements() {
+		if(this.elements.size() == 0)
+			saveSelectedElements();
+		
 		return this.elements;
 	}
 }

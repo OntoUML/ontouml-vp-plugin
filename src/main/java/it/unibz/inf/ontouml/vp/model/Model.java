@@ -8,6 +8,7 @@ import com.vp.plugin.model.*;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -76,7 +77,7 @@ public class Model implements ModelElement {
 	 *
 	 * 
 	 */
-	public Model(IModelElement[] modelElements) {
+	public Model(HashSet<IModelElement> modelElements) {
 		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
 		
 		this.sourceModelElement = null;
@@ -84,15 +85,76 @@ public class Model implements ModelElement {
 		this.id = project.getId();
 		this.setName(project.getName());
 		
-		this.addModelElements(modelElements);
+		for(IModelElement projectElement : modelElements) {
 			
-		for (int i = 0; modelElements != null && i < modelElements.length; i++) {
-			if(modelElements[i] instanceof IPackage)
-				this.addModelElements(((IPackage)modelElements[i]).toChildArray());
-			
-			if(modelElements[i] instanceof IModel)
-				this.addModelElements(((IModel)modelElements[i]).toChildArray());
+			switch (projectElement.getModelType()) {
+			case IModelElementFactory.MODEL_TYPE_PACKAGE:
+				addElement(new Package((IPackage) projectElement));
+				break;
+
+			case IModelElementFactory.MODEL_TYPE_MODEL:
+				addElement(new Model((IModel) projectElement));
+				break;
+
+			case IModelElementFactory.MODEL_TYPE_CLASS:
+				addElement(new Class((IClass) projectElement));
+				break;
+
+			case IModelElementFactory.MODEL_TYPE_DATA_TYPE:
+				addElement(new Class((IDataType) projectElement));
+				break;
+
+			case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
+				IGeneralization gen = (IGeneralization) projectElement;
+				IModelElement fromElement = gen.getFrom();
+				
+				if(fromElement==null)
+					break;
+
+				String fromType = fromElement.getModelType();
+
+				if(fromType==null)
+					break;
+
+				boolean isFromClass = fromType.equals(IModelElementFactory.MODEL_TYPE_CLASS);
+				boolean isFromAssociation = fromType.equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
+
+				if (!isFromClass && !isFromAssociation)
+					break;
+
+				IModelElement toElement = gen.getTo();
+
+				if(toElement==null)
+					break;
+
+				String toType = toElement.getModelType();
+				
+				if(toType==null)
+					break;
+
+				boolean isToClass = toType.equals(IModelElementFactory.MODEL_TYPE_CLASS);
+				boolean isToAssociation = toType.equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
+
+				if(!isToClass && !isToAssociation)
+					break;
+
+				addElement(new Generalization((IGeneralization) projectElement));
+				break;
+
+			case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
+				addElement(new Association((IAssociation) projectElement, modelElements));
+				break;
+
+			case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
+				addElement(new GeneralizationSet((IGeneralizationSet) projectElement));
+				break;
+
+			case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
+				addElement(new AssociationClass((IAssociationClass) projectElement));
+			}
 		}
+		
+			
 	}
 
 	/**

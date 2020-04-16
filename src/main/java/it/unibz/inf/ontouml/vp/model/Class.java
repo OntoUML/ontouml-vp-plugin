@@ -125,6 +125,39 @@ public class Class implements ModelElement {
 			setName(source.getName().trim());
 		}
 	}
+	
+	public Class(IClass source, HashSet<IModelElement> modelElements) {
+		this((IModelElement) source);
+
+		final IAttribute[] attributes = source.toAttributeArray();
+		for (int i = 0; attributes != null && i < attributes.length; i++) {
+			if(modelElements.contains(attributes[i]))
+				addProperties(new Property(attributes[i]));
+		}
+
+		final String[] stereotypes = source.toStereotypeArray();
+		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
+			addStereotype(stereotypes[i]);
+		}
+
+		if (this.stereotypes != null && this.stereotypes.contains(StereotypeUtils.STR_ENUMERATION)) {
+			IEnumerationLiteral[] literalArray = source.toEnumerationLiteralArray();
+			for (int i = 0; literalArray != null && i < literalArray.length; i++)
+				addLiteral(new Literal(literalArray[i]));
+		}
+
+		setAbstract(source.isAbstract());
+		setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
+
+		if (source.getName().trim().startsWith("/")) {
+			setName(source.getName().substring(1));
+			this.isDerived = true;
+		} else {
+			setName(source.getName().trim());
+		}
+
+		setDescription(source.getDescription());
+	}
 
 	@Override
 	public IModelElement getSourceModelElement() {

@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 import com.vp.plugin.ApplicationManager;
@@ -136,9 +137,9 @@ public class ExportToGUFOAction implements VPActionController {
 
 	public class ExportToGUFORequest extends ServerRequest {
 		
-		private IModelElement[] elements;
+		private HashSet<IModelElement> elements;
 		
-		public ExportToGUFORequest(IModelElement[] elements) {
+		public ExportToGUFORequest(HashSet<IModelElement> elements) {
 			this.elements = elements;
 		}
 
