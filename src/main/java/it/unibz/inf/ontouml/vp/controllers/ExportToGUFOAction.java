@@ -48,6 +48,12 @@ public class ExportToGUFOAction implements VPActionController {
 
 	@Override
 	public void performAction(VPAction action) {
+		
+		/*final String modelo = ModelElement.generateModel(true);
+		Clipboard c = Toolkit.getDefaultToolkit().getSystemClipboard();
+		StringSelection sl = new StringSelection(modelo);
+		c.setContents(sl, sl);
+		System.out.println("Generated JSON copied to clipboard ;)");*/
 
 		requestMenu = new MenuExport();
 		menu = new ExportDialog();

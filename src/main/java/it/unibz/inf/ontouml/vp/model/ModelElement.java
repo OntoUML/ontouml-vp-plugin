@@ -137,11 +137,6 @@ public interface ModelElement {
 	public static String generateModel(HashSet<IModelElement> elements, boolean pretty) {
 		
 		final Model model = new Model(elements);
-		
-		String teste = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
-				.serializeNulls().setPrettyPrinting().create().toJson(model);
-		
-		System.out.println("MODELO FINAL " + teste);
 
 		if (pretty) {
 			return new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
