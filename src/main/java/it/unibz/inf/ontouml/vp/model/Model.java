@@ -97,7 +97,7 @@ public class Model implements ModelElement {
 				break;
 
 			case IModelElementFactory.MODEL_TYPE_CLASS:
-				addElement(new Class((IClass) projectElement));
+				addElement(new Class((IClass) projectElement, modelElements));
 				break;
 
 			case IModelElementFactory.MODEL_TYPE_DATA_TYPE:
