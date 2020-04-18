@@ -18,7 +18,7 @@
                 </os>
             </activation>
             <properties>
-                <script.executable>run-vp.cmd</script.executable>
+                <script.executable>"${project.basedir}${file.separator}scripts${file.separator}run-vp.bat"</script.executable>
             </properties>
         </profile>
         <profile>
@@ -29,19 +29,15 @@
                 </os>
             </activation>
             <properties>
-                <script.executable>run-vp</script.executable>
+                <script.executable>${project.basedir}${file.separator}scripts${file.separator}run-vp</script.executable>
             </properties>
         </profile>
     </profiles>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <visualparadigm.app.dir>
-            /Applications/Visual Paradigm.app/Contents/Resources/app
-        </visualparadigm.app.dir>
-        <visualparadigm.plugin.dir>
-            ~/Library/Application Support/VisualParadigm/plugins
-        </visualparadigm.plugin.dir>
+        <visualparadigm.app.dir>C:\Program Files\Visual Paradigm CE 16.0</visualparadigm.app.dir>
+        <visualparadigm.plugin.dir>C:\Users\Victor Viola\AppData\Roaming\VisualParadigm\plugins</visualparadigm.plugin.dir>
     </properties>
 
     <dependencies>
@@ -55,91 +51,91 @@
             <artifactId>com.visualparadigm.app.lib.openapi</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
-            <systemPath>${visualparadigm.app.dir}/lib/openapi.jar</systemPath>
+            <systemPath>${visualparadigm.app.dir}${file.separator}lib${file.separator}openapi.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.visualparadigm.app</groupId>
             <artifactId>com.visualparadigm.app.lib.vpplatform</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
-            <systemPath>${visualparadigm.app.dir}/lib/vpplatform.jar</systemPath>
+            <systemPath>${visualparadigm.app.dir}${file.separator}lib${file.separator}vpplatform.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.visualparadigm.app</groupId>
             <artifactId>com.visualparadigm.app.lib.lib01</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
-            <systemPath>${visualparadigm.app.dir}/lib/lib01.jar</systemPath>
+            <systemPath>${visualparadigm.app.dir}${file.separator}lib${file.separator}lib01.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.visualparadigm.app</groupId>
             <artifactId>com.visualparadigm.app.lib.lib02</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
-            <systemPath>${visualparadigm.app.dir}/lib/lib02.jar</systemPath>
+            <systemPath>${visualparadigm.app.dir}${file.separator}lib${file.separator}lib02.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.visualparadigm.app</groupId>
             <artifactId>com.visualparadigm.app.lib.lib03</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
-            <systemPath>${visualparadigm.app.dir}/lib/lib03.jar</systemPath>
+            <systemPath>${visualparadigm.app.dir}${file.separator}lib${file.separator}lib03.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.visualparadigm.app</groupId>
             <artifactId>com.visualparadigm.app.lib.lib04</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
-            <systemPath>${visualparadigm.app.dir}/lib/lib04.jar</systemPath>
+            <systemPath>${visualparadigm.app.dir}${file.separator}lib${file.separator}lib04.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.visualparadigm.app</groupId>
             <artifactId>com.visualparadigm.app.lib.lib05</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
-            <systemPath>${visualparadigm.app.dir}/lib/lib05.jar</systemPath>
+            <systemPath>${visualparadigm.app.dir}${file.separator}lib${file.separator}lib05.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.visualparadigm.app</groupId>
             <artifactId>com.visualparadigm.app.lib.lib06</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
-            <systemPath>${visualparadigm.app.dir}/lib/lib06.jar</systemPath>
+            <systemPath>${visualparadigm.app.dir}${file.separator}lib${file.separator}lib06.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.visualparadigm.app</groupId>
             <artifactId>com.visualparadigm.app.lib.lib07</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
-            <systemPath>${visualparadigm.app.dir}/lib/lib07.jar</systemPath>
+            <systemPath>${visualparadigm.app.dir}${file.separator}lib${file.separator}lib07.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.visualparadigm.app</groupId>
             <artifactId>com.visualparadigm.app.lib.lib09</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
-            <systemPath>${visualparadigm.app.dir}/lib/lib09.jar</systemPath>
+            <systemPath>${visualparadigm.app.dir}${file.separator}lib${file.separator}lib09.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.visualparadigm.app</groupId>
             <artifactId>com.visualparadigm.app.lib.jniwrap</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
-            <systemPath>${visualparadigm.app.dir}/lib/jniwrap.jar</systemPath>
+            <systemPath>${visualparadigm.app.dir}${file.separator}lib${file.separator}jniwrap.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.visualparadigm.app</groupId>
             <artifactId>com.visualparadigm.app.lib.winpack</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
-            <systemPath>${visualparadigm.app.dir}/lib/winpack.jar</systemPath>
+            <systemPath>${visualparadigm.app.dir}${file.separator}lib${file.separator}winpack.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.visualparadigm.app</groupId>
             <artifactId>com.visualparadigm.app.ormlib.orm</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
-            <systemPath>${visualparadigm.app.dir}/ormlib/orm.jar</systemPath>
+            <systemPath>${visualparadigm.app.dir}${file.separator}ormlib${file.separator}orm.jar</systemPath>
         </dependency>
     </dependencies>
 
@@ -248,12 +244,10 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <executable>${project.basedir}/scripts/${script.executable}</executable>
+                    <executable>${script.executable}</executable>
                     <arguments>
                         <argument>--appDir</argument>
                         <argument>${visualparadigm.app.dir}</argument>
-                        <argument>--pluginDir</argument>
-                        <argument>${visualparadigm.plugin.dir}/${project.build.finalName}/classes</argument>
                     </arguments>
                 </configuration>
             </plugin>
