@@ -8,6 +8,6 @@ set vpOrmlibDir=%appDir%%ormlib%
 
 set classpath="%vpLibDir%;%vpOrmlibDir%"
 
-cd "%appDir%/bin"
+cd /d "%appDir%/bin"
 
 java -classpath %classpath% RV debug
