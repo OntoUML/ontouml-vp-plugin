@@ -91,7 +91,7 @@ In any OS, to invoke your local Maven installation instead of the wrapper, repla
   
     In addition to the previous results, this command will copy the compiled files to Visual Paradigm's `plugins` folder.
 
-* *(Only for macOS and Linux)* To **run** Visual Paradigm while being able to see the output in the command line, run:
+* To **run** Visual Paradigm while being able to see the output in the command line, run:
 
     ```shell script
     $ ./mvnw exec:exec
