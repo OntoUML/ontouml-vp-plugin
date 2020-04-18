@@ -1,4 +1,5 @@
 #!/bin/bash
+appDir=""
 
 while [ $# -gt 0 ]; do
 
@@ -10,11 +11,10 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-gson="$appDir/com/google/code/gson/gson/2.8.5/gson-2.8.5.jar"
-vpLibDir="$appDir/lib/*"
-vpOrmlibDir="$appDir/ormlib/*"
+vpLibDir="../lib/*"
+vpOrmlibDir="../ormlib/*"
 
-classpath="$pluginDir:$gson:$vpLibDir:$vpOrmlibDir"
+classpath="$vpLibDir:$vpOrmlibDir"
 java=$(which java)
 
 cd "$appDir/bin" || return
