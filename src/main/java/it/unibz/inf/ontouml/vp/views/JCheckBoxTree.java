@@ -342,7 +342,7 @@ public class JCheckBoxTree extends JTree {
 		DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) parentPath.getLastPathComponent();
 		
 		//It is allowed to choose a class without its attributes
-		if(parentNode.getUserObject() instanceof IClass)
+		if(((DefaultMutableTreeNode) tp.getLastPathComponent()).getUserObject() instanceof IClass)
 			return;
 		
 		parentCheckedNode.allChildrenSelected = true;
