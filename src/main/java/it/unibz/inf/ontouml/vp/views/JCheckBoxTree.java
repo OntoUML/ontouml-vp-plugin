@@ -2,6 +2,7 @@ package it.unibz.inf.ontouml.vp.views;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.util.Enumeration;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
@@ -286,16 +287,6 @@ public class JCheckBoxTree extends JTree {
 		return nameNode;
 	}
 
-	/*
-	 * private void visitAllNodes(DefaultMutableTreeNode node) {
-	 * 
-	 * Object obj = ((DefaultMutableTreeNode) node).getUserObject();
-	 * 
-	 * if (node.getChildCount() >= 0) { for (Enumeration<? extends TreeNode> e =
-	 * node.children(); e.hasMoreElements();) { DefaultMutableTreeNode n =
-	 * (DefaultMutableTreeNode) e.nextElement(); visitAllNodes(n); } } }
-	 */
-
 	public JCheckBoxTree(String type) {
 
 		super(getTreeModel(type));
@@ -315,6 +306,7 @@ public class JCheckBoxTree extends JTree {
 				// Firing the check change event
 				fireCheckChangeEvent(new CheckChangeEvent(new Object()));
 				// Repainting tree after the data structures were updated
+				findSimilarNodes((DefaultMutableTreeNode) path.getLastPathComponent());
 				selfPointer.repaint();
 			}
 
@@ -331,20 +323,56 @@ public class JCheckBoxTree extends JTree {
 		this.setSelectionModel(dtsm);
 	}
 
+	private void visitAllNodesAndCheckSimilar(DefaultMutableTreeNode root, DefaultMutableTreeNode nodeToCompare) {
+
+		//if same Object
+		if (((DefaultMutableTreeNode) root).getUserObject().equals(nodeToCompare.getUserObject())) {
+
+			TreeNode[] old_treeNode = nodeToCompare.getPath();
+			TreePath oldTp = new TreePath(old_treeNode);
+
+			TreeNode[] new_treeNode = root.getPath();
+			TreePath newTp = new TreePath(new_treeNode);
+
+			//if different paths
+			if (!oldTp.toString().equals(newTp.toString())) {
+
+				boolean checkMode = nodesCheckingState.get(oldTp).isSelected;
+				checkSubTree(newTp, checkMode);
+				updatePredecessorsWithCheckMode(newTp, checkMode);
+				fireCheckChangeEvent(new CheckChangeEvent(new Object()));
+			}
+
+		}
+
+		if (root.getChildCount() >= 0) {
+			for (Enumeration<? extends TreeNode> e = root.children(); e.hasMoreElements();) {
+				DefaultMutableTreeNode n = (DefaultMutableTreeNode) e.nextElement();
+
+				visitAllNodesAndCheckSimilar(n, nodeToCompare);
+			}
+		}
+	}
+
+	protected void findSimilarNodes(DefaultMutableTreeNode node) {
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.getModel().getRoot();
+		visitAllNodesAndCheckSimilar(root, node);
+	}
+
 	// When a node is checked/unchecked, updating the states of the predecessors
 	protected void updatePredecessorsWithCheckMode(TreePath tp, boolean check) {
 		TreePath parentPath = tp.getParentPath();
 		// If it is the root, stop the recursive calls and return
 		if (parentPath == null)
 			return;
-		
+
 		CheckedNode parentCheckedNode = nodesCheckingState.get(parentPath);
 		DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) parentPath.getLastPathComponent();
-		
-		//It is allowed to choose a class without its attributes
-		if(((DefaultMutableTreeNode) tp.getLastPathComponent()).getUserObject() instanceof IClass)
+
+		// It is allowed to choose a class without its attributes
+		if (((DefaultMutableTreeNode) tp.getLastPathComponent()).getUserObject() instanceof IClass)
 			return;
-		
+
 		parentCheckedNode.allChildrenSelected = true;
 		parentCheckedNode.isSelected = false;
 		for (int i = 0; i < parentNode.getChildCount(); i++) {
