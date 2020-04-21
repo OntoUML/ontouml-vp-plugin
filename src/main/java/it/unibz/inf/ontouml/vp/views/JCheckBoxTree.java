@@ -435,14 +435,22 @@ public class JCheckBoxTree extends JTree {
 	private static DefaultMutableTreeNode setChildrenRecursively(IModelElement modelElement, DefaultMutableTreeNode parent) {
 		DefaultMutableTreeNode newRoot = parent;
 		
+		final String[] rootLevelElementsPriority = { IModelElementFactory.MODEL_TYPE_PACKAGE,
+				IModelElementFactory.MODEL_TYPE_MODEL };
+		final String[] rootLevelElements = { IModelElementFactory.MODEL_TYPE_CLASS,
+				IModelElementFactory.MODEL_TYPE_ASSOCIATION, IModelElementFactory.MODEL_TYPE_DATA_TYPE };
+		
 		if(modelElement instanceof IModel) {
 			IModel model = (IModel) modelElement;
-			final String[] rootLevelElements = { IModelElementFactory.MODEL_TYPE_PACKAGE,
-					IModelElementFactory.MODEL_TYPE_MODEL, IModelElementFactory.MODEL_TYPE_CLASS,
-					IModelElementFactory.MODEL_TYPE_ASSOCIATION, IModelElementFactory.MODEL_TYPE_DATA_TYPE };
+			
 			
 			DefaultMutableTreeNode newParent;
 			newParent = new DefaultMutableTreeNode(model);
+			
+			for(IModelElement element : model.toChildArray(rootLevelElementsPriority)) {
+				
+				newRoot.add(setChildrenRecursively(element, newParent));
+			}
 			
 			for(IModelElement element : model.toChildArray(rootLevelElements)) {
 				
@@ -452,12 +460,14 @@ public class JCheckBoxTree extends JTree {
 		
 		if(modelElement instanceof IPackage) {
 			IPackage pckg = (IPackage) modelElement;
-			final String[] rootLevelElements = { IModelElementFactory.MODEL_TYPE_PACKAGE,
-					IModelElementFactory.MODEL_TYPE_MODEL, IModelElementFactory.MODEL_TYPE_CLASS,
-					IModelElementFactory.MODEL_TYPE_ASSOCIATION, IModelElementFactory.MODEL_TYPE_DATA_TYPE };
 			
 			DefaultMutableTreeNode newParent;
 			newParent = new DefaultMutableTreeNode(pckg);
+			
+			for(IModelElement element : pckg.toChildArray(rootLevelElementsPriority)) {
+				
+				newRoot.add(setChildrenRecursively(element, newParent));
+			}
 			
 			for(IModelElement element : pckg.toChildArray(rootLevelElements)) {
 				newRoot.add(setChildrenRecursively(element, newParent));
@@ -466,10 +476,9 @@ public class JCheckBoxTree extends JTree {
 		
 		
 		if(modelElement instanceof IClass) {
-			
 			IClass _class = (IClass) modelElement;
-			System.out.println("ENTREI ACOLÁ" + _class.getName());
 			DefaultMutableTreeNode newParent;
+			
 			newParent = new DefaultMutableTreeNode(_class);
 
 			IAttribute[] attributes = _class.toAttributeArray();
@@ -481,10 +490,9 @@ public class JCheckBoxTree extends JTree {
 		}
 		
 		if(modelElement instanceof IAssociation) {
-
 			IAssociation association = (IAssociation) modelElement;
 			DefaultMutableTreeNode newParent;
-
+		
 			newParent = new DefaultMutableTreeNode(association);
 
 			IAssociationEnd fromEnd = (IAssociationEnd) association.getFromEnd();
