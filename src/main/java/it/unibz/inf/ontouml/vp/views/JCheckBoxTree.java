@@ -355,6 +355,10 @@ public class JCheckBoxTree extends JTree {
 	}
 
 	protected void findSimilarNodes(DefaultMutableTreeNode node) {
+		
+		for (int i = 0; i < node.getChildCount(); i++)
+			findSimilarNodes((DefaultMutableTreeNode) node.getChildAt(i));
+		
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.getModel().getRoot();
 		visitAllNodesAndCheckSimilar(root, node);
 	}
