@@ -477,7 +477,6 @@ public class JCheckBoxTree extends JTree {
 
 			for (IModelElement element : model.toChildArray(rootLevelElements))
 				newRoot.add(setChildrenRecursively(element, newParent));
-
 		}
 
 		if (modelElement instanceof IPackage) {
@@ -486,14 +485,11 @@ public class JCheckBoxTree extends JTree {
 			DefaultMutableTreeNode newParent;
 			newParent = new DefaultMutableTreeNode(pckg);
 
-			for (IModelElement element : pckg.toChildArray(rootLevelElementsPriority)) {
-
+			for (IModelElement element : pckg.toChildArray(rootLevelElementsPriority))
 				newRoot.add(setChildrenRecursively(element, newParent));
-			}
 
-			for (IModelElement element : pckg.toChildArray(rootLevelElements)) {
+			for (IModelElement element : pckg.toChildArray(rootLevelElements))
 				newRoot.add(setChildrenRecursively(element, newParent));
-			}
 		}
 
 		if (modelElement instanceof IClass) {
