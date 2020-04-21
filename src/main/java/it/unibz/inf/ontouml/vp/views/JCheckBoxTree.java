@@ -2,24 +2,17 @@ package it.unibz.inf.ontouml.vp.views;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Enumeration;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTree;
-import javax.swing.UIManager;
 import javax.swing.event.EventListenerList;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreeCellRenderer;
@@ -44,8 +37,6 @@ import com.vp.plugin.model.IPackage;
 import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
-import it.unibz.inf.ontouml.vp.model.Model;
-import it.unibz.inf.ontouml.vp.model.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 
 public class JCheckBoxTree extends JTree {
@@ -344,11 +335,16 @@ public class JCheckBoxTree extends JTree {
 	protected void updatePredecessorsWithCheckMode(TreePath tp, boolean check) {
 		TreePath parentPath = tp.getParentPath();
 		// If it is the root, stop the recursive calls and return
-		if (parentPath == null) {
+		if (parentPath == null)
 			return;
-		}
+		
 		CheckedNode parentCheckedNode = nodesCheckingState.get(parentPath);
 		DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) parentPath.getLastPathComponent();
+		
+		//It is allowed to choose a class without its attributes
+		if(parentNode.getUserObject() instanceof IClass)
+			return;
+		
 		parentCheckedNode.allChildrenSelected = true;
 		parentCheckedNode.isSelected = false;
 		for (int i = 0; i < parentNode.getChildCount(); i++) {
