@@ -63,13 +63,6 @@ public class ExportToGUFOAction implements VPActionController {
 
 		thread.start();
 
-//		request = new ExportToGUFORequest();
-//		loading = new ProgressDialog();
-//		ApplicationManager.instance().getViewManager().showDialog(loading);
-//
-//		Thread thread = new Thread(request);
-//		thread.start();
-
 	}
 
 	/**

@@ -126,12 +126,12 @@ public class Class implements ModelElement {
 		}
 	}
 	
-	public Class(IClass source, HashSet<IModelElement> modelElements) {
+	public Class(IClass source, HashSet<String> modelElements) {
 		this((IModelElement) source);
 
 		final IAttribute[] attributes = source.toAttributeArray();
 		for (int i = 0; attributes != null && i < attributes.length; i++) {
-			if(modelElements.contains(attributes[i]))
+			if(modelElements.contains(attributes[i].getId()))
 				addProperties(new Property(attributes[i]));
 		}
 

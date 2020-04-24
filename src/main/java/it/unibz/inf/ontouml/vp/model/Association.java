@@ -83,7 +83,7 @@ public class Association implements ModelElement {
 		setDerived(source.isDerived());
 	}
 	
-	public Association(IAssociation source, HashSet<IModelElement> modelElements) {
+	public Association(IAssociation source, HashSet<String> modelElements) {
 		this.sourceModelElement = source;
 
 		this.type = ModelElement.TYPE_RELATION;
@@ -91,10 +91,10 @@ public class Association implements ModelElement {
 		setName(source.getName());
 		setDescription(source.getDescription());
 
-		if(modelElements.contains(source.getFromEnd()))
+		if(modelElements.contains(source.getFromEnd().getId()))
 			addProperty(new Property((IAssociationEnd) source.getFromEnd()));
 		
-		if(modelElements.contains(source.getToEnd()))
+		if(modelElements.contains(source.getToEnd().getId()))
 			addProperty(new Property((IAssociationEnd) source.getToEnd()));
 
 		String[] stereotypes = source.toStereotypeArray();

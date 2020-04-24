@@ -1,5 +1,8 @@
 package it.unibz.inf.ontouml.vp.model;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.util.HashSet;
 
 import com.google.gson.GsonBuilder;
@@ -137,7 +140,12 @@ public interface ModelElement {
 	public static String generateModel(HashSet<String> elements, boolean pretty) {
 		
 		final Model model = new Model(elements);
-
+		/*
+		Clipboard c = Toolkit.getDefaultToolkit().getSystemClipboard();
+		StringSelection sl = new StringSelection(new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
+				.serializeNulls().setPrettyPrinting().create().toJson(model));
+		c.setContents(sl, sl);
+		*/
 		if (pretty) {
 			return new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
 					.serializeNulls().setPrettyPrinting().create().toJson(model);

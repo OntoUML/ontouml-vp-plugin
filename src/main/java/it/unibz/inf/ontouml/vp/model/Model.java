@@ -95,9 +95,9 @@ public class Model implements ModelElement {
 		//add only valid elements
 		while(ite.hasNext()) {
 			String id = ite.next();
-
+			
 			if(project.getModelElementById(id)!=null && project.getModelElementById(id) instanceof IModelElement)
-				modelElements.add(project.getModelElementById(id));		
+				modelElements.add(project.getModelElementById(id));
 		}
 		
 		for(IModelElement projectElement : modelElements) {
@@ -112,7 +112,7 @@ public class Model implements ModelElement {
 				break;
 
 			case IModelElementFactory.MODEL_TYPE_CLASS:
-				addElement(new Class((IClass) projectElement, modelElements));
+				addElement(new Class((IClass) projectElement, idElements));
 				break;
 
 			case IModelElementFactory.MODEL_TYPE_DATA_TYPE:
@@ -157,7 +157,7 @@ public class Model implements ModelElement {
 				break;
 
 			case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
-				addElement(new Association((IAssociation) projectElement, modelElements));
+				addElement(new Association((IAssociation) projectElement, idElements));
 				break;
 
 			case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
