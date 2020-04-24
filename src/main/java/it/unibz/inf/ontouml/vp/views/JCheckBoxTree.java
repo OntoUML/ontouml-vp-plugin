@@ -7,6 +7,8 @@ import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -325,7 +327,7 @@ public class JCheckBoxTree extends JTree {
 
 	private void visitAllNodesAndCheckSimilar(DefaultMutableTreeNode root, DefaultMutableTreeNode nodeToCompare) {
 
-		//if same Object
+		// if same Object
 		if (((DefaultMutableTreeNode) root).getUserObject().equals(nodeToCompare.getUserObject())) {
 
 			TreeNode[] old_treeNode = nodeToCompare.getPath();
@@ -334,7 +336,7 @@ public class JCheckBoxTree extends JTree {
 			TreeNode[] new_treeNode = root.getPath();
 			TreePath newTp = new TreePath(new_treeNode);
 
-			//if different paths
+			// if different paths
 			if (!oldTp.toString().equals(newTp.toString())) {
 
 				boolean checkMode = nodesCheckingState.get(oldTp).isSelected;
@@ -355,10 +357,10 @@ public class JCheckBoxTree extends JTree {
 	}
 
 	protected void findSimilarNodes(DefaultMutableTreeNode node) {
-		
+
 		for (int i = 0; i < node.getChildCount(); i++)
 			findSimilarNodes((DefaultMutableTreeNode) node.getChildAt(i));
-		
+
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.getModel().getRoot();
 		visitAllNodesAndCheckSimilar(root, node);
 	}
@@ -372,9 +374,10 @@ public class JCheckBoxTree extends JTree {
 
 		CheckedNode currentNode = nodesCheckingState.get(tp);
 		// It is allowed to choose a class without its attributes
-		if (((DefaultMutableTreeNode) tp.getLastPathComponent()).getUserObject() instanceof IAttribute && currentNode.isSelected == false)
+		if (((DefaultMutableTreeNode) tp.getLastPathComponent()).getUserObject() instanceof IAttribute
+				&& currentNode.isSelected == false)
 			return;
-		
+
 		CheckedNode parentCheckedNode = nodesCheckingState.get(parentPath);
 		DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) parentPath.getLastPathComponent();
 		parentCheckedNode.allChildrenSelected = true;
@@ -635,6 +638,66 @@ public class JCheckBoxTree extends JTree {
 		}
 
 		return newRoot;
+	}
+
+	private void visitAllNodesAndCheckSameId(DefaultMutableTreeNode root, String id) {
+
+		TreeNode[] treeNode = root.getPath();
+		TreePath tp = new TreePath(treeNode);
+		CheckedNode cn = new CheckedNode(false, root.getChildCount() > 0, false);
+
+		TreePath parentPath = tp.getParentPath();
+		// the root item is assumed to be always selected if not this function is not
+		// called
+		if (parentPath == null) {
+			cn.isSelected = true;
+			checkedPaths.add(tp);
+			nodesCheckingState.put(tp, cn);
+		}
+		
+		
+		//if modelElement
+		if (((DefaultMutableTreeNode) root).getUserObject() instanceof IModelElement) {
+			IModelElement nodeElement = (IModelElement) root.getUserObject();
+
+			if (nodeElement.getId().contentEquals(id)) {
+				cn.isSelected = true;
+				checkedPaths.add(tp);
+				nodesCheckingState.put(tp, cn);
+			}
+		}
+
+		//if Diagram
+		if (((DefaultMutableTreeNode) root).getUserObject() instanceof IDiagramUIModel) {
+			IDiagramUIModel diagramElement = (IDiagramUIModel) root.getUserObject();
+
+			if (diagramElement.getId().contentEquals(id)) {
+				cn.isSelected = true;
+				checkedPaths.add(tp);
+				nodesCheckingState.put(tp, cn);
+			}
+		}
+
+		if (root.getChildCount() >= 0) {
+			for (Enumeration<? extends TreeNode> e = root.children(); e.hasMoreElements();) {
+				DefaultMutableTreeNode n = (DefaultMutableTreeNode) e.nextElement();
+
+				visitAllNodesAndCheckSameId(n, id);
+			}
+		}
+	}
+
+	public void setNodesCheck(HashSet<String> idElements) {
+		resetCheckingState();
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode) treeModel.getRoot();
+
+		Iterator<String> ite = idElements.iterator();
+
+		while (ite.hasNext()) {
+			String id = ite.next();
+			visitAllNodesAndCheckSameId(root, id);
+		}
+
 	}
 
 }

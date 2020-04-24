@@ -1,5 +1,6 @@
 package it.unibz.inf.ontouml.vp.views;
 
+import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.view.IDialog;
 import it.unibz.inf.ontouml.vp.utils.Configurations;
@@ -42,7 +43,9 @@ public class ExportToGUFOView extends JPanel {
 
 	private boolean isToExport;
 	private boolean isOpen;
-	private HashSet<IModelElement> elements = new HashSet<IModelElement>();
+
+	private HashSet<String> elementsPackageTree = new HashSet<String>();
+	private HashSet<String> elementsDiagramTree = new HashSet<String>();
 
 	public ExportToGUFOView(ProjectConfigurations configurations, ServerRequest request) {
 		setSize(new Dimension(850, 600));
@@ -182,9 +185,14 @@ public class ExportToGUFOView extends JPanel {
 		_btnApply.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
+				if (treeBox.getSelectedItem().equals("Package Explorer"))
+					saveSelectedElements("Package Tree");
+				else
+					saveSelectedElements("Diagram Tree");
+
 				updateConfigurationsValues(configurations);
 				Configurations.getInstance().save();
-				saveSelectedElements();
 				isToExport = true;
 				isOpen = false;
 				request.doStop();
@@ -251,6 +259,11 @@ public class ExportToGUFOView extends JPanel {
 		configurations.setExportGUFOIRI(IRItxt.getText());
 		configurations.setExportGUFOFormat(formatBox.getSelectedItem().toString());
 		configurations.setExportGUFOURIFormat(uriFormatBox.getSelectedItem().toString());
+
+		if (treeBox.getSelectedItem().equals("Package Explorer"))
+			configurations.setExportGUFOElementsPackageTree(elementsPackageTree);
+		else
+			configurations.setExportGUFOElementsDiagramTree(elementsDiagramTree);
 	}
 
 	/**
@@ -270,18 +283,22 @@ public class ExportToGUFOView extends JPanel {
 
 		if (configurations.getExportGUFOURIFormat() != null && !configurations.getExportGUFOURIFormat().equals(""))
 			uriFormatBox.setSelectedItem(configurations.getExportGUFOURIFormat());
+
+		if (configurations.getExportGUFOElementsPackageTree() != null)
+			packageCBT.setNodesCheck(configurations.getExportGUFOElementsPackageTree());
+
+		if (configurations.getExportGUFOElementsDiagramTree() != null)
+			diagramCBT.setNodesCheck(configurations.getExportGUFOElementsDiagramTree());
 	}
 
-	private void saveSelectedElements() {
+	private void saveSelectedElements(String tree) {
 
 		TreePath[] paths;
 
-		if (treeBox.getSelectedItem().equals("Package Explorer"))
+		if (tree.equals("Package Tree"))
 			paths = packageCBT.getCheckedPaths();
 		else
 			paths = diagramCBT.getCheckedPaths();
-
-		paths = diagramCBT.getCheckedPaths();
 
 		for (TreePath path : paths) {
 			Object[] object = path.getPath();
@@ -291,8 +308,34 @@ public class ExportToGUFOView extends JPanel {
 
 					DefaultMutableTreeNode node = (DefaultMutableTreeNode) object[j];
 
+					if (node.getUserObject() instanceof IModelElement) {
+						if (tree.equals("Package Tree"))
+							this.elementsPackageTree.add(((IModelElement) node.getUserObject()).getId());
+						else
+							this.elementsDiagramTree.add(((IModelElement) node.getUserObject()).getId());
+					}
+
+					if (node.getUserObject() instanceof IDiagramUIModel) {
+						if (tree.equals("Package Tree"))
+							this.elementsPackageTree.add(((IDiagramUIModel) node.getUserObject()).getId());
+						else
+							this.elementsDiagramTree.add(((IDiagramUIModel) node.getUserObject()).getId());
+					}
+
+				}
+
+			}
+		}
+
+		for (TreePath path : paths) {
+			Object[] object = path.getPath();
+			for (int j = 0; j < object.length; j++) {
+
+				if (object[j] instanceof DefaultMutableTreeNode) {
+					DefaultMutableTreeNode node = (DefaultMutableTreeNode) object[j];
+
 					if (node.getUserObject() instanceof IModelElement)
-						this.elements.add((IModelElement) node.getUserObject());
+						this.elementsDiagramTree.add(((IModelElement) node.getUserObject()).getId());
 				}
 
 			}
@@ -300,10 +343,11 @@ public class ExportToGUFOView extends JPanel {
 
 	}
 
-	public HashSet<IModelElement> getSavedElements() {
-		if(this.elements.size() == 0)
-			saveSelectedElements();
-		
-		return this.elements;
+	public HashSet<String> getSavedElements() {
+
+		if (treeBox.getSelectedItem().equals("Package Explorer"))
+			return elementsPackageTree;
+		else
+			return elementsDiagramTree;
 	}
 }

@@ -1,5 +1,8 @@
 package it.unibz.inf.ontouml.vp.utils;
 
+import java.util.HashSet;
+import java.util.Iterator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -71,6 +74,14 @@ public class ProjectConfigurations {
 	@SerializedName("exportGUFOURIFormat")
 	@Expose()
 	private String exportGUFOURIFormat;
+	
+	@SerializedName("exportGUFOElementsDiagramTree")
+	@Expose()
+	private HashSet<String> exportGUFOElementsDiagramTree;
+	
+	@SerializedName("exportGUFOElementsPackageTree")
+	@Expose()
+	private HashSet<String> exportGUFOElementsPackageTree;
 	
 	@SerializedName("isExportEnabled")
 	@Expose()
@@ -292,7 +303,23 @@ public class ProjectConfigurations {
 	public void setExportGUFOURIFormat(String exportGUFOURIFormat) {
 		this.exportGUFOURIFormat = exportGUFOURIFormat;
 	}
+	
+	public HashSet<String> getExportGUFOElementsDiagramTree() {
+		return exportGUFOElementsDiagramTree;
+	}
 
+	public void setExportGUFOElementsDiagramTree(HashSet<String> exportGUFOElementsDiagramTree) {
+		this.exportGUFOElementsDiagramTree = exportGUFOElementsDiagramTree;
+	}
+
+	public HashSet<String> getExportGUFOElementsPackageTree() {
+		return exportGUFOElementsPackageTree;
+	}
+
+	public void setExportGUFOElementsPackageTree(HashSet<String> exportGUFOElementsPackageTree) {
+		this.exportGUFOElementsPackageTree = exportGUFOElementsPackageTree;
+	}
+	
 	/**
 	 * 
 	 * Checks if an export folder is set for automatic model export.

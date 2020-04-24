@@ -143,9 +143,9 @@ public class ExportToGUFOAction implements VPActionController {
 
 	public class ExportToGUFORequest extends ServerRequest {
 		
-		private HashSet<IModelElement> elements;
+		private HashSet<String> elements;
 		
-		public ExportToGUFORequest(HashSet<IModelElement> elements) {
+		public ExportToGUFORequest(HashSet<String> elements) {
 			this.elements = elements;
 		}
 

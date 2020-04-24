@@ -9,6 +9,7 @@ import com.vp.plugin.model.factory.IModelElementFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -77,13 +78,27 @@ public class Model implements ModelElement {
 	 *
 	 * 
 	 */
-	public Model(HashSet<IModelElement> modelElements) {
+	public Model(HashSet<String> idElements) {
 		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
 		
 		this.sourceModelElement = null;
 		this.type = ModelElement.TYPE_PACKAGE;
 		this.id = project.getId();
 		this.setName(project.getName());
+		
+		if(idElements == null)
+			return;
+		
+		HashSet<IModelElement> modelElements = new HashSet<IModelElement>();
+		
+		Iterator<String> ite = idElements.iterator();
+		//add only valid elements
+		while(ite.hasNext()) {
+			String id = ite.next();
+
+			if(project.getModelElementById(id)!=null && project.getModelElementById(id) instanceof IModelElement)
+				modelElements.add(project.getModelElementById(id));		
+		}
 		
 		for(IModelElement projectElement : modelElements) {
 			

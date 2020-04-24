@@ -134,7 +134,7 @@ public interface ModelElement {
 		}
 	}
 	
-	public static String generateModel(HashSet<IModelElement> elements, boolean pretty) {
+	public static String generateModel(HashSet<String> elements, boolean pretty) {
 		
 		final Model model = new Model(elements);
 
