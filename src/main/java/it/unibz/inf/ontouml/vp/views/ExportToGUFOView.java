@@ -317,9 +317,9 @@ public class ExportToGUFOView extends JPanel {
 
 					if (node.getUserObject() instanceof IModelElement)
 						aux.add(((IModelElement) node.getUserObject()).getId());
-
+					//Diagrams are represented by its modelElement Parent
 					if (node.getUserObject() instanceof IDiagramUIModel)
-						aux.add(((IDiagramUIModel) node.getUserObject()).getId());
+						aux.add(((IDiagramUIModel) node.getUserObject()).getParentModel().getId());
 				}
 			}
 
