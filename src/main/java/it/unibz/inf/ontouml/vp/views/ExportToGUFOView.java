@@ -1,7 +1,10 @@
 package it.unibz.inf.ontouml.vp.views;
 
+import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.IProject;
+import com.vp.plugin.model.factory.IModelElementFactory;
 import com.vp.plugin.view.IDialog;
 import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.ProjectConfigurations;
@@ -294,37 +297,14 @@ public class ExportToGUFOView extends JPanel {
 	private void saveSelectedElements(String tree) {
 
 		TreePath[] paths;
+		HashSet<String> aux;
 
-		if (tree.equals("Package Tree"))
+		if (tree.equals("Package Tree")) {
 			paths = packageCBT.getCheckedPaths();
-		else
+			aux = this.elementsPackageTree;
+		} else {
 			paths = diagramCBT.getCheckedPaths();
-
-		for (TreePath path : paths) {
-			Object[] object = path.getPath();
-			for (int j = 0; j < object.length; j++) {
-
-				if (object[j] instanceof DefaultMutableTreeNode) {
-
-					DefaultMutableTreeNode node = (DefaultMutableTreeNode) object[j];
-
-					if (node.getUserObject() instanceof IModelElement) {
-						if (tree.equals("Package Tree"))
-							this.elementsPackageTree.add(((IModelElement) node.getUserObject()).getId());
-						else
-							this.elementsDiagramTree.add(((IModelElement) node.getUserObject()).getId());
-					}
-
-					if (node.getUserObject() instanceof IDiagramUIModel) {
-						if (tree.equals("Package Tree"))
-							this.elementsPackageTree.add(((IDiagramUIModel) node.getUserObject()).getId());
-						else
-							this.elementsDiagramTree.add(((IDiagramUIModel) node.getUserObject()).getId());
-					}
-
-				}
-
-			}
+			aux = this.elementsDiagramTree;
 		}
 
 		for (TreePath path : paths) {
@@ -332,13 +312,22 @@ public class ExportToGUFOView extends JPanel {
 			for (int j = 0; j < object.length; j++) {
 
 				if (object[j] instanceof DefaultMutableTreeNode) {
+
 					DefaultMutableTreeNode node = (DefaultMutableTreeNode) object[j];
 
 					if (node.getUserObject() instanceof IModelElement)
-						this.elementsDiagramTree.add(((IModelElement) node.getUserObject()).getId());
-				}
+						aux.add(((IModelElement) node.getUserObject()).getId());
 
+					if (node.getUserObject() instanceof IDiagramUIModel)
+						aux.add(((IDiagramUIModel) node.getUserObject()).getId());
+				}
 			}
+
+			final IProject project = ApplicationManager.instance().getProjectManager().getProject();
+			final String[] datatypes = { IModelElementFactory.MODEL_TYPE_DATA_TYPE };
+
+			for (IModelElement datatype : project.toModelElementArray(datatypes))
+				aux.add(datatype.getId());
 		}
 
 	}

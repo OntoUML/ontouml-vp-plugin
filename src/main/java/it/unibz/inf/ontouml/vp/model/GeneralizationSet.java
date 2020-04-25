@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -77,6 +78,29 @@ public class GeneralizationSet implements ModelElement {
 		for (int i = 0; generalizations != null && i < generalizations.length; i++)
 			addGeneralization(new Reference(generalizations[i]));
 
+		setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
+	}
+	
+	public GeneralizationSet(IGeneralizationSet source, HashSet<String> idElements) {
+		this.sourceModelElement = source;
+
+		this.type = ModelElement.TYPE_GENERALIZATION_SET;
+		this.id = source.getId();
+		setName(source.getName());
+		setDescription(source.getDescription());
+
+		setComplete(source.isCovering());
+		setDisjoint(source.isDisjoint());
+
+		if (source.getPowerType() != null)
+			setCategorizer(new Reference(source.getPowerType()));
+
+		final IGeneralization[] generalizations = source.toGeneralizationArray();
+		for (int i = 0; generalizations != null && i < generalizations.length; i++) {
+			if(idElements.contains(generalizations[i].getId()))
+				addGeneralization(new Reference(generalizations[i]));
+		}
+			
 		setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
 	}
 
