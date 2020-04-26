@@ -2,6 +2,8 @@ package it.unibz.inf.ontouml.vp.views;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.EventListener;
 import java.util.EventObject;
@@ -18,6 +20,7 @@ import javax.swing.event.EventListenerList;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultTreeSelectionModel;
+import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
@@ -121,7 +124,7 @@ public class JCheckBoxTree extends JTree {
 	private void resetCheckingState() {
 		nodesCheckingState = new HashMap<TreePath, CheckedNode>();
 		checkedPaths = new HashSet<TreePath>();
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode) getModel().getRoot();
+		ElementNode node = (ElementNode) getModel().getRoot();
 		if (node == null) {
 			return;
 		}
@@ -129,14 +132,14 @@ public class JCheckBoxTree extends JTree {
 	}
 
 	// Creating data structure of the current model for the checking mechanism
-	private void addSubtreeToCheckingStateTracking(DefaultMutableTreeNode node) {
+	private void addSubtreeToCheckingStateTracking(ElementNode node) {
 		TreeNode[] path = node.getPath();
 		TreePath tp = new TreePath(path);
 		CheckedNode cn = new CheckedNode(false, node.getChildCount() > 0, false);
 		nodesCheckingState.put(tp, cn);
 		for (int i = 0; i < node.getChildCount(); i++) {
 			addSubtreeToCheckingStateTracking(
-					(DefaultMutableTreeNode) tp.pathByAddingChild(node.getChildAt(i)).getLastPathComponent());
+					(ElementNode) tp.pathByAddingChild(node.getChildAt(i)).getLastPathComponent());
 		}
 	}
 
@@ -161,7 +164,7 @@ public class JCheckBoxTree extends JTree {
 		@Override
 		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,
 				boolean leaf, int row, boolean hasFocus) {
-			DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+			ElementNode node = (ElementNode) value;
 			Object obj = node.getUserObject();
 			TreePath tp = new TreePath(node.getPath());
 			CheckedNode cn = nodesCheckingState.get(tp);
@@ -201,10 +204,10 @@ public class JCheckBoxTree extends JTree {
 
 	}
 
-	private String getNameNode(DefaultMutableTreeNode node) {
+	private String getNameNode(ElementNode node) {
 		String nameNode = "";
 
-		Object obj = ((DefaultMutableTreeNode) node).getUserObject();
+		Object obj = ((ElementNode) node).getUserObject();
 
 		if (obj instanceof IAttribute) {
 			nameNode = "Attribute";
@@ -308,7 +311,7 @@ public class JCheckBoxTree extends JTree {
 				// Firing the check change event
 				fireCheckChangeEvent(new CheckChangeEvent(new Object()));
 				// Repainting tree after the data structures were updated
-				findSimilarNodes((DefaultMutableTreeNode) path.getLastPathComponent());
+				findSimilarNodes((ElementNode) path.getLastPathComponent());
 				selfPointer.repaint();
 			}
 
@@ -325,10 +328,10 @@ public class JCheckBoxTree extends JTree {
 		this.setSelectionModel(dtsm);
 	}
 
-	private void visitAllNodesAndCheckSimilar(DefaultMutableTreeNode root, DefaultMutableTreeNode nodeToCompare) {
+	private void visitAllNodesAndCheckSimilar(ElementNode root, ElementNode nodeToCompare) {
 
 		// if same Object
-		if (((DefaultMutableTreeNode) root).getUserObject().equals(nodeToCompare.getUserObject())) {
+		if (((ElementNode) root).getUserObject().equals(nodeToCompare.getUserObject())) {
 
 			TreeNode[] old_treeNode = nodeToCompare.getPath();
 			TreePath oldTp = new TreePath(old_treeNode);
@@ -349,19 +352,19 @@ public class JCheckBoxTree extends JTree {
 
 		if (root.getChildCount() >= 0) {
 			for (Enumeration<? extends TreeNode> e = root.children(); e.hasMoreElements();) {
-				DefaultMutableTreeNode n = (DefaultMutableTreeNode) e.nextElement();
+				ElementNode n = (ElementNode) e.nextElement();
 
 				visitAllNodesAndCheckSimilar(n, nodeToCompare);
 			}
 		}
 	}
 
-	protected void findSimilarNodes(DefaultMutableTreeNode node) {
+	protected void findSimilarNodes(ElementNode node) {
 
 		for (int i = 0; i < node.getChildCount(); i++)
-			findSimilarNodes((DefaultMutableTreeNode) node.getChildAt(i));
+			findSimilarNodes((ElementNode) node.getChildAt(i));
 
-		DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.getModel().getRoot();
+		ElementNode root = (ElementNode) this.getModel().getRoot();
 		visitAllNodesAndCheckSimilar(root, node);
 	}
 
@@ -374,12 +377,12 @@ public class JCheckBoxTree extends JTree {
 
 		CheckedNode currentNode = nodesCheckingState.get(tp);
 		// It is allowed to choose a class without its attributes
-		if (((DefaultMutableTreeNode) tp.getLastPathComponent()).getUserObject() instanceof IAttribute
+		if (((ElementNode) tp.getLastPathComponent()).getUserObject() instanceof IAttribute
 				&& currentNode.isSelected == false)
 			return;
 
 		CheckedNode parentCheckedNode = nodesCheckingState.get(parentPath);
-		DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) parentPath.getLastPathComponent();
+		ElementNode parentNode = (ElementNode) parentPath.getLastPathComponent();
 		parentCheckedNode.allChildrenSelected = true;
 		parentCheckedNode.isSelected = false;
 		for (int i = 0; i < parentNode.getChildCount(); i++) {
@@ -408,7 +411,7 @@ public class JCheckBoxTree extends JTree {
 	protected void checkSubTree(TreePath tp, boolean check) {
 		CheckedNode cn = nodesCheckingState.get(tp);
 		cn.isSelected = check;
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode) tp.getLastPathComponent();
+		ElementNode node = (ElementNode) tp.getLastPathComponent();
 		for (int i = 0; i < node.getChildCount(); i++) {
 			checkSubTree(tp.pathByAddingChild(node.getChildAt(i)), check);
 		}
@@ -433,7 +436,7 @@ public class JCheckBoxTree extends JTree {
 				IModelElementFactory.MODEL_TYPE_MODEL, IModelElementFactory.MODEL_TYPE_CLASS,
 				IModelElementFactory.MODEL_TYPE_ASSOCIATION, IModelElementFactory.MODEL_TYPE_DATA_TYPE };
 
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode("All Models");
+		ElementNode root = new ElementNode("All Models");
 
 		for (IModelElement rootElement : project.toModelElementArray(rootLevelElements))
 			setChildrenRecursively(rootElement, root);
@@ -445,15 +448,15 @@ public class JCheckBoxTree extends JTree {
 		final IDiagramUIModel[] diagramArray = ApplicationManager.instance().getProjectManager().getProject()
 				.toDiagramArray();
 
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Class Diagram");
+		ElementNode root = new ElementNode("Class Diagram");
 
 		if (diagramArray != null) {
 
 			for (IDiagramUIModel diagram : diagramArray) {
 
 				if (diagram instanceof IClassDiagramUIModel) {
-					DefaultMutableTreeNode parent;
-					parent = new DefaultMutableTreeNode(diagram);
+					ElementNode parent;
+					parent = new ElementNode(diagram);
 					root.add(parent);
 					setChildrenFromDiagrams(diagram, parent);
 				}
@@ -463,9 +466,8 @@ public class JCheckBoxTree extends JTree {
 		return new DefaultTreeModel(root);
 	}
 
-	private static DefaultMutableTreeNode setChildrenRecursively(IModelElement modelElement,
-			DefaultMutableTreeNode parent) {
-		DefaultMutableTreeNode newRoot = parent;
+	private static ElementNode setChildrenRecursively(IModelElement modelElement, ElementNode parent) {
+		ElementNode newRoot = parent;
 
 		final String[] rootLevelElementsPriority = { IModelElementFactory.MODEL_TYPE_PACKAGE,
 				IModelElementFactory.MODEL_TYPE_MODEL };
@@ -476,8 +478,8 @@ public class JCheckBoxTree extends JTree {
 		if (modelElement instanceof IModel) {
 			IModel model = (IModel) modelElement;
 
-			DefaultMutableTreeNode newParent;
-			newParent = new DefaultMutableTreeNode(model);
+			ElementNode newParent;
+			newParent = new ElementNode(model);
 
 			for (IModelElement element : model.toChildArray(rootLevelElementsPriority))
 				newRoot.add(setChildrenRecursively(element, newParent));
@@ -489,8 +491,8 @@ public class JCheckBoxTree extends JTree {
 		if (modelElement instanceof IPackage) {
 			IPackage pckg = (IPackage) modelElement;
 
-			DefaultMutableTreeNode newParent;
-			newParent = new DefaultMutableTreeNode(pckg);
+			ElementNode newParent;
+			newParent = new ElementNode(pckg);
 
 			for (IModelElement element : pckg.toChildArray(rootLevelElementsPriority))
 				newRoot.add(setChildrenRecursively(element, newParent));
@@ -501,66 +503,65 @@ public class JCheckBoxTree extends JTree {
 
 		if (modelElement instanceof IClass) {
 			IClass _class = (IClass) modelElement;
-			DefaultMutableTreeNode newParent;
+			ElementNode newParent;
 
-			newParent = new DefaultMutableTreeNode(_class);
+			newParent = new ElementNode(_class);
 
 			IAttribute[] attributes = _class.toAttributeArray();
 
 			for (int j = 0; attributes != null && j < attributes.length; j++)
-				newParent.add(new DefaultMutableTreeNode(attributes[j]));
+				newParent.add(new ElementNode(attributes[j]));
 
 			newRoot.add(newParent);
 		}
 
 		if (modelElement instanceof IAssociation) {
 			IAssociation association = (IAssociation) modelElement;
-			DefaultMutableTreeNode newParent;
+			ElementNode newParent;
 
-			newParent = new DefaultMutableTreeNode(association);
+			newParent = new ElementNode(association);
 
 			IAssociationEnd fromEnd = (IAssociationEnd) association.getFromEnd();
 			IAssociationEnd toEnd = (IAssociationEnd) association.getToEnd();
 
 			if (fromEnd != null)
-				newParent.add(new DefaultMutableTreeNode(fromEnd));
+				newParent.add(new ElementNode(fromEnd));
 
 			if (toEnd != null)
-				newParent.add(new DefaultMutableTreeNode(toEnd));
+				newParent.add(new ElementNode(toEnd));
 
 			newRoot.add(newParent);
 		}
 
 		if (modelElement instanceof IGeneralizationSet) {
 			IGeneralizationSet generalizationSet = (IGeneralizationSet) modelElement;
-			DefaultMutableTreeNode newParent;
+			ElementNode newParent;
 
-			newParent = new DefaultMutableTreeNode(generalizationSet);
+			newParent = new ElementNode(generalizationSet);
 			newRoot.add(newParent);
 		}
 
 		if (modelElement instanceof IGeneralization) {
 			IGeneralization generalization = (IGeneralization) modelElement;
-			DefaultMutableTreeNode newParent;
+			ElementNode newParent;
 
-			newParent = new DefaultMutableTreeNode(generalization);
+			newParent = new ElementNode(generalization);
 			newRoot.add(newParent);
 		}
 
 		if (modelElement instanceof IAssociationClass) {
 			IAssociationClass associationClass = (IAssociationClass) modelElement;
-			DefaultMutableTreeNode newParent;
+			ElementNode newParent;
 
-			newParent = new DefaultMutableTreeNode(associationClass);
+			newParent = new ElementNode(associationClass);
 			newRoot.add(newParent);
 		}
 
 		return newRoot;
 	}
 
-	private static DefaultMutableTreeNode setChildrenFromDiagrams(IDiagramUIModel diagram,
-			DefaultMutableTreeNode parent) {
-		DefaultMutableTreeNode newRoot = parent;
+	private static ElementNode setChildrenFromDiagrams(IDiagramUIModel diagram, ElementNode parent) {
+		ElementNode newRoot = parent;
 		IDiagramElement[] classes = diagram.toDiagramElementArray(IModelElementFactory.MODEL_TYPE_CLASS);
 		IDiagramElement[] associations = diagram.toDiagramElementArray(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
 		IDiagramElement[] generalizationSets = diagram
@@ -574,13 +575,13 @@ public class JCheckBoxTree extends JTree {
 			if (classes[i].getModelElement() != null) {
 				IClass _class = (IClass) classes[i].getModelElement();
 
-				DefaultMutableTreeNode newParent;
-				newParent = new DefaultMutableTreeNode(_class);
+				ElementNode newParent;
+				newParent = new ElementNode(_class);
 
 				IAttribute[] attributes = _class.toAttributeArray();
 
 				for (int j = 0; attributes != null && j < attributes.length; j++)
-					newParent.add(new DefaultMutableTreeNode(attributes[j]));
+					newParent.add(new ElementNode(attributes[j]));
 
 				newRoot.add(newParent);
 			}
@@ -589,18 +590,18 @@ public class JCheckBoxTree extends JTree {
 		for (int i = 0; associations != null && i < associations.length; i++) {
 			if (associations[i].getModelElement() != null) {
 				IAssociation association = (IAssociation) associations[i].getModelElement();
-				DefaultMutableTreeNode newParent;
+				ElementNode newParent;
 
-				newParent = new DefaultMutableTreeNode(association);
+				newParent = new ElementNode(association);
 
 				IAssociationEnd fromEnd = (IAssociationEnd) association.getFromEnd();
 				IAssociationEnd toEnd = (IAssociationEnd) association.getToEnd();
 
 				if (fromEnd != null)
-					newParent.add(new DefaultMutableTreeNode(fromEnd));
+					newParent.add(new ElementNode(fromEnd));
 
 				if (toEnd != null)
-					newParent.add(new DefaultMutableTreeNode(toEnd));
+					newParent.add(new ElementNode(toEnd));
 
 				newRoot.add(newParent);
 
@@ -610,9 +611,9 @@ public class JCheckBoxTree extends JTree {
 		for (int i = 0; generalizationSets != null && i < generalizationSets.length; i++) {
 			if (generalizationSets[i].getModelElement() != null) {
 				IGeneralizationSet generalizationSet = (IGeneralizationSet) generalizationSets[i].getModelElement();
-				DefaultMutableTreeNode newParent;
+				ElementNode newParent;
 
-				newParent = new DefaultMutableTreeNode(generalizationSet);
+				newParent = new ElementNode(generalizationSet);
 				newRoot.add(newParent);
 			}
 		}
@@ -620,9 +621,9 @@ public class JCheckBoxTree extends JTree {
 		for (int i = 0; generalizations != null && i < generalizations.length; i++) {
 			if (generalizations[i].getModelElement() != null) {
 				IGeneralization generalization = (IGeneralization) generalizations[i].getModelElement();
-				DefaultMutableTreeNode newParent;
+				ElementNode newParent;
 
-				newParent = new DefaultMutableTreeNode(generalization);
+				newParent = new ElementNode(generalization);
 				newRoot.add(newParent);
 			}
 		}
@@ -630,9 +631,9 @@ public class JCheckBoxTree extends JTree {
 		for (int i = 0; associationClasses != null && i < associationClasses.length; i++) {
 			if (associationClasses[i].getModelElement() != null) {
 				IAssociationClass associationClass = (IAssociationClass) associationClasses[i].getModelElement();
-				DefaultMutableTreeNode newParent;
+				ElementNode newParent;
 
-				newParent = new DefaultMutableTreeNode(associationClass);
+				newParent = new ElementNode(associationClass);
 				newRoot.add(newParent);
 			}
 		}
@@ -640,7 +641,7 @@ public class JCheckBoxTree extends JTree {
 		return newRoot;
 	}
 
-	private void visitAllNodesAndCheckSameId(DefaultMutableTreeNode root, String id) {
+	private void visitAllNodesAndCheckSameId(ElementNode root, String id) {
 
 		TreeNode[] treeNode = root.getPath();
 		TreePath tp = new TreePath(treeNode);
@@ -654,10 +655,9 @@ public class JCheckBoxTree extends JTree {
 			checkedPaths.add(tp);
 			nodesCheckingState.put(tp, cn);
 		}
-		
-		
-		//if modelElement
-		if (((DefaultMutableTreeNode) root).getUserObject() instanceof IModelElement) {
+
+		// if modelElement
+		if (((ElementNode) root).getUserObject() instanceof IModelElement) {
 			IModelElement nodeElement = (IModelElement) root.getUserObject();
 
 			if (nodeElement.getId().contentEquals(id)) {
@@ -667,8 +667,8 @@ public class JCheckBoxTree extends JTree {
 			}
 		}
 
-		//if Diagram
-		if (((DefaultMutableTreeNode) root).getUserObject() instanceof IDiagramUIModel) {
+		// if Diagram
+		if (((ElementNode) root).getUserObject() instanceof IDiagramUIModel) {
 			IDiagramUIModel diagramElement = (IDiagramUIModel) root.getUserObject();
 
 			if (diagramElement.getId().contentEquals(id)) {
@@ -680,7 +680,7 @@ public class JCheckBoxTree extends JTree {
 
 		if (root.getChildCount() >= 0) {
 			for (Enumeration<? extends TreeNode> e = root.children(); e.hasMoreElements();) {
-				DefaultMutableTreeNode n = (DefaultMutableTreeNode) e.nextElement();
+				ElementNode n = (ElementNode) e.nextElement();
 
 				visitAllNodesAndCheckSameId(n, id);
 			}
@@ -689,7 +689,7 @@ public class JCheckBoxTree extends JTree {
 
 	public void setNodesCheck(HashSet<String> idElements) {
 		resetCheckingState();
-		DefaultMutableTreeNode root = (DefaultMutableTreeNode) treeModel.getRoot();
+		ElementNode root = (ElementNode) treeModel.getRoot();
 
 		Iterator<String> ite = idElements.iterator();
 
@@ -698,6 +698,66 @@ public class JCheckBoxTree extends JTree {
 			visitAllNodesAndCheckSameId(root, id);
 		}
 
+	}
+
+	public static class ElementNode extends DefaultMutableTreeNode {
+
+		private static final long serialVersionUID = 1L;
+
+		public ElementNode(Object userObject) {
+			super(userObject);
+		}
+
+		@Override
+		public void add(MutableTreeNode newChild) {
+			super.add(newChild);
+			sort();
+		}
+
+		@SuppressWarnings("unchecked")
+		public void sort() {
+			Collections.sort(children, compare());
+		}
+
+		@SuppressWarnings("rawtypes")
+		private Comparator compare() {
+			return new Comparator<DefaultMutableTreeNode>() {
+				@Override
+				public int compare(DefaultMutableTreeNode o1, DefaultMutableTreeNode o2) {
+					String arg1 = "";
+					String arg2 = "";
+
+					if (o1.getUserObject() instanceof IDiagramUIModel) {
+						arg1 = ((IDiagramUIModel) o1.getUserObject()).getName();
+					} else if (o1.getUserObject() instanceof IModelElement) {
+						arg1 = ((IModelElement) o1.getUserObject()).getName();
+					} else if (o1.getUserObject() instanceof String) {
+						arg1 = (String) o1.getUserObject();
+					}else {
+						arg1="";
+					}
+
+					if (o2.getUserObject() instanceof IDiagramUIModel) {
+						arg2 = ((IDiagramUIModel) o2.getUserObject()).getName();
+					} else if (o2.getUserObject() instanceof IModelElement) {
+						arg2 = ((IModelElement) o2.getUserObject()).getName();
+					} else if (o2.getUserObject() instanceof String) {
+						arg2 = (String) o2.getUserObject();
+					}else {
+						arg2="";
+					}
+
+					if (arg1 == null)
+						arg1 = "";
+					if (arg2 == null)
+						arg2 = "";
+
+					return arg1.compareTo(arg2);
+				}
+
+			};
+
+		}
 	}
 
 }
