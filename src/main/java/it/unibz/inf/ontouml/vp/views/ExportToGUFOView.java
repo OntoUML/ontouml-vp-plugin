@@ -322,12 +322,13 @@ public class ExportToGUFOView extends JPanel {
 						aux.add(((IDiagramUIModel) node.getUserObject()).getParentModel().getId());
 				}
 			}
-
+			/*
 			final IProject project = ApplicationManager.instance().getProjectManager().getProject();
 			final String[] datatypes = { IModelElementFactory.MODEL_TYPE_DATA_TYPE };
 
 			for (IModelElement datatype : project.toModelElementArray(datatypes))
 				aux.add(datatype.getId());
+			*/
 		}
 
 	}

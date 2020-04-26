@@ -35,6 +35,7 @@ import com.vp.plugin.model.IAssociationClass;
 import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IAttribute;
 import com.vp.plugin.model.IClass;
+import com.vp.plugin.model.IDataType;
 import com.vp.plugin.model.IGeneralization;
 import com.vp.plugin.model.IGeneralizationSet;
 import com.vp.plugin.model.IModel;
@@ -462,6 +463,14 @@ public class JCheckBoxTree extends JTree {
 				}
 			}
 		}
+		
+		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
+		final String[] datatypes = { IModelElementFactory.MODEL_TYPE_DATA_TYPE };
+
+		for (IModelElement datatype : project.toModelElementArray(datatypes)) {
+			ElementNode datatypeNodes = new ElementNode(datatype);
+			root.add(datatypeNodes);
+		}
 
 		return new DefaultTreeModel(root);
 	}
@@ -529,6 +538,15 @@ public class JCheckBoxTree extends JTree {
 
 			if (toEnd != null)
 				newParent.add(new ElementNode(toEnd));
+
+			newRoot.add(newParent);
+		}
+
+		if (modelElement instanceof IDataType) {
+			IDataType _class = (IDataType) modelElement;
+
+			ElementNode newParent;
+			newParent = new ElementNode(_class);
 
 			newRoot.add(newParent);
 		}
@@ -726,32 +744,97 @@ public class JCheckBoxTree extends JTree {
 				public int compare(DefaultMutableTreeNode o1, DefaultMutableTreeNode o2) {
 					String arg1 = "";
 					String arg2 = "";
-
-					if (o1.getUserObject() instanceof IDiagramUIModel) {
-						arg1 = ((IDiagramUIModel) o1.getUserObject()).getName();
-					} else if (o1.getUserObject() instanceof IModelElement) {
-						arg1 = ((IModelElement) o1.getUserObject()).getName();
-					} else if (o1.getUserObject() instanceof String) {
-						arg1 = (String) o1.getUserObject();
-					}else {
-						arg1="";
+					
+					if(o1 == null)
+						return 0;
+					if(o2 == null)
+						return 0;
+					
+					if(o1.getUserObject() instanceof IDiagramUIModel) {
+						if(o2.getUserObject() instanceof IDiagramUIModel) {
+							return ((IDiagramUIModel) o1.getUserObject()).getName().compareTo(((IDiagramUIModel) o2.getUserObject()).getName());
+						}else{
+							return 0;
+						}
 					}
-
-					if (o2.getUserObject() instanceof IDiagramUIModel) {
-						arg2 = ((IDiagramUIModel) o2.getUserObject()).getName();
-					} else if (o2.getUserObject() instanceof IModelElement) {
-						arg2 = ((IModelElement) o2.getUserObject()).getName();
-					} else if (o2.getUserObject() instanceof String) {
-						arg2 = (String) o2.getUserObject();
-					}else {
-						arg2="";
+					
+					
+					if(o1.getUserObject() instanceof IModelElement) {
+						if(o2.getUserObject() instanceof IModelElement) {
+							IModelElement element1 = (IModelElement) o1.getUserObject();
+							IModelElement element2 = (IModelElement) o2.getUserObject();
+							
+							if(element1.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_MODEL) && element2.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_MODEL)) {
+								arg1 = element1.getName();
+								arg2 = element2.getName();
+							}else if (element1.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_MODEL)) {
+								return -1;
+							}else if (element2.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_MODEL)) {
+								return 1;
+							}
+							
+							if(element1.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_CLASS) && element2.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_CLASS)) {
+								arg1 = element1.getName();
+								arg2 = element2.getName();
+							}else if (element1.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_CLASS)) {
+								return -1;
+							}else if (element2.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_CLASS)) {
+								return 1;
+							}
+							
+							if(element1.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_ASSOCIATION) && element2.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_ASSOCIATION)) {
+								arg1 = element1.getName();
+								arg2 = element2.getName();
+							}else if (element1.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_ASSOCIATION)) {
+								return -1;
+							}else if (element2.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_ASSOCIATION)) {
+								return 1;
+							}
+							
+							if(element1.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET) && element2.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET)) {
+								arg1 = element1.getName();
+								arg2 = element2.getName();
+							}else if (element1.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET)) {
+								return -1;
+							}else if (element2.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET)) {
+								return 1;
+							}
+							
+							if(element1.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_GENERALIZATION) && element2.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_GENERALIZATION)) {
+								arg1 = element1.getName();
+								arg2 = element2.getName();
+							}else if (element1.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_GENERALIZATION)) {
+								return -1;
+							}else if (element2.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_GENERALIZATION)) {
+								return 1;
+							}
+							
+							if(element1.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS) && element2.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS)) {
+								arg1 = element1.getName();
+								arg2 = element2.getName();
+							}else if (element1.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS)) {
+								return -1;
+							}else if (element2.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS)) {
+								return 1;
+							}
+							
+							if(element1.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_DATA_TYPE) && element2.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_DATA_TYPE)) {
+								arg1 = element1.getName();
+								arg2 = element2.getName();
+							}else if (element1.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_DATA_TYPE)) {
+								return -1;
+							}else if (element2.getModelType().contentEquals(IModelElementFactory.MODEL_TYPE_DATA_TYPE)) {
+								return 1;
+							}
+							
+						}
 					}
-
+					
 					if (arg1 == null)
 						arg1 = "";
 					if (arg2 == null)
 						arg2 = "";
-
+				
 					return arg1.compareTo(arg2);
 				}
 
