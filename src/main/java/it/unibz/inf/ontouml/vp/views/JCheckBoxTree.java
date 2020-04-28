@@ -327,6 +327,9 @@ public class JCheckBoxTree extends JTree {
 				fireCheckChangeEvent(new CheckChangeEvent(new Object()));
 				// Repainting tree after the data structures were updated
 				findSimilarNodes((ElementNode) path.getLastPathComponent());
+
+				selectTypeNodes((ElementNode) path.getLastPathComponent());
+
 				selfPointer.repaint();
 			}
 
@@ -381,6 +384,62 @@ public class JCheckBoxTree extends JTree {
 
 		ElementNode root = (ElementNode) this.getModel().getRoot();
 		visitAllNodesAndCheckSimilar(root, node);
+	}
+
+	private void visitAllNodesAndCheckType(ElementNode root, ElementNode nodeToCompare) {
+		String typeOriginal = "";
+		String typeCurrentNode = "";
+		
+		if (nodeToCompare.getUserObject() instanceof IClass)
+			typeOriginal = ((IClass) nodeToCompare.getUserObject()).getName();
+
+		if (nodeToCompare.getUserObject() instanceof IAttribute)
+			typeOriginal = ((IAttribute) nodeToCompare.getUserObject()).getTypeAsString();
+
+		if (root.getUserObject() instanceof IClass)
+			typeCurrentNode = ((IClass) root.getUserObject()).getName();
+		
+		if (root.getUserObject() instanceof IDataType)
+			typeCurrentNode = ((IDataType) root.getUserObject()).getName();
+
+		if (typeCurrentNode.contentEquals(typeOriginal)) {
+
+			TreeNode[] old_treeNode = nodeToCompare.getPath();
+			TreePath oldTp = new TreePath(old_treeNode);
+
+			TreeNode[] new_treeNode = root.getPath();
+			TreePath newTp = new TreePath(new_treeNode);
+
+			// if different paths
+			if (!oldTp.toString().equals(newTp.toString())) {
+				boolean checkMode = nodesCheckingState.get(oldTp).isSelected;
+			
+				if ((root.getUserObject() instanceof IClass || root.getUserObject() instanceof IDataType) && checkMode == true) {
+
+					CheckedNode cn = nodesCheckingState.get(newTp);
+					cn.isSelected = checkMode;
+
+					if (checkMode)
+						checkedPaths.add(newTp);
+					else
+						checkedPaths.remove(newTp);
+				}
+
+			}
+		}
+
+		if (root.getChildCount() >= 0) {
+			for (Enumeration<? extends TreeNode> e = root.children(); e.hasMoreElements();) {
+				ElementNode n = (ElementNode) e.nextElement();
+
+				visitAllNodesAndCheckType(n, nodeToCompare);
+			}
+		}
+	}
+
+	protected void selectTypeNodes(ElementNode node) {
+		ElementNode root = (ElementNode) this.getModel().getRoot();
+		visitAllNodesAndCheckType(root, node);
 	}
 
 	// When a node is checked/unchecked, updating the states of the predecessors
