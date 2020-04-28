@@ -486,6 +486,7 @@ public class JCheckBoxTree extends JTree {
 		CheckedNode cn = nodesCheckingState.get(tp);
 		cn.isSelected = check;
 		ElementNode node = (ElementNode) tp.getLastPathComponent();
+		selectTypeNodes(node);
 		for (int i = 0; i < node.getChildCount(); i++) {
 			checkSubTree(tp.pathByAddingChild(node.getChildAt(i)), check);
 		}
