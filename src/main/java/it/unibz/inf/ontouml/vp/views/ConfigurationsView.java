@@ -1,6 +1,8 @@
 package it.unibz.inf.ontouml.vp.views;
 
 import com.vp.plugin.view.IDialog;
+
+import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.ProjectConfigurations;
 
@@ -31,6 +33,8 @@ public class ConfigurationsView extends JPanel {
 	
 	private JButton _btnApply;
 	private JButton _btnResetDefaults;
+	
+	private JLabel pluginVersion;
 	
 	private IDialog _dialog;
 
@@ -166,6 +170,17 @@ public class ConfigurationsView extends JPanel {
 		gbc__btnResetDefaults.gridx = 1;
 		gbc__btnResetDefaults.gridy = 0;
 		_controlButtonsPanel.add(_btnResetDefaults, gbc__btnResetDefaults);
+		
+		pluginVersion = new JLabel("plugin version: " + OntoUMLPlugin.PLUGIN_VERSION_RELEASE);
+		pluginVersion.setEnabled(false);
+		
+		GridBagConstraints gbc__versionLabel = new GridBagConstraints();
+		gbc__versionLabel.anchor = GridBagConstraints.SOUTHWEST;
+		gbc__versionLabel.gridx = 0;
+		gbc__versionLabel.gridy = 2;
+		
+		add(pluginVersion, gbc__versionLabel);
+		
 
 		updateComponentsValues(configurations);
 		updateComponentsStatus();
