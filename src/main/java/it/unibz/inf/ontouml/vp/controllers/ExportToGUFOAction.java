@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
-import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.view.IDialog;
 import com.vp.plugin.view.IDialogHandler;
 
@@ -39,7 +38,6 @@ public class ExportToGUFOAction implements VPActionController {
 	private ProgressPanel progressPanel;
 	private ProgressDialog loading;
 	private IDialog mainDialog;
-	ExportToGUFORequest request;
 
 	private ExportDialog menu;
 	private ExportToGUFOView _exportMenuView;
@@ -48,19 +46,12 @@ public class ExportToGUFOAction implements VPActionController {
 
 	@Override
 	public void performAction(VPAction action) {
-		
-		/*final String modelo = ModelElement.generateModel(true);
-		Clipboard c = Toolkit.getDefaultToolkit().getSystemClipboard();
-		StringSelection sl = new StringSelection(modelo);
-		c.setContents(sl, sl);
-		System.out.println("Generated JSON copied to clipboard ;)");*/
 
 		requestMenu = new MenuExport();
 		menu = new ExportDialog();
 		ApplicationManager.instance().getViewManager().showDialog(menu);
 
 		Thread thread = new Thread(requestMenu);
-
 		thread.start();
 
 	}
@@ -109,7 +100,7 @@ public class ExportToGUFOAction implements VPActionController {
 
 		@Override
 		public Component getComponent() {
-			progressPanel = new ProgressPanel(request);
+			progressPanel = new ProgressPanel(requestMenu);
 			return progressPanel;
 		}
 
@@ -131,45 +122,6 @@ public class ExportToGUFOAction implements VPActionController {
 		public boolean canClosed() {
 			mainDialog.close();
 			return true;
-		}
-	}
-
-	public class ExportToGUFORequest extends ServerRequest {
-		
-		private HashSet<String> elements;
-		
-		public ExportToGUFORequest(HashSet<String> elements) {
-			this.elements = elements;
-		}
-
-		@Override
-		public void run() {
-			while (keepRunning()) {
-				try {
-					final BufferedReader gufo = OntoUMLServerUtils.transformToGUFO(
-							ModelElement.generateModel(elements, true),
-							"http://api.ontouml.org/", "turtle", "name", loading);
-
-					if (keepRunning()) {
-						if (gufo != null) {
-							saveFile(gufo);
-							ViewUtils.cleanAndShowMessage("Model exported successfully.");
-							request.doStop();
-						} else {
-							loading.canClosed();
-							request.doStop();
-							ViewUtils.cleanAndShowMessage("Unable to transform to GUFO. Please check your model.");
-						}
-					} else {
-						loading.canClosed();
-						request.doStop();
-						ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
-					}
-
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
 		}
 	}
 
@@ -241,12 +193,22 @@ public class ExportToGUFOAction implements VPActionController {
 
 							if (_exportMenuView.getIsToExport()) {
 								
-								request = new ExportToGUFORequest(_exportMenuView.getSavedElements());
+								//request = new ExportToGUFORequest(_exportMenuView.getSavedElements());
 								loading = new ProgressDialog();
 								ApplicationManager.instance().getViewManager().showDialog(loading);
 
-								Thread thread = new Thread(request);
-								thread.start();
+								final BufferedReader gufo = OntoUMLServerUtils.transformToGUFO(ModelElement.generateModel(_exportMenuView.getSavedElements(), true),
+										"http://api.ontouml.org/", "turtle", "name", loading);
+								
+								if (gufo != null) {
+									saveFile(gufo);
+									ViewUtils.cleanAndShowMessage("Model exported successfully.");
+									requestMenu.doStop();
+								} else {
+									menu.canClosed();
+									requestMenu.doStop();
+									ViewUtils.cleanAndShowMessage("Unable to transform to GUFO. Please check your model.");
+								}
 							} else {
 								menu.canClosed();
 								requestMenu.doStop();
