@@ -8,7 +8,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JFrame;
 import javax.swing.JComponent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
@@ -21,8 +20,6 @@ import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.ProjectConfigurations;
 import it.unibz.inf.ontouml.vp.utils.ServerRequest;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -64,7 +61,9 @@ public class ExportToGUFOView extends JPanel {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		setLayout(gridBagLayout);
 		
-		JPanel optionsPanel = new JPanel();
+		JPanel optionsPanel1 = new JPanel();
+		JPanel optionsPanel2 = new JPanel();
+		
 		JPanel treePanel = new JPanel();
 		
 		JPanel packagePanel = new JPanel();
@@ -87,8 +86,6 @@ public class ExportToGUFOView extends JPanel {
 		String[] uriFormatBoxString = { "name", "id" };
 		uriFormatBox = new JComboBox<String>(uriFormatBoxString);
 		
-		optionsPanel.setLayout(new GridLayout(1,3));
-		
 		scrollableTextAreaPackage.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		scrollableTextAreaPackage.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		
@@ -105,7 +102,7 @@ public class ExportToGUFOView extends JPanel {
 		
 		diagramPanel.add(scrollableTextAreaDiagram);
 		
-		tabbedPane.addTab("Package Exlorer", packagePanel);
+		tabbedPane.addTab("Package Explorer", packagePanel);
 		tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
 		
 		tabbedPane.addTab("Diagram Explorer", diagramPanel);
@@ -114,68 +111,69 @@ public class ExportToGUFOView extends JPanel {
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		
 		treePanel.add(tabbedPane);
-		optionsPanel.setLayout(new GridBagLayout());
 		
-		GridBagConstraints gbc_iriLabel = new GridBagConstraints();
-		gbc_iriLabel.fill = GridBagConstraints.HORIZONTAL;
-		gbc_iriLabel.anchor = GridBagConstraints.WEST;
-		gbc_iriLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_iriLabel.gridx = 0;
-		gbc_iriLabel.gridy = 0;
-		optionsPanel.add(IRILabel, gbc_iriLabel);
+		GridLayout gl_optionsPanel2 = new GridLayout(0,2);
+		gl_optionsPanel2.setHgap(5);
+		optionsPanel2.setLayout(gl_optionsPanel2);
 		
-		GridBagConstraints gbc_iriTxt = new GridBagConstraints();
-		gbc_iriTxt.fill = GridBagConstraints.HORIZONTAL;
-		gbc_iriLabel.anchor = GridBagConstraints.WEST;
-		gbc_iriTxt.insets = new Insets(0, 0, 5, 5);
-		gbc_iriTxt.gridx = 1;
-		gbc_iriTxt.gridy = 0;
-		optionsPanel.add(IRItxt, gbc_iriTxt);
+		optionsPanel2.setPreferredSize(new Dimension(50,50));
 		
-		GridBagConstraints gbc_formatBox = new GridBagConstraints();
-		gbc_formatBox.insets = new Insets(0, 0, 5, 15);
-		gbc_formatBox.gridx = 0;
-		gbc_formatBox.gridy = 1;
-		optionsPanel.add(formatBox, gbc_formatBox);
+		GridBagConstraints gbc_optionsPanel1 = new GridBagConstraints();
+		gbc_optionsPanel1.insets = new Insets(5, 5, 5, 5);
+		gbc_optionsPanel1.anchor = GridBagConstraints.WEST;
+		gbc_optionsPanel1.gridx = 0;
+		gbc_optionsPanel1.gridy = 0;
+		add(optionsPanel1, gbc_optionsPanel1);
 		
-		GridBagConstraints gbc_uriFormatBox = new GridBagConstraints();
-		gbc_uriFormatBox.insets = new Insets(0, 0, 5, 5);
-		gbc_uriFormatBox.gridx = 1;
-		gbc_uriFormatBox.gridy = 1;
-		optionsPanel.add(uriFormatBox, gbc_uriFormatBox);
+		GridBagLayout gbl_optionsPanel1 = new GridBagLayout();
+		gbl_optionsPanel1.columnWidths = new int[] { 30, 200, 0 };
+		gbl_optionsPanel1.rowHeights = new int[] { 0, 0 };
+		gbl_optionsPanel1.columnWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
+		gbl_optionsPanel1.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
+		optionsPanel1.setLayout(gbl_optionsPanel1);
 		
-		GridBagConstraints gbc_optionsPanel = new GridBagConstraints();
-		gbc_optionsPanel.insets = new Insets(5, 5, 5, 5);
-		gbc_optionsPanel.anchor = GridBagConstraints.WEST;
-		gbc_optionsPanel.gridx = 0;
-		gbc_optionsPanel.gridy = 0;
-		gbc_optionsPanel.ipadx = 0;
-		gbc_optionsPanel.ipady = 0;
-		gbc_optionsPanel.fill = GridBagConstraints.HORIZONTAL;
-		optionsPanel.setBackground(Color.PINK);
+		GridBagConstraints gbc_txt = new GridBagConstraints();
+		gbc_txt.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txt.insets = new Insets(0, 0, 0, 5);
+		gbc_txt.gridx = 0;
+		gbc_txt.gridy = 0;
+		optionsPanel1.add(IRILabel, gbc_txt);
 		
-		add(optionsPanel, gbc_optionsPanel);	
+		gbc_txt.gridx = 1;
+		gbc_txt.gridy = 0;
+		optionsPanel1.add(IRItxt, gbc_txt);
+		
+		optionsPanel2.add(formatBox);
+		optionsPanel2.add(uriFormatBox);
+		
+		GridBagConstraints gbc_optionsPanel2 = new GridBagConstraints();
+		gbc_optionsPanel2.insets = new Insets(5, 5, 5, 5);
+		gbc_optionsPanel2.anchor = GridBagConstraints.WEST;
+		gbc_optionsPanel2.gridx = 0;
+		gbc_optionsPanel2.gridy = 1;
+		
+		add(optionsPanel2, gbc_optionsPanel2);
 		
 		GridBagConstraints gbc_treePanel = new GridBagConstraints();
 		gbc_treePanel.gridx = 0;
-		gbc_treePanel.gridy = 1;
+		gbc_treePanel.gridy = 2;
 		gbc_treePanel.ipadx = 450;
 		gbc_treePanel.ipady = 300;
 		add(treePanel, gbc_treePanel);
 		
-		JPanel _controlButtonsPanel = new JPanel();
-		GridBagConstraints gbc__controlButtonsPanel = new GridBagConstraints();
-		gbc__controlButtonsPanel.anchor = GridBagConstraints.SOUTHEAST;
-		gbc__controlButtonsPanel.gridx = 0;
-		gbc__controlButtonsPanel.gridy = 2;
-		add(_controlButtonsPanel, gbc__controlButtonsPanel);
+		JPanel controlButtonsPanel = new JPanel();
+		GridBagConstraints gbc_controlButtonsPanel = new GridBagConstraints();
+		gbc_controlButtonsPanel.anchor = GridBagConstraints.SOUTHEAST;
+		gbc_controlButtonsPanel.gridx = 0;
+		gbc_controlButtonsPanel.gridy = 3;
+		add(controlButtonsPanel, gbc_controlButtonsPanel);
 		
-		GridBagLayout gbl__controlButtonsPanel = new GridBagLayout();
-		gbl__controlButtonsPanel.columnWidths = new int[] { 135, 135, 0 };
-		gbl__controlButtonsPanel.rowHeights = new int[] { 0, 0 };
-		gbl__controlButtonsPanel.columnWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
-		gbl__controlButtonsPanel.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
-		_controlButtonsPanel.setLayout(gbl__controlButtonsPanel);
+		GridBagLayout gbl_controlButtonsPanel = new GridBagLayout();
+		gbl_controlButtonsPanel.columnWidths = new int[] { 135, 135, 0 };
+		gbl_controlButtonsPanel.rowHeights = new int[] { 0, 0 };
+		gbl_controlButtonsPanel.columnWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
+		gbl_controlButtonsPanel.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
+		controlButtonsPanel.setLayout(gbl_controlButtonsPanel);
 
 		_btnApply = new JButton("Export");
 		_btnApply.addActionListener(new ActionListener() {
@@ -196,12 +194,12 @@ public class ExportToGUFOView extends JPanel {
 			}
 
 		});
-		GridBagConstraints gbc__btnApply = new GridBagConstraints();
-		gbc__btnApply.fill = GridBagConstraints.HORIZONTAL;
-		gbc__btnApply.insets = new Insets(0, 0, 0, 5);
-		gbc__btnApply.gridx = 0;
-		gbc__btnApply.gridy = 0;
-		_controlButtonsPanel.add(_btnApply, gbc__btnApply);
+		GridBagConstraints gbc_btnApply = new GridBagConstraints();
+		gbc_btnApply.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnApply.insets = new Insets(0, 0, 0, 5);
+		gbc_btnApply.gridx = 0;
+		gbc_btnApply.gridy = 0;
+		controlButtonsPanel.add(_btnApply, gbc_btnApply);
 
 		_btnResetDefaults = new JButton("Cancel");
 		_btnResetDefaults.addActionListener(new ActionListener() {
@@ -214,13 +212,15 @@ public class ExportToGUFOView extends JPanel {
 			}
 
 		});
-		GridBagConstraints gbc__btnResetDefaults = new GridBagConstraints();
-		gbc__btnResetDefaults.fill = GridBagConstraints.HORIZONTAL;
-		gbc__btnResetDefaults.gridx = 1;
-		gbc__btnResetDefaults.gridy = 0;
-		_controlButtonsPanel.add(_btnResetDefaults, gbc__btnResetDefaults);
+		GridBagConstraints gbc_btnResetDefaults = new GridBagConstraints();
+		gbc_btnResetDefaults.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnResetDefaults.gridx = 1;
+		gbc_btnResetDefaults.gridy = 0;
+		controlButtonsPanel.add(_btnResetDefaults, gbc_btnResetDefaults);
 		
-
+		isToExport = false;
+		isOpen = true;
+		updateComponentsValues(configurations);
 	}
 
 	protected JComponent makeTextPanel(String text) {
