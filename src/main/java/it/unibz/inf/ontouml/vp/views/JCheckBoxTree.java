@@ -175,11 +175,13 @@ public class JCheckBoxTree extends JTree {
 			}
 
 			if (obj instanceof IDiagramUIModel)
-				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.PACKAGE_LOGO)));
+				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.DIAGRAM_LOGO)));
 			else if (obj instanceof IClass)
 				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.CLASS_LOGO)));
+			else if (obj instanceof IDataType)
+				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.DATATYPE_LOGO)));
 			else if (obj instanceof IAttribute)
-				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.CLASS_LOGO)));
+				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.ATTRIBUTE_LOGO)));
 			else if (obj instanceof IAssociation)
 				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.ASSOCIATION_LOGO)));
 			else if (obj instanceof IAssociationEnd)
@@ -187,7 +189,7 @@ public class JCheckBoxTree extends JTree {
 			else if (obj instanceof IGeneralization)
 				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.GENERALIZATION_LOGO)));
 			else if (obj instanceof IGeneralizationSet)
-				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.GENERALIZATION_LOGO)));
+				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.GENERALIZATION_SET_LOGO)));
 			else if (obj instanceof IAssociationClass)
 				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.ASSOCIATION_LOGO)));
 			else

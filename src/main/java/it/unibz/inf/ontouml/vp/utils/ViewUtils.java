@@ -70,6 +70,14 @@ public class ViewUtils {
 	public static final String ASSOCIATION_LOGO_FILENAME = "association.png";
 	public static final String GENERALIZATION_LOGO = "generalization";
 	public static final String GENERALIZATION_LOGO_FILENAME = "generalization.png";
+	public static final String GENERALIZATION_SET_LOGO = "generalizationSet";
+	public static final String GENERALIZATION_SET_LOGO_FILENAME = "generalizationset.gif";
+	public static final String DIAGRAM_LOGO = "diagram";
+	public static final String DIAGRAM_LOGO_FILENAME = "diagram.png";
+	public static final String DATATYPE_LOGO = "datatype";
+	public static final String DATATYPE_LOGO_FILENAME = "datatype.png";
+	public static final String ATTRIBUTE_LOGO = "attribute";
+	public static final String ATTRIBUTE_LOGO_FILENAME = "attribute.png";
 
 	public static void log(String message) {
 		ApplicationManager.instance().getViewManager().showMessage(timestamp() + message);
@@ -130,6 +138,14 @@ public class ViewUtils {
 			return Paths.get(pluginDir.getAbsolutePath(), "icons", ASSOCIATION_LOGO_FILENAME).toFile().getAbsolutePath();
 		case GENERALIZATION_LOGO:
 			return Paths.get(pluginDir.getAbsolutePath(), "icons", GENERALIZATION_LOGO_FILENAME).toFile().getAbsolutePath();
+		case GENERALIZATION_SET_LOGO:
+			return Paths.get(pluginDir.getAbsolutePath(), "icons", GENERALIZATION_SET_LOGO_FILENAME).toFile().getAbsolutePath();
+		case DIAGRAM_LOGO:
+			return Paths.get(pluginDir.getAbsolutePath(), "icons", DIAGRAM_LOGO_FILENAME).toFile().getAbsolutePath();
+		case DATATYPE_LOGO:
+			return Paths.get(pluginDir.getAbsolutePath(), "icons", DATATYPE_LOGO_FILENAME).toFile().getAbsolutePath();
+		case ATTRIBUTE_LOGO:
+			return Paths.get(pluginDir.getAbsolutePath(), "icons", ATTRIBUTE_LOGO_FILENAME).toFile().getAbsolutePath();
 		default:
 			return null;
 		}
