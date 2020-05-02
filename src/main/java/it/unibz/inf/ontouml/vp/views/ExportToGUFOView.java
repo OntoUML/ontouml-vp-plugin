@@ -232,17 +232,6 @@ public class ExportToGUFOView extends JPanel {
 		return panel;
 	}
 
-	/** Returns an ImageIcon, or null if the path was invalid. */
-	protected static ImageIcon createImageIcon(String path) {
-		java.net.URL imgURL = ExportToGUFOView.class.getResource(path);
-		if (imgURL != null) {
-			return new ImageIcon(imgURL);
-		} else {
-			System.err.println("Couldn't find file: " + path);
-			return null;
-		}
-	}
-
 	public boolean getIsToExport() {
 		return isToExport;
 	}
@@ -328,9 +317,9 @@ public class ExportToGUFOView extends JPanel {
 
 					if (node.getUserObject() instanceof IModelElement)
 						aux.add(((IModelElement) node.getUserObject()).getId());
-					// Diagrams are represented by its modelElement Parent
+					
 					if (node.getUserObject() instanceof IDiagramUIModel)
-						aux.add(((IDiagramUIModel) node.getUserObject()).getParentModel().getId());
+						aux.add(((IDiagramUIModel) node.getUserObject()).getId());
 				}
 			}
 			/*
