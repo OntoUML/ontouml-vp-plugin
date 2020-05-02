@@ -330,7 +330,7 @@ public class StereotypeUtils {
 			if (current.getName().equals(STR_TYPE) && !definitions.containsKey("order")) {
 				final ITaggedValueDefinition order = IModelElementFactory.instance().createTaggedValueDefinition();
 				order.setName("order");
-				order.setType(ITaggedValueDefinition.TYPE_INTEGER);
+				order.setType(ITaggedValueDefinition.TYPE_TEXT);
 				order.setDefaultValue("2");
 				definitionsContainer.addTaggedValueDefinition(order);
 			}
@@ -347,6 +347,12 @@ public class StereotypeUtils {
 		return toAllowedNaturesString(
 				ALLOWED_COLLECTIVE, ALLOWED_EVENT, ALLOWED_MODE, ALLOWED_OBJECT,
 				ALLOWED_QUALITY, ALLOWED_QUANTITY, ALLOWED_RELATOR, ALLOWED_TYPE);
+	}
+	public static List<String> getAllowedNaturesList() {
+		final List<String> list = Arrays.asList(
+				ALLOWED_COLLECTIVE, ALLOWED_EVENT, ALLOWED_MODE, ALLOWED_OBJECT,
+				ALLOWED_QUALITY, ALLOWED_QUANTITY, ALLOWED_RELATOR, ALLOWED_TYPE);
+		return list;
 	}
 
 	public static String toAllowedNaturesString(String... allowedNatures) {

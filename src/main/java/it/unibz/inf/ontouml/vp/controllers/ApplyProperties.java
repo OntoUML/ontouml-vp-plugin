@@ -3,6 +3,8 @@ package it.unibz.inf.ontouml.vp.controllers;
 import java.awt.event.ActionEvent;
 import java.util.Iterator;
 
+import com.vp.plugin.ApplicationManager;
+import com.vp.plugin.ViewManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPContext;
 import com.vp.plugin.action.VPContextActionController;
@@ -12,6 +14,7 @@ import com.vp.plugin.model.ITaggedValueContainer;
 
 import it.unibz.inf.ontouml.vp.features.constraints.ActionIds;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
+import it.unibz.inf.ontouml.vp.views.SelectMultipleOptionsDialog;
 
 /**
  * 
@@ -39,11 +42,16 @@ public class ApplyProperties implements VPContextActionController {
 					final ITaggedValue value = (ITaggedValue) values.next();
 
 					if(value.getName().equals("allowed")) {
-						action.setEnabled(true);
-						return ;
+						final ViewManager vm = ApplicationManager.instance().getViewManager();
+						final SelectMultipleOptionsDialog dialog = 
+								new SelectMultipleOptionsDialog(value.getValueAsString());
+						
+						vm.showDialog(dialog);
+						value.setValue(dialog.getSelectedValues());
+
+						return;
 					}
 				}
-
 				action.setEnabled(false);
 				break;
 			case ActionIds.PROPERTY_SET_IS_POWERTYPE:
@@ -57,6 +65,7 @@ public class ApplyProperties implements VPContextActionController {
 				}
 				break;
 			case ActionIds.PROPERTY_SET_ORDER:
+				// Consider using a JSpinner
 				while(values != null && values.hasNext()) {
 					final ITaggedValue value = (ITaggedValue) values.next();
 
@@ -65,7 +74,6 @@ public class ApplyProperties implements VPContextActionController {
 						return ;
 					}
 				}
-
 				break;
 		}
 	}

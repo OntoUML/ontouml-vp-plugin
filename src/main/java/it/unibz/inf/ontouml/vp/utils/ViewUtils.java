@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.stream.Collectors;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
@@ -460,9 +461,14 @@ public class ViewUtils {
 		}
 	}
 
-	public static String setOrderDialog(String current) {
+	public static String setOrderDialog(String currentOrder) {
 		final ViewManager vm = ApplicationManager.instance().getViewManager();
-		return vm.showInputDialog(current);
+		final String msg = "Please enter a value for the type order,\n"
+				+ "where '*' represents an orderless type:";
+		final String title = "Set type order";
+		final Icon icon = new ImageIcon(getFilePath(SIMPLE_LOGO));
+
+		return (String) vm.showInputDialog(vm.getRootFrame(), msg, title, JOptionPane.PLAIN_MESSAGE, icon, null, currentOrder); 
 		// ApplicationManager.instance().getViewManager().showConfirmDialog(null, msg, "Export to gUFO",
 		// 		JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
