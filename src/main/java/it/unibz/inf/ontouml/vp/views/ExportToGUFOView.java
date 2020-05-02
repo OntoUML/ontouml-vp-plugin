@@ -1,40 +1,49 @@
 package it.unibz.inf.ontouml.vp.views;
 
-import com.vp.plugin.ApplicationManager;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JFrame;
+import javax.swing.JComponent;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
+
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IProject;
-import com.vp.plugin.model.factory.IModelElementFactory;
 import com.vp.plugin.view.IDialog;
+
 import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.ProjectConfigurations;
 import it.unibz.inf.ontouml.vp.utils.ServerRequest;
 
-import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
-
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.HashSet;
 
-/**
- * 
- * @author Vcitor Viola
- *
- */
 public class ExportToGUFOView extends JPanel {
-
 	private static final long serialVersionUID = 1L;
 
 	private JLabel IRILabel;
 	private JTextField IRItxt;
 	private JComboBox<String> formatBox;
 	private JComboBox<String> uriFormatBox;
-	private JComboBox<String> treeBox;
-	private JCheckBoxTree packageCBT;
-	private JCheckBoxTree diagramCBT;
+
+	private JTabbedPane tabbedPane;
+	private JCheckBoxTree packageTree;
+	private JCheckBoxTree diagramTree;
 
 	JPanel treePanelPackage;
 	JPanel treePanelDiagram;
@@ -49,134 +58,118 @@ public class ExportToGUFOView extends JPanel {
 
 	private HashSet<String> elementsPackageTree = new HashSet<String>();
 	private HashSet<String> elementsDiagramTree = new HashSet<String>();
-
+	
 	public ExportToGUFOView(ProjectConfigurations configurations, ServerRequest request) {
-		setSize(new Dimension(850, 600));
+		setSize(new Dimension(600, 480));
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] { 670 };
-		gridBagLayout.rowHeights = new int[] { 26, 82, 25, 0 };
-		gridBagLayout.columnWeights = new double[] { 1.0 };
-		gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 1.0, Double.MIN_VALUE };
 		setLayout(gridBagLayout);
-
-		JPanel _optionsPanel = new JPanel();
-		GridBagConstraints gbc__optionsPanel = new GridBagConstraints();
-		gbc__optionsPanel.fill = GridBagConstraints.VERTICAL;
-		gbc__optionsPanel.gridx = 0;
-		gbc__optionsPanel.gridy = 1;
-		add(_optionsPanel, gbc__optionsPanel);
-		_optionsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-
-		JPanel mainPanel = new JPanel();
-		_optionsPanel.add(mainPanel);
-		GridBagLayout gbl_iriPanel = new GridBagLayout();
-		gbl_iriPanel.columnWidths = new int[] { 30, 250, 0 };
-		gbl_iriPanel.rowHeights = new int[] { 26, 0 };
-		gbl_iriPanel.columnWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
-		gbl_iriPanel.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
-		mainPanel.setLayout(gbl_iriPanel);
-
+		
+		JPanel optionsPanel = new JPanel();
+		JPanel treePanel = new JPanel();
+		
+		JPanel packagePanel = new JPanel();
+		JPanel diagramPanel = new JPanel();
+		
+		tabbedPane = new JTabbedPane();
+		
+		packageTree = new JCheckBoxTree("package");		
+		diagramTree = new JCheckBoxTree("diagram");
+		
+		JScrollPane scrollableTextAreaPackage = new JScrollPane(packageTree);
+		JScrollPane scrollableTextAreaDiagram = new JScrollPane(diagramTree);
+		
 		IRILabel = new JLabel("Base IRI:");
-		GridBagConstraints gbc_IRILabel = new GridBagConstraints();
-		gbc_IRILabel.anchor = GridBagConstraints.WEST;
-		gbc_IRILabel.insets = new Insets(0, 0, 0, 5);
-		gbc_IRILabel.gridx = 0;
-		gbc_IRILabel.gridy = 0;
-		mainPanel.add(IRILabel, gbc_IRILabel);
-
 		IRItxt = new JTextField();
-		GridBagConstraints gbc_IRItxt = new GridBagConstraints();
-		gbc_IRItxt.fill = GridBagConstraints.HORIZONTAL;
-		gbc_IRItxt.anchor = GridBagConstraints.CENTER;
-		gbc_IRItxt.gridx = 1;
-		gbc_IRItxt.gridy = 0;
-		mainPanel.add(IRItxt, gbc_IRItxt);
-		IRItxt.setText("");
-		IRItxt.setColumns(10);
-
+		
 		String[] formatStrings = { "N-Triples", "N-Quads", "Turtle" };
-
 		formatBox = new JComboBox<String>(formatStrings);
-		GridBagConstraints gbc_formatBox = new GridBagConstraints();
-		gbc_formatBox.anchor = GridBagConstraints.WEST;
-		gbc_formatBox.gridx = 0;
-		gbc_formatBox.gridy = 1;
-		mainPanel.add(formatBox, gbc_formatBox);
-
+		
 		String[] uriFormatBoxString = { "name", "id" };
-
 		uriFormatBox = new JComboBox<String>(uriFormatBoxString);
-		GridBagConstraints gbc_uriFormatBox = new GridBagConstraints();
-		gbc_uriFormatBox.anchor = GridBagConstraints.WEST;
-		gbc_uriFormatBox.gridx = 0;
-		gbc_uriFormatBox.gridy = 2;
-		mainPanel.add(uriFormatBox, gbc_uriFormatBox);
-
-		String[] treeBoxString = { "Diagram Explorer", "Package Explorer" };
-
-		treeBox = new JComboBox<String>(treeBoxString);
-		treeBox.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-				JComboBox<?> cb = (JComboBox<?>) e.getSource();
-				String option = (String) cb.getSelectedItem();
-
-				if (option.equals("Package Explorer")) {
-					treePanelPackage.setVisible(true);
-					treePanelDiagram.setVisible(false);
-				} else {
-					treePanelPackage.setVisible(false);
-					treePanelDiagram.setVisible(true);
-				}
-			}
-		});
-
-		GridBagConstraints gbc_treeBox = new GridBagConstraints();
-		gbc_treeBox.anchor = GridBagConstraints.WEST;
-		gbc_treeBox.gridx = 0;
-		gbc_treeBox.gridy = 3;
-		mainPanel.add(treeBox, gbc_treeBox);
-
-		treePanelPackage = new JPanel();
-		treePanelPackage.setVisible(false);
-
-		GridBagConstraints gbc__treePanelPackage = new GridBagConstraints();
-		gbc__treePanelPackage.fill = GridBagConstraints.WEST;
-		gbc__treePanelPackage.gridx = 0;
-		gbc__treePanelPackage.gridy = 4;
-		mainPanel.add(treePanelPackage, gbc__treePanelPackage);
-
-		packageCBT = new JCheckBoxTree("package");
-
-		JScrollPane scrollableTextAreaPackage = new JScrollPane(packageCBT);
+		
+		optionsPanel.setLayout(new GridLayout(1,3));
+		
 		scrollableTextAreaPackage.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		scrollableTextAreaPackage.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
-		treePanelPackage.add(scrollableTextAreaPackage);
-
-		treePanelDiagram = new JPanel();
-
-		GridBagConstraints gbc__treePanelDiagram = new GridBagConstraints();
-		gbc__treePanelDiagram.fill = GridBagConstraints.WEST;
-		gbc__treePanelDiagram.gridx = 0;
-		gbc__treePanelDiagram.gridy = 4;
-		mainPanel.add(treePanelDiagram, gbc__treePanelDiagram);
-
-		diagramCBT = new JCheckBoxTree("diagram");
-
-		JScrollPane scrollableTextAreaDiagram = new JScrollPane(diagramCBT);
+		
 		scrollableTextAreaDiagram.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		scrollableTextAreaDiagram.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
-		treePanelDiagram.add(scrollableTextAreaDiagram);
-
+		
+		packagePanel.setLayout(new GridLayout(1, 1));
+		packagePanel.setPreferredSize(new Dimension(550, 300));
+		
+		diagramPanel.setLayout(new GridLayout(1, 1));
+		diagramPanel.setPreferredSize(new Dimension(550, 300));
+		
+		packagePanel.add(scrollableTextAreaPackage);
+		
+		diagramPanel.add(scrollableTextAreaDiagram);
+		
+		tabbedPane.addTab("Package Exlorer", packagePanel);
+		tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
+		
+		tabbedPane.addTab("Diagram Explorer", diagramPanel);
+		tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
+		
+		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+		
+		treePanel.add(tabbedPane);
+		optionsPanel.setLayout(new GridBagLayout());
+		
+		GridBagConstraints gbc_iriLabel = new GridBagConstraints();
+		gbc_iriLabel.fill = GridBagConstraints.HORIZONTAL;
+		gbc_iriLabel.anchor = GridBagConstraints.WEST;
+		gbc_iriLabel.insets = new Insets(0, 0, 5, 5);
+		gbc_iriLabel.gridx = 0;
+		gbc_iriLabel.gridy = 0;
+		optionsPanel.add(IRILabel, gbc_iriLabel);
+		
+		GridBagConstraints gbc_iriTxt = new GridBagConstraints();
+		gbc_iriTxt.fill = GridBagConstraints.HORIZONTAL;
+		gbc_iriLabel.anchor = GridBagConstraints.WEST;
+		gbc_iriTxt.insets = new Insets(0, 0, 5, 5);
+		gbc_iriTxt.gridx = 1;
+		gbc_iriTxt.gridy = 0;
+		optionsPanel.add(IRItxt, gbc_iriTxt);
+		
+		GridBagConstraints gbc_formatBox = new GridBagConstraints();
+		gbc_formatBox.insets = new Insets(0, 0, 5, 15);
+		gbc_formatBox.gridx = 0;
+		gbc_formatBox.gridy = 1;
+		optionsPanel.add(formatBox, gbc_formatBox);
+		
+		GridBagConstraints gbc_uriFormatBox = new GridBagConstraints();
+		gbc_uriFormatBox.insets = new Insets(0, 0, 5, 5);
+		gbc_uriFormatBox.gridx = 1;
+		gbc_uriFormatBox.gridy = 1;
+		optionsPanel.add(uriFormatBox, gbc_uriFormatBox);
+		
+		GridBagConstraints gbc_optionsPanel = new GridBagConstraints();
+		gbc_optionsPanel.insets = new Insets(5, 5, 5, 5);
+		gbc_optionsPanel.anchor = GridBagConstraints.WEST;
+		gbc_optionsPanel.gridx = 0;
+		gbc_optionsPanel.gridy = 0;
+		gbc_optionsPanel.ipadx = 0;
+		gbc_optionsPanel.ipady = 0;
+		gbc_optionsPanel.fill = GridBagConstraints.HORIZONTAL;
+		optionsPanel.setBackground(Color.PINK);
+		
+		add(optionsPanel, gbc_optionsPanel);	
+		
+		GridBagConstraints gbc_treePanel = new GridBagConstraints();
+		gbc_treePanel.gridx = 0;
+		gbc_treePanel.gridy = 1;
+		gbc_treePanel.ipadx = 450;
+		gbc_treePanel.ipady = 300;
+		add(treePanel, gbc_treePanel);
+		
 		JPanel _controlButtonsPanel = new JPanel();
 		GridBagConstraints gbc__controlButtonsPanel = new GridBagConstraints();
 		gbc__controlButtonsPanel.anchor = GridBagConstraints.SOUTHEAST;
 		gbc__controlButtonsPanel.gridx = 0;
 		gbc__controlButtonsPanel.gridy = 2;
 		add(_controlButtonsPanel, gbc__controlButtonsPanel);
+		
 		GridBagLayout gbl__controlButtonsPanel = new GridBagLayout();
 		gbl__controlButtonsPanel.columnWidths = new int[] { 135, 135, 0 };
 		gbl__controlButtonsPanel.rowHeights = new int[] { 0, 0 };
@@ -189,7 +182,7 @@ public class ExportToGUFOView extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				if (treeBox.getSelectedItem().equals("Package Explorer"))
+				if (tabbedPane.getSelectedIndex() == 0)
 					saveSelectedElements("Package Tree");
 				else
 					saveSelectedElements("Diagram Tree");
@@ -226,10 +219,28 @@ public class ExportToGUFOView extends JPanel {
 		gbc__btnResetDefaults.gridx = 1;
 		gbc__btnResetDefaults.gridy = 0;
 		_controlButtonsPanel.add(_btnResetDefaults, gbc__btnResetDefaults);
+		
 
-		isToExport = false;
-		isOpen = true;
-		updateComponentsValues(configurations);
+	}
+
+	protected JComponent makeTextPanel(String text) {
+		JPanel panel = new JPanel(false);
+		JLabel filler = new JLabel(text);
+		filler.setHorizontalAlignment(JLabel.CENTER);
+		panel.setLayout(new GridLayout(1, 1));
+		panel.add(filler);
+		return panel;
+	}
+
+	/** Returns an ImageIcon, or null if the path was invalid. */
+	protected static ImageIcon createImageIcon(String path) {
+		java.net.URL imgURL = ExportToGUFOView.class.getResource(path);
+		if (imgURL != null) {
+			return new ImageIcon(imgURL);
+		} else {
+			System.err.println("Couldn't find file: " + path);
+			return null;
+		}
 	}
 
 	public boolean getIsToExport() {
@@ -263,7 +274,7 @@ public class ExportToGUFOView extends JPanel {
 		configurations.setExportGUFOFormat(formatBox.getSelectedItem().toString());
 		configurations.setExportGUFOURIFormat(uriFormatBox.getSelectedItem().toString());
 
-		if (treeBox.getSelectedItem().equals("Package Explorer"))
+		if (tabbedPane.getSelectedIndex() == 0)
 			configurations.setExportGUFOElementsPackageTree(elementsPackageTree);
 		else
 			configurations.setExportGUFOElementsDiagramTree(elementsDiagramTree);
@@ -288,10 +299,10 @@ public class ExportToGUFOView extends JPanel {
 			uriFormatBox.setSelectedItem(configurations.getExportGUFOURIFormat());
 
 		if (configurations.getExportGUFOElementsPackageTree() != null)
-			packageCBT.setNodesCheck(configurations.getExportGUFOElementsPackageTree());
+			packageTree.setNodesCheck(configurations.getExportGUFOElementsPackageTree());
 
 		if (configurations.getExportGUFOElementsDiagramTree() != null)
-			diagramCBT.setNodesCheck(configurations.getExportGUFOElementsDiagramTree());
+			diagramTree.setNodesCheck(configurations.getExportGUFOElementsDiagramTree());
 	}
 
 	private void saveSelectedElements(String tree) {
@@ -300,10 +311,10 @@ public class ExportToGUFOView extends JPanel {
 		HashSet<String> aux;
 
 		if (tree.equals("Package Tree")) {
-			paths = packageCBT.getCheckedPaths();
+			paths = packageTree.getCheckedPaths();
 			aux = this.elementsPackageTree;
 		} else {
-			paths = diagramCBT.getCheckedPaths();
+			paths = diagramTree.getCheckedPaths();
 			aux = this.elementsDiagramTree;
 		}
 
@@ -317,25 +328,26 @@ public class ExportToGUFOView extends JPanel {
 
 					if (node.getUserObject() instanceof IModelElement)
 						aux.add(((IModelElement) node.getUserObject()).getId());
-					//Diagrams are represented by its modelElement Parent
+					// Diagrams are represented by its modelElement Parent
 					if (node.getUserObject() instanceof IDiagramUIModel)
 						aux.add(((IDiagramUIModel) node.getUserObject()).getParentModel().getId());
 				}
 			}
 			/*
-			final IProject project = ApplicationManager.instance().getProjectManager().getProject();
-			final String[] datatypes = { IModelElementFactory.MODEL_TYPE_DATA_TYPE };
-
-			for (IModelElement datatype : project.toModelElementArray(datatypes))
-				aux.add(datatype.getId());
-			*/
+			 * final IProject project =
+			 * ApplicationManager.instance().getProjectManager().getProject(); final
+			 * String[] datatypes = { IModelElementFactory.MODEL_TYPE_DATA_TYPE };
+			 * 
+			 * for (IModelElement datatype : project.toModelElementArray(datatypes))
+			 * aux.add(datatype.getId());
+			 */
 		}
 
 	}
 
 	public HashSet<String> getSavedElements() {
 
-		if (treeBox.getSelectedItem().equals("Package Explorer"))
+		if (tabbedPane.getSelectedIndex() == 0)
 			return elementsPackageTree;
 		else
 			return elementsDiagramTree;
