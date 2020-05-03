@@ -185,7 +185,7 @@ public class JCheckBoxTree extends JTree {
 			else if (obj instanceof IAssociation)
 				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.ASSOCIATION_LOGO)));
 			else if (obj instanceof IAssociationEnd)
-				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.CLASS_LOGO)));
+				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.ATTRIBUTE_LOGO)));
 			else if (obj instanceof IGeneralization)
 				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.GENERALIZATION_LOGO)));
 			else if (obj instanceof IGeneralizationSet)
