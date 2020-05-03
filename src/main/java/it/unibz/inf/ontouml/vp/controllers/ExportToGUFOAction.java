@@ -50,14 +50,12 @@ public class ExportToGUFOAction implements VPActionController {
 		requestMenu = new MenuExport();
 		menu = new ExportDialog();
 		
+		if(OntoUMLPlugin.getExportToGUFOWindowOpen() == true)
+			return;
+		else
+			OntoUMLPlugin.setExportToGUFOWindowOpen(true);
+		
 		ApplicationManager.instance().getViewManager().showDialog(menu);
-		
-		
-		
-		
-
-		//Thread thread = new Thread(requestMenu);
-	//	thread.start();
 
 	}
 
@@ -169,8 +167,6 @@ public class ExportToGUFOAction implements VPActionController {
 		 */
 		@Override
 		public void shown() {
-		//	Thread thread = new Thread(requestMenu);
-		//	thread.start();
 		}
 
 		/**
@@ -181,9 +177,9 @@ public class ExportToGUFOAction implements VPActionController {
 		 */
 		@Override
 		public boolean canClosed() {
-			
-		//	requestMenu.doStop();
-		//	ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
+			requestMenu.doStop();
+			OntoUMLPlugin.setExportToGUFOWindowOpen(false);
+			ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
 			return true;
 		}
 
@@ -201,7 +197,6 @@ public class ExportToGUFOAction implements VPActionController {
 
 							if (_exportMenuView.getIsToExport()) {
 								
-								//request = new ExportToGUFORequest(_exportMenuView.getSavedElements());
 								loading = new ProgressDialog();
 								ApplicationManager.instance().getViewManager().showDialog(loading);
 
@@ -222,8 +217,11 @@ public class ExportToGUFOAction implements VPActionController {
 								requestMenu.doStop();
 								ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
 							}
+							
+							OntoUMLPlugin.setExportToGUFOWindowOpen(false);
 						}
 					} else {
+						OntoUMLPlugin.setExportToGUFOWindowOpen(false);
 						menu.canClosed();
 						requestMenu.doStop();
 					}

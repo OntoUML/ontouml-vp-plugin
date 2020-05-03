@@ -16,6 +16,7 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.view.IDialog;
 
+import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.ProjectConfigurations;
 import it.unibz.inf.ontouml.vp.utils.ServerRequest;
@@ -46,7 +47,7 @@ public class ExportToGUFOView extends JPanel {
 	JPanel treePanelDiagram;
 
 	private JButton _btnApply;
-	private JButton _btnResetDefaults;
+	private JButton _btnCancel;
 
 	private IDialog _dialog;
 
@@ -189,7 +190,6 @@ public class ExportToGUFOView extends JPanel {
 				Configurations.getInstance().save();
 				isToExport = true;
 				isOpen = false;
-			//	request.doStop();
 				_dialog.close();
 				Thread thread = new Thread(request);
 				thread.start();
@@ -203,22 +203,23 @@ public class ExportToGUFOView extends JPanel {
 		gbc_btnApply.gridy = 0;
 		controlButtonsPanel.add(_btnApply, gbc_btnApply);
 
-		_btnResetDefaults = new JButton("Cancel");
-		_btnResetDefaults.addActionListener(new ActionListener() {
+		_btnCancel = new JButton("Cancel");
+		_btnCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				isToExport = false;
 				isOpen = false;
 				request.doStop();
 				_dialog.close();
+				OntoUMLPlugin.setExportToGUFOWindowOpen(false);
 			}
 
 		});
-		GridBagConstraints gbc_btnResetDefaults = new GridBagConstraints();
-		gbc_btnResetDefaults.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnResetDefaults.gridx = 1;
-		gbc_btnResetDefaults.gridy = 0;
-		controlButtonsPanel.add(_btnResetDefaults, gbc_btnResetDefaults);
+		GridBagConstraints gbc_btnCancel = new GridBagConstraints();
+		gbc_btnCancel.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnCancel.gridx = 1;
+		gbc_btnCancel.gridy = 0;
+		controlButtonsPanel.add(_btnCancel, gbc_btnCancel);
 		
 		isToExport = false;
 		isOpen = true;

@@ -35,6 +35,9 @@ public class OntoUMLPlugin implements VPPlugin {
 	public static DiagramListener DIAGRAM_LISTENER = new DiagramListener();
 	public static ProjectModelListener PROJECT_MODEL_LISTENER = new ProjectModelListener();
 	public static ProjectDiagramListener PROJECT_DIAGRAM_LISTENER = new ProjectDiagramListener();
+	
+	private static boolean isExportToGUFOWindowOpen;
+	private static boolean isConfigWindowOpen;
 
 	/**
 	 * 
@@ -43,6 +46,8 @@ public class OntoUMLPlugin implements VPPlugin {
 	 */
 	public OntoUMLPlugin() {
 		// The constructor of a VPPlugin MUST NOT have parameters.
+		isExportToGUFOWindowOpen = false;
+		isConfigWindowOpen = false;
 	}
 
 	/**
@@ -75,6 +80,24 @@ public class OntoUMLPlugin implements VPPlugin {
 	 */
 	@Override
 	public void unloaded() {
+	}
+	
+	public static void setExportToGUFOWindowOpen(boolean open) {
+		isExportToGUFOWindowOpen = open;
+		
+	}
+	
+	public static boolean getExportToGUFOWindowOpen() {
+		return isExportToGUFOWindowOpen;
+	}
+	
+	public static void setConfigWindowOpen(boolean open) {
+		isConfigWindowOpen = open;
+		
+	}
+	
+	public static boolean getConfigWindowOpen() {
+		return isConfigWindowOpen;
 	}
 
 }
