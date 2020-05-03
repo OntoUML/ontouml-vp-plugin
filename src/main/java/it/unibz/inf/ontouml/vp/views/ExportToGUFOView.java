@@ -34,7 +34,6 @@ import java.util.HashSet;
 public class ExportToGUFOView extends JPanel {
 	private static final long serialVersionUID = 1L;
 
-	private JLabel IRILabel;
 	private JTextField IRItxt;
 	private JComboBox<String> formatBox;
 	private JComboBox<String> uriFormatBox;
@@ -77,7 +76,6 @@ public class ExportToGUFOView extends JPanel {
 		JScrollPane scrollableTextAreaPackage = new JScrollPane(packageTree);
 		JScrollPane scrollableTextAreaDiagram = new JScrollPane(diagramTree);
 		
-		IRILabel = new JLabel("Base IRI:");
 		IRItxt = new JTextField();
 		
 		String[] formatStrings = { "N-Triples", "N-Quads", "Turtle" };
