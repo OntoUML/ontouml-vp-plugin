@@ -57,11 +57,10 @@ public class ExportToGUFOView extends JPanel {
 	private HashSet<String> elementsDiagramTree = new HashSet<String>();
 	
 	public ExportToGUFOView(ProjectConfigurations configurations, ServerRequest request) {
-		setSize(new Dimension(600, 510));
+		setSize(new Dimension(600, 515));
 		setLayout(new GridBagLayout());
 		
-		JPanel optionsPanel1 = new JPanel();
-		JPanel optionsPanel2 = new JPanel();
+		JPanel optionsPanel = new JPanel();
 		
 		JPanel treePanel = new JPanel();
 		
@@ -112,37 +111,27 @@ public class ExportToGUFOView extends JPanel {
 		
 		treePanel.add(tabbedPane);
 		
-		GridLayout gl_optionsPanel2 = new GridLayout(3,2);
-		gl_optionsPanel2.setVgap(5);
-		gl_optionsPanel2.setHgap(5);
-		optionsPanel2.setLayout(gl_optionsPanel2);
+		GridLayout gl_optionsPanel = new GridLayout(3,2);
+		gl_optionsPanel.setVgap(5);
+		gl_optionsPanel.setHgap(5);
+		optionsPanel.setLayout(gl_optionsPanel);
 	
-		optionsPanel2.add(new JLabel("BaseIRI:"));
-		optionsPanel2.add(IRItxt);
+		optionsPanel.add(new JLabel("BaseIRI:"));
+		optionsPanel.add(IRItxt);
 		
-		optionsPanel2.add(new JLabel("Format:"));
-		optionsPanel2.add(formatBox);
-		optionsPanel2.add(new JLabel("URI Format:"));
-		optionsPanel2.add(uriFormatBox);
+		optionsPanel.add(new JLabel("Format:"));
+		optionsPanel.add(formatBox);
+		optionsPanel.add(new JLabel("URI Format:"));
+		optionsPanel.add(uriFormatBox);
 		
-		GridBagConstraints gbc_optionsPanel1 = new GridBagConstraints();
-		gbc_optionsPanel1.insets = new Insets(5, 5, 5, 5);
-		gbc_optionsPanel1.anchor = GridBagConstraints.WEST;
-		//gbc_optionsPanel1.fill = GridBagConstraints.HORIZONTAL;
-		gbc_optionsPanel1.gridx = 0;
-		gbc_optionsPanel1.gridy = 0;
-		gbc_optionsPanel1.ipadx = 155;
+		GridBagConstraints gbc_optionsPanel = new GridBagConstraints();
+		gbc_optionsPanel.insets = new Insets(5, 5, 5, 5);
+		gbc_optionsPanel.anchor = GridBagConstraints.WEST;
+		gbc_optionsPanel.gridx = 0;
+		gbc_optionsPanel.gridy = 1;
+		gbc_optionsPanel.ipadx = 30;
 		
-		GridBagConstraints gbc_optionsPanel2 = new GridBagConstraints();
-		gbc_optionsPanel2.insets = new Insets(5, 5, 5, 5);
-		gbc_optionsPanel2.anchor = GridBagConstraints.WEST;
-		//gbc_optionsPanel2.fill = GridBagConstraints.HORIZONTAL;
-		gbc_optionsPanel2.gridx = 0;
-		gbc_optionsPanel2.gridy = 1;
-		gbc_optionsPanel2.ipadx = 100;
-		
-		//add(optionsPanel1, gbc_optionsPanel1);
-		add(optionsPanel2, gbc_optionsPanel2);
+		add(optionsPanel, gbc_optionsPanel);
 		
 		GridBagConstraints gbc_treePanel = new GridBagConstraints();
 		gbc_treePanel.gridx = 0;
