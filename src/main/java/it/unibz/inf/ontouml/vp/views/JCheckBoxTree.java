@@ -541,7 +541,7 @@ public class JCheckBoxTree extends JTree {
 		final IDiagramUIModel[] diagramArray = ApplicationManager.instance().getProjectManager().getProject()
 				.toDiagramArray();
 
-		ElementNode root = new ElementNode("Class Diagram");
+		ElementNode root = new ElementNode("All Diagrams");
 
 		if (diagramArray != null) {
 
