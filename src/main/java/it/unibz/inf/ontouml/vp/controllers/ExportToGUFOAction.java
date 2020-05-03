@@ -50,9 +50,13 @@ public class ExportToGUFOAction implements VPActionController {
 		requestMenu = new MenuExport();
 		menu = new ExportDialog();
 		ApplicationManager.instance().getViewManager().showDialog(menu);
+		
+		
+		
+		
 
-		Thread thread = new Thread(requestMenu);
-		thread.start();
+		//Thread thread = new Thread(requestMenu);
+	//	thread.start();
 
 	}
 
@@ -164,6 +168,8 @@ public class ExportToGUFOAction implements VPActionController {
 		 */
 		@Override
 		public void shown() {
+		//	Thread thread = new Thread(requestMenu);
+		//	thread.start();
 		}
 
 		/**
@@ -174,8 +180,9 @@ public class ExportToGUFOAction implements VPActionController {
 		 */
 		@Override
 		public boolean canClosed() {
-			requestMenu.doStop();
-			ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
+			
+		//	requestMenu.doStop();
+		//	ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
 			return true;
 		}
 

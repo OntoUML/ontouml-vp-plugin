@@ -189,8 +189,10 @@ public class ExportToGUFOView extends JPanel {
 				Configurations.getInstance().save();
 				isToExport = true;
 				isOpen = false;
-				request.doStop();
+			//	request.doStop();
 				_dialog.close();
+				Thread thread = new Thread(request);
+				thread.start();
 			}
 
 		});
