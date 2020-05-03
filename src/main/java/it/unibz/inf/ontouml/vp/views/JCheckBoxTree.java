@@ -414,7 +414,7 @@ public class JCheckBoxTree extends JTree {
 		if (root.getUserObject() instanceof IDataType)
 			typeCurrentNode = ((IDataType) root.getUserObject()).getName();
 
-		if (typeCurrentNode.contentEquals(typeOriginal)) {
+		if (typeOriginal!=null && typeCurrentNode.contentEquals(typeOriginal)) {
 
 			TreeNode[] old_treeNode = nodeToCompare.getPath();
 			TreePath oldTp = new TreePath(old_treeNode);
