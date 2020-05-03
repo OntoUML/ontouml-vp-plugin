@@ -49,6 +49,7 @@ public class ExportToGUFOAction implements VPActionController {
 
 		requestMenu = new MenuExport();
 		menu = new ExportDialog();
+		
 		ApplicationManager.instance().getViewManager().showDialog(menu);
 		
 		
@@ -156,7 +157,7 @@ public class ExportToGUFOAction implements VPActionController {
 			_dialog = dialog;
 			_dialog.setTitle(OntoUMLPlugin.PLUGIN_NAME + " Configurations");
 			_dialog.setModal(false);
-			_dialog.setResizable(true);
+			_dialog.setResizable(false);
 			_dialog.setSize(_exportMenuView.getWidth(), _exportMenuView.getHeight() + 20);
 			_exportMenuView.setContainerDialog(_dialog);
 		}
