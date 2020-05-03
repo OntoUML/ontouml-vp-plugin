@@ -361,9 +361,14 @@ public class JCheckBoxTree extends JTree {
 			if (!oldTp.toString().equals(newTp.toString())) {
 
 				boolean checkMode = nodesCheckingState.get(oldTp).isSelected;
-				checkSubTree(newTp, checkMode);
-				updatePredecessorsWithCheckMode(newTp, checkMode);
-				fireCheckChangeEvent(new CheckChangeEvent(new Object()));
+
+				CheckedNode cn = nodesCheckingState.get(newTp);
+				cn.isSelected = checkMode;
+
+				if (checkMode)
+					checkedPaths.add(newTp);
+				else
+					checkedPaths.remove(newTp);
 			}
 
 		}
@@ -389,7 +394,7 @@ public class JCheckBoxTree extends JTree {
 	private void visitAllNodesAndCheckType(ElementNode root, ElementNode nodeToCompare) {
 		String typeOriginal = "";
 		String typeCurrentNode = "";
-		
+
 		if (nodeToCompare.getUserObject() instanceof IClass)
 			typeOriginal = ((IClass) nodeToCompare.getUserObject()).getName();
 
@@ -398,7 +403,7 @@ public class JCheckBoxTree extends JTree {
 
 		if (root.getUserObject() instanceof IClass)
 			typeCurrentNode = ((IClass) root.getUserObject()).getName();
-		
+
 		if (root.getUserObject() instanceof IDataType)
 			typeCurrentNode = ((IDataType) root.getUserObject()).getName();
 
@@ -413,8 +418,9 @@ public class JCheckBoxTree extends JTree {
 			// if different paths
 			if (!oldTp.toString().equals(newTp.toString())) {
 				boolean checkMode = nodesCheckingState.get(oldTp).isSelected;
-			
-				if ((root.getUserObject() instanceof IClass || root.getUserObject() instanceof IDataType) && checkMode == true) {
+
+				if ((root.getUserObject() instanceof IClass || root.getUserObject() instanceof IDataType)
+						&& checkMode == true) {
 
 					CheckedNode cn = nodesCheckingState.get(newTp);
 					cn.isSelected = checkMode;
