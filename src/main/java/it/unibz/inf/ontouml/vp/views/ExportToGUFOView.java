@@ -57,7 +57,7 @@ public class ExportToGUFOView extends JPanel {
 	private HashSet<String> elementsDiagramTree = new HashSet<String>();
 	
 	public ExportToGUFOView(ProjectConfigurations configurations, ServerRequest request) {
-		setSize(new Dimension(585, 515));
+		setSize(new Dimension(600, 515));
 		
 		GridBagLayout gbl_main = new GridBagLayout();
 		gbl_main.columnWidths = new int[] { 0, 0, 0 };
