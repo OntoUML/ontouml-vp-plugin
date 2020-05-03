@@ -57,7 +57,7 @@ public class ExportToGUFOView extends JPanel {
 	private HashSet<String> elementsDiagramTree = new HashSet<String>();
 	
 	public ExportToGUFOView(ProjectConfigurations configurations, ServerRequest request) {
-		setSize(new Dimension(600, 480));
+		setSize(new Dimension(600, 510));
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		setLayout(gridBagLayout);
 		
@@ -112,11 +112,9 @@ public class ExportToGUFOView extends JPanel {
 		
 		treePanel.add(tabbedPane);
 		
-		GridLayout gl_optionsPanel2 = new GridLayout(0,2);
-		gl_optionsPanel2.setHgap(5);
+		GridLayout gl_optionsPanel2 = new GridLayout(2,11);
+		gl_optionsPanel2.setVgap(5);
 		optionsPanel2.setLayout(gl_optionsPanel2);
-		
-		optionsPanel2.setPreferredSize(new Dimension(50,50));
 		
 		GridBagConstraints gbc_optionsPanel1 = new GridBagConstraints();
 		gbc_optionsPanel1.insets = new Insets(5, 5, 5, 5);
@@ -127,7 +125,7 @@ public class ExportToGUFOView extends JPanel {
 		
 		GridBagLayout gbl_optionsPanel1 = new GridBagLayout();
 		gbl_optionsPanel1.columnWidths = new int[] { 30, 200, 0 };
-		gbl_optionsPanel1.rowHeights = new int[] { 0, 0 };
+		gbl_optionsPanel1.rowHeights = new int[] { 5,5 };
 		gbl_optionsPanel1.columnWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
 		gbl_optionsPanel1.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
 		optionsPanel1.setLayout(gbl_optionsPanel1);
@@ -143,7 +141,9 @@ public class ExportToGUFOView extends JPanel {
 		gbc_txt.gridy = 0;
 		optionsPanel1.add(IRItxt, gbc_txt);
 		
+		optionsPanel2.add(new JLabel("Format:"));
 		optionsPanel2.add(formatBox);
+		optionsPanel2.add(new JLabel("URI Format:"));
 		optionsPanel2.add(uriFormatBox);
 		
 		GridBagConstraints gbc_optionsPanel2 = new GridBagConstraints();
