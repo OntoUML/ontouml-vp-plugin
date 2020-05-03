@@ -4,8 +4,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.ApplicationManager;
+import com.vp.plugin.diagram.IDiagramElement;
+import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.*;
 import com.vp.plugin.model.factory.IModelElementFactory;
+
+import it.unibz.inf.ontouml.vp.views.JCheckBoxTree.ElementNode;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -100,24 +104,22 @@ public class Model implements ModelElement {
 
 			if (project.getModelElementById(id) != null && project.getModelElementById(id) instanceof IModelElement)
 				modelElements.add(project.getModelElementById(id));
-		}
 
-		for (IModelElement projectElement : modelElements) {
+			if (project.getDiagramById(id) != null && project.getDiagramById(id) instanceof IDiagramUIModel) {
+				IDiagramElement[] elementsInDiagram = ((IDiagramUIModel) project.getDiagramById(id))
+						.toDiagramElementArray();
 
-			switch (projectElement.getModelType()) {
-			case IModelElementFactory.MODEL_TYPE_PACKAGE:
-				addElement(new Package((IPackage) projectElement, idElements));
-				break;
-
-			case IModelElementFactory.MODEL_TYPE_MODEL:
-				addElement(new Model((IModel) projectElement, idElements));
-				break;
-
-			case IModelElementFactory.MODEL_TYPE_DATA_TYPE:
-				addElement(new Class((IDataType) projectElement));
-				break;
+				for (int i = 0; elementsInDiagram != null && i < elementsInDiagram.length; i++) {
+					if (elementsInDiagram[i].getModelElement() != null)
+						modelElements.add(elementsInDiagram[i].getModelElement());
+				}
 			}
 		}
+		
+		IModelElement[] elementsArray = new IModelElement[modelElements.size()];
+		modelElements.toArray(elementsArray);
+
+		addModelElements(elementsArray, idElements);
 
 	}
 
