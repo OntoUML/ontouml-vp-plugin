@@ -117,7 +117,7 @@ public class ExportToGUFOView extends JPanel {
 		gl_optionsPanel.setHgap(5);
 		optionsPanel.setLayout(gl_optionsPanel);
 	
-		optionsPanel.add(new JLabel("BaseIRI:"));
+		optionsPanel.add(new JLabel("Base IRI:"));
 		optionsPanel.add(IRItxt);
 		
 		optionsPanel.add(new JLabel("Format:"));
