@@ -57,8 +57,15 @@ public class ExportToGUFOView extends JPanel {
 	private HashSet<String> elementsDiagramTree = new HashSet<String>();
 	
 	public ExportToGUFOView(ProjectConfigurations configurations, ServerRequest request) {
-		setSize(new Dimension(600, 515));
-		setLayout(new GridBagLayout());
+		setSize(new Dimension(585, 515));
+		
+		GridBagLayout gbl_main = new GridBagLayout();
+		gbl_main.columnWidths = new int[] { 0, 0, 0 };
+		gbl_main.rowHeights = new int[] { 10 ,10, 10 };
+		gbl_main.columnWeights = new double[] { 1.0, 1.0, 0.5 };
+		gbl_main.rowWeights = new double[] { 1.0, 1.0, 0.5 };
+		
+		setLayout(gbl_main);
 		
 		JPanel optionsPanel = new JPanel();
 		
@@ -126,7 +133,7 @@ public class ExportToGUFOView extends JPanel {
 		optionsPanel.add(uriFormatBox);
 		
 		GridBagConstraints gbc_optionsPanel = new GridBagConstraints();
-		gbc_optionsPanel.insets = new Insets(5, 5, 5, 5);
+		gbc_optionsPanel.insets = new Insets(5, 5, 5, 0);
 		gbc_optionsPanel.anchor = GridBagConstraints.WEST;
 		gbc_optionsPanel.gridx = 0;
 		gbc_optionsPanel.gridy = 0;
@@ -135,6 +142,7 @@ public class ExportToGUFOView extends JPanel {
 		add(optionsPanel, gbc_optionsPanel);
 		
 		GridBagConstraints gbc_treePanel = new GridBagConstraints();
+		gbc_optionsPanel.insets = new Insets(5, 5, 5, 0);
 		gbc_treePanel.gridx = 0;
 		gbc_treePanel.gridy = 1;
 		add(treePanel, gbc_treePanel);
@@ -166,8 +174,6 @@ public class ExportToGUFOView extends JPanel {
 			}
 
 		});
-		
-		
 
 		_btnCancel = new JButton("Cancel");
 		_btnCancel.addActionListener(new ActionListener() {
