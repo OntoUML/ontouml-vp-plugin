@@ -112,18 +112,13 @@ public class ExportToGUFOView extends JPanel {
 		
 		treePanel.add(tabbedPane);
 		
-		GridLayout gl_optionsPanel2 = new GridLayout(2,20);
+		GridLayout gl_optionsPanel2 = new GridLayout(3,2);
 		gl_optionsPanel2.setVgap(5);
 		gl_optionsPanel2.setHgap(5);
 		optionsPanel2.setLayout(gl_optionsPanel2);
-		
-		GridLayout gl_optionsPanel1 = new GridLayout(1,20);
-		gl_optionsPanel1.setHgap(5);
-		gl_optionsPanel1.setVgap(5);
-		optionsPanel1.setLayout(gl_optionsPanel1);
 	
-		optionsPanel1.add(new JLabel("BaseIRI:"));
-		optionsPanel1.add(IRItxt);
+		optionsPanel2.add(new JLabel("BaseIRI:"));
+		optionsPanel2.add(IRItxt);
 		
 		optionsPanel2.add(new JLabel("Format:"));
 		optionsPanel2.add(formatBox);
@@ -146,7 +141,7 @@ public class ExportToGUFOView extends JPanel {
 		gbc_optionsPanel2.gridy = 1;
 		gbc_optionsPanel2.ipadx = 100;
 		
-		add(optionsPanel1, gbc_optionsPanel1);
+		//add(optionsPanel1, gbc_optionsPanel1);
 		add(optionsPanel2, gbc_optionsPanel2);
 		
 		GridBagConstraints gbc_treePanel = new GridBagConstraints();
