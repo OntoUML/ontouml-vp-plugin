@@ -242,13 +242,20 @@ public class JCheckBoxTree extends JTree {
 			}
 
 			nameNode = "(" + nameFrom + " -> " + nameTo + ")";
-			nameNode = "(" + nameFrom + " -> " + nameTo + ")";
+			
+			if(((IAssociation) obj).getName()!=null && !((IAssociation) obj).getName().equals(""))
+				nameNode = ((IAssociation) obj).getName() + " " + nameNode;
 
 		} else if (obj instanceof IAssociationEnd) {
-			nameNode = "AssociationEnd";
+			nameNode = ": AssociationEnd";
 
-			if (((IAssociationEnd) obj).getName() != null && !((IAssociationEnd) obj).getName().equals(""))
-				nameNode = ((IAssociationEnd) obj).getName();
+			if (((IAssociationEnd) obj).getTypeAsString() != null && !((IAssociationEnd) obj).getTypeAsString().equals("")) {
+				
+				nameNode = ": " + ((IAssociationEnd) obj).getTypeAsString();
+				
+				if (((IAssociationEnd) obj).getName() != null && !((IAssociationEnd) obj).getName().equals(""))
+				nameNode = ((IAssociationEnd) obj).getName() + " " + nameNode;
+			}
 
 		} else if (obj instanceof IGeneralization) {
 			nameNode = "Generalization";
