@@ -71,7 +71,7 @@ public class ViewUtils {
 	public static final String GENERALIZATION_LOGO = "generalization";
 	public static final String GENERALIZATION_LOGO_FILENAME = "generalization.png";
 	public static final String GENERALIZATION_SET_LOGO = "generalizationSet";
-	public static final String GENERALIZATION_SET_LOGO_FILENAME = "generalizationset.gif";
+	public static final String GENERALIZATION_SET_LOGO_FILENAME = "generalizationset.png";
 	public static final String DIAGRAM_LOGO = "diagram";
 	public static final String DIAGRAM_LOGO_FILENAME = "diagram.png";
 	public static final String DATATYPE_LOGO = "datatype";
