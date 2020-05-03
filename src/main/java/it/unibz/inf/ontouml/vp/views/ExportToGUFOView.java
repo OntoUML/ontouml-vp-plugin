@@ -110,6 +110,7 @@ public class ExportToGUFOView extends JPanel {
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		
 		treePanel.add(tabbedPane);
+		treePanel.setLayout(new GridLayout(1,1));
 		
 		GridLayout gl_optionsPanel = new GridLayout(3,2);
 		gl_optionsPanel.setVgap(5);
@@ -128,31 +129,22 @@ public class ExportToGUFOView extends JPanel {
 		gbc_optionsPanel.insets = new Insets(5, 5, 5, 5);
 		gbc_optionsPanel.anchor = GridBagConstraints.WEST;
 		gbc_optionsPanel.gridx = 0;
-		gbc_optionsPanel.gridy = 1;
+		gbc_optionsPanel.gridy = 0;
 		gbc_optionsPanel.ipadx = 30;
 		
 		add(optionsPanel, gbc_optionsPanel);
 		
 		GridBagConstraints gbc_treePanel = new GridBagConstraints();
 		gbc_treePanel.gridx = 0;
-		gbc_treePanel.gridy = 2;
-		gbc_treePanel.ipadx = 450;
-		gbc_treePanel.ipady = 300;
+		gbc_treePanel.gridy = 1;
 		add(treePanel, gbc_treePanel);
 		
 		JPanel controlButtonsPanel = new JPanel();
-		GridBagConstraints gbc_controlButtonsPanel = new GridBagConstraints();
-		gbc_controlButtonsPanel.anchor = GridBagConstraints.SOUTHEAST;
-		gbc_controlButtonsPanel.gridx = 0;
-		gbc_controlButtonsPanel.gridy = 3;
-		add(controlButtonsPanel, gbc_controlButtonsPanel);
 		
-		GridBagLayout gbl_controlButtonsPanel = new GridBagLayout();
-		gbl_controlButtonsPanel.columnWidths = new int[] { 135, 135, 0 };
-		gbl_controlButtonsPanel.rowHeights = new int[] { 0, 0 };
-		gbl_controlButtonsPanel.columnWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
-		gbl_controlButtonsPanel.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
-		controlButtonsPanel.setLayout(gbl_controlButtonsPanel);
+		GridLayout glcontrolButtonsPanel = new GridLayout(1,2);
+		gl_optionsPanel.setVgap(5);
+		gl_optionsPanel.setHgap(5);
+		controlButtonsPanel.setLayout(glcontrolButtonsPanel);
 
 		_btnApply = new JButton("Export");
 		_btnApply.addActionListener(new ActionListener() {
@@ -174,12 +166,8 @@ public class ExportToGUFOView extends JPanel {
 			}
 
 		});
-		GridBagConstraints gbc_btnApply = new GridBagConstraints();
-		gbc_btnApply.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnApply.insets = new Insets(0, 0, 0, 5);
-		gbc_btnApply.gridx = 0;
-		gbc_btnApply.gridy = 0;
-		controlButtonsPanel.add(_btnApply, gbc_btnApply);
+		
+		
 
 		_btnCancel = new JButton("Cancel");
 		_btnCancel.addActionListener(new ActionListener() {
@@ -193,11 +181,17 @@ public class ExportToGUFOView extends JPanel {
 			}
 
 		});
-		GridBagConstraints gbc_btnCancel = new GridBagConstraints();
-		gbc_btnCancel.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnCancel.gridx = 1;
-		gbc_btnCancel.gridy = 0;
-		controlButtonsPanel.add(_btnCancel, gbc_btnCancel);
+		
+		controlButtonsPanel.add(_btnApply);
+		controlButtonsPanel.add(_btnCancel);
+		
+		GridBagConstraints gbc_controlButtonsPanel = new GridBagConstraints();
+		gbc_controlButtonsPanel.anchor = GridBagConstraints.SOUTHEAST;
+		gbc_controlButtonsPanel.insets = new Insets(5, 5, 5, 0);
+		gbc_controlButtonsPanel.gridx = 0;
+		gbc_controlButtonsPanel.gridy = 2;
+		gbc_controlButtonsPanel.ipadx = 130;
+		add(controlButtonsPanel, gbc_controlButtonsPanel);
 		
 		isToExport = false;
 		isOpen = true;
