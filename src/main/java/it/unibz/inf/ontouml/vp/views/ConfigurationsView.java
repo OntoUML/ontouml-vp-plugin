@@ -1,6 +1,8 @@
 package it.unibz.inf.ontouml.vp.views;
 
 import com.vp.plugin.view.IDialog;
+
+import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.ProjectConfigurations;
 
@@ -142,6 +144,7 @@ public class ConfigurationsView extends JPanel {
 				updateConfigurationsValues(configurations);
 				Configurations.getInstance().save();
 				_dialog.close();
+				OntoUMLPlugin.setConfigWindowOpen(false);
 			}
 			
 		});

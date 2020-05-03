@@ -36,6 +36,11 @@ public class OpenConfigurationsAction implements VPActionController {
 	 */
 	@Override
 	public void performAction(VPAction action) {
+		if(OntoUMLPlugin.getConfigWindowOpen() == true)
+			return;
+		else
+			OntoUMLPlugin.setConfigWindowOpen(true);
+		
 		ApplicationManager.instance().getViewManager().showDialog(new ConfigurationsDialog());
 	}
 
@@ -108,6 +113,7 @@ public class OpenConfigurationsAction implements VPActionController {
 		 */
 		@Override
 		public boolean canClosed() {
+			OntoUMLPlugin.setConfigWindowOpen(false);
 			return true;
 		}
 		
