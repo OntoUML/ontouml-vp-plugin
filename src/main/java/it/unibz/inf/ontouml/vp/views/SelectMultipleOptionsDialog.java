@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -122,6 +123,7 @@ public class SelectMultipleOptionsDialog implements IDialogHandler {
     public void setSelectedValues(String selectedValuesString) {
         final List<String> selectedList = Arrays.asList(selectedValuesString.split(" "));
         final List<String> allNatures = StereotypeUtils.getAllowedNaturesList();
+        Collections.sort(allNatures);
 
         this._selectionsPane.setLayout(new GridLayout(allNatures.size()/2 + allNatures.size()%2,2));
 

@@ -83,7 +83,7 @@ public class StereotypeUtils {
 			STR_BEGIN, STR_END);
 
 	// Allowed ontological natures
-	public static final String ALLOWED_OBJECT = "object";
+	public static final String ALLOWED_FUNCTIONAL_COMPLEX = "functional-complex";
 	public static final String ALLOWED_COLLECTIVE = "collective";
 	public static final String ALLOWED_QUANTITY = "quantity";
 	public static final String ALLOWED_RELATOR = "relator";
@@ -344,11 +344,12 @@ public class StereotypeUtils {
 
 	public static String getAllowedNatures() {
 		return toAllowedNaturesString(
-				ALLOWED_COLLECTIVE, ALLOWED_EVENT, ALLOWED_MODE, ALLOWED_OBJECT,
+				ALLOWED_COLLECTIVE, ALLOWED_EVENT, ALLOWED_MODE, ALLOWED_FUNCTIONAL_COMPLEX,
 				ALLOWED_QUALITY, ALLOWED_QUANTITY, ALLOWED_RELATOR, ALLOWED_TYPE, ALLOWED_ABSTRACT);
 	}
 	public static List<String> getAllowedNaturesList() {
-		return Arrays.asList(getAllowedNatures());
+		return Arrays.asList(ALLOWED_COLLECTIVE, ALLOWED_EVENT, ALLOWED_MODE, ALLOWED_FUNCTIONAL_COMPLEX,
+				ALLOWED_QUALITY, ALLOWED_QUANTITY, ALLOWED_RELATOR, ALLOWED_TYPE, ALLOWED_ABSTRACT);
 	}
 
 	public static String toAllowedNaturesString(String... allowedNatures) {

@@ -132,7 +132,7 @@ public class ApplyStereotype implements VPContextActionController {
 				break;
 			case ActionIds.KIND:
 				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_KIND);
-				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_KIND, StereotypeUtils.toAllowedNaturesString(StereotypeUtils.ALLOWED_OBJECT));
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_KIND, StereotypeUtils.toAllowedNaturesString(StereotypeUtils.ALLOWED_FUNCTIONAL_COMPLEX));
 				break;
 			case ActionIds.COLLECTIVE:
 				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_COLLECTIVE);

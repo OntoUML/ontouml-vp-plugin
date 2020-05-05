@@ -105,7 +105,7 @@ public class ApplyStereotypeFixedMenu implements VPContextActionController {
 				break;
 			case ActionIds.KIND_FIXEDMENU:
 				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_KIND);
-				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_KIND, StereotypeUtils.toAllowedNaturesString(StereotypeUtils.ALLOWED_OBJECT));
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_KIND, StereotypeUtils.toAllowedNaturesString(StereotypeUtils.ALLOWED_FUNCTIONAL_COMPLEX));
 				break;
 			case ActionIds.COLLECTIVE_FIXEDMENU:
 				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_COLLECTIVE);

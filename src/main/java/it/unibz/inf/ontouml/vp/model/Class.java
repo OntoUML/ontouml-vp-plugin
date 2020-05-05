@@ -138,9 +138,9 @@ public class Class implements ModelElement {
 	
 					if(value.getName().equals("allowed")){
 						String valueString = value.getValueAsString();
-						valueString = valueString.replaceAll(" ", "").replaceAll(",", "\",\"");
+						valueString = valueString.trim().replaceAll(" ", ",").replaceAll(",", "\",\"");
 						
-						final JsonElement allowed = parser.parse("[\"" + valueString + "\"]");
+						final JsonElement allowed = !valueString.equals("") ? parser.parse("[\"" + valueString + "\"]") : parser.parse("[]");
 						this.allowed = allowed.isJsonArray() && ((JsonArray) allowed).size() > 0 ?
 								(JsonArray) allowed : null;
 					}
