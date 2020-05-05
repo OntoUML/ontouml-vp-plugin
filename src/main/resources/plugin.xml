@@ -84,11 +84,11 @@
             
             <menu id="classPropertiesMenu" label="OntoUML Properties" mnemonic="P" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
 
-            <action id="it.unibz.inf.ontouml.vp.ClassProperties.order" label="Set Order" style="normal" menuPath="classPropertiesMenu/#">
+            <action id="it.unibz.inf.ontouml.vp.ClassProperties.isPowertype" label="Is Powertype" style="toggle" menuPath="classPropertiesMenu/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyProperties"/>
             </action>
 
-            <action id="it.unibz.inf.ontouml.vp.ClassProperties.isPowertype" label="Is Powertype" style="toggle" menuPath="classPropertiesMenu/#">
+            <action id="it.unibz.inf.ontouml.vp.ClassProperties.order" label="Set Order" style="normal" menuPath="classPropertiesMenu/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyProperties"/>
             </action>
                 

@@ -64,6 +64,14 @@ public class ViewUtils {
 	public static final String MORE_HORIZ_LOGO = "more_horiz";
 	public static final String MORE_HORIZ_LOGO_FILENAME = "more_horiz.png";
 
+	// buttons
+	public static final String ADD_LOGO = "add";
+	public static final String ASTERISK_LOGO = "asterisk";
+	public static final String SUBTRACT_LOGO = "subtract";
+	public static final String ADD_LOGO_FILENAME = "add.png";
+	public static final String ASTERISK_LOGO_FILENAME = "asterisk.png";
+	public static final String SUBTRACT_LOGO_FILENAME = "subtract.png";
+
 	public static void log(String message) {
 		ApplicationManager.instance().getViewManager().showMessage(timestamp() + message);
 	}
@@ -115,6 +123,12 @@ public class ViewUtils {
 			return Paths.get(pluginDir.getAbsolutePath(), "icons", NAVIGATION_LOGO_FILENAME).toFile().getAbsolutePath();
 		case MORE_HORIZ_LOGO:
 			return Paths.get(pluginDir.getAbsolutePath(), "icons", MORE_HORIZ_LOGO_FILENAME).toFile().getAbsolutePath();
+		case ADD_LOGO:
+			return Paths.get(pluginDir.getAbsolutePath(), "icons", ADD_LOGO_FILENAME).toFile().getAbsolutePath();
+		case ASTERISK_LOGO:
+			return Paths.get(pluginDir.getAbsolutePath(), "icons", ASTERISK_LOGO_FILENAME).toFile().getAbsolutePath();
+		case SUBTRACT_LOGO:
+			return Paths.get(pluginDir.getAbsolutePath(), "icons", SUBTRACT_LOGO_FILENAME).toFile().getAbsolutePath();
 		default:
 			return null;
 		}

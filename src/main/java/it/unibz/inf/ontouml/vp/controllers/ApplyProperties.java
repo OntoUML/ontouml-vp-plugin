@@ -15,6 +15,7 @@ import com.vp.plugin.model.ITaggedValueContainer;
 import it.unibz.inf.ontouml.vp.features.constraints.ActionIds;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 import it.unibz.inf.ontouml.vp.views.SelectMultipleOptionsDialog;
+import it.unibz.inf.ontouml.vp.views.SetOrderDialog;
 
 /**
  * 
@@ -70,7 +71,14 @@ public class ApplyProperties implements VPContextActionController {
 					final ITaggedValue value = (ITaggedValue) values.next();
 
 					if(value.getName().equals("order")) {
-						value.setValue(ViewUtils.setOrderDialog(value.getValueAsString()));
+						// value.setValue(ViewUtils.setOrderDialog(value.getValueAsString()));
+						final ViewManager vm = ApplicationManager.instance().getViewManager();
+						final SetOrderDialog dialog = 
+								new SetOrderDialog(value.getValueAsString());
+						
+						vm.showDialog(dialog);
+						value.setValue(dialog.getOrder());
+
 						return ;
 					}
 				}
