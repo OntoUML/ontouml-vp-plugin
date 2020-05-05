@@ -91,6 +91,7 @@ public class StereotypeUtils {
 	public static final String ALLOWED_QUALITY = "quality";
 	public static final String ALLOWED_EVENT = "event";
 	public static final String ALLOWED_TYPE = "type";
+	public static final String ALLOWED_ABSTRACT = "abstract";
 
 	public static void removeAllModelStereotypes(String modelType) {
 
@@ -279,8 +280,6 @@ public class StereotypeUtils {
 
 		// Checks and adds missing tagged value definitions to IStereotype objects
 		final Set<String> taggedStereotypeNames = getOntoUMLClassStereotypeNames();
-		taggedStereotypeNames.remove(STR_DATATYPE);
-		taggedStereotypeNames.remove(STR_ENUMERATION);
 
 		for (String currentName : taggedStereotypeNames) {
 			final IStereotype current = stereotypeElements.get(currentName);
@@ -346,13 +345,10 @@ public class StereotypeUtils {
 	public static String getAllowedNatures() {
 		return toAllowedNaturesString(
 				ALLOWED_COLLECTIVE, ALLOWED_EVENT, ALLOWED_MODE, ALLOWED_OBJECT,
-				ALLOWED_QUALITY, ALLOWED_QUANTITY, ALLOWED_RELATOR, ALLOWED_TYPE);
+				ALLOWED_QUALITY, ALLOWED_QUANTITY, ALLOWED_RELATOR, ALLOWED_TYPE, ALLOWED_ABSTRACT);
 	}
 	public static List<String> getAllowedNaturesList() {
-		final List<String> list = Arrays.asList(
-				ALLOWED_COLLECTIVE, ALLOWED_EVENT, ALLOWED_MODE, ALLOWED_OBJECT,
-				ALLOWED_QUALITY, ALLOWED_QUANTITY, ALLOWED_RELATOR, ALLOWED_TYPE);
-		return list;
+		return Arrays.asList(getAllowedNatures());
 	}
 
 	public static String toAllowedNaturesString(String... allowedNatures) {

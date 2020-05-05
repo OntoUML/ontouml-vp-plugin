@@ -2,19 +2,13 @@ package it.unibz.inf.ontouml.vp.views;
 
 import java.awt.Component;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -23,7 +17,6 @@ import javax.swing.border.EmptyBorder;
 import com.vp.plugin.view.IDialog;
 import com.vp.plugin.view.IDialogHandler;
 
-import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 
 public class SetOrderDialog implements IDialogHandler {
