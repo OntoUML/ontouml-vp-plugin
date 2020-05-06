@@ -24,7 +24,7 @@ import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 public class SelectMultipleOptionsDialog implements IDialogHandler {
 
     private IDialog _dialog;
-    private Component _component;
+    // private Component _component;
     private JPanel _selectionsPane;
     private boolean cancelledExit = true;
     private String initialSelecteion;
@@ -79,7 +79,7 @@ public class SelectMultipleOptionsDialog implements IDialogHandler {
         this._selectionsPane.setAlignmentX(Component.LEFT_ALIGNMENT);
         buttonsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        this._component = panel;
+        // this._component = panel;
         
         return panel;
     }
@@ -112,7 +112,7 @@ public class SelectMultipleOptionsDialog implements IDialogHandler {
                 final JCheckBox checkBox = (JCheckBox) checkBoxes[i];
                 if(checkBox.isSelected()) {
                     selectedValues.append(selectedValues.length() == 0 ? 
-                        checkBox.getText() : " " + checkBox.getText());
+                        checkBox.getText() : ", " + checkBox.getText());
                 }
             }
         }

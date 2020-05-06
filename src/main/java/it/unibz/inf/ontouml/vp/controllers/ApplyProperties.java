@@ -13,7 +13,6 @@ import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
 
 import it.unibz.inf.ontouml.vp.features.constraints.ActionIds;
-import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 import it.unibz.inf.ontouml.vp.views.SelectMultipleOptionsDialog;
 import it.unibz.inf.ontouml.vp.views.SetOrderDialog;
 

@@ -22,7 +22,7 @@ import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 public class SetOrderDialog implements IDialogHandler {
 
     private IDialog _dialog;
-    private Component _component;
+    // private Component _component;
     private boolean cancelledExit = true;
     private String currentString = "";
     private JTextField _inputField;
@@ -125,7 +125,7 @@ public class SetOrderDialog implements IDialogHandler {
         line.setAlignmentX(Component.LEFT_ALIGNMENT);
         bottomPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        this._component = panel;
+        // this._component = panel;
         
         return panel;
     }
