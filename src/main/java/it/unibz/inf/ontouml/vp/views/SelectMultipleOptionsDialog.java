@@ -40,8 +40,7 @@ public class SelectMultipleOptionsDialog implements IDialogHandler {
 
     @Override
     public Component getComponent() {
-        final JLabel lineOne = new JLabel("Select the possible ontological");
-        final JLabel lineTwo = new JLabel("natures of the type's instances.");
+        final JLabel line = new JLabel("Select the possible ontological natures of the type's instances.");
         final JButton cancelButton = new JButton("Cancel");
         final JButton applyButton = new JButton("Apply");
         
@@ -64,8 +63,7 @@ public class SelectMultipleOptionsDialog implements IDialogHandler {
 
         panel.setLayout(new BoxLayout(panel,BoxLayout.PAGE_AXIS));
 
-        panel.add(lineOne);
-        panel.add(lineTwo);
+        panel.add(line);
         panel.add(this._selectionsPane);
 
         JPanel buttonsPanel = new JPanel();
@@ -74,8 +72,7 @@ public class SelectMultipleOptionsDialog implements IDialogHandler {
         buttonsPanel.add(cancelButton);
         panel.add(buttonsPanel);
 
-        lineOne.setAlignmentX(Component.LEFT_ALIGNMENT);
-        lineTwo.setAlignmentX(Component.LEFT_ALIGNMENT);
+        line.setAlignmentX(Component.LEFT_ALIGNMENT);
         this._selectionsPane.setAlignmentX(Component.LEFT_ALIGNMENT);
         buttonsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -121,7 +118,7 @@ public class SelectMultipleOptionsDialog implements IDialogHandler {
     }
 
     public void setSelectedValues(String selectedValuesString) {
-        final List<String> selectedList = Arrays.asList(selectedValuesString.split(" "));
+        final List<String> selectedList = Arrays.asList(selectedValuesString.replaceAll(" +", "").split(","));
         final List<String> allNatures = StereotypeUtils.getAllowedNaturesList();
         Collections.sort(allNatures);
 

@@ -52,7 +52,6 @@ public class ApplyProperties implements VPContextActionController {
 						return;
 					}
 				}
-				action.setEnabled(false);
 				break;
 			case ActionIds.PROPERTY_SET_IS_POWERTYPE:
 				while(values != null && values.hasNext()) {
