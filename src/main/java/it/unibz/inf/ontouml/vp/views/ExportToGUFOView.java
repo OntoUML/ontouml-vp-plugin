@@ -63,51 +63,61 @@ public class ExportToGUFOView extends JPanel {
 	private HashSet<String> elementsDiagramTree = new HashSet<String>();
 
 	public ExportToGUFOView(ProjectConfigurations configurations, ServerRequest request) {
-		setSize(new Dimension(600, 540));
-		setLayout(new GridBagLayout());
+		setSize(new Dimension(610, 550));
+		setLayout(new GridLayout(1,1));
 
+		JTabbedPane mainTab = new JTabbedPane();
+		JPanel mainPanel = new JPanel();
 		JPanel optionsPanelLeft = new JPanel();
 		JPanel optionsPanelRight = new JPanel();
 		JPanel treePanel = new JPanel();
 		JPanel buttonsPanel = new JPanel();
+		
+		
+		
+		GridBagLayout gbl_main = new GridBagLayout();
+		gbl_main.rowWeights = new double[] { 0.3, 0.7, 0.1 };
 
+		mainPanel.setLayout(gbl_main);
 		optionsPanelLeft.setLayout(new GridBagLayout());
 		optionsPanelRight.setLayout(new GridBagLayout());
 		treePanel.setLayout(new GridBagLayout());
 		buttonsPanel.setLayout(new GridBagLayout());
 
+		mainPanel.setPreferredSize(new Dimension(600, 540));
 	    optionsPanelLeft.setPreferredSize(new Dimension(280, 100));
 	    optionsPanelRight.setPreferredSize(new Dimension(280,120));
-	    treePanel.setPreferredSize(new Dimension(560,250));
-	    buttonsPanel.setPreferredSize(new Dimension(200,40));
+	    treePanel.setPreferredSize(new Dimension(560,300));
+	    buttonsPanel.setPreferredSize(new Dimension(560,40));
+	  
 
 		GridBagConstraints gbc_main = new GridBagConstraints();
-		gbc_main.insets = new Insets(0, 0, 0, 0);
+		gbc_main.insets = new Insets(1, 1, 1, 1);
 		gbc_main.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc_main.weightx = 0.5;
 		gbc_main.weighty = 0.5;
 		gbc_main.gridx = 0;
 		gbc_main.gridy = 0;
-		add(optionsPanelLeft, gbc_main);
+		mainPanel.add(optionsPanelLeft, gbc_main);
 		gbc_main.anchor = GridBagConstraints.FIRST_LINE_END;
 		gbc_main.weightx = 0.5;
 		gbc_main.weighty = 0.5;
 		gbc_main.gridx = 1;
 		gbc_main.gridy = 0;
-		add(optionsPanelRight, gbc_main);
+		mainPanel.add(optionsPanelRight, gbc_main);
 		gbc_main.anchor = GridBagConstraints.PAGE_START;
 		gbc_main.weightx = 1.0;
-		gbc_main.weighty = 0.5;
+		gbc_main.weighty = 0.8;
 		gbc_main.gridwidth = 4;
 		gbc_main.gridx = 0;
 		gbc_main.gridy = 1;
-		add(treePanel, gbc_main);
-		gbc_main.anchor = GridBagConstraints.LINE_END;
+		mainPanel.add(treePanel, gbc_main);
+		gbc_main.anchor = GridBagConstraints.FIRST_LINE_END;
 		gbc_main.weightx = 0.5;
 		gbc_main.weighty = 0.5;
 		gbc_main.gridx = 0;
 		gbc_main.gridy = 2;
-		add(buttonsPanel, gbc_main);
+		mainPanel.add(buttonsPanel, gbc_main);
 
 		JLabel iriLabel = new JLabel("Base IRI:");
 		JLabel formatLabel = new JLabel("Format:");
@@ -191,11 +201,11 @@ public class ExportToGUFOView extends JPanel {
 
 		GridBagConstraints gbc_insidePanelRight = new GridBagConstraints();
 		// gbc_insidePanelLeft.fill = GridBagConstraints.HORIZONTAL;
-		gbc_insidePanelRight.insets = new Insets(5, 5, 5, 5);
+		gbc_insidePanelRight.insets = new Insets(5, 5, 5, 15);
 		gbc_insidePanelRight.weightx = 0.5;
 		gbc_insidePanelRight.gridx = 0;
 		gbc_insidePanelRight.gridy = 0;
-		gbc_insidePanelRight.anchor = GridBagConstraints.WEST;
+		gbc_insidePanelRight.anchor = GridBagConstraints.EAST;
 		optionsPanelRight.add(inverseLabel, gbc_insidePanelRight);
 		gbc_insidePanelRight.weightx = 0.5;
 		gbc_insidePanelRight.gridx = 1;
@@ -303,17 +313,20 @@ public class ExportToGUFOView extends JPanel {
 		
 		GridBagConstraints gbc_buttonsPanel = new GridBagConstraints();
 		gbc_buttonsPanel.fill = GridBagConstraints.HORIZONTAL;
-		gbc_buttonsPanel.insets = new Insets(2, 2, 2, 2);
+		gbc_buttonsPanel.insets = new Insets(2, 2, 2, 15);
 		gbc_buttonsPanel.weightx = 0.5;
 		gbc_buttonsPanel.gridx = 0;
 		gbc_buttonsPanel.gridy = 0;
-		gbc_buttonsPanel.anchor = GridBagConstraints.FIRST_LINE_END;
+		gbc_buttonsPanel.anchor = GridBagConstraints.PAGE_END;
 		buttonsPanel.add(btnExport, gbc_buttonsPanel);
 		gbc_buttonsPanel.weightx = 0.5;
 		gbc_buttonsPanel.gridx = 1;
 		gbc_buttonsPanel.gridy = 0;
 		buttonsPanel.add(btnCancel, gbc_buttonsPanel);
 		
+		
+	
+		add(mainPanel);
 
 	}
 
