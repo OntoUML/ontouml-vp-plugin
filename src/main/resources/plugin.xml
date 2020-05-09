@@ -82,27 +82,38 @@
             <contextTypes all="false"/>
             <include type="Class"/>
             
-            <menu id="classPropertiesMenu" label="OntoUML Properties" mnemonic="P" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
+            <menu id="classPropertiesMenu" label="Meta-Properties" mnemonic="P" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>`
+
+            <action id="it.unibz.inf.ontouml.vp.ClassProperties.order" label="Set Order" style="normal" menuPath="classPropertiesMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyProperties"/>
+            </action>
 
             <action id="it.unibz.inf.ontouml.vp.ClassProperties.isPowertype" label="Is Powertype" style="toggle" menuPath="classPropertiesMenu/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyProperties"/>
             </action>
 
-            <action id="it.unibz.inf.ontouml.vp.ClassProperties.order" label="Set Order" style="normal" menuPath="classPropertiesMenu/#">
+            <action id="it.unibz.inf.ontouml.vp.ClassProperties.isExtensional" label="Is Extensional" style="toggle" menuPath="classPropertiesMenu/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyProperties"/>
             </action>
-                
+
+            <action id="it.unibz.inf.ontouml.vp.ClassProperties.isDerived" label="Is Derived" style="toggle" menuPath="classPropertiesMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyProperties"/>
+            </action>
+
+            <action id="it.unibz.inf.ontouml.vp.ClassProperties.isAbstract" label="Is Abstract" style="toggle" menuPath="classPropertiesMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyProperties"/>
+            </action>
+
             <action id="it.unibz.inf.ontouml.vp.ClassProperties.allowed" label="Allowed Natures" style="normal" menuPath="classPropertiesMenu/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyProperties"/>
             </action>
-            
+
         </contextSensitiveActionSet>
         
         <contextSensitiveActionSet id="it.unibz.inf.ontouml.vp.ClassStereotypes">
             <contextTypes all="false"/>
             <include type="Class"/>
-            <menu id="ontoUMLMenu1" label="OntoUML Suggested Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
-            
+            <menu id="ontoUMLMenu1" label="Suggested Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
 
             <action id="it.unibz.inf.ontouml.vp.addEnumerationStereotype" label="Enumeration" style="normal" menuPath="ontoUMLMenu1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
@@ -188,7 +199,7 @@
             <contextTypes all="false"/>
             <include type="Association"/>
             
-            <menu id="ontoUMLMenu2" label="OntoUML Suggested Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
+            <menu id="ontoUMLMenu2" label="Suggested Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
                 
             <action id="it.unibz.inf.ontouml.vp.addInstantiationStereotype" label="Instantiation" style="normal" menuPath="ontoUMLMenu2/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
