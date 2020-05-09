@@ -168,7 +168,6 @@ public class StereotypeUtils {
 	public static Set<String> getOntoUMLClassStereotypeNames() {
 		final Set<String> str_names = new HashSet<String>();
 
-		// str_names.add(STR_POWERTYPE);
 		str_names.add(STR_TYPE);
 
 		str_names.add(STR_HISTORICAL_ROLE);
@@ -387,6 +386,7 @@ public class StereotypeUtils {
 		final ITaggedValueContainer oldContainer = element.getTaggedValues();
 		final Iterator<?> oldValues = oldContainer != null ? oldContainer.taggedValueIterator() : null;
 		String allowedTagValue = null;
+		// TODO: save other tagged values if needed
 
 		while(oldValues != null && oldValues.hasNext()) {
 			final ITaggedValue oldValue = (ITaggedValue) oldValues.next();
@@ -426,7 +426,31 @@ public class StereotypeUtils {
 		}
 	}
 
-	public static void setAllowed(IModelElement element, String stereotypeName, String allowed) {
+	// public static void setAllowed(IModelElement element, String stereotypeName, String allowed) {
+	// 	if(element.getTaggedValues() == null) { 
+	// 		return ; 
+	// 	}
+
+	// 	Iterator<?> values = element.getTaggedValues().taggedValueIterator();
+			
+	// 	while(values.hasNext()) {
+	// 		final ITaggedValue value = (ITaggedValue) values.next();
+	// 		final ITaggedValueDefinition definition = value != null ? value.getTagDefinition() : null;
+	// 		final IStereotype valueStereotype = definition != null ? 
+	// 				value.getTagDefinitionStereotype() : null;
+	// 		final String valueStereotypeName = valueStereotype != null ?
+	// 				valueStereotype.getName() : null;
+			
+	// 		if(
+	// 			value.getName().equals("allowed") && 
+	// 			stereotypeName.equals(valueStereotypeName)
+	// 		) {
+	// 			value.setValue(allowed);
+	// 		}
+	// 	}
+	// }
+
+	public static void setAllowed(IModelElement element, String stereotypeName) {
 		if(element.getTaggedValues() == null) { 
 			return ; 
 		}
@@ -445,7 +469,62 @@ public class StereotypeUtils {
 				value.getName().equals("allowed") && 
 				stereotypeName.equals(valueStereotypeName)
 			) {
-				value.setValue(allowed);
+				switch (stereotypeName) {
+					case STR_TYPE:
+						value.setValue(StereotypeUtils.toAllowedNaturesString(ALLOWED_TYPE));
+						break;
+					case STR_HISTORICAL_ROLE:
+						value.setValue(StereotypeUtils.toAllowedNaturesString(ALLOWED_EVENT));
+						break;
+					case STR_EVENT:
+						value.setValue(StereotypeUtils.toAllowedNaturesString(ALLOWED_EVENT));
+						break;
+					case STR_CATEGORY:
+						// value.setValue(toAllowedNaturesString());
+						break;
+					case STR_MIXIN:
+						// value.setValue(toAllowedNaturesString());
+						break;
+					case STR_ROLE_MIXIN:
+						// value.setValue(toAllowedNaturesString());
+						break;
+					case STR_PHASE_MIXIN:
+						// value.setValue(toAllowedNaturesString());
+						break;
+					case STR_KIND:
+						value.setValue(StereotypeUtils.toAllowedNaturesString(ALLOWED_FUNCTIONAL_COMPLEX));
+						break;
+					case STR_COLLECTIVE:
+						value.setValue(StereotypeUtils.toAllowedNaturesString(ALLOWED_COLLECTIVE));
+						break;
+					case STR_QUANTITY:
+						value.setValue(StereotypeUtils.toAllowedNaturesString(ALLOWED_QUANTITY));
+						break;
+					case STR_RELATOR:
+						value.setValue(StereotypeUtils.toAllowedNaturesString(ALLOWED_RELATOR));
+						break;
+					case STR_QUALITY:
+						value.setValue(StereotypeUtils.toAllowedNaturesString(ALLOWED_QUALITY));
+						break;
+					case STR_MODE:
+						value.setValue(StereotypeUtils.toAllowedNaturesString(ALLOWED_MODE));
+						break;
+					case STR_SUBKIND:
+						value.setValue("");
+						break;
+					case STR_ROLE:
+						value.setValue("");
+						break;
+					case STR_PHASE:
+						value.setValue("");
+						break;
+					case STR_ENUMERATION:
+						value.setValue(StereotypeUtils.toAllowedNaturesString(ALLOWED_ABSTRACT));
+						break;
+					case STR_DATATYPE:
+						value.setValue(StereotypeUtils.toAllowedNaturesString(ALLOWED_ABSTRACT));
+						break;
+				}
 			}
 		}
 	}

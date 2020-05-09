@@ -73,70 +73,68 @@ public class ApplyStereotype implements VPContextActionController {
 		switch (action.getActionId()) {
 			case ActionIds.TYPE:
 				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_TYPE);
-				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_TYPE, StereotypeUtils.toAllowedNaturesString(StereotypeUtils.ALLOWED_TYPE));
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_TYPE);
 				break;
 			case ActionIds.HISTORICAL_ROLE:
 				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_HISTORICAL_ROLE);
-				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_HISTORICAL_ROLE, StereotypeUtils.toAllowedNaturesString());
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_HISTORICAL_ROLE);
 				break;
 			case ActionIds.EVENT:
 				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_EVENT);
-				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_EVENT, StereotypeUtils.toAllowedNaturesString(StereotypeUtils.ALLOWED_EVENT));
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_EVENT);
 				break;
 			case ActionIds.ENUMERATION:
 				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_ENUMERATION);
-
-				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_ENUMERATION, StereotypeUtils.toAllowedNaturesString(StereotypeUtils.ALLOWED_ABSTRACT));
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_ENUMERATION);
 				break;
 			case ActionIds.DATATYPE:
 				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_DATATYPE);
-
-				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_DATATYPE, StereotypeUtils.toAllowedNaturesString(StereotypeUtils.ALLOWED_ABSTRACT));
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_DATATYPE);
 				break;
 			case ActionIds.SUBKIND:
 				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_SUBKIND);
-				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_SUBKIND, StereotypeUtils.toAllowedNaturesString());
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_SUBKIND);
 				break;
 			case ActionIds.ROLE_MIXIN:
 				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_ROLE_MIXIN);
 				break;
 			case ActionIds.ROLE:
 				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_ROLE);
-				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_ROLE, StereotypeUtils.toAllowedNaturesString());
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_ROLE);
 				break;
 			case ActionIds.RELATOR:
 				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_RELATOR);
-				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_RELATOR, StereotypeUtils.toAllowedNaturesString(StereotypeUtils.ALLOWED_RELATOR));
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_RELATOR);
 				break;
 			case ActionIds.QUANTITY:
 				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_QUANTITY);
-				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_QUANTITY, StereotypeUtils.toAllowedNaturesString(StereotypeUtils.ALLOWED_QUANTITY));
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_QUANTITY);
 				break;
 			case ActionIds.QUALITY:
 				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_QUALITY);
-				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_QUALITY, StereotypeUtils.toAllowedNaturesString(StereotypeUtils.ALLOWED_QUALITY));
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_QUALITY);
 				break;
 			case ActionIds.PHASE_MIXIN:
 				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_PHASE_MIXIN);
 				break;
 			case ActionIds.PHASE:
 				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_PHASE);
-				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_PHASE, StereotypeUtils.toAllowedNaturesString());
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_PHASE);
 				break;
 			case ActionIds.MODE:
 				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_MODE);
-				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_MODE, StereotypeUtils.toAllowedNaturesString(StereotypeUtils.ALLOWED_MODE));
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_MODE);
 				break;
 			case ActionIds.MIXIN:
 				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_MIXIN);
 				break;
 			case ActionIds.KIND:
 				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_KIND);
-				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_KIND, StereotypeUtils.toAllowedNaturesString(StereotypeUtils.ALLOWED_FUNCTIONAL_COMPLEX));
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_KIND);
 				break;
 			case ActionIds.COLLECTIVE:
 				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_COLLECTIVE);
-				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_COLLECTIVE, StereotypeUtils.toAllowedNaturesString(StereotypeUtils.ALLOWED_COLLECTIVE));
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_COLLECTIVE);
 				break;
 			case ActionIds.CATEGORY:
 				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_CATEGORY);
