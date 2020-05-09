@@ -100,6 +100,9 @@ public final class ActionIds {
 
 	// Properties menu options IDs
 	public static final String PROPERTY_SET_ALLOWED = "it.unibz.inf.ontouml.vp.ClassProperties.allowed";
+	public static final String PROPERTY_SET_IS_EXTENSIONAL = "it.unibz.inf.ontouml.vp.ClassProperties.isExtensional";
+	public static final String PROPERTY_SET_IS_DERIVED = "it.unibz.inf.ontouml.vp.ClassProperties.isDerived";
+	public static final String PROPERTY_SET_IS_ABSTRACT = "it.unibz.inf.ontouml.vp.ClassProperties.isAbstract";
 	public static final String PROPERTY_SET_IS_POWERTYPE = "it.unibz.inf.ontouml.vp.ClassProperties.isPowertype";
 	public static final String PROPERTY_SET_ORDER = "it.unibz.inf.ontouml.vp.ClassProperties.order";
 }

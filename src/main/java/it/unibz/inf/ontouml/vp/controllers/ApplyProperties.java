@@ -53,6 +53,26 @@ public class ApplyProperties implements VPContextActionController {
 					}
 				}
 				break;
+			case ActionIds.PROPERTY_SET_IS_ABSTRACT:
+				_class.setAbstract(!_class.isAbstract());
+				break;
+			case ActionIds.PROPERTY_SET_IS_DERIVED:
+				if (_class.getName().trim().startsWith("/")) {
+					_class.setName(_class.getName().trim().substring(1));
+				} else {
+					_class.setName("/"+_class.getName());
+				}
+				break;
+			case ActionIds.PROPERTY_SET_IS_EXTENSIONAL:
+				while(values != null && values.hasNext()) {
+					final ITaggedValue value = (ITaggedValue) values.next();
+
+					if(value.getName().equals("isExtensional")) {
+						value.setValue(action.isSelected());
+						return;
+					}
+				}
+				break;
 			case ActionIds.PROPERTY_SET_IS_POWERTYPE:
 				while(values != null && values.hasNext()) {
 					final ITaggedValue value = (ITaggedValue) values.next();
@@ -106,6 +126,28 @@ public class ApplyProperties implements VPContextActionController {
 				}
 
 				action.setEnabled(false);
+				break;
+			case ActionIds.PROPERTY_SET_IS_ABSTRACT:
+				action.setEnabled(true);
+				action.setSelected(_class.isAbstract());
+				break;
+			case ActionIds.PROPERTY_SET_IS_DERIVED:
+				action.setEnabled(true);
+				action.setSelected(_class.getName().trim().startsWith("/"));
+				break;
+			case ActionIds.PROPERTY_SET_IS_EXTENSIONAL:
+				while(values != null && values.hasNext()) {
+					final ITaggedValue value = (ITaggedValue) values.next();
+
+					if(value.getName().equals("isExtensional")) {
+						action.setEnabled(true);
+						action.setSelected(value.getValueAsString().toLowerCase().equals("true"));
+						return;
+					}
+				}
+
+				action.setEnabled(false);
+				action.setSelected(false);
 				break;
 			case ActionIds.PROPERTY_SET_IS_POWERTYPE:
 				while(values != null && values.hasNext()) {
