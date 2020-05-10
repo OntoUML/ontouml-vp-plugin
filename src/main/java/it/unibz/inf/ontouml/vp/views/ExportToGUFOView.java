@@ -28,8 +28,7 @@ import javax.swing.tree.TreePath;
 
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.diagram.IDiagramUIModel;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IProject;
+import com.vp.plugin.model.*;
 import com.vp.plugin.model.factory.IModelElementFactory;
 import com.vp.plugin.view.IDialog;
 
@@ -127,7 +126,7 @@ public class ExportToGUFOView extends JPanel {
 		mainPanel.setPreferredSize(new Dimension(650, 540));
 		elementMappingPanel.setPreferredSize(new Dimension(650, 480));
 		packageMappingPanel.setPreferredSize(new Dimension(650, 540));
-		optionsPanelLeft.setPreferredSize(new Dimension(280, 100));
+		optionsPanelLeft.setPreferredSize(new Dimension(280, 120));
 		optionsPanelRight.setPreferredSize(new Dimension(320, 120));
 		treePanel.setPreferredSize(new Dimension(600, 300));
 		buttonsPanel.setPreferredSize(new Dimension(600, 40));
@@ -137,7 +136,7 @@ public class ExportToGUFOView extends JPanel {
 		gbc_main.insets = new Insets(1, 1, 1, 1);
 		gbc_main.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc_main.weightx = 0.5;
-		gbc_main.weighty = 0.5;
+		gbc_main.weighty = 1;
 		gbc_main.gridx = 0;
 		gbc_main.gridy = 0;
 		mainPanel.add(optionsPanelLeft, gbc_main);
@@ -177,16 +176,16 @@ public class ExportToGUFOView extends JPanel {
 		((JLabel) uriFormatBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
 		IRItxt.setText("http://example.com");
 
-		iriLabel.setPreferredSize(new Dimension(120, 20));
-		formatLabel.setPreferredSize(new Dimension(120, 20));
-		URIformatLabel.setPreferredSize(new Dimension(120, 20));
-		IRItxt.setPreferredSize(new Dimension(140, 20));
-		formatBox.setPreferredSize(new Dimension(140, 20));
-		uriFormatBox.setPreferredSize(new Dimension(140, 20));
+		iriLabel.setPreferredSize(new Dimension(120, 28));
+		formatLabel.setPreferredSize(new Dimension(120, 28));
+		URIformatLabel.setPreferredSize(new Dimension(120, 28));
+		IRItxt.setPreferredSize(new Dimension(140, 28));
+		formatBox.setPreferredSize(new Dimension(140, 28));
+		uriFormatBox.setPreferredSize(new Dimension(140, 28));
 
 		GridBagConstraints gbc_insidePanelLeft = new GridBagConstraints();
-		// gbc_insidePanelLeft.fill = GridBagConstraints.HORIZONTAL;
-		gbc_insidePanelLeft.insets = new Insets(5, 5, 5, 5);
+		gbc_insidePanelLeft.fill = GridBagConstraints.BOTH;
+		gbc_insidePanelLeft.insets = new Insets(2, 2, 2, 0);
 		gbc_insidePanelLeft.weightx = 0.5;
 		gbc_insidePanelLeft.gridx = 0;
 		gbc_insidePanelLeft.gridy = 0;
@@ -195,27 +194,22 @@ public class ExportToGUFOView extends JPanel {
 		gbc_insidePanelLeft.weightx = 0.5;
 		gbc_insidePanelLeft.gridx = 1;
 		gbc_insidePanelLeft.gridy = 0;
-		gbc_insidePanelLeft.anchor = GridBagConstraints.WEST;
 		optionsPanelLeft.add(IRItxt, gbc_insidePanelLeft);
 		gbc_insidePanelLeft.weightx = 0.5;
 		gbc_insidePanelLeft.gridx = 0;
 		gbc_insidePanelLeft.gridy = 1;
-		gbc_insidePanelLeft.anchor = GridBagConstraints.WEST;
 		optionsPanelLeft.add(formatLabel, gbc_insidePanelLeft);
 		gbc_insidePanelLeft.weightx = 0.5;
 		gbc_insidePanelLeft.gridx = 1;
 		gbc_insidePanelLeft.gridy = 1;
-		gbc_insidePanelLeft.anchor = GridBagConstraints.WEST;
 		optionsPanelLeft.add(formatBox, gbc_insidePanelLeft);
 		gbc_insidePanelLeft.weightx = 0.5;
 		gbc_insidePanelLeft.gridx = 0;
 		gbc_insidePanelLeft.gridy = 2;
-		gbc_insidePanelLeft.anchor = GridBagConstraints.WEST;
 		optionsPanelLeft.add(URIformatLabel, gbc_insidePanelLeft);
 		gbc_insidePanelLeft.weightx = 0.5;
 		gbc_insidePanelLeft.gridx = 1;
 		gbc_insidePanelLeft.gridy = 2;
-		gbc_insidePanelLeft.anchor = GridBagConstraints.WEST;
 		optionsPanelLeft.add(uriFormatBox, gbc_insidePanelLeft);
 
 		JLabel inverseLabel = new JLabel("Create inverse properties:");
@@ -239,18 +233,18 @@ public class ExportToGUFOView extends JPanel {
 		packagesBox = new JComboBox<String>(packagesBoxString);
 		((JLabel) packagesBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
 
-		inverseLabel.setPreferredSize(new Dimension(180, 20));
-		objectLabel.setPreferredSize(new Dimension(180, 20));
-		analysisLabel.setPreferredSize(new Dimension(180, 20));
-		prefixPackageLabel.setPreferredSize(new Dimension(180, 20));
-		inverseBox.setPreferredSize(new Dimension(90, 20));
-		objectBox.setPreferredSize(new Dimension(90, 20));
-		analysisBox.setPreferredSize(new Dimension(90, 20));
-		packagesBox.setPreferredSize(new Dimension(90, 20));
+		inverseLabel.setPreferredSize(new Dimension(180, 28));
+		objectLabel.setPreferredSize(new Dimension(180, 28));
+		analysisLabel.setPreferredSize(new Dimension(180, 28));
+		prefixPackageLabel.setPreferredSize(new Dimension(180, 28));
+		inverseBox.setPreferredSize(new Dimension(90, 28));
+		objectBox.setPreferredSize(new Dimension(90, 28));
+		analysisBox.setPreferredSize(new Dimension(90, 28));
+		packagesBox.setPreferredSize(new Dimension(90, 28));
 
 		GridBagConstraints gbc_insidePanelRight = new GridBagConstraints();
-	    gbc_insidePanelLeft.fill = GridBagConstraints.HORIZONTAL;
-		gbc_insidePanelRight.insets = new Insets(5, 5, 5, 5);
+		gbc_insidePanelRight.fill = GridBagConstraints.BOTH;
+		gbc_insidePanelRight.insets = new Insets(2, 0, 2, 0);
 		gbc_insidePanelRight.weightx = 0.5;
 		gbc_insidePanelRight.gridx = 0;
 		gbc_insidePanelRight.gridy = 0;
@@ -390,18 +384,14 @@ public class ExportToGUFOView extends JPanel {
 		IModelElement[] elements = project.toAllLevelModelElementArray(anyLevelElements);
 		String[] nameElements = new String[elements.length];
 
-		for (int i = 0; i < elements.length; i++) {
-			if (elements[i].getName() == null || elements[i].getName().equals(""))
-				nameElements[i] = elements[i].getId();
-			else
-				nameElements[i] = elements[i].getName();
-		}
+		for (int i = 0; i < elements.length; i++)
+			nameElements[i] = getElementName(elements[i]);
 
 		namesBox = new JComboBox<String>(nameElements);
-		((JLabel) namesBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
+		((JLabel) namesBox.getRenderer()).setHorizontalAlignment(JLabel.LEFT);
 
 		languagesBox = new JComboBox<String>(getLanguagesCode());
-		((JLabel) languagesBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
+		((JLabel) languagesBox.getRenderer()).setHorizontalAlignment(JLabel.LEFT);
 
 		String[][] data;
 		String[] columnNamesArr;
@@ -430,6 +420,7 @@ public class ExportToGUFOView extends JPanel {
 
 		table = new JTable(defaultTableModel);
 		tableColumnModel = table.getColumnModel();
+		table.setGridColor(Color.LIGHT_GRAY);
 
 		for (int i = 0; i < columnNamesList.size(); i++) {
 			tableColumnModel.getColumn(i).setPreferredWidth(columnNamesList.get(i).length());
@@ -441,7 +432,10 @@ public class ExportToGUFOView extends JPanel {
 		languagesBox.setEditable(false);
 		table.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(namesBox));
 		table.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(languagesBox));
-		table.setRowHeight(20);
+		table.getColumnModel().getColumn(0).setPreferredWidth(150);
+		table.getColumnModel().getColumn(1).setPreferredWidth(20);
+		table.getColumnModel().getColumn(2).setPreferredWidth(80);
+		table.setRowHeight(28);
 
 		addButton = new JButton("Add");
 		deleteButton = new JButton("Delete");
@@ -494,18 +488,17 @@ public class ExportToGUFOView extends JPanel {
 
 		// TABLE 2
 
-		String[] packages = { IModelElementFactory.MODEL_TYPE_PACKAGE };
+		String[] packages = { IModelElementFactory.MODEL_TYPE_PACKAGE, IModelElementFactory.MODEL_TYPE_MODEL };
 
-		IModelElement[] elements_package = project.toAllLevelModelElementArray(anyLevelElements);
+		IModelElement[] elements_package = project.toAllLevelModelElementArray(packages);
 		String[] idElements = new String[elements_package.length + 1];
-		idElements[0] = project.getId();
-		for (int i = 1; i < elements.length; i++) {
-			if (elements[i].getId() == null)
-				idElements[i] = elements[i].getId();
-		}
+		idElements[0] = project.getName();
+
+		for (int i = 0; i < elements_package.length; i++)
+			idElements[i+1] = elements_package[i].getName();
 
 		packagesIdBox = new JComboBox<String>(idElements);
-		((JLabel) packagesIdBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
+		((JLabel) packagesIdBox.getRenderer()).setHorizontalAlignment(JLabel.LEFT);
 
 		String[][] data_table2;
 		String[] columnNamesArr_table2;
@@ -518,7 +511,7 @@ public class ExportToGUFOView extends JPanel {
 		JButton deleteButton_table2;
 
 		columnNamesList_table2 = new ArrayList<String>();
-		columnNamesList_table2.add("Packages");
+		columnNamesList_table2.add("Package");
 		columnNamesList_table2.add("Prefix");
 		columnNamesList_table2.add("URI");
 
@@ -533,6 +526,7 @@ public class ExportToGUFOView extends JPanel {
 		defaultTableModel_table2 = new DefaultTableModel(data_table2, columnNamesArr_table2);
 
 		table2 = new JTable(defaultTableModel_table2);
+		table2.setGridColor(Color.LIGHT_GRAY);
 		tableColumnModel_table2 = table2.getColumnModel();
 
 		for (int i = 0; i < columnNamesList_table2.size(); i++) {
@@ -543,7 +537,10 @@ public class ExportToGUFOView extends JPanel {
 
 		packagesIdBox.setEditable(false);
 		table2.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(packagesIdBox));
-		table2.setRowHeight(20);
+		table2.getColumnModel().getColumn(0).setPreferredWidth(150);
+		table2.getColumnModel().getColumn(1).setPreferredWidth(20);
+		table2.getColumnModel().getColumn(2).setPreferredWidth(80);
+		table2.setRowHeight(28);
 
 		addButton_table2 = new JButton("Add");
 		deleteButton_table2 = new JButton("Delete");
@@ -731,6 +728,108 @@ public class ExportToGUFOView extends JPanel {
 			return elementsPackageTree;
 		else
 			return elementsDiagramTree;
+	}
+
+	private String getElementName(IModelElement element) {
+		String name = "";
+
+		if(element == null)
+			return name;
+
+		if (element instanceof IAttribute) {
+			name = "Attribute";
+
+			String attributeName = "";
+			String attributeType = "";
+
+			if (((IAttribute) element).getName() != null)
+				attributeName = ((IAttribute) element).getName();
+
+			if (((IAttribute) element).getType() != null)
+				attributeType = ((IAttribute) element).getTypeAsString();
+
+			name = attributeName + " : " + attributeType;
+
+		} else if (element instanceof IAssociation) {
+			name = "Association";
+			String nameFrom = "associationFrom";
+			String nameTo = "associationTo";
+
+			if (((IAssociation) element).getFrom() == null) {
+				nameFrom = "";
+			} else {
+				nameFrom = ((IAssociation) element).getFrom().getName();
+			}
+
+			if (((IAssociation) element).getTo() == null) {
+				nameTo = "";
+			} else {
+				nameTo = ((IAssociation) element).getTo().getName();
+			}
+
+			name = "(" + nameFrom + " -> " + nameTo + ")";
+
+			if(((IAssociation) element).getName()!=null && !((IAssociation) element).getName().equals(""))
+				name = ((IAssociation) element).getName() + " " + name;
+
+		} else if (element instanceof IAssociationEnd) {
+			name = ": AssociationEnd";
+
+			if (((IAssociationEnd) element).getTypeAsString() != null && !((IAssociationEnd) element).getTypeAsString().equals("")) {
+
+				name = ": " + ((IAssociationEnd) element).getTypeAsString();
+
+				if (((IAssociationEnd) element).getName() != null && !((IAssociationEnd) element).getName().equals(""))
+					name = ((IAssociationEnd) element).getName() + " " + name;
+			}
+
+		} else if (element instanceof IGeneralization) {
+			name = "Generalization";
+			String nameFrom = "generalizationFrom";
+			String nameTo = "generalizationTo";
+
+			if (((IGeneralization) element).getFrom() == null) {
+				nameFrom = "";
+			} else {
+				nameFrom = ((IGeneralization) element).getFrom().getName();
+			}
+
+			if (((IGeneralization) element).getTo() == null) {
+				nameTo = "";
+			} else {
+				nameTo = ((IGeneralization) element).getTo().getName();
+			}
+
+			name = "(" + nameFrom + " -> " + nameTo + ")";
+
+		} else if (element instanceof IAssociationClass) {
+			name = "AssociationClass";
+			String nameFrom = "associationClassFrom";
+			String nameTo = "associationClassTo";
+
+			if (((IAssociationClass) element).getFrom() == null) {
+				nameFrom = "";
+			} else {
+				nameFrom = ((IAssociationClass) element).getFrom().getName();
+			}
+
+			if (((IAssociationClass) element).getTo() == null) {
+				nameTo = "";
+			} else {
+				nameTo = ((IAssociationClass) element).getTo().getName();
+			}
+
+			name = "(" + nameFrom + " -> " + nameTo + ")";
+
+		}  else {
+			name = "ModelElement";
+
+			if (((IModelElement) element).getName() != null && !((IModelElement) element).getName().equals(""))
+				name = ((IModelElement) element).getName();
+
+		}
+
+		return name;
 	}
 
 }
