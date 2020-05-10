@@ -1,25 +1,44 @@
 package it.unibz.inf.ontouml.vp.views;
 
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.JTextComponent;
+import javax.swing.text.PlainDocument;
+import javax.swing.ComboBoxEditor;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultCellEditor;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
+import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.IProject;
+import com.vp.plugin.model.factory.IModelElementFactory;
 import com.vp.plugin.view.IDialog;
 
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.ProjectConfigurations;
 import it.unibz.inf.ontouml.vp.utils.ServerRequest;
+
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
@@ -30,8 +49,17 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Vector;
 
 public class ExportToGUFOView extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -43,7 +71,9 @@ public class ExportToGUFOView extends JPanel {
 	private JComboBox<String> objectBox;
 	private JComboBox<String> analysisBox;
 	private JComboBox<String> packagesBox;
-
+	
+	public JComboBox<String> namesBox;
+	public JComboBox<String> languagesBox;
 	private JTabbedPane tabbedPane;
 	private JCheckBoxTree packageTree;
 	private JCheckBoxTree diagramTree;
@@ -64,32 +94,41 @@ public class ExportToGUFOView extends JPanel {
 
 	public ExportToGUFOView(ProjectConfigurations configurations, ServerRequest request) {
 		setSize(new Dimension(610, 550));
-		setLayout(new GridLayout(1,1));
+		setLayout(new GridLayout(1, 1));
 
-		JTabbedPane mainTab = new JTabbedPane();
+		JTabbedPane mainTabbedPane = new JTabbedPane();
+
 		JPanel mainPanel = new JPanel();
+		JPanel elementMappingPanel = new JPanel();
+		JPanel packageMappingPanel = new JPanel();
+
+		mainTabbedPane.add(mainPanel, "Basic Settings");
+		mainTabbedPane.add(elementMappingPanel, "Element Mapping");
+		mainTabbedPane.add(packageMappingPanel, "Package Mapping");
+
 		JPanel optionsPanelLeft = new JPanel();
 		JPanel optionsPanelRight = new JPanel();
 		JPanel treePanel = new JPanel();
 		JPanel buttonsPanel = new JPanel();
-		
-		
-		
-		GridBagLayout gbl_main = new GridBagLayout();
-		gbl_main.rowWeights = new double[] { 0.3, 0.7, 0.1 };
+		JPanel buttonsPanelTable1 = new JPanel();
 
-		mainPanel.setLayout(gbl_main);
+		mainPanel.setLayout(new GridBagLayout());
+		elementMappingPanel.setLayout(new GridBagLayout());
+		packageMappingPanel.setLayout(new GridBagLayout());
 		optionsPanelLeft.setLayout(new GridBagLayout());
 		optionsPanelRight.setLayout(new GridBagLayout());
 		treePanel.setLayout(new GridBagLayout());
 		buttonsPanel.setLayout(new GridBagLayout());
+		buttonsPanelTable1.setLayout(new GridBagLayout());
 
 		mainPanel.setPreferredSize(new Dimension(600, 540));
-	    optionsPanelLeft.setPreferredSize(new Dimension(280, 100));
-	    optionsPanelRight.setPreferredSize(new Dimension(280,120));
-	    treePanel.setPreferredSize(new Dimension(560,300));
-	    buttonsPanel.setPreferredSize(new Dimension(560,40));
-	  
+		elementMappingPanel.setPreferredSize(new Dimension(600, 480));
+		packageMappingPanel.setPreferredSize(new Dimension(600, 540));
+		optionsPanelLeft.setPreferredSize(new Dimension(280, 100));
+		optionsPanelRight.setPreferredSize(new Dimension(280, 120));
+		treePanel.setPreferredSize(new Dimension(560, 300));
+		buttonsPanel.setPreferredSize(new Dimension(560, 40));
+		buttonsPanelTable1.setPreferredSize(new Dimension(250, 40));
 
 		GridBagConstraints gbc_main = new GridBagConstraints();
 		gbc_main.insets = new Insets(1, 1, 1, 1);
@@ -235,51 +274,50 @@ public class ExportToGUFOView extends JPanel {
 		gbc_insidePanelRight.gridx = 1;
 		gbc_insidePanelRight.gridy = 3;
 		optionsPanelRight.add(packagesBox, gbc_insidePanelRight);
-		
+
 		JPanel packagePanel = new JPanel();
 		JPanel diagramPanel = new JPanel();
-		
+
 		tabbedPane = new JTabbedPane();
-		packageTree = new JCheckBoxTree("package");		
+		packageTree = new JCheckBoxTree("package");
 		diagramTree = new JCheckBoxTree("diagram");
-		
+
 		JScrollPane scrollableTextAreaPackage = new JScrollPane(packageTree);
 		JScrollPane scrollableTextAreaDiagram = new JScrollPane(diagramTree);
-		
+
 		scrollableTextAreaPackage.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		scrollableTextAreaPackage.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		
+
 		scrollableTextAreaDiagram.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		scrollableTextAreaDiagram.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		
+
 		packagePanel.setLayout(new GridLayout(1, 1));
 		packagePanel.setPreferredSize(new Dimension(550, 270));
-		
+
 		diagramPanel.setLayout(new GridLayout(1, 1));
 		diagramPanel.setPreferredSize(new Dimension(550, 270));
-		
+
 		packagePanel.add(scrollableTextAreaPackage);
-		
+
 		diagramPanel.add(scrollableTextAreaDiagram);
-		
+
 		tabbedPane.addTab("Package Explorer", packagePanel);
 		tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
-		
+
 		tabbedPane.addTab("Diagram Explorer", diagramPanel);
 		tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
-		
+
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-		
+
 		treePanel.add(tabbedPane);
-		treePanel.setLayout(new GridLayout(1,1));
-		
-		
+		treePanel.setLayout(new GridLayout(1, 1));
+
 		btnExport = new JButton("Export");
 		btnCancel = new JButton("Cancel");
-		
+
 		btnExport.setPreferredSize(new Dimension(80, 35));
 		btnCancel.setPreferredSize(new Dimension(80, 35));
-		
+
 		btnExport.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -298,7 +336,7 @@ public class ExportToGUFOView extends JPanel {
 				thread.start();
 			}
 
-		});		
+		});
 		btnCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -310,7 +348,7 @@ public class ExportToGUFOView extends JPanel {
 			}
 
 		});
-		
+
 		GridBagConstraints gbc_buttonsPanel = new GridBagConstraints();
 		gbc_buttonsPanel.fill = GridBagConstraints.HORIZONTAL;
 		gbc_buttonsPanel.insets = new Insets(2, 2, 2, 15);
@@ -323,10 +361,131 @@ public class ExportToGUFOView extends JPanel {
 		gbc_buttonsPanel.gridx = 1;
 		gbc_buttonsPanel.gridy = 0;
 		buttonsPanel.add(btnCancel, gbc_buttonsPanel);
+
+		// TABLE
+
+		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
+		final String[] anyLevelElements = { IModelElementFactory.MODEL_TYPE_CLASS,
+				IModelElementFactory.MODEL_TYPE_ATTRIBUTE, IModelElementFactory.MODEL_TYPE_ASSOCIATION,
+				IModelElementFactory.MODEL_TYPE_ASSOCIATION_END, };
+
+		ApplicationManager.instance().getProjectManager().getProject().toAllLevelModelElementArray();
+
+		IModelElement[] elements = project.toAllLevelModelElementArray(anyLevelElements);
+		String[] nameElements = new String[elements.length];
+
+		for (int i = 0; i < elements.length; i++) {
+			if(elements[i].getName() == null || elements[i].getName().equals(""))
+				nameElements[i] = elements[i].getId();
+			else
+				nameElements[i] = elements[i].getName();
+		}
+		
+		String[] languages = {"aa","ab","ae","af","ak","am","an","ar","as","av","ay","az","ba","be","bg","bh","bm","bi","bn","bo","br","bs","ca","ce","ch","co","cr","cs","cu","cv","cy","da","de","dv","dz","ee","el","en","eo","es","et","eu","fa","ff","fi","fj","fo","fr","fy","ga","gd","gl","gn","gu","gv","ha","he","hi","ho","hr","ht","hu","hy","hz","ia","id","ie","ig","ii","ik","io","is","it","iu","ja","jv","ka","kg","ki","kj","kk","kl","km","kn","ko","kr","ks","ku","kv","kw","ky","la","lb","lg","li","ln","lo","lt","lu","lv","mg","mh","mi","mk","ml","mn","mr","ms","mt","my","na","nb","nd","ne","ng","nl","nn","no","nr","nv","ny","oc","oj","om","or","os","pa","pi","pl","ps","pt","qu","rm","rn","ro","ru","rw","sa","sc","sd","se","sg","si","sk","sl","sm","sn","so","sq","sr","ss","st","su","sv","sw","ta","te","tg","th","ti","tk","tl","tn","to","tr","ts","tt","tw","ty","ug","uk","ur","uz","ve","vi","vo","wa","wo","xh","yi","yo","za","zh","zu"};
+
+		namesBox = new JComboBox<String>(nameElements);
+		((JLabel) namesBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
+		
+		languagesBox = new JComboBox<String>(languages);
+		((JLabel) languagesBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
+
+		String[][] data;
+		String[] columnNamesArr;
+		ArrayList<String> columnNamesList;
+		DefaultTableModel defaultTableModel;
+		JTable table;
+		TableColumnModel tableColumnModel;
+		JScrollPane scrollPane;
+		JButton addButton;
+		JButton deleteButton;
+
+		columnNamesList = new ArrayList<String>();
+		columnNamesList.add("Element");
+		columnNamesList.add("Language");
+		columnNamesList.add("Text");
+
+		data = new String[1][columnNamesList.size()];
+
+		columnNamesArr = new String[columnNamesList.size()];
+		for (int i = 0; i < columnNamesList.size(); i++) {
+			columnNamesArr[i] = columnNamesList.get(i);
+			data[0][i] = "";
+		}
+
+		defaultTableModel = new DefaultTableModel(data, columnNamesArr);
+
+		table = new JTable(defaultTableModel);
+		tableColumnModel = table.getColumnModel();
+		
+
+		for (int i = 0; i < columnNamesList.size(); i++) {
+			tableColumnModel.getColumn(i).setPreferredWidth(columnNamesList.get(i).length());
+		}
+		table.setPreferredScrollableViewportSize(table.getPreferredSize());
+		scrollPane = new JScrollPane(table);
+
+		table.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(namesBox));
+		table.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(languagesBox));
+		table.setRowHeight(20);
+		
+		addButton = new JButton("Add");
+		deleteButton = new JButton("Delete");
+		
+		addButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				Vector rowData = null;
+				defaultTableModel.addRow(rowData);
+				table.validate();
+			}
+		});
+		
+		deleteButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				Vector rowData = null;
+				int rowCount = defaultTableModel.getRowCount();
+				if(rowCount>0)
+				{
+					defaultTableModel.removeRow(rowCount-1);
+					table.validate();
+				}
+			}
+		});
 		
 		
-	
-		add(mainPanel);
+		
+		GridBagConstraints gbc_buttonsPanelTable1 = new GridBagConstraints();
+		gbc_buttonsPanelTable1.fill = GridBagConstraints.BOTH;
+		gbc_buttonsPanelTable1.insets = new Insets(1,1,1,1);
+		gbc_buttonsPanelTable1.weightx = 0.5;
+		gbc_buttonsPanelTable1.gridx = 0;
+		gbc_buttonsPanelTable1.gridy = 0;
+		gbc_buttonsPanelTable1.anchor = GridBagConstraints.PAGE_END;
+		buttonsPanelTable1.add(addButton, gbc_buttonsPanelTable1);
+		gbc_buttonsPanelTable1.weightx = 0.5;
+		gbc_buttonsPanelTable1.gridx = 1;
+		gbc_buttonsPanelTable1.gridy = 0;
+		buttonsPanelTable1.add(deleteButton, gbc_buttonsPanelTable1);
+		
+		scrollPane.setPreferredSize(new Dimension(550, 400));
+		buttonsPanelTable1.setPreferredSize(new Dimension(400, 30));
+		
+		GridBagConstraints gbc_mappingTable1 = new GridBagConstraints();
+		// gbc_insidePanelLeft.fill = GridBagConstraints.HORIZONTAL;
+		gbc_mappingTable1.insets = new Insets(1, 1, 1, 1);
+		gbc_mappingTable1.gridx = 0;
+		gbc_mappingTable1.gridy = 0;
+		elementMappingPanel.add(scrollPane, gbc_mappingTable1);
+		gbc_mappingTable1.gridx = 0;
+		gbc_mappingTable1.gridy = 1;
+		gbc_mappingTable1.anchor = GridBagConstraints.EAST;
+		elementMappingPanel.add(buttonsPanelTable1, gbc_mappingTable1);
+		
+
+		add(mainTabbedPane);
 
 	}
 
@@ -448,4 +607,6 @@ public class ExportToGUFOView extends JPanel {
 		else
 			return elementsDiagramTree;
 	}
+	
 }
+
