@@ -175,12 +175,12 @@ public class ExportToGUFOView extends JPanel {
 		uriFormatBox = new JComboBox<String>(uriFormatBoxString);
 		((JLabel) uriFormatBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
 
-		iriLabel.setPreferredSize(new Dimension(80, 20));
-		formatLabel.setPreferredSize(new Dimension(80, 20));
-		URIformatLabel.setPreferredSize(new Dimension(80, 20));
+		iriLabel.setPreferredSize(new Dimension(120, 20));
+		formatLabel.setPreferredSize(new Dimension(120, 20));
+		URIformatLabel.setPreferredSize(new Dimension(120, 20));
 		IRItxt.setPreferredSize(new Dimension(120, 20));
-		formatBox.setPreferredSize(new Dimension(80, 20));
-		uriFormatBox.setPreferredSize(new Dimension(80, 20));
+		formatBox.setPreferredSize(new Dimension(120, 20));
+		uriFormatBox.setPreferredSize(new Dimension(120, 20));
 
 		GridBagConstraints gbc_insidePanelLeft = new GridBagConstraints();
 		// gbc_insidePanelLeft.fill = GridBagConstraints.HORIZONTAL;
@@ -193,22 +193,27 @@ public class ExportToGUFOView extends JPanel {
 		gbc_insidePanelLeft.weightx = 0.5;
 		gbc_insidePanelLeft.gridx = 1;
 		gbc_insidePanelLeft.gridy = 0;
+		gbc_insidePanelLeft.anchor = GridBagConstraints.EAST;
 		optionsPanelLeft.add(IRItxt, gbc_insidePanelLeft);
 		gbc_insidePanelLeft.weightx = 0.5;
 		gbc_insidePanelLeft.gridx = 0;
 		gbc_insidePanelLeft.gridy = 1;
+		gbc_insidePanelLeft.anchor = GridBagConstraints.WEST;
 		optionsPanelLeft.add(formatLabel, gbc_insidePanelLeft);
 		gbc_insidePanelLeft.weightx = 0.5;
 		gbc_insidePanelLeft.gridx = 1;
 		gbc_insidePanelLeft.gridy = 1;
+		gbc_insidePanelLeft.anchor = GridBagConstraints.EAST;
 		optionsPanelLeft.add(formatBox, gbc_insidePanelLeft);
 		gbc_insidePanelLeft.weightx = 0.5;
 		gbc_insidePanelLeft.gridx = 0;
 		gbc_insidePanelLeft.gridy = 2;
+		gbc_insidePanelLeft.anchor = GridBagConstraints.WEST;
 		optionsPanelLeft.add(URIformatLabel, gbc_insidePanelLeft);
 		gbc_insidePanelLeft.weightx = 0.5;
 		gbc_insidePanelLeft.gridx = 1;
 		gbc_insidePanelLeft.gridy = 2;
+		gbc_insidePanelLeft.anchor = GridBagConstraints.EAST;
 		optionsPanelLeft.add(uriFormatBox, gbc_insidePanelLeft);
 
 		JLabel inverseLabel = new JLabel("Create inverse object properties:");
@@ -232,50 +237,57 @@ public class ExportToGUFOView extends JPanel {
 		packagesBox = new JComboBox<String>(packagesBoxString);
 		((JLabel) packagesBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
 
-		inverseLabel.setPreferredSize(new Dimension(80, 20));
-		objectLabel.setPreferredSize(new Dimension(80, 20));
-		analysisLabel.setPreferredSize(new Dimension(80, 20));
-		prefixPackageLabel.setPreferredSize(new Dimension(80, 20));
-		inverseBox.setPreferredSize(new Dimension(80, 20));
-		objectBox.setPreferredSize(new Dimension(80, 20));
-		analysisBox.setPreferredSize(new Dimension(80, 20));
-		packagesBox.setPreferredSize(new Dimension(80, 20));
+		inverseLabel.setPreferredSize(new Dimension(160, 20));
+		objectLabel.setPreferredSize(new Dimension(160, 20));
+		analysisLabel.setPreferredSize(new Dimension(160, 20));
+		prefixPackageLabel.setPreferredSize(new Dimension(160, 20));
+		inverseBox.setPreferredSize(new Dimension(120, 20));
+		objectBox.setPreferredSize(new Dimension(120, 20));
+		analysisBox.setPreferredSize(new Dimension(120, 20));
+		packagesBox.setPreferredSize(new Dimension(120, 20));
 
 		GridBagConstraints gbc_insidePanelRight = new GridBagConstraints();
-		// gbc_insidePanelLeft.fill = GridBagConstraints.HORIZONTAL;
-		gbc_insidePanelRight.insets = new Insets(5, 5, 5, 15);
+	    gbc_insidePanelLeft.fill = GridBagConstraints.HORIZONTAL;
+		gbc_insidePanelRight.insets = new Insets(5, 5, 5, 5);
 		gbc_insidePanelRight.weightx = 0.5;
 		gbc_insidePanelRight.gridx = 0;
 		gbc_insidePanelRight.gridy = 0;
-		gbc_insidePanelRight.anchor = GridBagConstraints.EAST;
+		gbc_insidePanelRight.anchor = GridBagConstraints.WEST;
 		optionsPanelRight.add(objectLabel, gbc_insidePanelRight);
 		gbc_insidePanelRight.weightx = 0.5;
 		gbc_insidePanelRight.gridx = 1;
 		gbc_insidePanelRight.gridy = 0;
+		gbc_insidePanelRight.anchor = GridBagConstraints.EAST;
 		optionsPanelRight.add(objectBox, gbc_insidePanelRight);
 		gbc_insidePanelRight.weightx = 0.5;
 		gbc_insidePanelRight.gridx = 0;
 		gbc_insidePanelRight.gridy = 1;
+		gbc_insidePanelRight.anchor = GridBagConstraints.WEST;
 		optionsPanelRight.add(inverseLabel, gbc_insidePanelRight);
 		gbc_insidePanelRight.weightx = 0.5;
 		gbc_insidePanelRight.gridx = 1;
 		gbc_insidePanelRight.gridy = 1;
+		gbc_insidePanelRight.anchor = GridBagConstraints.EAST;
 		optionsPanelRight.add(inverseBox, gbc_insidePanelRight);
 		gbc_insidePanelRight.weightx = 0.5;
 		gbc_insidePanelRight.gridx = 0;
 		gbc_insidePanelRight.gridy = 2;
+		gbc_insidePanelRight.anchor = GridBagConstraints.WEST;
 		optionsPanelRight.add(prefixPackageLabel, gbc_insidePanelRight);
 		gbc_insidePanelRight.weightx = 0.5;
 		gbc_insidePanelRight.gridx = 1;
 		gbc_insidePanelRight.gridy = 2;
+		gbc_insidePanelRight.anchor = GridBagConstraints.EAST;
 		optionsPanelRight.add(packagesBox, gbc_insidePanelRight);
 		gbc_insidePanelRight.weightx = 0.5;
 		gbc_insidePanelRight.gridx = 0;
 		gbc_insidePanelRight.gridy = 3;
+		gbc_insidePanelRight.anchor = GridBagConstraints.WEST;
 		optionsPanelRight.add(analysisLabel, gbc_insidePanelRight);
 		gbc_insidePanelRight.weightx = 0.5;
 		gbc_insidePanelRight.gridx = 1;
 		gbc_insidePanelRight.gridy = 3;
+		gbc_insidePanelRight.anchor = GridBagConstraints.EAST;
 		optionsPanelRight.add(analysisBox, gbc_insidePanelRight);
 
 		JPanel packagePanel = new JPanel();
@@ -524,7 +536,7 @@ public class ExportToGUFOView extends JPanel {
 		for (int i = 0; i < columnNamesList_table2.size(); i++) {
 			tableColumnModel_table2.getColumn(i).setPreferredWidth(columnNamesList_table2.get(i).length());
 		}
-		table2.setPreferredScrollableViewportSize(table2.getPreferredSize());
+		table2.setPreferredScrollableViewportSize(table2.getPreferredSize());	
 		scrollPane_table2 = new JScrollPane(table2);
 
 		packagesIdBox.setEditable(false);
