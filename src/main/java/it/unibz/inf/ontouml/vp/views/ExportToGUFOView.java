@@ -124,11 +124,11 @@ public class ExportToGUFOView extends JPanel {
 		buttonsPanelTable1.setLayout(new GridBagLayout());
 		buttonsPanelTable2.setLayout(new GridBagLayout());
 
-		mainPanel.setPreferredSize(new Dimension(630, 540));
-		elementMappingPanel.setPreferredSize(new Dimension(630, 480));
-		packageMappingPanel.setPreferredSize(new Dimension(630, 540));
-		optionsPanelLeft.setPreferredSize(new Dimension(300, 100));
-		optionsPanelRight.setPreferredSize(new Dimension(300, 120));
+		mainPanel.setPreferredSize(new Dimension(620, 540));
+		elementMappingPanel.setPreferredSize(new Dimension(620, 480));
+		packageMappingPanel.setPreferredSize(new Dimension(620, 540));
+		optionsPanelLeft.setPreferredSize(new Dimension(280, 100));
+		optionsPanelRight.setPreferredSize(new Dimension(320, 120));
 		treePanel.setPreferredSize(new Dimension(590, 300));
 		buttonsPanel.setPreferredSize(new Dimension(590, 40));
 		buttonsPanelTable1.setPreferredSize(new Dimension(280, 40));
@@ -175,12 +175,12 @@ public class ExportToGUFOView extends JPanel {
 		uriFormatBox = new JComboBox<String>(uriFormatBoxString);
 		((JLabel) uriFormatBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
 
-		iriLabel.setPreferredSize(new Dimension(120, 20));
-		formatLabel.setPreferredSize(new Dimension(120, 20));
-		URIformatLabel.setPreferredSize(new Dimension(120, 20));
-		IRItxt.setPreferredSize(new Dimension(120, 20));
-		formatBox.setPreferredSize(new Dimension(120, 20));
-		uriFormatBox.setPreferredSize(new Dimension(120, 20));
+		iriLabel.setPreferredSize(new Dimension(100, 20));
+		formatLabel.setPreferredSize(new Dimension(100, 20));
+		URIformatLabel.setPreferredSize(new Dimension(100, 20));
+		IRItxt.setPreferredSize(new Dimension(90, 20));
+		formatBox.setPreferredSize(new Dimension(90, 20));
+		uriFormatBox.setPreferredSize(new Dimension(90, 20));
 
 		GridBagConstraints gbc_insidePanelLeft = new GridBagConstraints();
 		// gbc_insidePanelLeft.fill = GridBagConstraints.HORIZONTAL;
@@ -193,7 +193,7 @@ public class ExportToGUFOView extends JPanel {
 		gbc_insidePanelLeft.weightx = 0.5;
 		gbc_insidePanelLeft.gridx = 1;
 		gbc_insidePanelLeft.gridy = 0;
-		gbc_insidePanelLeft.anchor = GridBagConstraints.EAST;
+		gbc_insidePanelLeft.anchor = GridBagConstraints.WEST;
 		optionsPanelLeft.add(IRItxt, gbc_insidePanelLeft);
 		gbc_insidePanelLeft.weightx = 0.5;
 		gbc_insidePanelLeft.gridx = 0;
@@ -203,7 +203,7 @@ public class ExportToGUFOView extends JPanel {
 		gbc_insidePanelLeft.weightx = 0.5;
 		gbc_insidePanelLeft.gridx = 1;
 		gbc_insidePanelLeft.gridy = 1;
-		gbc_insidePanelLeft.anchor = GridBagConstraints.EAST;
+		gbc_insidePanelLeft.anchor = GridBagConstraints.WEST;
 		optionsPanelLeft.add(formatBox, gbc_insidePanelLeft);
 		gbc_insidePanelLeft.weightx = 0.5;
 		gbc_insidePanelLeft.gridx = 0;
@@ -213,7 +213,7 @@ public class ExportToGUFOView extends JPanel {
 		gbc_insidePanelLeft.weightx = 0.5;
 		gbc_insidePanelLeft.gridx = 1;
 		gbc_insidePanelLeft.gridy = 2;
-		gbc_insidePanelLeft.anchor = GridBagConstraints.EAST;
+		gbc_insidePanelLeft.anchor = GridBagConstraints.WEST;
 		optionsPanelLeft.add(uriFormatBox, gbc_insidePanelLeft);
 
 		JLabel inverseLabel = new JLabel("Create inverse object properties:");
@@ -237,14 +237,14 @@ public class ExportToGUFOView extends JPanel {
 		packagesBox = new JComboBox<String>(packagesBoxString);
 		((JLabel) packagesBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
 
-		inverseLabel.setPreferredSize(new Dimension(160, 20));
-		objectLabel.setPreferredSize(new Dimension(160, 20));
-		analysisLabel.setPreferredSize(new Dimension(160, 20));
-		prefixPackageLabel.setPreferredSize(new Dimension(160, 20));
-		inverseBox.setPreferredSize(new Dimension(120, 20));
-		objectBox.setPreferredSize(new Dimension(120, 20));
-		analysisBox.setPreferredSize(new Dimension(120, 20));
-		packagesBox.setPreferredSize(new Dimension(120, 20));
+		inverseLabel.setPreferredSize(new Dimension(180, 20));
+		objectLabel.setPreferredSize(new Dimension(180, 20));
+		analysisLabel.setPreferredSize(new Dimension(180, 20));
+		prefixPackageLabel.setPreferredSize(new Dimension(180, 20));
+		inverseBox.setPreferredSize(new Dimension(90, 20));
+		objectBox.setPreferredSize(new Dimension(90, 20));
+		analysisBox.setPreferredSize(new Dimension(90, 20));
+		packagesBox.setPreferredSize(new Dimension(90, 20));
 
 		GridBagConstraints gbc_insidePanelRight = new GridBagConstraints();
 	    gbc_insidePanelLeft.fill = GridBagConstraints.HORIZONTAL;
