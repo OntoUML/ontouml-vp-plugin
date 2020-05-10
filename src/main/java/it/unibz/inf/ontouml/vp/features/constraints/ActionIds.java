@@ -97,4 +97,12 @@ public final class ActionIds {
 	// Attribute stereotypes (ordered as in plugin.xml)
 	public static final String END_FIXEDMENU = "it.unibz.inf.ontouml.vp.addEndStereotype.fixedMenu";
 	public static final String BEGIN_FIXEDMENU = "it.unibz.inf.ontouml.vp.addBeginStereotype.fixedMenu";
+
+	// Properties menu options IDs
+	public static final String PROPERTY_SET_ALLOWED = "it.unibz.inf.ontouml.vp.ClassProperties.allowed";
+	public static final String PROPERTY_SET_IS_EXTENSIONAL = "it.unibz.inf.ontouml.vp.ClassProperties.isExtensional";
+	public static final String PROPERTY_SET_IS_DERIVED = "it.unibz.inf.ontouml.vp.ClassProperties.isDerived";
+	public static final String PROPERTY_SET_IS_ABSTRACT = "it.unibz.inf.ontouml.vp.ClassProperties.isAbstract";
+	public static final String PROPERTY_SET_IS_POWERTYPE = "it.unibz.inf.ontouml.vp.ClassProperties.isPowertype";
+	public static final String PROPERTY_SET_ORDER = "it.unibz.inf.ontouml.vp.ClassProperties.order";
 }

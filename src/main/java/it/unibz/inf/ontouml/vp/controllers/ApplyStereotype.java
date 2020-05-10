@@ -12,7 +12,6 @@ import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.ISimpleRelationship;
-import com.vp.plugin.model.IStereotype;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.features.constraints.ActionIds;
@@ -71,125 +70,133 @@ public class ApplyStereotype implements VPContextActionController {
 	}
 
 	private void applyStereotype(VPAction action, IModelElement element) {
-
-		final IStereotype[] stereotypes = element.toStereotypeModelArray();
-
-		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
-			element.removeStereotype(stereotypes[i]);
-		}
-
 		switch (action.getActionId()) {
-		case ActionIds.TYPE:
-			element.addStereotype(StereotypeUtils.STR_TYPE);
-			break;
-		case ActionIds.HISTORICAL_ROLE:
-			element.addStereotype(StereotypeUtils.STR_HISTORICAL_ROLE);
-			break;
-		case ActionIds.EVENT:
-			element.addStereotype(StereotypeUtils.STR_EVENT);
-			break;
-		case ActionIds.ENUMERATION:
-			element.addStereotype(StereotypeUtils.STR_ENUMERATION);
-			break;
-		case ActionIds.DATATYPE:
-			element.addStereotype(StereotypeUtils.STR_DATATYPE);
-			break;
-		case ActionIds.SUBKIND:
-			element.addStereotype(StereotypeUtils.STR_SUBKIND);
-			break;
-		case ActionIds.ROLE_MIXIN:
-			element.addStereotype(StereotypeUtils.STR_ROLE_MIXIN);
-			break;
-		case ActionIds.ROLE:
-			element.addStereotype(StereotypeUtils.STR_ROLE);
-			break;
-		case ActionIds.RELATOR:
-			element.addStereotype(StereotypeUtils.STR_RELATOR);
-			break;
-		case ActionIds.QUANTITY:
-			element.addStereotype(StereotypeUtils.STR_QUANTITY);
-			break;
-		case ActionIds.QUALITY:
-			element.addStereotype(StereotypeUtils.STR_QUALITY);
-			break;
-		case ActionIds.PHASE_MIXIN:
-			element.addStereotype(StereotypeUtils.STR_PHASE_MIXIN);
-			break;
-		case ActionIds.PHASE:
-			element.addStereotype(StereotypeUtils.STR_PHASE);
-			break;
-		case ActionIds.MODE:
-			element.addStereotype(StereotypeUtils.STR_MODE);
-			break;
-		case ActionIds.MIXIN:
-			element.addStereotype(StereotypeUtils.STR_MIXIN);
-			break;
-		case ActionIds.KIND:
-			element.addStereotype(StereotypeUtils.STR_KIND);
-			break;
-		case ActionIds.COLLECTIVE:
-			element.addStereotype(StereotypeUtils.STR_COLLECTIVE);
-			break;
-		case ActionIds.CATEGORY:
-			element.addStereotype(StereotypeUtils.STR_CATEGORY);
-			break;
-		case ActionIds.INSTANTIATION:
-			element.addStereotype(StereotypeUtils.STR_INSTANTIATION);
-			break;
-		case ActionIds.TERMINATION:
-			element.addStereotype(StereotypeUtils.STR_TERMINATION);
-			break;
-		case ActionIds.PARTICIPATIONAL:
-			element.addStereotype(StereotypeUtils.STR_PARTICIPATIONAL);
-			break;
-		case ActionIds.PARTICIPATION:
-			element.addStereotype(StereotypeUtils.STR_PARTICIPATION);
-			break;
-		case ActionIds.HISTORICAL_DEPENDENCE:
-			element.addStereotype(StereotypeUtils.STR_HISTORICAL_DEPENDENCE);
-			break;
-		case ActionIds.CREATION:
-			element.addStereotype(StereotypeUtils.STR_CREATION);
-			break;
-		case ActionIds.MANIFESTATION:
-			element.addStereotype(StereotypeUtils.STR_MANIFESTATION);
-			break;
-		case ActionIds.MATERIAL:
-			element.addStereotype(StereotypeUtils.STR_MATERIAL);
-			break;
-		case ActionIds.COMPARATIVE:
-			element.addStereotype(StereotypeUtils.STR_COMPARATIVE);
-			break;
-		case ActionIds.MEDIATION:
-			element.addStereotype(StereotypeUtils.STR_MEDIATION);
-			break;
-		case ActionIds.CHARACTERIZATION:
-			element.addStereotype(StereotypeUtils.STR_CHARACTERIZATION);
-			break;
-		case ActionIds.EXTERNAL_DEPENDENCE:
-			element.addStereotype(StereotypeUtils.STR_EXTERNAL_DEPENDENCE);
-			break;
-		case ActionIds.COMPONENT_OF:
-			element.addStereotype(StereotypeUtils.STR_COMPONENT_OF);
-			break;
-		case ActionIds.MEMBER_OF:
-			element.addStereotype(StereotypeUtils.STR_MEMBER_OF);
-			break;
-		case ActionIds.SUB_COLLECTION_OF:
-			element.addStereotype(StereotypeUtils.STR_SUB_COLLECTION_OF);
-			break;
-		case ActionIds.SUB_QUANTITY_OF:
-			element.addStereotype(StereotypeUtils.STR_SUB_QUANTITY_OF);
-			break;
-		case ActionIds.BEGIN:
-			element.addStereotype(StereotypeUtils.STR_BEGIN);
-			break;
-		case ActionIds.END:
-			element.addStereotype(StereotypeUtils.STR_END);
-			break;
+			case ActionIds.TYPE:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_TYPE);
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_TYPE);
+				break;
+			case ActionIds.HISTORICAL_ROLE:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_HISTORICAL_ROLE);
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_HISTORICAL_ROLE);
+				break;
+			case ActionIds.EVENT:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_EVENT);
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_EVENT);
+				break;
+			case ActionIds.ENUMERATION:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_ENUMERATION);
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_ENUMERATION);
+				break;
+			case ActionIds.DATATYPE:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_DATATYPE);
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_DATATYPE);
+				break;
+			case ActionIds.SUBKIND:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_SUBKIND);
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_SUBKIND);
+				break;
+			case ActionIds.ROLE_MIXIN:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_ROLE_MIXIN);
+				break;
+			case ActionIds.ROLE:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_ROLE);
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_ROLE);
+				break;
+			case ActionIds.RELATOR:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_RELATOR);
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_RELATOR);
+				break;
+			case ActionIds.QUANTITY:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_QUANTITY);
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_QUANTITY);
+				break;
+			case ActionIds.QUALITY:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_QUALITY);
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_QUALITY);
+				break;
+			case ActionIds.PHASE_MIXIN:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_PHASE_MIXIN);
+				break;
+			case ActionIds.PHASE:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_PHASE);
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_PHASE);
+				break;
+			case ActionIds.MODE:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_MODE);
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_MODE);
+				break;
+			case ActionIds.MIXIN:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_MIXIN);
+				break;
+			case ActionIds.KIND:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_KIND);
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_KIND);
+				break;
+			case ActionIds.COLLECTIVE:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_COLLECTIVE);
+				StereotypeUtils.setAllowed(element, StereotypeUtils.STR_COLLECTIVE);
+				break;
+			case ActionIds.CATEGORY:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_CATEGORY);
+				break;
+			case ActionIds.INSTANTIATION:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_INSTANTIATION);
+				break;
+			case ActionIds.TERMINATION:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_TERMINATION);
+				break;
+			case ActionIds.PARTICIPATIONAL:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_PARTICIPATIONAL);
+				break;
+			case ActionIds.PARTICIPATION:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_PARTICIPATION);
+				break;
+			case ActionIds.HISTORICAL_DEPENDENCE:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_HISTORICAL_DEPENDENCE);
+				break;
+			case ActionIds.CREATION:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_CREATION);
+				break;
+			case ActionIds.MANIFESTATION:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_MANIFESTATION);
+				break;
+			case ActionIds.MATERIAL:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_MATERIAL);
+				break;
+			case ActionIds.COMPARATIVE:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_COMPARATIVE);
+				break;
+			case ActionIds.MEDIATION:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_MEDIATION);
+				break;
+			case ActionIds.CHARACTERIZATION:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_CHARACTERIZATION);
+				break;
+			case ActionIds.EXTERNAL_DEPENDENCE:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_EXTERNAL_DEPENDENCE);
+				break;
+			case ActionIds.COMPONENT_OF:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_COMPONENT_OF);
+				break;
+			case ActionIds.MEMBER_OF:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_MEMBER_OF);
+				break;
+			case ActionIds.SUB_COLLECTION_OF:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_SUB_COLLECTION_OF);
+				break;
+			case ActionIds.SUB_QUANTITY_OF:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_SUB_QUANTITY_OF);
+				break;
+			case ActionIds.BEGIN:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_BEGIN);
+				break;
+			case ActionIds.END:
+				StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_END);
+				break;
 		}
 
-		boolean isSmartModelingEnabled = Configurations.getInstance().getProjectConfigurations().isSmartModellingEnabled();
+		boolean isSmartModelingEnabled = Configurations.getInstance().getProjectConfigurations()
+				.isSmartModellingEnabled();
 
 		if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
 			if (isSmartModelingEnabled)

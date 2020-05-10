@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.stream.Collectors;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
@@ -78,6 +79,14 @@ public class ViewUtils {
 	public static final String DATATYPE_LOGO_FILENAME = "datatype.png";
 	public static final String ATTRIBUTE_LOGO = "attribute";
 	public static final String ATTRIBUTE_LOGO_FILENAME = "attribute.png";
+
+	// buttons
+	public static final String ADD_LOGO = "add";
+	public static final String ASTERISK_LOGO = "asterisk";
+	public static final String SUBTRACT_LOGO = "subtract";
+	public static final String ADD_LOGO_FILENAME = "add.png";
+	public static final String ASTERISK_LOGO_FILENAME = "asterisk.png";
+	public static final String SUBTRACT_LOGO_FILENAME = "subtract.png";
 
 	public static void log(String message) {
 		ApplicationManager.instance().getViewManager().showMessage(timestamp() + message);
@@ -146,6 +155,12 @@ public class ViewUtils {
 			return Paths.get(pluginDir.getAbsolutePath(), "icons", DATATYPE_LOGO_FILENAME).toFile().getAbsolutePath();
 		case ATTRIBUTE_LOGO:
 			return Paths.get(pluginDir.getAbsolutePath(), "icons", ATTRIBUTE_LOGO_FILENAME).toFile().getAbsolutePath();
+		case ADD_LOGO:
+			return Paths.get(pluginDir.getAbsolutePath(), "icons", ADD_LOGO_FILENAME).toFile().getAbsolutePath();
+		case ASTERISK_LOGO:
+			return Paths.get(pluginDir.getAbsolutePath(), "icons", ASTERISK_LOGO_FILENAME).toFile().getAbsolutePath();
+		case SUBTRACT_LOGO:
+			return Paths.get(pluginDir.getAbsolutePath(), "icons", SUBTRACT_LOGO_FILENAME).toFile().getAbsolutePath();
 		default:
 			return null;
 		}
@@ -490,6 +505,18 @@ public class ViewUtils {
 		if (diagramElement != null) {
 			diagramManager.highlight(diagramElement);
 		}
+	}
+
+	public static String setOrderDialog(String currentOrder) {
+		final ViewManager vm = ApplicationManager.instance().getViewManager();
+		final String msg = "Please enter a value for the type order,\n"
+				+ "where '*' represents an orderless type:";
+		final String title = "Set type order";
+		final Icon icon = new ImageIcon(getFilePath(SIMPLE_LOGO));
+
+		return (String) vm.showInputDialog(vm.getRootFrame(), msg, title, JOptionPane.PLAIN_MESSAGE, icon, null, currentOrder); 
+		// ApplicationManager.instance().getViewManager().showConfirmDialog(null, msg, "Export to gUFO",
+		// 		JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
 }
 

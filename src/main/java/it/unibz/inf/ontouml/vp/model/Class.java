@@ -1,6 +1,9 @@
 package it.unibz.inf.ontouml.vp.model;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.*;
@@ -9,6 +12,7 @@ import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -68,6 +72,22 @@ public class Class implements ModelElement {
 	@Expose
 	private boolean isDerived;
 
+	@SerializedName("allowed")
+	@Expose
+	private JsonArray allowed;
+
+	@SerializedName("isExtensional")
+	@Expose
+	private JsonElement isExtensional;
+
+	@SerializedName("isPowertype")
+	@Expose
+	private JsonElement isPowertype;
+
+	@SerializedName("order")
+	@Expose
+	private String order;
+
 	private Class(IModelElement source) {
 		this.sourceModelElement = source;
 		this.type = ModelElement.TYPE_CLASS;
@@ -107,6 +127,54 @@ public class Class implements ModelElement {
 		}
 
 		setDescription(source.getDescription());
+
+		if(source.getTaggedValues() != null) {
+			final Iterator<?> values = source.getTaggedValues().taggedValueIterator();
+
+			while(values.hasNext()) {
+				try{
+					final ITaggedValue value = (ITaggedValue) values.next();
+					final JsonParser parser = new JsonParser();
+	
+					if(value.getName().equals("allowed")){
+						String valueString = value.getValueAsString();
+						valueString = valueString
+								.trim()
+								.replaceAll(" +", "")
+								.replaceAll(",", "\",\"");
+						
+						final JsonElement allowed = !valueString.equals("") ? parser.parse("[\"" + valueString + "\"]") : parser.parse("[]");
+						this.allowed = allowed.isJsonArray() && ((JsonArray) allowed).size() > 0 ?
+								(JsonArray) allowed : null;
+					}
+	
+					if(value.getName().equals("isExtensional")){
+						if(source.hasStereotype(StereotypeUtils.STR_COLLECTIVE)){
+							this.isExtensional = 
+									parser.parse(Boolean.valueOf(value.getValueAsString()).toString());
+						} else {
+							this.isExtensional = parser.parse("null");
+						}
+					}
+
+					if(value.getName().equals("isPowertype")){
+						if(source.hasStereotype(StereotypeUtils.STR_TYPE)){
+							this.isPowertype = 
+									parser.parse(Boolean.valueOf(value.getValueAsString()).toString());
+						} else {
+							this.isPowertype = parser.parse("null");
+						}
+					}
+
+					if(value.getName().equals("order")){
+						this.order = value.getValueAsString();
+					}
+
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	public Class(IDataType source) {
