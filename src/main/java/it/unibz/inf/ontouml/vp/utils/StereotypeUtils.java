@@ -386,6 +386,9 @@ public class StereotypeUtils {
 		final ITaggedValueContainer oldContainer = element.getTaggedValues();
 		final Iterator<?> oldValues = oldContainer != null ? oldContainer.taggedValueIterator() : null;
 		String allowedTagValue = null;
+		String isExtensionalTagValue = null;
+		String isPowertypeTagValue = null;
+		String orderTagValue = null;
 		// TODO: save other tagged values if needed
 
 		while(oldValues != null && oldValues.hasNext()) {
@@ -395,8 +398,35 @@ public class StereotypeUtils {
 				allowedTagValue = oldValue.getValueAsString();
 			}
 
+			if(
+				oldValue.getName().equals("isExtensional")
+				&& STR_COLLECTIVE.equals(stereotypeName)
+			) {
+				isExtensionalTagValue = oldValue.getValueAsString();
+			}
+
+			if(
+				oldValue.getName().equals("isPowertype")
+				&& STR_TYPE.equals(stereotypeName)
+			) {
+				isPowertypeTagValue = oldValue.getValueAsString();
+			}
+
+			if(
+				oldValue.getName().equals("order")
+				&& STR_TYPE.equals(stereotypeName)
+			) {
+				orderTagValue = oldValue.getValueAsString();
+			}
+
 			// Deletes old tags that are not user-defined
-			if(oldValue.getTagDefinition() != null) {
+			if(
+				oldValue.getTagDefinition() != null
+				|| oldValue.getName().equals("allowed")
+				|| oldValue.getName().equals("isExtensional")
+				|| oldValue.getName().equals("isPowertype")
+				|| oldValue.getName().equals("order")
+			) {
 				oldContainer.removeTaggedValue(oldValue);
 				oldValue.delete();
 			}
@@ -422,6 +452,15 @@ public class StereotypeUtils {
 
 			if(newValue.getName().equals("allowed") && allowedTagValue != null) {
 				newValue.setValue(allowedTagValue);
+			}
+			else if(newValue.getName().equals("isExtensional") && isExtensionalTagValue != null) {
+				newValue.setValue(isExtensionalTagValue);
+			}
+			else if(newValue.getName().equals("isPowertype") && isPowertypeTagValue != null) {
+				newValue.setValue(isPowertypeTagValue);
+			}
+			else if(newValue.getName().equals("order") && orderTagValue != null) {
+				newValue.setValue(orderTagValue);
 			}
 		}
 	}
