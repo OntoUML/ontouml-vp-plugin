@@ -162,8 +162,8 @@ public class ExportToGUFOView extends JPanel {
 		mainPanel.add(buttonsPanel, gbc_main);
 
 		JLabel iriLabel = new JLabel("Base IRI:");
-		JLabel formatLabel = new JLabel("Format:");
-		JLabel URIformatLabel = new JLabel("URI Format:");
+		JLabel formatLabel = new JLabel("Output format:");
+		JLabel URIformatLabel = new JLabel("Create URIs using:");
 
 		IRItxt = new JTextField();
 
@@ -211,10 +211,10 @@ public class ExportToGUFOView extends JPanel {
 		gbc_insidePanelLeft.gridy = 2;
 		optionsPanelLeft.add(uriFormatBox, gbc_insidePanelLeft);
 
-		JLabel inverseLabel = new JLabel("Inverse:");
-		JLabel objectLabel = new JLabel("Object Property:");
-		JLabel analysisLabel = new JLabel("Pre Analysis:");
-		JLabel prefixPackageLabel = new JLabel("Prefix Package:");
+		JLabel inverseLabel = new JLabel("Create inverse object properties:");
+		JLabel objectLabel = new JLabel("Minimize property creation:");
+		JLabel analysisLabel = new JLabel("Run pre analysis:");
+		JLabel prefixPackageLabel = new JLabel("Add prefix per package:");
 
 		String[] inverseBoxString = { "false", "true" };
 		inverseBox = new JComboBox<String>(inverseBoxString);
@@ -248,35 +248,35 @@ public class ExportToGUFOView extends JPanel {
 		gbc_insidePanelRight.gridx = 0;
 		gbc_insidePanelRight.gridy = 0;
 		gbc_insidePanelRight.anchor = GridBagConstraints.EAST;
-		optionsPanelRight.add(inverseLabel, gbc_insidePanelRight);
-		gbc_insidePanelRight.weightx = 0.5;
-		gbc_insidePanelRight.gridx = 1;
-		gbc_insidePanelRight.gridy = 0;
-		optionsPanelRight.add(inverseBox, gbc_insidePanelRight);
-		gbc_insidePanelRight.weightx = 0.5;
-		gbc_insidePanelRight.gridx = 0;
-		gbc_insidePanelRight.gridy = 1;
 		optionsPanelRight.add(objectLabel, gbc_insidePanelRight);
 		gbc_insidePanelRight.weightx = 0.5;
 		gbc_insidePanelRight.gridx = 1;
-		gbc_insidePanelRight.gridy = 1;
+		gbc_insidePanelRight.gridy = 0;
 		optionsPanelRight.add(objectBox, gbc_insidePanelRight);
 		gbc_insidePanelRight.weightx = 0.5;
 		gbc_insidePanelRight.gridx = 0;
-		gbc_insidePanelRight.gridy = 2;
-		optionsPanelRight.add(analysisLabel, gbc_insidePanelRight);
+		gbc_insidePanelRight.gridy = 1;
+		optionsPanelRight.add(inverseLabel, gbc_insidePanelRight);
 		gbc_insidePanelRight.weightx = 0.5;
 		gbc_insidePanelRight.gridx = 1;
-		gbc_insidePanelRight.gridy = 2;
-		optionsPanelRight.add(analysisBox, gbc_insidePanelRight);
+		gbc_insidePanelRight.gridy = 1;
+		optionsPanelRight.add(inverseBox, gbc_insidePanelRight);
 		gbc_insidePanelRight.weightx = 0.5;
 		gbc_insidePanelRight.gridx = 0;
-		gbc_insidePanelRight.gridy = 3;
+		gbc_insidePanelRight.gridy = 2;
 		optionsPanelRight.add(prefixPackageLabel, gbc_insidePanelRight);
 		gbc_insidePanelRight.weightx = 0.5;
 		gbc_insidePanelRight.gridx = 1;
-		gbc_insidePanelRight.gridy = 3;
+		gbc_insidePanelRight.gridy = 2;
 		optionsPanelRight.add(packagesBox, gbc_insidePanelRight);
+		gbc_insidePanelRight.weightx = 0.5;
+		gbc_insidePanelRight.gridx = 0;
+		gbc_insidePanelRight.gridy = 3;
+		optionsPanelRight.add(analysisLabel, gbc_insidePanelRight);
+		gbc_insidePanelRight.weightx = 0.5;
+		gbc_insidePanelRight.gridx = 1;
+		gbc_insidePanelRight.gridy = 3;
+		optionsPanelRight.add(analysisBox, gbc_insidePanelRight);
 
 		JPanel packagePanel = new JPanel();
 		JPanel diagramPanel = new JPanel();
