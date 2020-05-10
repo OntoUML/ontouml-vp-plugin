@@ -36,8 +36,10 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <visualparadigm.app.dir>C:\Program Files\Visual Paradigm CE 16.0</visualparadigm.app.dir>
-        <visualparadigm.plugin.dir>C:\Users\Victor Viola\AppData\Roaming\VisualParadigm\plugins</visualparadigm.plugin.dir>
+        <visualparadigm.app.dir>
+        </visualparadigm.app.dir>
+        <visualparadigm.plugin.dir>
+        </visualparadigm.plugin.dir>
     </properties>
 
     <dependencies>

@@ -1,5 +1,8 @@
 package it.unibz.inf.ontouml.vp.model;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.vp.plugin.ApplicationManager;
@@ -170,8 +173,14 @@ public interface ModelElement {
 
 		JsonObject obj = new JsonObject();	
 		ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
+		List<String> ignoredClassValues = 
+				Arrays.asList(new String[]{"allowed","isExtensional","isPowertype","order"});
 
 		for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++) {
+			if(ignoredClassValues.contains(lTaggedValues[i].getName())) {
+				continue ;
+			}
+
 			switch (lTaggedValues[i].getType()) {
 				case 1:
 					JsonObject referenceTag = new JsonObject();
