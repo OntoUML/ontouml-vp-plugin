@@ -341,7 +341,6 @@ public class ExportToGUFOView extends JPanel {
 
 				updateConfigurationsValues(configurations);
 				Configurations.getInstance().save();
-				getTablePackageMapping();
 				isToExport = true;
 				isOpen = false;
 				_dialog.close();
@@ -606,6 +605,194 @@ public class ExportToGUFOView extends JPanel {
 		updateComponentsValues(configurations);
 
 	}
+	
+	
+
+	public JTextField getIRItxt() {
+		return IRItxt;
+	}
+
+
+
+	public void setIRItxt(JTextField iRItxt) {
+		IRItxt = iRItxt;
+	}
+
+
+
+	public JComboBox<String> getFormatBox() {
+		return formatBox;
+	}
+
+
+
+	public void setFormatBox(JComboBox<String> formatBox) {
+		this.formatBox = formatBox;
+	}
+
+
+
+	public JComboBox<String> getUriFormatBox() {
+		return uriFormatBox;
+	}
+
+
+
+	public void setUriFormatBox(JComboBox<String> uriFormatBox) {
+		this.uriFormatBox = uriFormatBox;
+	}
+
+
+
+	public JComboBox<String> getInverseBox() {
+		return inverseBox;
+	}
+
+
+
+	public void setInverseBox(JComboBox<String> inverseBox) {
+		this.inverseBox = inverseBox;
+	}
+
+
+
+	public JComboBox<String> getObjectBox() {
+		return objectBox;
+	}
+
+
+
+	public void setObjectBox(JComboBox<String> objectBox) {
+		this.objectBox = objectBox;
+	}
+
+
+
+	public JComboBox<String> getAnalysisBox() {
+		return analysisBox;
+	}
+
+
+
+	public void setAnalysisBox(JComboBox<String> analysisBox) {
+		this.analysisBox = analysisBox;
+	}
+
+
+
+	public JComboBox<String> getNamesBox() {
+		return namesBox;
+	}
+
+
+
+	public void setNamesBox(JComboBox<String> namesBox) {
+		this.namesBox = namesBox;
+	}
+
+
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+
+
+	public JComboBox<String> getLanguagesBox() {
+		return languagesBox;
+	}
+
+
+
+	public JComboBox<String> getPackagesIdBox() {
+		return packagesIdBox;
+	}
+
+
+
+	public JTabbedPane getTabbedPane() {
+		return tabbedPane;
+	}
+
+
+
+	public JCheckBoxTree getPackageTree() {
+		return packageTree;
+	}
+
+
+
+	public JCheckBoxTree getDiagramTree() {
+		return diagramTree;
+	}
+
+
+
+	public JTable getTable() {
+		return table;
+	}
+
+
+
+	public JTable getTable2() {
+		return table2;
+	}
+
+
+
+	public JPanel getTreePanelPackage() {
+		return treePanelPackage;
+	}
+
+
+
+	public JPanel getTreePanelDiagram() {
+		return treePanelDiagram;
+	}
+
+
+
+	public JButton getBtnExport() {
+		return btnExport;
+	}
+
+
+
+	public JButton getBtnCancel() {
+		return btnCancel;
+	}
+
+
+
+	public IDialog get_dialog() {
+		return _dialog;
+	}
+
+
+
+	public HashSet<String> getElementsPackageTree() {
+		return elementsPackageTree;
+	}
+
+
+
+	public HashSet<String> getElementsDiagramTree() {
+		return elementsDiagramTree;
+	}
+
+
+
+	public IModelElement[] getElementsMapping() {
+		return elementsMapping;
+	}
+
+
+
+	public IModelElement[] getPackagesMapping() {
+		return packagesMapping;
+	}
+
+
 
 	protected JComponent makeTextPanel(String text) {
 		JPanel panel = new JPanel(false);
@@ -667,6 +854,8 @@ public class ExportToGUFOView extends JPanel {
 		configurations.setExportGUFOObjectBox(objectBox.getSelectedItem().toString());
 		configurations.setExportGUFOAnalysisBox(analysisBox.getSelectedItem().toString());
 		configurations.setExportGUFOPackagesBox(packagesBox.getSelectedItem().toString());
+		configurations.setExportGUFOElementMapping(getTableElementMapping());
+		configurations.setExportGUFOPackageMapping(getTablePackageMapping());
 
 		if (tabbedPane.getSelectedIndex() == 0)
 			configurations.setExportGUFOElementsPackageTree(elementsPackageTree);

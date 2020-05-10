@@ -99,6 +99,14 @@ public class ProjectConfigurations {
 	@Expose()
 	private String exportGUFOPackagesBox;
 	
+	@SerializedName("exportGUFOElementMapping")
+	@Expose()
+	private String exportGUFOElementMapping;
+	
+	@SerializedName("exportGUFOPackageMapping")
+	@Expose()
+	private String exportGUFOPackageMapping;
+	
 	@SerializedName("isExportEnabled")
 	@Expose()
 	private boolean isModelExportEnabled;
@@ -366,6 +374,22 @@ public class ProjectConfigurations {
 
 	public void setExportGUFOPackagesBox(String exportGUFOPackagesBox) {
 		this.exportGUFOPackagesBox = exportGUFOPackagesBox;
+	}
+	
+	public String getExportGUFOElementMapping() {
+		return exportGUFOElementMapping;
+	}
+
+	public void setExportGUFOElementMapping(String exportGUFOElementMapping) {
+		this.exportGUFOElementMapping = exportGUFOElementMapping;
+	}
+	
+	public String getExportGUFOPackageMapping() {
+		return exportGUFOPackageMapping;
+	}
+
+	public void setExportGUFOPackageMapping(String exportGUFOPackageMapping) {
+		this.exportGUFOPackageMapping = exportGUFOPackageMapping;
 	}
 	
 	/**

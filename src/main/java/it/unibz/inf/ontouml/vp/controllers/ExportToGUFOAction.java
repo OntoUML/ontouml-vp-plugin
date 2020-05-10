@@ -48,12 +48,12 @@ public class ExportToGUFOAction implements VPActionController {
 
 		requestMenu = new MenuExport();
 		menu = new ExportDialog();
-		
-		if(OntoUMLPlugin.getExportToGUFOWindowOpen() == true)
+
+		if (OntoUMLPlugin.getExportToGUFOWindowOpen() == true)
 			return;
 		else
 			OntoUMLPlugin.setExportToGUFOWindowOpen(true);
-		
+
 		ApplicationManager.instance().getViewManager().showDialog(menu);
 
 	}
@@ -186,6 +186,9 @@ public class ExportToGUFOAction implements VPActionController {
 
 	public class MenuExport extends ServerRequest {
 
+		final Configurations configs = Configurations.getInstance();
+		final ProjectConfigurations projectConfigurations = configs.getProjectConfigurations();
+
 		@Override
 		public void run() {
 			while (keepRunning()) {
@@ -195,13 +198,22 @@ public class ExportToGUFOAction implements VPActionController {
 						if (!_exportMenuView.getIsOpen()) {
 
 							if (_exportMenuView.getIsToExport()) {
-								
+
 								loading = new ProgressDialog();
 								ApplicationManager.instance().getViewManager().showDialog(loading);
 
-								final BufferedReader gufo = OntoUMLServerUtils.transformToGUFO(ModelElement.generateModel(_exportMenuView.getSavedElements(), true),
-										"http://api.ontouml.org/", "turtle", "name", loading);
-								
+								final BufferedReader gufo = OntoUMLServerUtils.transformToGUFO(
+										ModelElement.generateModel(_exportMenuView.getSavedElements(), true),
+										projectConfigurations.getExportGUFOIRI(),
+										projectConfigurations.getExportGUFOFormat(),
+										projectConfigurations.getExportGUFOURIFormat(),
+										projectConfigurations.getExportGUFOInverseBox(),
+										projectConfigurations.getExportGUFOObjectBox(),
+										projectConfigurations.getExportGUFOAnalysisBox(),
+										projectConfigurations.getExportGUFOPackagesBox(),
+										projectConfigurations.getExportGUFOElementMapping(),
+										projectConfigurations.getExportGUFOPackageMapping(), loading);
+
 								if (gufo != null) {
 									saveFile(gufo);
 									ViewUtils.cleanAndShowMessage("Model exported successfully.");
@@ -209,14 +221,15 @@ public class ExportToGUFOAction implements VPActionController {
 								} else {
 									menu.canClosed();
 									requestMenu.doStop();
-									ViewUtils.cleanAndShowMessage("Unable to transform to GUFO. Please check your model.");
+									ViewUtils.cleanAndShowMessage(
+											"Unable to transform to GUFO. Please check your model.");
 								}
 							} else {
 								menu.canClosed();
 								requestMenu.doStop();
 								ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
 							}
-							
+
 							OntoUMLPlugin.setExportToGUFOWindowOpen(false);
 						}
 					} else {
