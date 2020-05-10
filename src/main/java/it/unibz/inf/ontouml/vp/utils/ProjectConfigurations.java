@@ -83,6 +83,22 @@ public class ProjectConfigurations {
 	@Expose()
 	private HashSet<String> exportGUFOElementsPackageTree;
 	
+	@SerializedName("exportGUFOInverseBox")
+	@Expose()
+	private String exportGUFOInverseBox;
+	
+	@SerializedName("exportGUFOObjectBox")
+	@Expose()
+	private String exportGUFOObjectBox;
+	
+	@SerializedName("exportGUFOAnalysisBox")
+	@Expose()
+	private String exportGUFOAnalysisBox;
+	
+	@SerializedName("exportGUFOPackagesBox")
+	@Expose()
+	private String exportGUFOPackagesBox;
+	
 	@SerializedName("isExportEnabled")
 	@Expose()
 	private boolean isModelExportEnabled;
@@ -318,6 +334,38 @@ public class ProjectConfigurations {
 
 	public void setExportGUFOElementsPackageTree(HashSet<String> exportGUFOElementsPackageTree) {
 		this.exportGUFOElementsPackageTree = exportGUFOElementsPackageTree;
+	}
+	
+	public String getExportGUFOInverseBox() {
+		return exportGUFOInverseBox;
+	}
+
+	public void setExportGUFOInverseBox(String exportGUFOInverseBox) {
+		this.exportGUFOInverseBox = exportGUFOInverseBox;
+	}
+	
+	public String getExportGUFOObjectBox() {
+		return exportGUFOObjectBox;
+	}
+
+	public void setExportGUFOObjectBox(String exportGUFOObjectBox) {
+		this.exportGUFOObjectBox = exportGUFOObjectBox;
+	}
+	
+	public String getExportGUFOAnalysisBox() {
+		return exportGUFOAnalysisBox;
+	}
+
+	public void setExportGUFOAnalysisBox(String exportGUFOAnalysisBox) {
+		this.exportGUFOAnalysisBox = exportGUFOAnalysisBox;
+	}
+	
+	public String getExportGUFOPackagesBox() {
+		return exportGUFOPackagesBox;
+	}
+
+	public void setExportGUFOPackagesBox(String exportGUFOPackagesBox) {
+		this.exportGUFOPackagesBox = exportGUFOPackagesBox;
 	}
 	
 	/**

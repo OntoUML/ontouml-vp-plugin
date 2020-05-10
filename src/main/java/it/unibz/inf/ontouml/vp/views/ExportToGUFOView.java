@@ -1,46 +1,6 @@
 package it.unibz.inf.ontouml.vp.views;
 
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.JTextComponent;
-import javax.swing.text.PlainDocument;
-import javax.swing.ComboBoxEditor;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultCellEditor;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
-
-import com.vp.plugin.ApplicationManager;
-import com.vp.plugin.diagram.IDiagramUIModel;
-import com.vp.plugin.model.*;
-import com.vp.plugin.model.factory.IModelElementFactory;
-import com.vp.plugin.view.IDialog;
-
-import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
-import it.unibz.inf.ontouml.vp.utils.Configurations;
-import it.unibz.inf.ontouml.vp.utils.ProjectConfigurations;
-import it.unibz.inf.ontouml.vp.utils.ServerRequest;
-
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -48,17 +8,48 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Vector;
+
+import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
+
+import com.google.gson.JsonObject;
+import com.vp.plugin.ApplicationManager;
+import com.vp.plugin.diagram.IDiagramUIModel;
+import com.vp.plugin.model.IAssociation;
+import com.vp.plugin.model.IAssociationClass;
+import com.vp.plugin.model.IAssociationEnd;
+import com.vp.plugin.model.IAttribute;
+import com.vp.plugin.model.IGeneralization;
+import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.IProject;
+import com.vp.plugin.model.factory.IModelElementFactory;
+import com.vp.plugin.view.IDialog;
+
+import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
+import it.unibz.inf.ontouml.vp.utils.Configurations;
+import it.unibz.inf.ontouml.vp.utils.ProjectConfigurations;
+import it.unibz.inf.ontouml.vp.utils.ServerRequest;
 
 public class ExportToGUFOView extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -71,12 +62,15 @@ public class ExportToGUFOView extends JPanel {
 	private JComboBox<String> analysisBox;
 	private JComboBox<String> packagesBox;
 
-	public JComboBox<String> namesBox;
-	public JComboBox<String> languagesBox;
-	public JComboBox<String> packagesIdBox;
+	private JComboBox<String> namesBox;
+	private JComboBox<String> languagesBox;
+	private JComboBox<String> packagesIdBox;
 	private JTabbedPane tabbedPane;
 	private JCheckBoxTree packageTree;
 	private JCheckBoxTree diagramTree;
+
+	private JTable table;
+	private JTable table2;
 
 	JPanel treePanelPackage;
 	JPanel treePanelDiagram;
@@ -91,6 +85,9 @@ public class ExportToGUFOView extends JPanel {
 
 	private HashSet<String> elementsPackageTree = new HashSet<String>();
 	private HashSet<String> elementsDiagramTree = new HashSet<String>();
+
+	private IModelElement[] elementsMapping;
+	private IModelElement[] packagesMapping;
 
 	public ExportToGUFOView(ProjectConfigurations configurations, ServerRequest request) {
 		setSize(new Dimension(680, 550));
@@ -340,6 +337,7 @@ public class ExportToGUFOView extends JPanel {
 
 				updateConfigurationsValues(configurations);
 				Configurations.getInstance().save();
+				getTableElementMapping();
 				isToExport = true;
 				isOpen = false;
 				_dialog.close();
@@ -381,11 +379,11 @@ public class ExportToGUFOView extends JPanel {
 				IModelElementFactory.MODEL_TYPE_ATTRIBUTE, IModelElementFactory.MODEL_TYPE_ASSOCIATION,
 				IModelElementFactory.MODEL_TYPE_ASSOCIATION_END, };
 
-		IModelElement[] elements = project.toAllLevelModelElementArray(anyLevelElements);
-		String[] nameElements = new String[elements.length];
+		elementsMapping = project.toAllLevelModelElementArray(anyLevelElements);
+		String[] nameElements = new String[elementsMapping.length];
 
-		for (int i = 0; i < elements.length; i++)
-			nameElements[i] = getElementName(elements[i]);
+		for (int i = 0; i < elementsMapping.length; i++)
+			nameElements[i] = getElementName(elementsMapping[i]);
 
 		namesBox = new JComboBox<String>(nameElements);
 		((JLabel) namesBox.getRenderer()).setHorizontalAlignment(JLabel.LEFT);
@@ -397,7 +395,6 @@ public class ExportToGUFOView extends JPanel {
 		String[] columnNamesArr;
 		ArrayList<String> columnNamesList;
 		DefaultTableModel defaultTableModel;
-		JTable table;
 		TableColumnModel tableColumnModel;
 		JScrollPane scrollPane;
 		JButton addButton;
@@ -416,8 +413,9 @@ public class ExportToGUFOView extends JPanel {
 			data[0][i] = "";
 		}
 
-		defaultTableModel = new DefaultTableModel(data, columnNamesArr);
-
+		//defaultTableModel = new DefaultTableModel(data, columnNamesArr);
+		defaultTableModel = new DefaultTableModel(null, columnNamesArr);
+		
 		table = new JTable(defaultTableModel);
 		tableColumnModel = table.getColumnModel();
 		table.setGridColor(Color.LIGHT_GRAY);
@@ -442,15 +440,19 @@ public class ExportToGUFOView extends JPanel {
 
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Vector rowData = null;
+				Vector<String> rowData = new Vector<String>();
+				rowData.add(namesBox.getItemAt(0));
+				rowData.add(languagesBox.getItemAt(0));
+				rowData.add("");
 				defaultTableModel.addRow(rowData);
+				
 				table.validate();
 			}
 		});
 
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Vector rowData = null;
+				// Vector<?> rowData = null;
 				int rowCount = defaultTableModel.getRowCount();
 				if (rowCount > 0) {
 					defaultTableModel.removeRow(rowCount - 1);
@@ -490,12 +492,12 @@ public class ExportToGUFOView extends JPanel {
 
 		String[] packages = { IModelElementFactory.MODEL_TYPE_PACKAGE, IModelElementFactory.MODEL_TYPE_MODEL };
 
-		IModelElement[] elements_package = project.toAllLevelModelElementArray(packages);
-		String[] idElements = new String[elements_package.length + 1];
+		packagesMapping = project.toAllLevelModelElementArray(packages);
+		String[] idElements = new String[packagesMapping.length + 1];
 		idElements[0] = project.getName();
 
-		for (int i = 0; i < elements_package.length; i++)
-			idElements[i+1] = elements_package[i].getName();
+		for (int i = 0; i < packagesMapping.length; i++)
+			idElements[i + 1] = packagesMapping[i].getName();
 
 		packagesIdBox = new JComboBox<String>(idElements);
 		((JLabel) packagesIdBox.getRenderer()).setHorizontalAlignment(JLabel.LEFT);
@@ -504,7 +506,6 @@ public class ExportToGUFOView extends JPanel {
 		String[] columnNamesArr_table2;
 		ArrayList<String> columnNamesList_table2;
 		DefaultTableModel defaultTableModel_table2;
-		JTable table2;
 		TableColumnModel tableColumnModel_table2;
 		JScrollPane scrollPane_table2;
 		JButton addButton_table2;
@@ -523,7 +524,9 @@ public class ExportToGUFOView extends JPanel {
 			data_table2[0][i] = "";
 		}
 
-		defaultTableModel_table2 = new DefaultTableModel(data_table2, columnNamesArr_table2);
+//		defaultTableModel_table2 = new DefaultTableModel(data_table2, columnNamesArr_table2);
+		
+		defaultTableModel_table2 = new DefaultTableModel(null, columnNamesArr_table2);
 
 		table2 = new JTable(defaultTableModel_table2);
 		table2.setGridColor(Color.LIGHT_GRAY);
@@ -532,7 +535,7 @@ public class ExportToGUFOView extends JPanel {
 		for (int i = 0; i < columnNamesList_table2.size(); i++) {
 			tableColumnModel_table2.getColumn(i).setPreferredWidth(columnNamesList_table2.get(i).length());
 		}
-		table2.setPreferredScrollableViewportSize(table2.getPreferredSize());	
+		table2.setPreferredScrollableViewportSize(table2.getPreferredSize());
 		scrollPane_table2 = new JScrollPane(table2);
 
 		packagesIdBox.setEditable(false);
@@ -547,7 +550,10 @@ public class ExportToGUFOView extends JPanel {
 
 		addButton_table2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Vector rowData = null;
+				Vector<String> rowData = new Vector<String>();
+				rowData.add(packagesIdBox.getItemAt(0));
+				rowData.add("");
+				rowData.add("");
 				defaultTableModel_table2.addRow(rowData);
 				table2.validate();
 			}
@@ -555,7 +561,7 @@ public class ExportToGUFOView extends JPanel {
 
 		deleteButton_table2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Vector rowData = null;
+				// Vector<?> rowData = null;
 				int rowCount = defaultTableModel_table2.getRowCount();
 				if (rowCount > 0) {
 					defaultTableModel_table2.removeRow(rowCount - 1);
@@ -593,6 +599,8 @@ public class ExportToGUFOView extends JPanel {
 
 		add(mainTabbedPane);
 
+		updateComponentsValues(configurations);
+
 	}
 
 	protected JComponent makeTextPanel(String text) {
@@ -613,17 +621,18 @@ public class ExportToGUFOView extends JPanel {
 	}
 
 	private static String[] getLanguagesCode() {
-		String[] languages = { "default", "aa", "ab", "ae", "af", "ak", "am", "an", "ar", "as", "av", "ay", "az", "ba", "be", "bg",
-				"bh", "bm", "bi", "bn", "bo", "br", "bs", "ca", "ce", "ch", "co", "cr", "cs", "cu", "cv", "cy", "da",
-				"de", "dv", "dz", "ee", "el", "en", "eo", "es", "et", "eu", "fa", "ff", "fi", "fj", "fo", "fr", "fy",
-				"ga", "gd", "gl", "gn", "gu", "gv", "ha", "he", "hi", "ho", "hr", "ht", "hu", "hy", "hz", "ia", "id",
-				"ie", "ig", "ii", "ik", "io", "is", "it", "iu", "ja", "jv", "ka", "kg", "ki", "kj", "kk", "kl", "km",
-				"kn", "ko", "kr", "ks", "ku", "kv", "kw", "ky", "la", "lb", "lg", "li", "ln", "lo", "lt", "lu", "lv",
-				"mg", "mh", "mi", "mk", "ml", "mn", "mr", "ms", "mt", "my", "na", "nb", "nd", "ne", "ng", "nl", "nn",
-				"no", "nr", "nv", "ny", "oc", "oj", "om", "or", "os", "pa", "pi", "pl", "ps", "pt", "qu", "rm", "rn",
-				"ro", "ru", "rw", "sa", "sc", "sd", "se", "sg", "si", "sk", "sl", "sm", "sn", "so", "sq", "sr", "ss",
-				"st", "su", "sv", "sw", "ta", "te", "tg", "th", "ti", "tk", "tl", "tn", "to", "tr", "ts", "tt", "tw",
-				"ty", "ug", "uk", "ur", "uz", "ve", "vi", "vo", "wa", "wo", "xh", "yi", "yo", "za", "zh", "zu" };
+		String[] languages = { "default", "aa", "ab", "ae", "af", "ak", "am", "an", "ar", "as", "av", "ay", "az", "ba",
+				"be", "bg", "bh", "bm", "bi", "bn", "bo", "br", "bs", "ca", "ce", "ch", "co", "cr", "cs", "cu", "cv",
+				"cy", "da", "de", "dv", "dz", "ee", "el", "en", "eo", "es", "et", "eu", "fa", "ff", "fi", "fj", "fo",
+				"fr", "fy", "ga", "gd", "gl", "gn", "gu", "gv", "ha", "he", "hi", "ho", "hr", "ht", "hu", "hy", "hz",
+				"ia", "id", "ie", "ig", "ii", "ik", "io", "is", "it", "iu", "ja", "jv", "ka", "kg", "ki", "kj", "kk",
+				"kl", "km", "kn", "ko", "kr", "ks", "ku", "kv", "kw", "ky", "la", "lb", "lg", "li", "ln", "lo", "lt",
+				"lu", "lv", "mg", "mh", "mi", "mk", "ml", "mn", "mr", "ms", "mt", "my", "na", "nb", "nd", "ne", "ng",
+				"nl", "nn", "no", "nr", "nv", "ny", "oc", "oj", "om", "or", "os", "pa", "pi", "pl", "ps", "pt", "qu",
+				"rm", "rn", "ro", "ru", "rw", "sa", "sc", "sd", "se", "sg", "si", "sk", "sl", "sm", "sn", "so", "sq",
+				"sr", "ss", "st", "su", "sv", "sw", "ta", "te", "tg", "th", "ti", "tk", "tl", "tn", "to", "tr", "ts",
+				"tt", "tw", "ty", "ug", "uk", "ur", "uz", "ve", "vi", "vo", "wa", "wo", "xh", "yi", "yo", "za", "zh",
+				"zu" };
 
 		return languages;
 	}
@@ -650,6 +659,10 @@ public class ExportToGUFOView extends JPanel {
 		configurations.setExportGUFOIRI(IRItxt.getText());
 		configurations.setExportGUFOFormat(formatBox.getSelectedItem().toString());
 		configurations.setExportGUFOURIFormat(uriFormatBox.getSelectedItem().toString());
+		configurations.setExportGUFOInverseBox(inverseBox.getSelectedItem().toString());
+		configurations.setExportGUFOObjectBox(objectBox.getSelectedItem().toString());
+		configurations.setExportGUFOAnalysisBox(analysisBox.getSelectedItem().toString());
+		configurations.setExportGUFOPackagesBox(packagesBox.getSelectedItem().toString());
 
 		if (tabbedPane.getSelectedIndex() == 0)
 			configurations.setExportGUFOElementsPackageTree(elementsPackageTree);
@@ -680,6 +693,18 @@ public class ExportToGUFOView extends JPanel {
 
 		if (configurations.getExportGUFOElementsDiagramTree() != null)
 			diagramTree.setNodesCheck(configurations.getExportGUFOElementsDiagramTree());
+
+		if (configurations.getExportGUFOInverseBox() != null)
+			inverseBox.setSelectedItem(configurations.getExportGUFOInverseBox());
+
+		if (configurations.getExportGUFOObjectBox() != null)
+			objectBox.setSelectedItem(configurations.getExportGUFOObjectBox());
+
+		if (configurations.getExportGUFOAnalysisBox() != null)
+			analysisBox.setSelectedItem(configurations.getExportGUFOAnalysisBox());
+
+		if (configurations.getExportGUFOPackagesBox() != null)
+			packagesBox.setSelectedItem(configurations.getExportGUFOPackagesBox());
 	}
 
 	private void saveSelectedElements(String tree) {
@@ -730,10 +755,49 @@ public class ExportToGUFOView extends JPanel {
 			return elementsDiagramTree;
 	}
 
+	public String getTableElementMapping() {
+
+		String payload = "{}";
+		JsonObject jsonPayload = new JsonObject();
+
+		HashSet<String> col1 = new HashSet<String>();
+		HashSet<String> col2 = new HashSet<String>();
+		HashSet<String> col3 = new HashSet<String>();
+
+		TableModel dtm = table.getModel();
+		int nRow = dtm.getRowCount(), nCol = dtm.getColumnCount();
+		Object[][] tableData = new Object[nRow][nCol];
+		for (int i = 0; i < nRow; i++)
+			for (int j = 0; j < nCol; j++) {
+				System.out.println("VALOR FILHO DA PUTA " + dtm.getValueAt(i, j));
+				tableData[i][j] = dtm.getValueAt(i, j);
+			}
+
+		/*
+		 * TableRowSorter<TableModel> sorter = new
+		 * TableRowSorter<TableModel>(table.getModel()); table.setRowSorter(sorter);
+		 * 
+		 * List<RowSorter.SortKey> sortKeys = new ArrayList<>(); sortKeys.add(new
+		 * RowSorter.SortKey(0, SortOrder.ASCENDING)); sorter.setSortKeys(sortKeys);
+		 * System.out.println("TAmANHO " + table.getRowCount()); for (int row = 0; row <
+		 * table.getRowCount(); row++) {
+		 * 
+		 * System.out.println("ENTREI - valor ROW " + row); String element =
+		 * table.getValueAt(row, 0).toString(); System.out.println("ENTREI 2"); String
+		 * language = table.getValueAt(row, 1).toString();
+		 * System.out.println("ENTREI 3"); String text = table.getValueAt(row,
+		 * 2).toString(); System.out.println("ENTREI 4");
+		 * 
+		 * System.out.println("TESTE: " + element + " " + language + " " + text); }
+		 */
+		return payload;
+
+	}
+
 	private String getElementName(IModelElement element) {
 		String name = "";
 
-		if(element == null)
+		if (element == null)
 			return name;
 
 		if (element instanceof IAttribute) {
@@ -769,13 +833,14 @@ public class ExportToGUFOView extends JPanel {
 
 			name = "(" + nameFrom + " -> " + nameTo + ")";
 
-			if(((IAssociation) element).getName()!=null && !((IAssociation) element).getName().equals(""))
+			if (((IAssociation) element).getName() != null && !((IAssociation) element).getName().equals(""))
 				name = ((IAssociation) element).getName() + " " + name;
 
 		} else if (element instanceof IAssociationEnd) {
 			name = ": AssociationEnd";
 
-			if (((IAssociationEnd) element).getTypeAsString() != null && !((IAssociationEnd) element).getTypeAsString().equals("")) {
+			if (((IAssociationEnd) element).getTypeAsString() != null
+					&& !((IAssociationEnd) element).getTypeAsString().equals("")) {
 
 				name = ": " + ((IAssociationEnd) element).getTypeAsString();
 
@@ -821,7 +886,7 @@ public class ExportToGUFOView extends JPanel {
 
 			name = "(" + nameFrom + " -> " + nameTo + ")";
 
-		}  else {
+		} else {
 			name = "ModelElement";
 
 			if (((IModelElement) element).getName() != null && !((IModelElement) element).getName().equals(""))
