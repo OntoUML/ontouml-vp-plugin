@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Vector;
@@ -33,7 +34,10 @@ import javax.swing.table.TableRowSorter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IAssociation;
@@ -337,7 +341,7 @@ public class ExportToGUFOView extends JPanel {
 
 				updateConfigurationsValues(configurations);
 				Configurations.getInstance().save();
-				getTableElementMapping();
+				getTablePackageMapping();
 				isToExport = true;
 				isOpen = false;
 				_dialog.close();
@@ -413,9 +417,9 @@ public class ExportToGUFOView extends JPanel {
 			data[0][i] = "";
 		}
 
-		//defaultTableModel = new DefaultTableModel(data, columnNamesArr);
+		// defaultTableModel = new DefaultTableModel(data, columnNamesArr);
 		defaultTableModel = new DefaultTableModel(null, columnNamesArr);
-		
+
 		table = new JTable(defaultTableModel);
 		tableColumnModel = table.getColumnModel();
 		table.setGridColor(Color.LIGHT_GRAY);
@@ -445,7 +449,7 @@ public class ExportToGUFOView extends JPanel {
 				rowData.add(languagesBox.getItemAt(0));
 				rowData.add("");
 				defaultTableModel.addRow(rowData);
-				
+
 				table.validate();
 			}
 		});
@@ -493,13 +497,13 @@ public class ExportToGUFOView extends JPanel {
 		String[] packages = { IModelElementFactory.MODEL_TYPE_PACKAGE, IModelElementFactory.MODEL_TYPE_MODEL };
 
 		packagesMapping = project.toAllLevelModelElementArray(packages);
-		String[] idElements = new String[packagesMapping.length + 1];
-		idElements[0] = project.getName();
+		String[] nameElementsPack = new String[packagesMapping.length + 1];
+		nameElementsPack[0] = project.getName();
 
 		for (int i = 0; i < packagesMapping.length; i++)
-			idElements[i + 1] = packagesMapping[i].getName();
+			nameElementsPack[i + 1] = packagesMapping[i].getName();
 
-		packagesIdBox = new JComboBox<String>(idElements);
+		packagesIdBox = new JComboBox<String>(nameElementsPack);
 		((JLabel) packagesIdBox.getRenderer()).setHorizontalAlignment(JLabel.LEFT);
 
 		String[][] data_table2;
@@ -525,7 +529,7 @@ public class ExportToGUFOView extends JPanel {
 		}
 
 //		defaultTableModel_table2 = new DefaultTableModel(data_table2, columnNamesArr_table2);
-		
+
 		defaultTableModel_table2 = new DefaultTableModel(null, columnNamesArr_table2);
 
 		table2 = new JTable(defaultTableModel_table2);
@@ -756,41 +760,103 @@ public class ExportToGUFOView extends JPanel {
 	}
 
 	public String getTableElementMapping() {
+		HashMap<String, HashMap<String, HashMap<String, String>>> results = new HashMap<String, HashMap<String, HashMap<String, String>>>();
+		String elementId = "";
 
-		String payload = "{}";
-		JsonObject jsonPayload = new JsonObject();
+		for (int row = 0; row < table.getRowCount(); row++) {
 
-		HashSet<String> col1 = new HashSet<String>();
-		HashSet<String> col2 = new HashSet<String>();
-		HashSet<String> col3 = new HashSet<String>();
+			HashMap<String, String> content;
+			HashMap<String, HashMap<String, String>> label;
 
-		TableModel dtm = table.getModel();
-		int nRow = dtm.getRowCount(), nCol = dtm.getColumnCount();
-		Object[][] tableData = new Object[nRow][nCol];
-		for (int i = 0; i < nRow; i++)
-			for (int j = 0; j < nCol; j++) {
-				System.out.println("VALOR FILHO DA PUTA " + dtm.getValueAt(i, j));
-				tableData[i][j] = dtm.getValueAt(i, j);
+			String element = table.getValueAt(row, 0).toString();
+			String language = table.getValueAt(row, 1).toString();
+			String text = table.getValueAt(row, 2).toString();
+
+			for (int j = 0; j < elementsMapping.length; j++) {
+
+				if (elementsMapping[j].getName() == null)
+					continue;
+
+				if (elementsMapping[j].getName().equals(element)) {
+					elementId = elementsMapping[j].getId();
+				}
 			}
 
-		/*
-		 * TableRowSorter<TableModel> sorter = new
-		 * TableRowSorter<TableModel>(table.getModel()); table.setRowSorter(sorter);
-		 * 
-		 * List<RowSorter.SortKey> sortKeys = new ArrayList<>(); sortKeys.add(new
-		 * RowSorter.SortKey(0, SortOrder.ASCENDING)); sorter.setSortKeys(sortKeys);
-		 * System.out.println("TAmANHO " + table.getRowCount()); for (int row = 0; row <
-		 * table.getRowCount(); row++) {
-		 * 
-		 * System.out.println("ENTREI - valor ROW " + row); String element =
-		 * table.getValueAt(row, 0).toString(); System.out.println("ENTREI 2"); String
-		 * language = table.getValueAt(row, 1).toString();
-		 * System.out.println("ENTREI 3"); String text = table.getValueAt(row,
-		 * 2).toString(); System.out.println("ENTREI 4");
-		 * 
-		 * System.out.println("TESTE: " + element + " " + language + " " + text); }
-		 */
-		return payload;
+			if (!results.containsKey(elementId)) {
+				label = new HashMap<String, HashMap<String, String>>();
+				content = new HashMap<String, String>();
+				label.put("label", content);
+				results.put(elementId, label);
+
+			} else {
+				label = results.get(elementId);
+				content = label.get("label");
+			}
+
+			content.put(language, text);
+
+		}
+
+		Gson gson = new Gson();
+		String json = gson.toJson(results);
+
+		JsonObject elementMapping = new JsonObject();
+		JsonObject convertedObject = new Gson().fromJson(json, JsonObject.class);
+		elementMapping.add("customElementMapping", convertedObject);
+
+		return elementMapping.toString();
+
+	}
+
+	public String getTablePackageMapping() {
+		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
+		HashMap<String, HashMap<String, String>> results = new HashMap<String, HashMap<String, String>>();
+		String elementId = "";
+
+		for (int row = 0; row < table2.getRowCount(); row++) {
+			HashMap<String, String> content;
+
+			String packages = table2.getValueAt(row, 0).toString();
+			String prefix = table2.getValueAt(row, 1).toString();
+			String uri = table2.getValueAt(row, 2).toString();
+
+			for (int j = 0; j < packagesMapping.length; j++) {
+
+				if (packagesMapping[j].getName() == null)
+					continue;
+
+				if (packagesMapping[j].getName().equals(packages))
+					elementId = packagesMapping[j].getId();
+
+			}
+
+			if (project.getName().equals(packages)) {
+				elementId = project.getId();
+			}
+
+			if (!results.containsKey(elementId)) {
+				content = new HashMap<String, String>();
+				content.put("prefix", prefix);
+				content.put("uri", uri);
+				results.put(elementId, content);
+
+			} else {
+				content = results.get(elementId);
+				results.put(elementId, content);
+			}
+
+			content.put("prefix", prefix);
+			content.put("uri", uri);
+		}
+
+		Gson gson = new Gson();
+		String json = gson.toJson(results);
+
+		JsonObject packageMapping = new JsonObject();
+		JsonObject convertedObject = new Gson().fromJson(json, JsonObject.class);
+		packageMapping.add("customPackageMapping", convertedObject);
+
+		return packageMapping.toString();
 
 	}
 
