@@ -94,7 +94,7 @@ public class ExportToGUFOView extends JPanel {
 	private HashSet<String> elementsDiagramTree = new HashSet<String>();
 
 	public ExportToGUFOView(ProjectConfigurations configurations, ServerRequest request) {
-		setSize(new Dimension(640, 550));
+		setSize(new Dimension(680, 550));
 		setLayout(new GridLayout(1, 1));
 
 		JTabbedPane mainTabbedPane = new JTabbedPane();
@@ -124,13 +124,13 @@ public class ExportToGUFOView extends JPanel {
 		buttonsPanelTable1.setLayout(new GridBagLayout());
 		buttonsPanelTable2.setLayout(new GridBagLayout());
 
-		mainPanel.setPreferredSize(new Dimension(620, 540));
-		elementMappingPanel.setPreferredSize(new Dimension(620, 480));
-		packageMappingPanel.setPreferredSize(new Dimension(620, 540));
+		mainPanel.setPreferredSize(new Dimension(650, 540));
+		elementMappingPanel.setPreferredSize(new Dimension(650, 480));
+		packageMappingPanel.setPreferredSize(new Dimension(650, 540));
 		optionsPanelLeft.setPreferredSize(new Dimension(280, 100));
 		optionsPanelRight.setPreferredSize(new Dimension(320, 120));
-		treePanel.setPreferredSize(new Dimension(590, 300));
-		buttonsPanel.setPreferredSize(new Dimension(590, 40));
+		treePanel.setPreferredSize(new Dimension(600, 300));
+		buttonsPanel.setPreferredSize(new Dimension(600, 40));
 		buttonsPanelTable1.setPreferredSize(new Dimension(280, 40));
 
 		GridBagConstraints gbc_main = new GridBagConstraints();
@@ -153,6 +153,7 @@ public class ExportToGUFOView extends JPanel {
 		gbc_main.gridwidth = 4;
 		gbc_main.gridx = 0;
 		gbc_main.gridy = 1;
+		gbc_main.fill = GridBagConstraints.HORIZONTAL;
 		mainPanel.add(treePanel, gbc_main);
 		gbc_main.anchor = GridBagConstraints.FIRST_LINE_END;
 		gbc_main.weightx = 0.5;
