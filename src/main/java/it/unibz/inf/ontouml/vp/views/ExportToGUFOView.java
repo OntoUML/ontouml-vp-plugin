@@ -176,9 +176,9 @@ public class ExportToGUFOView extends JPanel {
 		uriFormatBox = new JComboBox<String>(uriFormatBoxString);
 		((JLabel) uriFormatBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
 
-		iriLabel.setPreferredSize(new Dimension(100, 20));
-		formatLabel.setPreferredSize(new Dimension(100, 20));
-		URIformatLabel.setPreferredSize(new Dimension(100, 20));
+		iriLabel.setPreferredSize(new Dimension(120, 20));
+		formatLabel.setPreferredSize(new Dimension(120, 20));
+		URIformatLabel.setPreferredSize(new Dimension(120, 20));
 		IRItxt.setPreferredSize(new Dimension(90, 20));
 		formatBox.setPreferredSize(new Dimension(90, 20));
 		uriFormatBox.setPreferredSize(new Dimension(90, 20));
@@ -217,7 +217,7 @@ public class ExportToGUFOView extends JPanel {
 		gbc_insidePanelLeft.anchor = GridBagConstraints.WEST;
 		optionsPanelLeft.add(uriFormatBox, gbc_insidePanelLeft);
 
-		JLabel inverseLabel = new JLabel("Create inverse object properties:");
+		JLabel inverseLabel = new JLabel("Create inverse properties:");
 		JLabel objectLabel = new JLabel("Minimize property creation:");
 		JLabel analysisLabel = new JLabel("Run pre analysis:");
 		JLabel prefixPackageLabel = new JLabel("Add prefix per package:");
