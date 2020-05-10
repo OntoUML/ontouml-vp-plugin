@@ -36,25 +36,9 @@ public class ApplyProperties implements VPContextActionController {
 		}
 
 		final IClass _class = (IClass) context.getModelElement();
-		ITaggedValueContainer container = _class.getTaggedValues();
-		Iterator<?> values = container == null ? null : container.taggedValueIterator();
 
 		switch(action.getActionId()) {
 			case ActionIds.PROPERTY_SET_ALLOWED:
-				// while(values != null && values.hasNext()) {
-				// 	final ITaggedValue value = (ITaggedValue) values.next();
-
-				// 	if(value.getName().equals("allowed")) {
-				// 		final ViewManager vm = ApplicationManager.instance().getViewManager();
-				// 		final SelectMultipleOptionsDialog dialog = 
-				// 				new SelectMultipleOptionsDialog(value.getValueAsString());
-						
-				// 		vm.showDialog(dialog);
-				// 		value.setValue(dialog.getSelectedValues());
-
-				// 		return;
-				// 	}
-				// }
 				this.setAllowedProperty(action,context,event);
 				break;
 			case ActionIds.PROPERTY_SET_IS_ABSTRACT:
