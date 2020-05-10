@@ -175,13 +175,14 @@ public class ExportToGUFOView extends JPanel {
 		String[] uriFormatBoxString = { "name", "id" };
 		uriFormatBox = new JComboBox<String>(uriFormatBoxString);
 		((JLabel) uriFormatBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
+		IRItxt.setText("http://example.com");
 
 		iriLabel.setPreferredSize(new Dimension(120, 20));
 		formatLabel.setPreferredSize(new Dimension(120, 20));
 		URIformatLabel.setPreferredSize(new Dimension(120, 20));
-		IRItxt.setPreferredSize(new Dimension(90, 20));
-		formatBox.setPreferredSize(new Dimension(90, 20));
-		uriFormatBox.setPreferredSize(new Dimension(90, 20));
+		IRItxt.setPreferredSize(new Dimension(140, 20));
+		formatBox.setPreferredSize(new Dimension(140, 20));
+		uriFormatBox.setPreferredSize(new Dimension(140, 20));
 
 		GridBagConstraints gbc_insidePanelLeft = new GridBagConstraints();
 		// gbc_insidePanelLeft.fill = GridBagConstraints.HORIZONTAL;
