@@ -71,9 +71,10 @@ public class ExportToGUFOView extends JPanel {
 	private JComboBox<String> objectBox;
 	private JComboBox<String> analysisBox;
 	private JComboBox<String> packagesBox;
-	
+
 	public JComboBox<String> namesBox;
 	public JComboBox<String> languagesBox;
+	public JComboBox<String> packagesIdBox;
 	private JTabbedPane tabbedPane;
 	private JCheckBoxTree packageTree;
 	private JCheckBoxTree diagramTree;
@@ -111,6 +112,7 @@ public class ExportToGUFOView extends JPanel {
 		JPanel treePanel = new JPanel();
 		JPanel buttonsPanel = new JPanel();
 		JPanel buttonsPanelTable1 = new JPanel();
+		JPanel buttonsPanelTable2 = new JPanel();
 
 		mainPanel.setLayout(new GridBagLayout());
 		elementMappingPanel.setLayout(new GridBagLayout());
@@ -120,6 +122,7 @@ public class ExportToGUFOView extends JPanel {
 		treePanel.setLayout(new GridBagLayout());
 		buttonsPanel.setLayout(new GridBagLayout());
 		buttonsPanelTable1.setLayout(new GridBagLayout());
+		buttonsPanelTable2.setLayout(new GridBagLayout());
 
 		mainPanel.setPreferredSize(new Dimension(600, 540));
 		elementMappingPanel.setPreferredSize(new Dimension(600, 480));
@@ -362,31 +365,28 @@ public class ExportToGUFOView extends JPanel {
 		gbc_buttonsPanel.gridy = 0;
 		buttonsPanel.add(btnCancel, gbc_buttonsPanel);
 
-		// TABLE
+		// TABLE 1
 
 		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
+
 		final String[] anyLevelElements = { IModelElementFactory.MODEL_TYPE_CLASS,
 				IModelElementFactory.MODEL_TYPE_ATTRIBUTE, IModelElementFactory.MODEL_TYPE_ASSOCIATION,
 				IModelElementFactory.MODEL_TYPE_ASSOCIATION_END, };
-
-		ApplicationManager.instance().getProjectManager().getProject().toAllLevelModelElementArray();
 
 		IModelElement[] elements = project.toAllLevelModelElementArray(anyLevelElements);
 		String[] nameElements = new String[elements.length];
 
 		for (int i = 0; i < elements.length; i++) {
-			if(elements[i].getName() == null || elements[i].getName().equals(""))
+			if (elements[i].getName() == null || elements[i].getName().equals(""))
 				nameElements[i] = elements[i].getId();
 			else
 				nameElements[i] = elements[i].getName();
 		}
-		
-		String[] languages = {"aa","ab","ae","af","ak","am","an","ar","as","av","ay","az","ba","be","bg","bh","bm","bi","bn","bo","br","bs","ca","ce","ch","co","cr","cs","cu","cv","cy","da","de","dv","dz","ee","el","en","eo","es","et","eu","fa","ff","fi","fj","fo","fr","fy","ga","gd","gl","gn","gu","gv","ha","he","hi","ho","hr","ht","hu","hy","hz","ia","id","ie","ig","ii","ik","io","is","it","iu","ja","jv","ka","kg","ki","kj","kk","kl","km","kn","ko","kr","ks","ku","kv","kw","ky","la","lb","lg","li","ln","lo","lt","lu","lv","mg","mh","mi","mk","ml","mn","mr","ms","mt","my","na","nb","nd","ne","ng","nl","nn","no","nr","nv","ny","oc","oj","om","or","os","pa","pi","pl","ps","pt","qu","rm","rn","ro","ru","rw","sa","sc","sd","se","sg","si","sk","sl","sm","sn","so","sq","sr","ss","st","su","sv","sw","ta","te","tg","th","ti","tk","tl","tn","to","tr","ts","tt","tw","ty","ug","uk","ur","uz","ve","vi","vo","wa","wo","xh","yi","yo","za","zh","zu"};
 
 		namesBox = new JComboBox<String>(nameElements);
 		((JLabel) namesBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
-		
-		languagesBox = new JComboBox<String>(languages);
+
+		languagesBox = new JComboBox<String>(getLanguagesCode());
 		((JLabel) languagesBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
 
 		String[][] data;
@@ -416,7 +416,6 @@ public class ExportToGUFOView extends JPanel {
 
 		table = new JTable(defaultTableModel);
 		tableColumnModel = table.getColumnModel();
-		
 
 		for (int i = 0; i < columnNamesList.size(); i++) {
 			tableColumnModel.getColumn(i).setPreferredWidth(columnNamesList.get(i).length());
@@ -424,42 +423,37 @@ public class ExportToGUFOView extends JPanel {
 		table.setPreferredScrollableViewportSize(table.getPreferredSize());
 		scrollPane = new JScrollPane(table);
 
+		namesBox.setEditable(false);
+		languagesBox.setEditable(false);
 		table.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(namesBox));
 		table.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(languagesBox));
 		table.setRowHeight(20);
-		
+
 		addButton = new JButton("Add");
 		deleteButton = new JButton("Delete");
-		
-		addButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e) 
-			{
+
+		addButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				Vector rowData = null;
 				defaultTableModel.addRow(rowData);
 				table.validate();
 			}
 		});
-		
-		deleteButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e) 
-			{
+
+		deleteButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				Vector rowData = null;
 				int rowCount = defaultTableModel.getRowCount();
-				if(rowCount>0)
-				{
-					defaultTableModel.removeRow(rowCount-1);
+				if (rowCount > 0) {
+					defaultTableModel.removeRow(rowCount - 1);
 					table.validate();
 				}
 			}
 		});
-		
-		
-		
+
 		GridBagConstraints gbc_buttonsPanelTable1 = new GridBagConstraints();
 		gbc_buttonsPanelTable1.fill = GridBagConstraints.BOTH;
-		gbc_buttonsPanelTable1.insets = new Insets(1,1,1,1);
+		gbc_buttonsPanelTable1.insets = new Insets(1, 1, 1, 1);
 		gbc_buttonsPanelTable1.weightx = 0.5;
 		gbc_buttonsPanelTable1.gridx = 0;
 		gbc_buttonsPanelTable1.gridy = 0;
@@ -469,10 +463,10 @@ public class ExportToGUFOView extends JPanel {
 		gbc_buttonsPanelTable1.gridx = 1;
 		gbc_buttonsPanelTable1.gridy = 0;
 		buttonsPanelTable1.add(deleteButton, gbc_buttonsPanelTable1);
-		
+
 		scrollPane.setPreferredSize(new Dimension(550, 400));
 		buttonsPanelTable1.setPreferredSize(new Dimension(400, 30));
-		
+
 		GridBagConstraints gbc_mappingTable1 = new GridBagConstraints();
 		// gbc_insidePanelLeft.fill = GridBagConstraints.HORIZONTAL;
 		gbc_mappingTable1.insets = new Insets(1, 1, 1, 1);
@@ -483,7 +477,108 @@ public class ExportToGUFOView extends JPanel {
 		gbc_mappingTable1.gridy = 1;
 		gbc_mappingTable1.anchor = GridBagConstraints.EAST;
 		elementMappingPanel.add(buttonsPanelTable1, gbc_mappingTable1);
-		
+
+		// TABLE 2
+
+		String[] packages = { IModelElementFactory.MODEL_TYPE_PACKAGE };
+
+		IModelElement[] elements_package = project.toAllLevelModelElementArray(anyLevelElements);
+		String[] idElements = new String[elements_package.length + 1];
+		idElements[0] = project.getId();
+		for (int i = 1; i < elements.length; i++) {
+			if (elements[i].getId() == null)
+				idElements[i] = elements[i].getId();
+		}
+
+		packagesIdBox = new JComboBox<String>(idElements);
+		((JLabel) packagesIdBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
+
+		String[][] data_table2;
+		String[] columnNamesArr_table2;
+		ArrayList<String> columnNamesList_table2;
+		DefaultTableModel defaultTableModel_table2;
+		JTable table2;
+		TableColumnModel tableColumnModel_table2;
+		JScrollPane scrollPane_table2;
+		JButton addButton_table2;
+		JButton deleteButton_table2;
+
+		columnNamesList_table2 = new ArrayList<String>();
+		columnNamesList_table2.add("Packages");
+		columnNamesList_table2.add("Prefix");
+		columnNamesList_table2.add("URI");
+
+		data_table2 = new String[1][columnNamesList_table2.size()];
+
+		columnNamesArr_table2 = new String[columnNamesList_table2.size()];
+		for (int i = 0; i < columnNamesList_table2.size(); i++) {
+			columnNamesArr_table2[i] = columnNamesList_table2.get(i);
+			data_table2[0][i] = "";
+		}
+
+		defaultTableModel_table2 = new DefaultTableModel(data_table2, columnNamesArr_table2);
+
+		table2 = new JTable(defaultTableModel_table2);
+		tableColumnModel_table2 = table2.getColumnModel();
+
+		for (int i = 0; i < columnNamesList_table2.size(); i++) {
+			tableColumnModel_table2.getColumn(i).setPreferredWidth(columnNamesList_table2.get(i).length());
+		}
+		table2.setPreferredScrollableViewportSize(table2.getPreferredSize());
+		scrollPane_table2 = new JScrollPane(table2);
+
+		packagesIdBox.setEditable(false);
+		table2.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(packagesIdBox));
+		table2.setRowHeight(20);
+
+		addButton_table2 = new JButton("Add");
+		deleteButton_table2 = new JButton("Delete");
+
+		addButton_table2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Vector rowData = null;
+				defaultTableModel_table2.addRow(rowData);
+				table2.validate();
+			}
+		});
+
+		deleteButton_table2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Vector rowData = null;
+				int rowCount = defaultTableModel_table2.getRowCount();
+				if (rowCount > 0) {
+					defaultTableModel_table2.removeRow(rowCount - 1);
+					table2.validate();
+				}
+			}
+		});
+
+		GridBagConstraints gbc_buttonsPanelTable2 = new GridBagConstraints();
+		gbc_buttonsPanelTable2.fill = GridBagConstraints.BOTH;
+		gbc_buttonsPanelTable2.insets = new Insets(1, 1, 1, 1);
+		gbc_buttonsPanelTable2.weightx = 0.5;
+		gbc_buttonsPanelTable2.gridx = 0;
+		gbc_buttonsPanelTable2.gridy = 0;
+		gbc_buttonsPanelTable2.anchor = GridBagConstraints.PAGE_END;
+		buttonsPanelTable2.add(addButton_table2, gbc_buttonsPanelTable2);
+		gbc_buttonsPanelTable2.weightx = 0.5;
+		gbc_buttonsPanelTable2.gridx = 1;
+		gbc_buttonsPanelTable2.gridy = 0;
+		buttonsPanelTable2.add(deleteButton_table2, gbc_buttonsPanelTable2);
+
+		scrollPane_table2.setPreferredSize(new Dimension(550, 400));
+		buttonsPanelTable2.setPreferredSize(new Dimension(400, 30));
+
+		GridBagConstraints gbc_mappingTable2 = new GridBagConstraints();
+		// gbc_insidePanelLeft.fill = GridBagConstraints.HORIZONTAL;
+		gbc_mappingTable2.insets = new Insets(1, 1, 1, 1);
+		gbc_mappingTable2.gridx = 0;
+		gbc_mappingTable2.gridy = 0;
+		packageMappingPanel.add(scrollPane_table2, gbc_mappingTable2);
+		gbc_mappingTable2.gridx = 0;
+		gbc_mappingTable2.gridy = 1;
+		gbc_mappingTable2.anchor = GridBagConstraints.EAST;
+		packageMappingPanel.add(buttonsPanelTable2, gbc_mappingTable2);
 
 		add(mainTabbedPane);
 
@@ -504,6 +599,22 @@ public class ExportToGUFOView extends JPanel {
 
 	public boolean getIsOpen() {
 		return isOpen;
+	}
+
+	private static String[] getLanguagesCode() {
+		String[] languages = { "aa", "ab", "ae", "af", "ak", "am", "an", "ar", "as", "av", "ay", "az", "ba", "be", "bg",
+				"bh", "bm", "bi", "bn", "bo", "br", "bs", "ca", "ce", "ch", "co", "cr", "cs", "cu", "cv", "cy", "da",
+				"de", "dv", "dz", "ee", "el", "en", "eo", "es", "et", "eu", "fa", "ff", "fi", "fj", "fo", "fr", "fy",
+				"ga", "gd", "gl", "gn", "gu", "gv", "ha", "he", "hi", "ho", "hr", "ht", "hu", "hy", "hz", "ia", "id",
+				"ie", "ig", "ii", "ik", "io", "is", "it", "iu", "ja", "jv", "ka", "kg", "ki", "kj", "kk", "kl", "km",
+				"kn", "ko", "kr", "ks", "ku", "kv", "kw", "ky", "la", "lb", "lg", "li", "ln", "lo", "lt", "lu", "lv",
+				"mg", "mh", "mi", "mk", "ml", "mn", "mr", "ms", "mt", "my", "na", "nb", "nd", "ne", "ng", "nl", "nn",
+				"no", "nr", "nv", "ny", "oc", "oj", "om", "or", "os", "pa", "pi", "pl", "ps", "pt", "qu", "rm", "rn",
+				"ro", "ru", "rw", "sa", "sc", "sd", "se", "sg", "si", "sk", "sl", "sm", "sn", "so", "sq", "sr", "ss",
+				"st", "su", "sv", "sw", "ta", "te", "tg", "th", "ti", "tk", "tl", "tn", "to", "tr", "ts", "tt", "tw",
+				"ty", "ug", "uk", "ur", "uz", "ve", "vi", "vo", "wa", "wo", "xh", "yi", "yo", "za", "zh", "zu" };
+
+		return languages;
 	}
 
 	/**
@@ -607,6 +718,5 @@ public class ExportToGUFOView extends JPanel {
 		else
 			return elementsDiagramTree;
 	}
-	
-}
 
+}
