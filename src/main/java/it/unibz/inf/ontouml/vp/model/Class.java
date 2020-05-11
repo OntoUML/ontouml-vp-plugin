@@ -184,6 +184,9 @@ public class Class implements ModelElement {
 		setAbstract(false);
 		setDerived(false);
 
+		final JsonParser parser = new JsonParser();
+		this.allowed = (JsonArray) parser.parse("[\"abstract\"]");
+		
 		setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
 
 		if (source.getName().trim().startsWith("/")) {
