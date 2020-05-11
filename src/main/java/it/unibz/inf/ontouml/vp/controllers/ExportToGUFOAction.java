@@ -68,7 +68,7 @@ public class ExportToGUFOAction implements VPActionController {
 	public void update(VPAction action) {
 	}
 
-	private void saveFile(BufferedReader buffer) throws IOException {
+	private void saveFile(BufferedReader buffer, String exportFormat) throws IOException {
 		final Configurations configs = Configurations.getInstance();
 		final ProjectConfigurations projectConfigurations = configs.getProjectConfigurations();
 		final FileDialog fd = new FileDialog((Frame) ApplicationManager.instance().getViewManager().getRootFrame(),
@@ -76,10 +76,11 @@ public class ExportToGUFOAction implements VPActionController {
 
 		String suggestedFolderPath = projectConfigurations.getExportGUFOFolderPath();
 		String suggestedFileName = projectConfigurations.getExportGUFOFilename();
+		String exportFormatExtension = exportFormat != "Turtle" ? ".nt" : ".ttl";
 
 		if (suggestedFileName.isEmpty()) {
 			String projectName = ApplicationManager.instance().getProjectManager().getProject().getName();
-			suggestedFileName = projectName + ".ttl";
+			suggestedFileName = projectName + exportFormatExtension;
 		}
 
 		fd.setDirectory(suggestedFolderPath);
@@ -88,7 +89,7 @@ public class ExportToGUFOAction implements VPActionController {
 
 		if (fd.getDirectory() != null && fd.getFile() != null) {
 			final String fileDirectory = fd.getDirectory();
-			final String fileName = !fd.getFile().endsWith(".ttl") ? fd.getFile() + ".ttl" : fd.getFile();
+			final String fileName = !fd.getFile().endsWith(exportFormatExtension) ? fd.getFile() + exportFormatExtension : fd.getFile();
 			final String output = buffer.lines().collect(Collectors.joining("\n"));
 
 			Files.write(Paths.get(fileDirectory, fileName), output.getBytes());
@@ -215,7 +216,7 @@ public class ExportToGUFOAction implements VPActionController {
 										projectConfigurations.getExportGUFOPackageMapping(), loading);
 
 								if (gufo != null) {
-									saveFile(gufo);
+									saveFile(gufo,projectConfigurations.getExportGUFOFormat());
 									ViewUtils.cleanAndShowMessage("Model exported successfully.");
 									requestMenu.doStop();
 								} else {
