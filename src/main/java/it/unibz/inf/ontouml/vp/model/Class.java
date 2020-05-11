@@ -136,7 +136,7 @@ public class Class implements ModelElement {
 					final ITaggedValue value = (ITaggedValue) values.next();
 					final JsonParser parser = new JsonParser();
 	
-					if(value.getName().equals("allowed")){
+					if(value.getName().equals(StereotypeUtils.PROPERTY_ALLOWED)){
 						String valueString = value.getValueAsString();
 						valueString = valueString
 								.trim()
@@ -148,7 +148,7 @@ public class Class implements ModelElement {
 								(JsonArray) allowed : null;
 					}
 	
-					if(value.getName().equals("isExtensional")){
+					if(value.getName().equals(StereotypeUtils.PROPERTY_IS_EXTENSIONAL)){
 						if(source.hasStereotype(StereotypeUtils.STR_COLLECTIVE)){
 							this.isExtensional = 
 									parser.parse(Boolean.valueOf(value.getValueAsString()).toString());
@@ -157,7 +157,7 @@ public class Class implements ModelElement {
 						}
 					}
 
-					if(value.getName().equals("isPowertype")){
+					if(value.getName().equals(StereotypeUtils.PROPERTY_IS_POWERTYPE)){
 						if(source.hasStereotype(StereotypeUtils.STR_TYPE)){
 							this.isPowertype = 
 									parser.parse(Boolean.valueOf(value.getValueAsString()).toString());
@@ -166,7 +166,7 @@ public class Class implements ModelElement {
 						}
 					}
 
-					if(value.getName().equals("order")){
+					if(value.getName().equals(StereotypeUtils.PROPERTY_ORDER)){
 						this.order = value.getValueAsString();
 					}
 

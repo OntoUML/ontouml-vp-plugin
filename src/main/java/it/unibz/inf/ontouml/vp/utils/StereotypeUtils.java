@@ -92,6 +92,12 @@ public class StereotypeUtils {
 	public static final String ALLOWED_EVENT = "event";
 	public static final String ALLOWED_TYPE = "type";
 	public static final String ALLOWED_ABSTRACT = "abstract";
+	
+	// Meta-properties names
+	public static final String PROPERTY_ALLOWED = "allowed";
+	public static final String PROPERTY_IS_EXTENSIONAL = "isExtensional";
+	public static final String PROPERTY_IS_POWERTYPE = "isPowertype";
+	public static final String PROPERTY_ORDER = "order";
 
 	public static void removeAllModelStereotypes(String modelType) {
 
@@ -280,9 +286,9 @@ public class StereotypeUtils {
 		// Checks and adds missing tagged value definitions to IStereotype objects
 		final Set<String> taggedStereotypeNames = getOntoUMLClassStereotypeNames();
 
-		for (String currentName : taggedStereotypeNames) {
-			final IStereotype current = stereotypeElements.get(currentName);
-			ITaggedValueDefinitionContainer definitionsContainer = current.getTaggedValueDefinitions();
+		for (String currentStereotypeName : taggedStereotypeNames) {
+			final IStereotype currentStereotype = stereotypeElements.get(currentStereotypeName);
+			ITaggedValueDefinitionContainer definitionsContainer = currentStereotype.getTaggedValueDefinitions();
 
 			if (definitionsContainer == null) {
 				definitionsContainer = IModelElementFactory.instance().createTaggedValueDefinitionContainer();
@@ -296,44 +302,44 @@ public class StereotypeUtils {
 			}
 
 			// Adds "allowed" natures to all IStereotype objects
-			if (!definitions.containsKey("allowed")) {
+			if (!definitions.containsKey(PROPERTY_ALLOWED)) {
 				final ITaggedValueDefinition allowed = IModelElementFactory.instance().createTaggedValueDefinition();
-				allowed.setName("allowed");
+				allowed.setName(PROPERTY_ALLOWED);
 				allowed.setType(ITaggedValueDefinition.TYPE_TEXT);
-				allowed.setDefaultValue(getAllowedNatures());
+				allowed.setDefaultValue(getDefaultNature(currentStereotypeName));
 				definitionsContainer.addTaggedValueDefinition(allowed);
 			}
 
 			// Adds "isExtensional" to all STR_COLLECTIVE IStereotype
-			if (current.getName().equals(STR_COLLECTIVE) && !definitions.containsKey("isExtensional")) {
+			if (currentStereotype.getName().equals(STR_COLLECTIVE) && !definitions.containsKey(PROPERTY_IS_EXTENSIONAL)) {
 				final ITaggedValueDefinition isExtensional = IModelElementFactory.instance()
 						.createTaggedValueDefinition();
-				isExtensional.setName("isExtensional");
+				isExtensional.setName(PROPERTY_IS_EXTENSIONAL);
 				isExtensional.setType(ITaggedValueDefinition.TYPE_BOOLEAN);
 				isExtensional.setDefaultValue("false");
 				definitionsContainer.addTaggedValueDefinition(isExtensional);
 			}
 
 			// Adds "isPowertype" to all STR_TYPE IStereotype
-			if (current.getName().equals(STR_TYPE) && !definitions.containsKey("isPowertype")) {
+			if (currentStereotype.getName().equals(STR_TYPE) && !definitions.containsKey(PROPERTY_IS_POWERTYPE)) {
 				final ITaggedValueDefinition isPowertype = IModelElementFactory.instance()
 						.createTaggedValueDefinition();
-				isPowertype.setName("isPowertype");
+				isPowertype.setName(PROPERTY_IS_POWERTYPE);
 				isPowertype.setType(ITaggedValueDefinition.TYPE_BOOLEAN);
 				isPowertype.setDefaultValue("false");
 				definitionsContainer.addTaggedValueDefinition(isPowertype);
 			}
 
 			// Adds "order" to all STR_TYPE IStereotype
-			if (current.getName().equals(STR_TYPE) && !definitions.containsKey("order")) {
+			if (currentStereotype.getName().equals(STR_TYPE) && !definitions.containsKey(PROPERTY_ORDER)) {
 				final ITaggedValueDefinition order = IModelElementFactory.instance().createTaggedValueDefinition();
-				order.setName("order");
+				order.setName(PROPERTY_ORDER);
 				order.setType(ITaggedValueDefinition.TYPE_TEXT);
 				order.setDefaultValue("2");
 				definitionsContainer.addTaggedValueDefinition(order);
 			}
 
-			current.setTaggedValueDefinitions(definitionsContainer);
+			currentStereotype.setTaggedValueDefinitions(definitionsContainer);
 		}
 
 		if(STEREOTYPE_ELEMENTS == null) {
@@ -374,15 +380,14 @@ public class StereotypeUtils {
 		final IStereotype stereotype = STEREOTYPE_ELEMENTS.get(stereotypeName);
 		
 		if(
-			stereotype == null || 
-			element.hasStereotype(stereotype.getName()) ||
+			stereotype == null ||
 			!element.getModelType().equals(stereotype.getBaseType())
 		) {
 			// TODO: check the necessity of throwing some exception here
 			return ;
 		}
 
-		// Saves previous "allowed" tag value
+		// Saves previous tag values
 		final ITaggedValueContainer oldContainer = element.getTaggedValues();
 		final Iterator<?> oldValues = oldContainer != null ? oldContainer.taggedValueIterator() : null;
 		String allowedTagValue = null;
@@ -394,38 +399,37 @@ public class StereotypeUtils {
 		while(oldValues != null && oldValues.hasNext()) {
 			final ITaggedValue oldValue = (ITaggedValue) oldValues.next();
 
-			if(oldValue.getName().equals("allowed")) {
+			if(oldValue.getName().equals(PROPERTY_ALLOWED)) {
 				allowedTagValue = oldValue.getValueAsString();
 			}
 
 			if(
-				oldValue.getName().equals("isExtensional")
+				oldValue.getName().equals(PROPERTY_IS_EXTENSIONAL)
 				&& STR_COLLECTIVE.equals(stereotypeName)
 			) {
 				isExtensionalTagValue = oldValue.getValueAsString();
 			}
 
 			if(
-				oldValue.getName().equals("isPowertype")
+				oldValue.getName().equals(PROPERTY_IS_POWERTYPE)
 				&& STR_TYPE.equals(stereotypeName)
 			) {
 				isPowertypeTagValue = oldValue.getValueAsString();
 			}
 
 			if(
-				oldValue.getName().equals("order")
+				oldValue.getName().equals(PROPERTY_ORDER)
 				&& STR_TYPE.equals(stereotypeName)
 			) {
 				orderTagValue = oldValue.getValueAsString();
 			}
 
-			// Deletes old tags that are not user-defined
+			// Deletes old tags that are part of the profile
 			if(
-				oldValue.getTagDefinition() != null
-				|| oldValue.getName().equals("allowed")
-				|| oldValue.getName().equals("isExtensional")
-				|| oldValue.getName().equals("isPowertype")
-				|| oldValue.getName().equals("order")
+				oldValue.getName().equals(PROPERTY_ALLOWED)
+				|| oldValue.getName().equals(PROPERTY_IS_EXTENSIONAL)
+				|| oldValue.getName().equals(PROPERTY_IS_POWERTYPE)
+				|| oldValue.getName().equals(PROPERTY_ORDER)
 			) {
 				oldContainer.removeTaggedValue(oldValue);
 				oldValue.delete();
@@ -450,44 +454,20 @@ public class StereotypeUtils {
 		while(newValues != null && newValues.hasNext()) {
 			final ITaggedValue newValue = (ITaggedValue) newValues.next();
 
-			if(newValue.getName().equals("allowed") && allowedTagValue != null) {
+			if(newValue.getName().equals(PROPERTY_ALLOWED) && allowedTagValue != null) {
 				newValue.setValue(allowedTagValue);
 			}
-			else if(newValue.getName().equals("isExtensional") && isExtensionalTagValue != null) {
+			else if(newValue.getName().equals(PROPERTY_IS_EXTENSIONAL) && isExtensionalTagValue != null) {
 				newValue.setValue(isExtensionalTagValue);
 			}
-			else if(newValue.getName().equals("isPowertype") && isPowertypeTagValue != null) {
+			else if(newValue.getName().equals(PROPERTY_IS_POWERTYPE) && isPowertypeTagValue != null) {
 				newValue.setValue(isPowertypeTagValue);
 			}
-			else if(newValue.getName().equals("order") && orderTagValue != null) {
+			else if(newValue.getName().equals(PROPERTY_ORDER) && orderTagValue != null) {
 				newValue.setValue(orderTagValue);
 			}
 		}
 	}
-
-	// public static void setAllowed(IModelElement element, String stereotypeName, String allowed) {
-	// 	if(element.getTaggedValues() == null) { 
-	// 		return ; 
-	// 	}
-
-	// 	Iterator<?> values = element.getTaggedValues().taggedValueIterator();
-			
-	// 	while(values.hasNext()) {
-	// 		final ITaggedValue value = (ITaggedValue) values.next();
-	// 		final ITaggedValueDefinition definition = value != null ? value.getTagDefinition() : null;
-	// 		final IStereotype valueStereotype = definition != null ? 
-	// 				value.getTagDefinitionStereotype() : null;
-	// 		final String valueStereotypeName = valueStereotype != null ?
-	// 				valueStereotype.getName() : null;
-			
-	// 		if(
-	// 			value.getName().equals("allowed") && 
-	// 			stereotypeName.equals(valueStereotypeName)
-	// 		) {
-	// 			value.setValue(allowed);
-	// 		}
-	// 	}
-	// }
 
 	public static void setAllowed(IModelElement element, String stereotypeName) {
 		if(element.getTaggedValues() == null) { 
@@ -505,66 +485,48 @@ public class StereotypeUtils {
 					valueStereotype.getName() : null;
 			
 			if(
-				value.getName().equals("allowed") && 
+				value.getName().equals(PROPERTY_ALLOWED) && 
 				stereotypeName.equals(valueStereotypeName)
 			) {
-				switch (stereotypeName) {
-					case STR_TYPE:
-						value.setValue(StereotypeUtils.toAllowedNaturesString(ALLOWED_TYPE));
-						break;
-					case STR_HISTORICAL_ROLE:
-						value.setValue(StereotypeUtils.toAllowedNaturesString(ALLOWED_EVENT));
-						break;
-					case STR_EVENT:
-						value.setValue(StereotypeUtils.toAllowedNaturesString(ALLOWED_EVENT));
-						break;
-					case STR_CATEGORY:
-						// value.setValue(toAllowedNaturesString());
-						break;
-					case STR_MIXIN:
-						// value.setValue(toAllowedNaturesString());
-						break;
-					case STR_ROLE_MIXIN:
-						// value.setValue(toAllowedNaturesString());
-						break;
-					case STR_PHASE_MIXIN:
-						// value.setValue(toAllowedNaturesString());
-						break;
-					case STR_KIND:
-						value.setValue(StereotypeUtils.toAllowedNaturesString(ALLOWED_FUNCTIONAL_COMPLEX));
-						break;
-					case STR_COLLECTIVE:
-						value.setValue(StereotypeUtils.toAllowedNaturesString(ALLOWED_COLLECTIVE));
-						break;
-					case STR_QUANTITY:
-						value.setValue(StereotypeUtils.toAllowedNaturesString(ALLOWED_QUANTITY));
-						break;
-					case STR_RELATOR:
-						value.setValue(StereotypeUtils.toAllowedNaturesString(ALLOWED_RELATOR));
-						break;
-					case STR_QUALITY:
-						value.setValue(StereotypeUtils.toAllowedNaturesString(ALLOWED_QUALITY));
-						break;
-					case STR_MODE:
-						value.setValue(StereotypeUtils.toAllowedNaturesString(ALLOWED_MODE));
-						break;
-					case STR_SUBKIND:
-						value.setValue("");
-						break;
-					case STR_ROLE:
-						value.setValue("");
-						break;
-					case STR_PHASE:
-						value.setValue("");
-						break;
-					case STR_ENUMERATION:
-						value.setValue(StereotypeUtils.toAllowedNaturesString(ALLOWED_ABSTRACT));
-						break;
-					case STR_DATATYPE:
-						value.setValue(StereotypeUtils.toAllowedNaturesString(ALLOWED_ABSTRACT));
-						break;
-				}
+				final String defaultNature = getDefaultNature(stereotypeName);
+				value.setValue(StereotypeUtils.toAllowedNaturesString(defaultNature));
 			}
+		}
+	}
+
+	public static String getDefaultNature(String stereotype) {
+		switch (stereotype) {
+			case STR_TYPE:
+				return ALLOWED_TYPE;
+			case STR_HISTORICAL_ROLE:
+			case STR_EVENT:
+				return ALLOWED_EVENT;
+			case STR_CATEGORY:
+			case STR_MIXIN:
+			case STR_ROLE_MIXIN:
+			case STR_PHASE_MIXIN:
+			case STR_KIND:
+				return ALLOWED_FUNCTIONAL_COMPLEX;
+			case STR_COLLECTIVE:
+				return ALLOWED_COLLECTIVE;
+			case STR_QUANTITY:
+				return ALLOWED_QUANTITY;
+			case STR_RELATOR:
+				return ALLOWED_RELATOR;
+			case STR_QUALITY:
+				return ALLOWED_QUALITY;
+			case STR_MODE:
+				return ALLOWED_MODE;
+			case STR_SUBKIND:
+			case STR_ROLE:
+			case STR_PHASE:
+				return ALLOWED_FUNCTIONAL_COMPLEX;
+			case STR_ENUMERATION:
+				return ALLOWED_ABSTRACT;
+			case STR_DATATYPE:
+				return ALLOWED_ABSTRACT;
+			default:
+				return "";
 		}
 	}
 }

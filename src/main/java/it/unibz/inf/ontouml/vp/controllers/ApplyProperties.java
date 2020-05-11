@@ -39,7 +39,7 @@ public class ApplyProperties implements VPContextActionController {
 
 		switch(action.getActionId()) {
 			case ActionIds.PROPERTY_SET_ALLOWED:
-				this.setAllowedProperty(action,context,event);
+				this.setAllowedProperty(context);
 				break;
 			case ActionIds.PROPERTY_SET_IS_ABSTRACT:
 				_class.setAbstract(!_class.isAbstract());
@@ -63,62 +63,46 @@ public class ApplyProperties implements VPContextActionController {
 		}
 	}
 
-	private void setAllowedProperty(VPAction action, VPContext context, ActionEvent event) {
+	private ITaggedValue getValueToBeSet(VPContext context, String valueName){
 		if(context.getModelElement() == null) {
-			return ;
+			return null;
 		}
 
 		final IClass _class = (IClass) context.getModelElement();
-		ITaggedValueContainer container = _class.getTaggedValues();
-		Iterator<?> values = container == null ? null : container.taggedValueIterator();
 		String currentStereotype = _class.toStereotypeArray() != null && _class.toStereotypeArray().length > 0 ?
 			_class.toStereotypeArray() [0] :
 			null;
 
-		if(currentStereotype == null || !StereotypeUtils.getOntoUMLClassStereotypeNames().contains(currentStereotype)){
-			return ;
+		// Escape in case the stereotype is missing or incorrect
+		if(
+			currentStereotype == null 
+			|| !StereotypeUtils.getOntoUMLClassStereotypeNames().contains(currentStereotype)
+		){
+			return null;
 		}
 
+		// Reapply stereotype making sure that the tagged values are there
+		StereotypeUtils.applyStereotype(_class, currentStereotype);
+
 		// Searches for tagged value
-		ITaggedValue allowedValue = null;
+		ITaggedValueContainer container = _class.getTaggedValues();
+		Iterator<?> values = container == null ? null : container.taggedValueIterator();
 		while(values != null && values.hasNext()) {
 			final ITaggedValue value = (ITaggedValue) values.next();
 
-			if(value.getName().equals("allowed")) {
-				allowedValue = value;
-				break ;
+			if(value.getName().equals(valueName)) {
+				return value;
 			}
 		}
 
-		// Adds missing tagged value
+		return null;
+	}
+
+	private void setAllowedProperty(VPContext context) {
+		final ITaggedValue allowedValue = getValueToBeSet(context, StereotypeUtils.PROPERTY_ALLOWED);
+
 		if(allowedValue == null) {
-			// Reset stereotype's tagged values
-			if(StereotypeUtils.STEREOTYPE_ELEMENTS == null) { 
-				StereotypeUtils.generate(); 
-			}
-			
-			if(_class.getTaggedValues() != null) { 
-				ITaggedValueContainer c = _class.getTaggedValues();
-				_class.setTaggedValues(null);
-				c.delete();
-			}
-			
-			_class.removeStereotype(currentStereotype);
-			_class.addStereotype(StereotypeUtils.STEREOTYPE_ELEMENTS.get(currentStereotype));
-			StereotypeUtils.setAllowed(_class, currentStereotype);
-
-			// Searches for the tagged value just added
-			container = _class.getTaggedValues();
-			values = container == null ? null : container.taggedValueIterator();
-
-			while(values != null && values.hasNext()) {
-				final ITaggedValue value = (ITaggedValue) values.next();
-
-				if(value.getName().equals("allowed")) {
-					allowedValue = value;
-					break ;
-				}
-			}
+			return ;
 		}
 
 		final ViewManager vm = ApplicationManager.instance().getViewManager();
@@ -130,172 +114,30 @@ public class ApplyProperties implements VPContextActionController {
 	}
 
 	private void setIsExtensionalProperty(VPAction action, VPContext context, ActionEvent event) {
-		if(context.getModelElement() == null) {
-			return ;
-		}
+		final ITaggedValue isExtensionalValue = getValueToBeSet(context, StereotypeUtils.PROPERTY_IS_EXTENSIONAL);
 
-		final IClass _class = (IClass) context.getModelElement();
-		ITaggedValueContainer container = _class.getTaggedValues();
-		Iterator<?> values = container == null ? null : container.taggedValueIterator();
-
-		if(!_class.hasStereotype(StereotypeUtils.STR_COLLECTIVE)){
-			return ;
-		}
-
-		// Searches for tagged value
-		ITaggedValue isExtensionalValue = null;
-		while(values != null && values.hasNext()) {
-			final ITaggedValue value = (ITaggedValue) values.next();
-
-			if(value.getName().equals("isExtensional")) {
-				isExtensionalValue = value;
-				break ;
-			}
-		}
-
-		// Adds missing tagged value
 		if(isExtensionalValue == null) {
-			// Reset stereotype's tagged values
-			if(StereotypeUtils.STEREOTYPE_ELEMENTS == null) { 
-				StereotypeUtils.generate(); 
-			}
-			
-			if(_class.getTaggedValues() != null) { 
-				ITaggedValueContainer c = _class.getTaggedValues();
-				_class.setTaggedValues(null);
-				c.delete();
-			}
-			
-			_class.removeStereotype(StereotypeUtils.STR_COLLECTIVE);
-			_class.addStereotype(StereotypeUtils.STEREOTYPE_ELEMENTS.get(StereotypeUtils.STR_COLLECTIVE));
-			StereotypeUtils.setAllowed(_class, StereotypeUtils.STR_COLLECTIVE);
-
-			// Searches for the tagged value just added
-			container = _class.getTaggedValues();
-			values = container == null ? null : container.taggedValueIterator();
-
-			while(values != null && values.hasNext()) {
-				final ITaggedValue value = (ITaggedValue) values.next();
-
-				if(value.getName().equals("isExtensional")) {
-					isExtensionalValue = value;
-					break ;
-				}
-			}
+			return ;
 		}
 
 		isExtensionalValue.setValue(!isExtensionalValue.getValueAsString().toLowerCase().equals("true"));
 	}
 
 	private void setIsPowertypeProperty(VPAction action, VPContext context, ActionEvent event) {
-		if(context.getModelElement() == null) {
-			return ;
-		}
+		final ITaggedValue isPowertypeValue = getValueToBeSet(context, StereotypeUtils.PROPERTY_IS_POWERTYPE);
 
-		final IClass _class = (IClass) context.getModelElement();
-		ITaggedValueContainer container = _class.getTaggedValues();
-		Iterator<?> values = container == null ? null : container.taggedValueIterator();
-
-		if(!_class.hasStereotype(StereotypeUtils.STR_TYPE)){
-			return ;
-		}
-
-		// Searches for tagged value
-		ITaggedValue isPowertypeValue = null;
-		while(values != null && values.hasNext()) {
-			final ITaggedValue value = (ITaggedValue) values.next();
-
-			if(value.getName().equals("isPowertype")) {
-				isPowertypeValue = value;
-				break ;
-			}
-		}
-
-		// Adds missing tagged value
 		if(isPowertypeValue == null) {
-			// Reset stereotype's tagged values
-			if(StereotypeUtils.STEREOTYPE_ELEMENTS == null) { StereotypeUtils.generate(); }
-
-			if(_class.getTaggedValues() != null) { 
-				ITaggedValueContainer c = _class.getTaggedValues();
-				_class.setTaggedValues(null);
-				c.delete();
-			}
-			
-			_class.removeStereotype(StereotypeUtils.STR_TYPE);
-			_class.addStereotype(StereotypeUtils.STEREOTYPE_ELEMENTS.get(StereotypeUtils.STR_TYPE));
-			
-			StereotypeUtils.setAllowed(_class, StereotypeUtils.STR_TYPE);
-			
-			// Searches for the tagged value just added
-			container = _class.getTaggedValues();
-			values = container == null ? null : container.taggedValueIterator();
-
-			while(values != null && values.hasNext()) {
-				final ITaggedValue value = (ITaggedValue) values.next();
-
-				if(value.getName().equals("isPowertype")) {
-					isPowertypeValue = value;
-					break ;
-				}
-			}
+			return ;
 		}
 
 		isPowertypeValue.setValue(!isPowertypeValue.getValueAsString().toLowerCase().equals("true"));
 	}
 
 	private void setOrderProperty(VPAction action, VPContext context, ActionEvent event) {
-		if(context.getModelElement() == null) {
-			return ;
-		}
+		final ITaggedValue orderValue = getValueToBeSet(context, StereotypeUtils.PROPERTY_ORDER);
 
-		final IClass _class = (IClass) context.getModelElement();
-		ITaggedValueContainer container = _class.getTaggedValues();
-		Iterator<?> values = container == null ? null : container.taggedValueIterator();
-
-		if(!_class.hasStereotype(StereotypeUtils.STR_TYPE)){
-			return ;
-		}
-
-		// Searches for tagged value
-		ITaggedValue orderValue = null;
-		while(values != null && values.hasNext()) {
-			final ITaggedValue value = (ITaggedValue) values.next();
-
-			if(value.getName().equals("order")) {
-				orderValue = value;
-				break ;
-			}
-		}
-
-		// Adds missing tagged value
 		if(orderValue == null) {
-			// Reset stereotype's tagged values
-			if(StereotypeUtils.STEREOTYPE_ELEMENTS == null) { StereotypeUtils.generate(); }
-
-			if(_class.getTaggedValues() != null) { 
-				ITaggedValueContainer c = _class.getTaggedValues();
-				_class.setTaggedValues(null);
-				c.delete();
-			}
-			
-			_class.removeStereotype(StereotypeUtils.STR_TYPE);
-			_class.addStereotype(StereotypeUtils.STEREOTYPE_ELEMENTS.get(StereotypeUtils.STR_TYPE));
-			
-			StereotypeUtils.setAllowed(_class, StereotypeUtils.STR_TYPE);
-
-			// Searches for the tagged value just added
-			container = _class.getTaggedValues();
-			values = container == null ? null : container.taggedValueIterator();
-
-			while(values != null && values.hasNext()) {
-				final ITaggedValue value = (ITaggedValue) values.next();
-
-				if(value.getName().equals("order")) {
-					orderValue = value;
-					break ;
-				}
-			}
+			return ;
 		}
 
 		final ViewManager vm = ApplicationManager.instance().getViewManager();
@@ -344,7 +186,7 @@ public class ApplyProperties implements VPContextActionController {
 				while(values != null && values.hasNext()) {
 					final ITaggedValue value = (ITaggedValue) values.next();
 
-					if(value.getName().equals("isExtensional")) {
+					if(value.getName().equals(StereotypeUtils.PROPERTY_IS_EXTENSIONAL)) {
 						action.setEnabled(true);
 						action.setSelected(value.getValueAsString().toLowerCase().equals("true"));
 						return;
@@ -358,7 +200,7 @@ public class ApplyProperties implements VPContextActionController {
 				while(values != null && values.hasNext()) {
 					final ITaggedValue value = (ITaggedValue) values.next();
 
-					if(value.getName().equals("isPowertype")) {
+					if(value.getName().equals(StereotypeUtils.PROPERTY_IS_POWERTYPE)) {
 						action.setEnabled(true);
 						action.setSelected(value.getValueAsString().toLowerCase().equals("true"));
 						return;
