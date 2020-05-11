@@ -1,20 +1,27 @@
 package it.unibz.inf.ontouml.vp.model;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
-import com.vp.plugin.model.*;
+import com.vp.plugin.model.IAssociation;
+import com.vp.plugin.model.IAssociationClass;
+import com.vp.plugin.model.IClass;
+import com.vp.plugin.model.IDataType;
+import com.vp.plugin.model.IGeneralization;
+import com.vp.plugin.model.IGeneralizationSet;
+import com.vp.plugin.model.IModel;
+import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.IPackage;
+import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.factory.IModelElementFactory;
-
-import it.unibz.inf.ontouml.vp.views.JCheckBoxTree.ElementNode;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * 

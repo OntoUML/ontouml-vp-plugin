@@ -1,7 +1,6 @@
 package it.unibz.inf.ontouml.vp.utils;
 
 import java.util.HashSet;
-import java.util.Iterator;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
