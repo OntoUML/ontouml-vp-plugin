@@ -192,6 +192,12 @@ public class Class implements ModelElement {
 		} else {
 			setName(source.getName().trim());
 		}
+
+		if(allowed==null)
+			allowed = new JsonArray();
+
+		if(allowed.size()==0)
+			allowed.add("abstract");
 	}
 	
 	public Class(IClass source, HashSet<String> modelElements) {
