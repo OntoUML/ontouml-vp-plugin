@@ -128,53 +128,7 @@ public class Class implements ModelElement {
 
 		setDescription(source.getDescription());
 
-		if(source.getTaggedValues() != null) {
-			final Iterator<?> values = source.getTaggedValues().taggedValueIterator();
-
-			while(values.hasNext()) {
-				try{
-					final ITaggedValue value = (ITaggedValue) values.next();
-					final JsonParser parser = new JsonParser();
-	
-					if(value.getName().equals(StereotypeUtils.PROPERTY_ALLOWED)){
-						String valueString = value.getValueAsString();
-						valueString = valueString
-								.trim()
-								.replaceAll(" +", "")
-								.replaceAll(",", "\",\"");
-						
-						final JsonElement allowed = !valueString.equals("") ? parser.parse("[\"" + valueString + "\"]") : parser.parse("[]");
-						this.allowed = allowed.isJsonArray() && ((JsonArray) allowed).size() > 0 ?
-								(JsonArray) allowed : null;
-					}
-	
-					if(value.getName().equals(StereotypeUtils.PROPERTY_IS_EXTENSIONAL)){
-						if(source.hasStereotype(StereotypeUtils.STR_COLLECTIVE)){
-							this.isExtensional = 
-									parser.parse(Boolean.valueOf(value.getValueAsString()).toString());
-						} else {
-							this.isExtensional = parser.parse("null");
-						}
-					}
-
-					if(value.getName().equals(StereotypeUtils.PROPERTY_IS_POWERTYPE)){
-						if(source.hasStereotype(StereotypeUtils.STR_TYPE)){
-							this.isPowertype = 
-									parser.parse(Boolean.valueOf(value.getValueAsString()).toString());
-						} else {
-							this.isPowertype = parser.parse("null");
-						}
-					}
-
-					if(value.getName().equals(StereotypeUtils.PROPERTY_ORDER)){
-						this.order = value.getValueAsString();
-					}
-
-				} catch(Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
+		loadTags(source);
 	}
 
 	public Class(IDataType source) {
@@ -231,6 +185,58 @@ public class Class implements ModelElement {
 		}
 
 		setDescription(source.getDescription());
+		
+		loadTags(source);
+	}
+
+	private void loadTags(IClass source){
+		if(source.getTaggedValues() != null) {
+			final Iterator<?> values = source.getTaggedValues().taggedValueIterator();
+
+			while(values.hasNext()) {
+				try{
+					final ITaggedValue value = (ITaggedValue) values.next();
+					final JsonParser parser = new JsonParser();
+	
+					if(value.getName().equals(StereotypeUtils.PROPERTY_ALLOWED)){
+						String valueString = value.getValueAsString();
+						valueString = valueString
+								.trim()
+								.replaceAll(" +", "")
+								.replaceAll(",", "\",\"");
+						
+						final JsonElement allowed = !valueString.equals("") ? parser.parse("[\"" + valueString + "\"]") : parser.parse("[]");
+						this.allowed = allowed.isJsonArray() && ((JsonArray) allowed).size() > 0 ?
+								(JsonArray) allowed : null;
+					}
+	
+					if(value.getName().equals(StereotypeUtils.PROPERTY_IS_EXTENSIONAL)){
+						if(source.hasStereotype(StereotypeUtils.STR_COLLECTIVE)){
+							this.isExtensional = 
+									parser.parse(Boolean.valueOf(value.getValueAsString()).toString());
+						} else {
+							this.isExtensional = parser.parse("null");
+						}
+					}
+
+					if(value.getName().equals(StereotypeUtils.PROPERTY_IS_POWERTYPE)){
+						if(source.hasStereotype(StereotypeUtils.STR_TYPE)){
+							this.isPowertype = 
+									parser.parse(Boolean.valueOf(value.getValueAsString()).toString());
+						} else {
+							this.isPowertype = parser.parse("null");
+						}
+					}
+
+					if(value.getName().equals(StereotypeUtils.PROPERTY_ORDER)){
+						this.order = value.getValueAsString();
+					}
+
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	@Override
