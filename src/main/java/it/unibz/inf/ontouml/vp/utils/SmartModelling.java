@@ -243,7 +243,7 @@ public class SmartModelling {
 		final ArrayList<String> sourceStereotypes = new ArrayList<String>(Arrays.asList(source.toStereotypeArray()));
 		final ArrayList<String> targetStereotypes = new ArrayList<String>(Arrays.asList(target.toStereotypeArray()));
 
-		if (sourceStereotypes.size() > 1 || targetStereotypes.size() > 1) {
+		if (sourceStereotypes.size() != 1 || targetStereotypes.size() != 1) {
 			// if any end has more than 1 stereotypes nothing is allowed
 			action.setEnabled(false);
 			return;
