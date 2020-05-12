@@ -39,15 +39,21 @@ public class OntoUMLServerUtils {
 			String inverse, String object, String analysis, String packages, String elementMapping,
 			String packageMapping, IDialogHandler loading) throws Exception {
 		final JsonObject optionsObj = new JsonObject();
+
+		boolean createObjectProperty = !Boolean.parseBoolean(object);
+		boolean createInverses = Boolean.parseBoolean(inverse);
+		boolean preAnalysis = Boolean.parseBoolean(analysis);
+		boolean prefixPackages = Boolean.parseBoolean(packages);
+
 		optionsObj.addProperty("baseIRI", baseIRI);
 		optionsObj.addProperty("format", format);
 		optionsObj.addProperty("uriFormatBy", uriFormatBy);
-		optionsObj.addProperty("inverse", inverse);
-		optionsObj.addProperty("object", object);
-		optionsObj.addProperty("analysis", analysis);
-		optionsObj.addProperty("packages", packages);
-		optionsObj.add("elementMapping", new Gson().fromJson(elementMapping, JsonObject.class));
-		optionsObj.add("packageMapping", new Gson().fromJson(packageMapping, JsonObject.class));
+		optionsObj.addProperty("createInverses", createInverses);
+		optionsObj.addProperty("createObjectProperty", createObjectProperty);
+		optionsObj.addProperty("preAnalysis", preAnalysis);
+		optionsObj.addProperty("prefixPackages", prefixPackages);
+		optionsObj.add("customElementMapping", new Gson().fromJson(elementMapping, JsonObject.class));
+		optionsObj.add("customPackageMapping", new Gson().fromJson(packageMapping, JsonObject.class));
 
 		final JsonObject bodyObj = new JsonObject();
 		bodyObj.add("options", optionsObj);
