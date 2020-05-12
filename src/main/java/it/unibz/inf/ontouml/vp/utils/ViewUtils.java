@@ -186,10 +186,24 @@ public class ViewUtils {
 				final String id = error.getAsJsonObject("source").get("id").getAsString();
 
 				if (isElementInCurrentDiagram(id)) {
-					final String errorMessage = error.get("severity").getAsString() + ":" + " " + error.get("title").getAsString() + " " + error.get("description").getAsString();
-					errorList.add(timestamp() + errorMessage);
+					final StringBuilder errorMessage = new StringBuilder();
+					errorMessage.append(!error.get("severity").isJsonNull() ? error.get("severity").getAsString().toUpperCase() : "");
+					errorMessage.append(": ");
+					errorMessage.append(!error.get("title").isJsonNull() ? error.get("title").getAsString() : "");
+					errorMessage.append(" ");
+					errorMessage.append(!error.get("description").isJsonNull() ? error.get("description").getAsString() : "");
+	
+					errorList.add(timestamp() + errorMessage.toString());
 					idModelElementList.add(id);
 				}
+				// final JsonObject error = elem.getAsJsonObject();
+				// final String id = error.getAsJsonObject("source").get("id").getAsString();
+
+				// if (isElementInCurrentDiagram(id)) {
+				// 	final String errorMessage = error.get("severity").getAsString() + ":" + " " + error.get("title").getAsString() + " " + error.get("description").getAsString();
+				// 	errorList.add(timestamp() + errorMessage);
+				// 	idModelElementList.add(id);
+				// }
 			}
 
 			JList<Object> list = new JList<>(errorList.toArray());
@@ -221,23 +235,15 @@ public class ViewUtils {
 				final JsonObject error = elem.getAsJsonObject();
 				final String id = error.getAsJsonObject("source").get("id").getAsString();
 				
-				try {
-					final StringBuilder errorMessage = new StringBuilder();
-					errorMessage.append(!error.get("severity").isJsonNull() ? error.get("severity").getAsString().toUpperCase() : "");
-					errorMessage.append(": ");
-					errorMessage.append(!error.get("title").isJsonNull() ? error.get("title").getAsString() : "");
-					errorMessage.append(" ");
-					errorMessage.append(!error.get("description").isJsonNull() ? error.get("description").getAsString() : "");
-					// final String errorMessage = 
-					// 	error.get("severity").getAsString() + ":" + " " 
-					// 	+ error.get("title").getAsString() + " " 
-					// 	+ error.get("description").getAsString();
+				final StringBuilder errorMessage = new StringBuilder();
+				errorMessage.append(!error.get("severity").isJsonNull() ? error.get("severity").getAsString().toUpperCase() : "");
+				errorMessage.append(": ");
+				errorMessage.append(!error.get("title").isJsonNull() ? error.get("title").getAsString() : "");
+				errorMessage.append(" ");
+				errorMessage.append(!error.get("description").isJsonNull() ? error.get("description").getAsString() : "");
 
-					errorList.add(timestamp() + errorMessage.toString());
-					idModelElementList.add(id);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				errorList.add(timestamp() + errorMessage.toString());
+				idModelElementList.add(id);
 
 			}
 
