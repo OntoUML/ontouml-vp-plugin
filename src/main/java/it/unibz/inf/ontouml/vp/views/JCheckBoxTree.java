@@ -242,19 +242,20 @@ public class JCheckBoxTree extends JTree {
 			}
 
 			nameNode = "(" + nameFrom + " -> " + nameTo + ")";
-			
-			if(((IAssociation) obj).getName()!=null && !((IAssociation) obj).getName().equals(""))
+
+			if (((IAssociation) obj).getName() != null && !((IAssociation) obj).getName().equals(""))
 				nameNode = ((IAssociation) obj).getName() + " " + nameNode;
 
 		} else if (obj instanceof IAssociationEnd) {
 			nameNode = ": AssociationEnd";
 
-			if (((IAssociationEnd) obj).getTypeAsString() != null && !((IAssociationEnd) obj).getTypeAsString().equals("")) {
-				
+			if (((IAssociationEnd) obj).getTypeAsString() != null
+					&& !((IAssociationEnd) obj).getTypeAsString().equals("")) {
+
 				nameNode = ": " + ((IAssociationEnd) obj).getTypeAsString();
-				
+
 				if (((IAssociationEnd) obj).getName() != null && !((IAssociationEnd) obj).getName().equals(""))
-				nameNode = ((IAssociationEnd) obj).getName() + " " + nameNode;
+					nameNode = ((IAssociationEnd) obj).getName() + " " + nameNode;
 			}
 
 		} else if (obj instanceof IGeneralization) {
@@ -337,6 +338,9 @@ public class JCheckBoxTree extends JTree {
 
 				selectTypeNodes((ElementNode) path.getLastPathComponent());
 
+				if (((ElementNode) path.getLastPathComponent()).getUserObject() instanceof IGeneralizationSet)
+					selectAllGeneralizationsFromSet((ElementNode) path.getLastPathComponent(), checkMode);
+
 				selfPointer.repaint();
 			}
 
@@ -389,6 +393,39 @@ public class JCheckBoxTree extends JTree {
 		}
 	}
 
+	private void visitAllAndCheckSameId(ElementNode root, String id, boolean checkMode) {
+
+		if (root.getUserObject() instanceof IModelElement) {
+			IModelElement rootModelElement = ((IModelElement) ((DefaultMutableTreeNode) root).getUserObject());
+
+			// if same Object
+			if (rootModelElement.getId().equals(id)) {
+
+				TreeNode[] new_treeNode = root.getPath();
+				TreePath newTp = new TreePath(new_treeNode);
+
+				CheckedNode cn = nodesCheckingState.get(newTp);
+				cn.isSelected = checkMode;
+
+				if (checkMode)
+					checkedPaths.add(newTp);
+				else
+					checkedPaths.remove(newTp);
+
+			}
+		}
+
+		if (root.getChildCount() >= 0)
+
+		{
+			for (Enumeration<? extends TreeNode> e = root.children(); e.hasMoreElements();) {
+				ElementNode n = (ElementNode) e.nextElement();
+
+				visitAllAndCheckSameId(n, id, checkMode);
+			}
+		}
+	}
+
 	protected void findSimilarNodes(ElementNode node) {
 
 		for (int i = 0; i < node.getChildCount(); i++)
@@ -414,7 +451,7 @@ public class JCheckBoxTree extends JTree {
 		if (root.getUserObject() instanceof IDataType)
 			typeCurrentNode = ((IDataType) root.getUserObject()).getName();
 
-		if (typeOriginal!=null && typeCurrentNode.contentEquals(typeOriginal)) {
+		if (typeOriginal != null && typeCurrentNode.contentEquals(typeOriginal)) {
 
 			TreeNode[] old_treeNode = nodeToCompare.getPath();
 			TreePath oldTp = new TreePath(old_treeNode);
@@ -453,6 +490,26 @@ public class JCheckBoxTree extends JTree {
 	protected void selectTypeNodes(ElementNode node) {
 		ElementNode root = (ElementNode) this.getModel().getRoot();
 		visitAllNodesAndCheckType(root, node);
+	}
+
+	protected void selectAllGeneralizationsFromSet(ElementNode node, boolean checkMode) {
+
+		if (!(node.getUserObject() instanceof IGeneralizationSet))
+			return;
+
+		IGeneralizationSet gSet = ((IGeneralizationSet) ((DefaultMutableTreeNode) node).getUserObject());
+
+		IGeneralization[] generalizations = gSet.toGeneralizationArray();
+
+		if (generalizations == null)
+			return;
+
+		ElementNode root = (ElementNode) this.getModel().getRoot();
+
+		for (int i = 0; i < generalizations.length; i++) {
+			visitAllAndCheckSameId(root, generalizations[i].getId(), checkMode);
+		}
+
 	}
 
 	// When a node is checked/unchecked, updating the states of the predecessors
