@@ -6,6 +6,9 @@ import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.*;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
+import it.unibz.inf.ontouml.vp.model.Class;
+import it.unibz.inf.ontouml.vp.model.Package;
+
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -80,7 +83,7 @@ public class Package implements ModelElement {
 
 		setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
 	}
-	
+
 	public Package(IPackage source, HashSet<String> idElements) {
 		this.sourceModelElement = source;
 		this.type = ModelElement.TYPE_PACKAGE;
@@ -88,23 +91,14 @@ public class Package implements ModelElement {
 		setName(source.getName());
 		setDescription(source.getDescription());
 
-		final IModelElement[] children = source.toChildArray();
-		for (int i = 0; children != null && i < children.length; i++) {
-			final IModelElement child = children[i];
-			
-			if(!idElements.contains(child.getId()))
-				continue;
-			
-			switch (child.getModelType()) {
-			case IModelElementFactory.MODEL_TYPE_PACKAGE:
-				addElement(new Package((IPackage) child, idElements));
-				break;
-			case IModelElementFactory.MODEL_TYPE_MODEL:
-				addElement(new Model((IModel) child, idElements));
-				break;
-			case IModelElementFactory.MODEL_TYPE_CLASS:
-				addElement(new Class((IClass) child, idElements));
-				break;
+		IModelElement[] childArray = source.toChildArray();
+
+		if (childArray == null)
+			return;
+
+		for (int i = 0; i < childArray.length; i++) {
+			if (idElements.contains(childArray[i].getId())) {
+				addModelElement(childArray[i], idElements);
 			}
 		}
 
@@ -139,7 +133,8 @@ public class Package implements ModelElement {
 	}
 
 	public void setDescription(String description) {
-		this.description = ModelElement.safeGetString(description);;
+		this.description = ModelElement.safeGetString(description);
+		;
 	}
 
 	public JsonObject getPropertyAssignments() {
@@ -164,6 +159,75 @@ public class Package implements ModelElement {
 		}
 
 		this.contents.add(element);
+	}
+	
+	private void addModelElement(IModelElement projectElement, HashSet<String> idElements) {
+
+		switch (projectElement.getModelType()) {
+		case IModelElementFactory.MODEL_TYPE_PACKAGE:
+			addElement(new Package((IPackage) projectElement, idElements));
+			break;
+
+		case IModelElementFactory.MODEL_TYPE_MODEL:
+			addElement(new Model((IModel) projectElement, idElements));
+			break;
+
+		case IModelElementFactory.MODEL_TYPE_CLASS:
+			addElement(new Class((IClass) projectElement, idElements));
+			break;
+
+		case IModelElementFactory.MODEL_TYPE_DATA_TYPE:
+			addElement(new Class((IDataType) projectElement));
+			break;
+
+		case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
+			IGeneralization gen = (IGeneralization) projectElement;
+			IModelElement fromElement = gen.getFrom();
+
+			if (fromElement == null)
+				break;
+
+			String fromType = fromElement.getModelType();
+
+			if (fromType == null)
+				break;
+
+			boolean isFromClass = fromType.equals(IModelElementFactory.MODEL_TYPE_CLASS);
+			boolean isFromAssociation = fromType.equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
+
+			if (!isFromClass && !isFromAssociation)
+				break;
+
+			IModelElement toElement = gen.getTo();
+
+			if (toElement == null)
+				break;
+
+			String toType = toElement.getModelType();
+
+			if (toType == null)
+				break;
+
+			boolean isToClass = toType.equals(IModelElementFactory.MODEL_TYPE_CLASS);
+			boolean isToAssociation = toType.equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
+
+			if (!isToClass && !isToAssociation)
+				break;
+
+			addElement(new Generalization((IGeneralization) projectElement));
+			break;
+
+		case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
+			addElement(new Association((IAssociation) projectElement, idElements));
+			break;
+
+		case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
+			addElement(new GeneralizationSet((IGeneralizationSet) projectElement, idElements));
+			break;
+
+		case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
+			addElement(new AssociationClass((IAssociationClass) projectElement));
+		}
 	}
 
 }

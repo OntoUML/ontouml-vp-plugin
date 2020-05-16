@@ -108,11 +108,57 @@ public class Model implements ModelElement {
 		// add only valid elements
 		while (ite.hasNext()) {
 			String id = ite.next();
+			
+			if (project.getModelElementById(id) == null)
+				continue;
 
-			if (project.getModelElementById(id) != null && project.getModelElementById(id) instanceof IModelElement)
+			if (project.getModelElementById(id) instanceof IModel) {
+				IModel model = (IModel) project.getModelElementById(id);
+				
+				IModelElement[] childArray = model.toChildArray();
+				
+				if(childArray == null)
+					continue;
+				
+				for(int i = 0; i < childArray.length ; i++) {
+					if(idElements.contains(childArray[i].getId()))
+						modelElements.add(childArray[i]);
+				}
+			}
+			
+			if (project.getModelElementById(id) instanceof IPackage) {
+				IPackage pckg = (IPackage) project.getModelElementById(id);
+				
+				IModelElement[] childArray = pckg.toChildArray();
+				
+				if(childArray == null)
+					continue;
+				
+				for(int i = 0; i < childArray.length ; i++) {
+					if(idElements.contains(childArray[i].getId()))
+						modelElements.add(childArray[i]);
+				}
+			}
+			
+			if (project.getModelElementById(id) instanceof IClass)
 				modelElements.add(project.getModelElementById(id));
 
-			if (project.getDiagramById(id) != null && project.getDiagramById(id) instanceof IDiagramUIModel) {
+			if (project.getModelElementById(id) instanceof IDataType)
+				modelElements.add(project.getModelElementById(id));
+			
+			if (project.getModelElementById(id) instanceof IAssociation)
+				modelElements.add(project.getModelElementById(id));
+			
+			if (project.getModelElementById(id) instanceof IAssociationClass)
+				modelElements.add(project.getModelElementById(id));
+			
+			if (project.getModelElementById(id) instanceof IGeneralization)
+				modelElements.add(project.getModelElementById(id));
+			
+			if (project.getModelElementById(id) instanceof IGeneralizationSet)
+				modelElements.add(project.getModelElementById(id));
+
+			if (project.getDiagramById(id) instanceof IDiagramUIModel) {
 				IDiagramElement[] elementsInDiagram = ((IDiagramUIModel) project.getDiagramById(id))
 						.toDiagramElementArray();
 
@@ -122,7 +168,7 @@ public class Model implements ModelElement {
 				}
 			}
 		}
-		
+
 		IModelElement[] elementsArray = new IModelElement[modelElements.size()];
 		modelElements.toArray(elementsArray);
 
@@ -149,7 +195,19 @@ public class Model implements ModelElement {
 		this.type = ModelElement.TYPE_PACKAGE;
 		this.id = source.getId();
 		this.setName(source.getName());
-		this.addModelElements(source.toChildArray(), idElements);
+
+		IModelElement[] childArray = source.toChildArray();
+		
+		if(childArray == null)
+			return;
+
+		for (int i = 0; i < childArray.length; i++) {
+			if (idElements.contains(childArray[i].getId())) {
+				this.addModelElement(childArray[i], idElements);
+			}
+		}
+
+		
 	}
 
 	@Override
@@ -199,6 +257,75 @@ public class Model implements ModelElement {
 
 	public boolean removeElement(ModelElement element) {
 		return this.contents.remove(element);
+	}
+
+	private void addModelElement(IModelElement projectElement, HashSet<String> idElements) {
+
+		switch (projectElement.getModelType()) {
+		case IModelElementFactory.MODEL_TYPE_PACKAGE:
+			addElement(new Package((IPackage) projectElement, idElements));
+			break;
+
+		case IModelElementFactory.MODEL_TYPE_MODEL:
+			addElement(new Model((IModel) projectElement, idElements));
+			break;
+
+		case IModelElementFactory.MODEL_TYPE_CLASS:
+			addElement(new Class((IClass) projectElement, idElements));
+			break;
+
+		case IModelElementFactory.MODEL_TYPE_DATA_TYPE:
+			addElement(new Class((IDataType) projectElement));
+			break;
+
+		case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
+			IGeneralization gen = (IGeneralization) projectElement;
+			IModelElement fromElement = gen.getFrom();
+
+			if (fromElement == null)
+				break;
+
+			String fromType = fromElement.getModelType();
+
+			if (fromType == null)
+				break;
+
+			boolean isFromClass = fromType.equals(IModelElementFactory.MODEL_TYPE_CLASS);
+			boolean isFromAssociation = fromType.equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
+
+			if (!isFromClass && !isFromAssociation)
+				break;
+
+			IModelElement toElement = gen.getTo();
+
+			if (toElement == null)
+				break;
+
+			String toType = toElement.getModelType();
+
+			if (toType == null)
+				break;
+
+			boolean isToClass = toType.equals(IModelElementFactory.MODEL_TYPE_CLASS);
+			boolean isToAssociation = toType.equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
+
+			if (!isToClass && !isToAssociation)
+				break;
+
+			addElement(new Generalization((IGeneralization) projectElement));
+			break;
+
+		case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
+			addElement(new Association((IAssociation) projectElement, idElements));
+			break;
+
+		case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
+			addElement(new GeneralizationSet((IGeneralizationSet) projectElement, idElements));
+			break;
+
+		case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
+			addElement(new AssociationClass((IAssociationClass) projectElement));
+		}
 	}
 
 	private void addModelElements(IModelElement[] modelElements, HashSet<String> idElements) {
