@@ -108,53 +108,53 @@ public class Model implements ModelElement {
 		// add only valid elements
 		while (ite.hasNext()) {
 			String id = ite.next();
-			
+
 			if (project.getModelElementById(id) == null)
 				continue;
 
 			if (project.getModelElementById(id) instanceof IModel) {
 				IModel model = (IModel) project.getModelElementById(id);
-				
+
 				IModelElement[] childArray = model.toChildArray();
-				
-				if(childArray == null)
+
+				if (childArray == null)
 					continue;
-				
-				for(int i = 0; i < childArray.length ; i++) {
-					if(idElements.contains(childArray[i].getId()))
+
+				for (int i = 0; i < childArray.length; i++) {
+					if (idElements.contains(childArray[i].getId()))
 						modelElements.add(childArray[i]);
 				}
 			}
-			
+
 			if (project.getModelElementById(id) instanceof IPackage) {
 				IPackage pckg = (IPackage) project.getModelElementById(id);
-				
+
 				IModelElement[] childArray = pckg.toChildArray();
-				
-				if(childArray == null)
+
+				if (childArray == null)
 					continue;
-				
-				for(int i = 0; i < childArray.length ; i++) {
-					if(idElements.contains(childArray[i].getId()))
+
+				for (int i = 0; i < childArray.length; i++) {
+					if (idElements.contains(childArray[i].getId()))
 						modelElements.add(childArray[i]);
 				}
 			}
-			
+
 			if (project.getModelElementById(id) instanceof IClass)
 				modelElements.add(project.getModelElementById(id));
 
 			if (project.getModelElementById(id) instanceof IDataType)
 				modelElements.add(project.getModelElementById(id));
-			
+
 			if (project.getModelElementById(id) instanceof IAssociation)
 				modelElements.add(project.getModelElementById(id));
-			
+
 			if (project.getModelElementById(id) instanceof IAssociationClass)
 				modelElements.add(project.getModelElementById(id));
-			
+
 			if (project.getModelElementById(id) instanceof IGeneralization)
 				modelElements.add(project.getModelElementById(id));
-			
+
 			if (project.getModelElementById(id) instanceof IGeneralizationSet)
 				modelElements.add(project.getModelElementById(id));
 
@@ -197,8 +197,8 @@ public class Model implements ModelElement {
 		this.setName(source.getName());
 
 		IModelElement[] childArray = source.toChildArray();
-		
-		if(childArray == null)
+
+		if (childArray == null)
 			return;
 
 		for (int i = 0; i < childArray.length; i++) {
@@ -207,7 +207,6 @@ public class Model implements ModelElement {
 			}
 		}
 
-		
 	}
 
 	@Override
@@ -335,71 +334,8 @@ public class Model implements ModelElement {
 			if (!idElements.contains(projectElement.getId()))
 				continue;
 
-			switch (projectElement.getModelType()) {
-			case IModelElementFactory.MODEL_TYPE_PACKAGE:
-				addElement(new Package((IPackage) projectElement, idElements));
-				break;
+			addModelElement(projectElement, idElements);
 
-			case IModelElementFactory.MODEL_TYPE_MODEL:
-				addElement(new Model((IModel) projectElement, idElements));
-				break;
-
-			case IModelElementFactory.MODEL_TYPE_CLASS:
-				addElement(new Class((IClass) projectElement, idElements));
-				break;
-
-			case IModelElementFactory.MODEL_TYPE_DATA_TYPE:
-				addElement(new Class((IDataType) projectElement));
-				break;
-
-			case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
-				IGeneralization gen = (IGeneralization) projectElement;
-				IModelElement fromElement = gen.getFrom();
-
-				if (fromElement == null)
-					break;
-
-				String fromType = fromElement.getModelType();
-
-				if (fromType == null)
-					break;
-
-				boolean isFromClass = fromType.equals(IModelElementFactory.MODEL_TYPE_CLASS);
-				boolean isFromAssociation = fromType.equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
-
-				if (!isFromClass && !isFromAssociation)
-					break;
-
-				IModelElement toElement = gen.getTo();
-
-				if (toElement == null)
-					break;
-
-				String toType = toElement.getModelType();
-
-				if (toType == null)
-					break;
-
-				boolean isToClass = toType.equals(IModelElementFactory.MODEL_TYPE_CLASS);
-				boolean isToAssociation = toType.equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
-
-				if (!isToClass && !isToAssociation)
-					break;
-
-				addElement(new Generalization((IGeneralization) projectElement));
-				break;
-
-			case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
-				addElement(new Association((IAssociation) projectElement, idElements));
-				break;
-
-			case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
-				addElement(new GeneralizationSet((IGeneralizationSet) projectElement, idElements));
-				break;
-
-			case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
-				addElement(new AssociationClass((IAssociationClass) projectElement));
-			}
 		}
 	}
 
