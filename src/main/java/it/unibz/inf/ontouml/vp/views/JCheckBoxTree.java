@@ -638,8 +638,10 @@ public class JCheckBoxTree extends JTree {
 			ElementNode newParent;
 			newParent = new ElementNode(model);
 
+			newRoot.add(newParent);
+
 			for (IModelElement element : model.toChildArray(rootLevelElements))
-				newRoot.add(setChildrenRecursively(element, newParent));
+				setChildrenRecursively(element, newParent);
 		}
 
 		if (modelElement instanceof IPackage) {
@@ -648,8 +650,10 @@ public class JCheckBoxTree extends JTree {
 			ElementNode newParent;
 			newParent = new ElementNode(pckg);
 
+			newRoot.add(newParent);
+
 			for (IModelElement element : pckg.toChildArray(rootLevelElements))
-				newRoot.add(setChildrenRecursively(element, newParent));
+				setChildrenRecursively(element, newParent);
 		}
 
 		if (modelElement instanceof IClass) {
@@ -724,6 +728,9 @@ public class JCheckBoxTree extends JTree {
 
 	private static ElementNode setChildrenFromDiagrams(IDiagramUIModel diagram, ElementNode parent) {
 		ElementNode newRoot = parent;
+		
+		IDiagramElement[] models = diagram.toDiagramElementArray(IModelElementFactory.MODEL_TYPE_MODEL);
+		IDiagramElement[] pckgs = diagram.toDiagramElementArray(IModelElementFactory.MODEL_TYPE_PACKAGE);
 		IDiagramElement[] classes = diagram.toDiagramElementArray(IModelElementFactory.MODEL_TYPE_CLASS);
 		IDiagramElement[] associations = diagram.toDiagramElementArray(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
 		IDiagramElement[] generalizationSets = diagram
@@ -732,6 +739,38 @@ public class JCheckBoxTree extends JTree {
 				.toDiagramElementArray(IModelElementFactory.MODEL_TYPE_GENERALIZATION);
 		IDiagramElement[] associationClasses = diagram
 				.toDiagramElementArray(IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS);
+		
+		for (int i = 0; models != null && i < models.length; i++) {
+			if (models[i].getModelElement() != null) {
+				IModel model = (IModel) models[i].getModelElement();
+
+				ElementNode newParent;
+				newParent = new ElementNode(model);
+				
+				newRoot.add(newParent);
+
+				IModelElement[] elements = model.toChildArray();
+
+				for (int j = 0; elements != null && j < elements.length; j++)
+					setChildrenRecursively(elements[i], newParent);		
+			}
+		}
+		
+		for (int i = 0; pckgs != null && i < pckgs.length; i++) {
+			if (pckgs[i].getModelElement() != null) {
+				IPackage pckg = (IPackage) pckgs[i].getModelElement();
+
+				ElementNode newParent;
+				newParent = new ElementNode(pckg);
+				
+				newRoot.add(newParent);
+
+				IModelElement[] elements = pckg.toChildArray();
+
+				for (int j = 0; elements != null && j < elements.length; j++)
+					setChildrenRecursively(elements[i], newParent);		
+			}
+		}
 
 		for (int i = 0; classes != null && i < classes.length; i++) {
 			if (classes[i].getModelElement() != null) {
