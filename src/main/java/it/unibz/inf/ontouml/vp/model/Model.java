@@ -93,6 +93,12 @@ public class Model implements ModelElement {
 	 */
 	public Model(HashSet<String> idElements) {
 		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
+		final String[] rootLevelElements = { IModelElementFactory.MODEL_TYPE_PACKAGE,
+				IModelElementFactory.MODEL_TYPE_MODEL, IModelElementFactory.MODEL_TYPE_CLASS,
+				IModelElementFactory.MODEL_TYPE_DATA_TYPE };
+		final String[] anyLevelElements = { IModelElementFactory.MODEL_TYPE_GENERALIZATION,
+				IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET, IModelElementFactory.MODEL_TYPE_ASSOCIATION,
+				IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS };
 
 		this.sourceModelElement = null;
 		this.type = ModelElement.TYPE_PACKAGE;
@@ -102,77 +108,28 @@ public class Model implements ModelElement {
 		if (idElements == null)
 			return;
 
-		HashSet<IModelElement> modelElements = new HashSet<IModelElement>();
+		if (containsDiagramModel(idElements)) {
+			HashSet<IModelElement> modelElements = new HashSet<IModelElement>();
 
-		Iterator<String> ite = idElements.iterator();
-		// add only valid elements
-		while (ite.hasNext()) {
-			String id = ite.next();
+			Iterator<String> ite = idElements.iterator();
+			// add only valid elements
+			while (ite.hasNext()) {
+				String id = ite.next();
 
-			if (project.getModelElementById(id) == null)
-				continue;
-
-			if (project.getModelElementById(id) instanceof IModel) {
-				IModel model = (IModel) project.getModelElementById(id);
-
-				IModelElement[] childArray = model.toChildArray();
-
-				if (childArray == null)
+				if (project.getModelElementById(id) == null)
 					continue;
-
-				for (int i = 0; i < childArray.length; i++) {
-					if (idElements.contains(childArray[i].getId()))
-						modelElements.add(childArray[i]);
-				}
+				else
+					modelElements.add(project.getModelElementById(id));
 			}
 
-			if (project.getModelElementById(id) instanceof IPackage) {
-				IPackage pckg = (IPackage) project.getModelElementById(id);
+			IModelElement[] elementsArray = new IModelElement[modelElements.size()];
+			modelElements.toArray(elementsArray);
 
-				IModelElement[] childArray = pckg.toChildArray();
-
-				if (childArray == null)
-					continue;
-
-				for (int i = 0; i < childArray.length; i++) {
-					if (idElements.contains(childArray[i].getId()))
-						modelElements.add(childArray[i]);
-				}
-			}
-
-			if (project.getModelElementById(id) instanceof IClass)
-				modelElements.add(project.getModelElementById(id));
-
-			if (project.getModelElementById(id) instanceof IDataType)
-				modelElements.add(project.getModelElementById(id));
-
-			if (project.getModelElementById(id) instanceof IAssociation)
-				modelElements.add(project.getModelElementById(id));
-
-			if (project.getModelElementById(id) instanceof IAssociationClass)
-				modelElements.add(project.getModelElementById(id));
-
-			if (project.getModelElementById(id) instanceof IGeneralization)
-				modelElements.add(project.getModelElementById(id));
-
-			if (project.getModelElementById(id) instanceof IGeneralizationSet)
-				modelElements.add(project.getModelElementById(id));
-
-			if (project.getDiagramById(id) instanceof IDiagramUIModel) {
-				IDiagramElement[] elementsInDiagram = ((IDiagramUIModel) project.getDiagramById(id))
-						.toDiagramElementArray();
-
-				for (int i = 0; elementsInDiagram != null && i < elementsInDiagram.length; i++) {
-					if (elementsInDiagram[i].getModelElement() != null)
-						modelElements.add(elementsInDiagram[i].getModelElement());
-				}
-			}
+			addModelElements(elementsArray, idElements);
+		} else {
+			addModelElements(project.toModelElementArray(rootLevelElements), idElements);
+			addModelElements(project.toAllLevelModelElementArray(anyLevelElements), idElements);
 		}
-
-		IModelElement[] elementsArray = new IModelElement[modelElements.size()];
-		modelElements.toArray(elementsArray);
-
-		addModelElements(elementsArray, idElements);
 
 	}
 
@@ -409,6 +366,24 @@ public class Model implements ModelElement {
 				addElement(new AssociationClass((IAssociationClass) projectElement));
 			}
 		}
+	}
+
+	private static boolean containsDiagramModel(HashSet<String> idElements) {
+		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
+
+		Iterator<String> ite = idElements.iterator();
+
+		while (ite.hasNext()) {
+			String id = ite.next();
+
+			if (project.getDiagramById(id) == null)
+				continue;
+			else
+				return true;
+
+		}
+
+		return false;
 	}
 
 }
