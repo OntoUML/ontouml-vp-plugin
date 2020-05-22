@@ -25,7 +25,7 @@ import it.unibz.inf.ontouml.vp.listeners.ProjectModelListener;
  */
 public class OntoUMLPlugin implements VPPlugin {
 
-	public static final String PLUGIN_VERSION_RELEASE = "0.2.0";
+	public static final String PLUGIN_VERSION_RELEASE = "0.3.0";
 	public static final String PLUGIN_ID = "it.unibz.inf.ontouml.vp";
 	public static final String PLUGIN_NAME = "OntoUML Plugin";
 
