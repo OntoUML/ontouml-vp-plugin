@@ -1,218 +1,242 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
 import java.awt.event.ActionEvent;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.ViewManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPContext;
 import com.vp.plugin.action.VPContextActionController;
-import com.vp.plugin.model.IClass;
-import com.vp.plugin.model.IStereotype;
-import com.vp.plugin.model.ITaggedValue;
-import com.vp.plugin.model.ITaggedValueContainer;
+import com.vp.plugin.diagram.IDiagramElement;
+import com.vp.plugin.model.*;
 
+import com.vp.plugin.model.factory.IModelElementFactory;
 import it.unibz.inf.ontouml.vp.features.constraints.ActionIds;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 import it.unibz.inf.ontouml.vp.views.SelectMultipleOptionsDialog;
 import it.unibz.inf.ontouml.vp.views.SetOrderDialog;
 
 /**
- * 
  * Implementation of context sensitive action of change OntoUML stereotypes in model elements.
- * 
+ *
  * @author Claudenir Fonseca
  * @author Victor Viola
- *
  */
 public class ApplyProperties implements VPContextActionController {
 
-	@Override
-	public void performAction(VPAction action, VPContext context, ActionEvent event) {
-		if(context.getModelElement() == null) {
-			return ;
-		}
+   @Override
+   public void performAction(VPAction action, VPContext context, ActionEvent event) {
+      if (context.getModelElement() == null)
+         return;
 
-		final IClass _class = (IClass) context.getModelElement();
+      final IClass clickedClass = (IClass) context.getModelElement();
 
-		switch(action.getActionId()) {
-			case ActionIds.PROPERTY_SET_ALLOWED:
-				this.setAllowedProperty(context);
-				break;
-			case ActionIds.PROPERTY_SET_IS_ABSTRACT:
-				_class.setAbstract(!_class.isAbstract());
-				break;
-			case ActionIds.PROPERTY_SET_IS_DERIVED:
-				if (_class.getName().trim().startsWith("/")) {
-					_class.setName(_class.getName().trim().substring(1));
-				} else {
-					_class.setName("/"+_class.getName());
-				}
-				break;
-			case ActionIds.PROPERTY_SET_IS_EXTENSIONAL:
-				this.setIsExtensionalProperty(action,context,event);
-				break;
-			case ActionIds.PROPERTY_SET_IS_POWERTYPE:
-				this.setIsPowertypeProperty(action,context,event);
-				break;
-			case ActionIds.PROPERTY_SET_ORDER:
-				this.setOrderProperty(action,context,event);
-				break;
-		}
-	}
+      switch (action.getActionId()) {
+         case ActionIds.PROPERTY_SET_RESTRICTED_TO:
+            this.setRestrictedTo(context, clickedClass);
+            break;
 
-	private ITaggedValue getValueToBeSet(VPContext context, String valueName){
-		if(context.getModelElement() == null) {
-			return null;
-		}
+         case ActionIds.PROPERTY_SET_IS_ABSTRACT:
+            boolean isAbstract = !clickedClass.isAbstract();
+            setPropertyOnSelectedClasses(context, cla -> cla.setAbstract(isAbstract));
+            break;
 
-		final IClass _class = (IClass) context.getModelElement();
-		String currentStereotype = _class.toStereotypeArray() != null && _class.toStereotypeArray().length > 0 ?
-			_class.toStereotypeArray() [0] :
-			null;
+         case ActionIds.PROPERTY_SET_IS_DERIVED:
+            boolean removeSlash = clickedClass.getName().trim().startsWith("/");
 
-		// Escape in case the stereotype is missing or incorrect
-		if(
-			currentStereotype == null 
-			|| !StereotypeUtils.getOntoUMLClassStereotypeNames().contains(currentStereotype)
-		){
-			return null;
-		}
+            setPropertyOnSelectedClasses(context, cla -> {
+               String currentName = cla.getName().trim();
 
-		// Reapply stereotype making sure that the tagged values are there
-		StereotypeUtils.applyStereotype(_class, currentStereotype);
+               if (removeSlash && currentName.startsWith("/"))
+                  cla.setName(currentName.substring(1));
 
-		// Searches for tagged value
-		ITaggedValueContainer container = _class.getTaggedValues();
-		Iterator<?> values = container == null ? null : container.taggedValueIterator();
-		while(values != null && values.hasNext()) {
-			final ITaggedValue value = (ITaggedValue) values.next();
+               if (!removeSlash && !currentName.startsWith("/"))
+                  cla.setName("/" + currentName);
+            });
 
-			if(value.getName().equals(valueName)) {
-				return value;
-			}
-		}
+            break;
+         case ActionIds.PROPERTY_SET_IS_EXTENSIONAL:
+            setBooleanTaggedValue(context, clickedClass, StereotypeUtils.PROPERTY_IS_EXTENSIONAL);
+            break;
 
-		return null;
-	}
+         case ActionIds.PROPERTY_SET_IS_POWERTYPE:
+            setBooleanTaggedValue(context, clickedClass, StereotypeUtils.PROPERTY_IS_POWERTYPE);
+            break;
 
-	private void setAllowedProperty(VPContext context) {
-		final ITaggedValue allowedValue = getValueToBeSet(context, StereotypeUtils.PROPERTY_ALLOWED);
+         case ActionIds.PROPERTY_SET_ORDER:
+            setOrderProperty(context, clickedClass);
+            break;
+      }
+   }
 
-		if(allowedValue == null) {
-			return ;
-		}
+   @Override
+   public void update(VPAction action, VPContext context) {
+      if (context.getModelElement() == null)
+         return;
 
-		final ViewManager vm = ApplicationManager.instance().getViewManager();
-		final SelectMultipleOptionsDialog dialog = 
-				new SelectMultipleOptionsDialog(allowedValue.getValueAsString());
-		
-		vm.showDialog(dialog);
-		allowedValue.setValue(dialog.getSelectedValues());
-	}
+      final IClass _class = (IClass) context.getModelElement();
+      final ITaggedValueContainer container = _class.getTaggedValues();
+      final Iterator<?> values = container == null ? null : container.taggedValueIterator();
+      final Iterator<?> stereotypes = _class.stereotypeModelIterator();
+      final Set<String> allStereotypes = StereotypeUtils.getOntoUMLClassStereotypeNames();
 
-	private void setIsExtensionalProperty(VPAction action, VPContext context, ActionEvent event) {
-		final ITaggedValue isExtensionalValue = getValueToBeSet(context, StereotypeUtils.PROPERTY_IS_EXTENSIONAL);
+      switch (action.getActionId()) {
+         case ActionIds.PROPERTY_SET_RESTRICTED_TO:
 
-		if(isExtensionalValue == null) {
-			return ;
-		}
+            while (stereotypes != null && stereotypes.hasNext()) {
+               final IStereotype stereotype = (IStereotype) stereotypes.next();
 
-		isExtensionalValue.setValue(!isExtensionalValue.getValueAsString().toLowerCase().equals("true"));
-	}
+               if (allStereotypes.contains(stereotype.getName())) {
+                  action.setEnabled(true);
+                  return;
+               }
+            }
 
-	private void setIsPowertypeProperty(VPAction action, VPContext context, ActionEvent event) {
-		final ITaggedValue isPowertypeValue = getValueToBeSet(context, StereotypeUtils.PROPERTY_IS_POWERTYPE);
+            action.setEnabled(false);
+            break;
+         case ActionIds.PROPERTY_SET_IS_ABSTRACT:
+            action.setEnabled(true);
+            action.setSelected(_class.isAbstract());
+            break;
+         case ActionIds.PROPERTY_SET_IS_DERIVED:
+            action.setEnabled(true);
+            action.setSelected(_class.getName().trim().startsWith("/"));
+            break;
+         case ActionIds.PROPERTY_SET_IS_EXTENSIONAL:
+            while (values != null && values.hasNext()) {
+               final ITaggedValue value = (ITaggedValue) values.next();
 
-		if(isPowertypeValue == null) {
-			return ;
-		}
+               if (value.getName().equals(StereotypeUtils.PROPERTY_IS_EXTENSIONAL)) {
+                  action.setEnabled(true);
+                  action.setSelected(value.getValueAsString().toLowerCase().equals("true"));
+                  return;
+               }
+            }
 
-		isPowertypeValue.setValue(!isPowertypeValue.getValueAsString().toLowerCase().equals("true"));
-	}
+            action.setEnabled(_class.hasStereotype(StereotypeUtils.STR_COLLECTIVE));
+            action.setSelected(false);
+            break;
+         case ActionIds.PROPERTY_SET_IS_POWERTYPE:
+            while (values != null && values.hasNext()) {
+               final ITaggedValue value = (ITaggedValue) values.next();
 
-	private void setOrderProperty(VPAction action, VPContext context, ActionEvent event) {
-		final ITaggedValue orderValue = getValueToBeSet(context, StereotypeUtils.PROPERTY_ORDER);
+               if (value.getName().equals(StereotypeUtils.PROPERTY_IS_POWERTYPE)) {
+                  action.setEnabled(true);
+                  action.setSelected(value.getValueAsString().toLowerCase().equals("true"));
+                  return;
+               }
+            }
 
-		if(orderValue == null) {
-			return ;
-		}
+            action.setEnabled(_class.hasStereotype(StereotypeUtils.STR_TYPE));
+            action.setSelected(false);
+            break;
+         case ActionIds.PROPERTY_SET_ORDER:
+            action.setEnabled(_class.hasStereotype(StereotypeUtils.STR_TYPE));
+            break;
+      }
+   }
 
-		final ViewManager vm = ApplicationManager.instance().getViewManager();
-		final SetOrderDialog dialog = 
-				new SetOrderDialog(orderValue.getValueAsString());
-		
-		vm.showDialog(dialog);
-		orderValue.setValue(dialog.getOrder());
-	}
+   private void setPropertyOnSelectedClasses(VPContext context, Consumer<IClass> consumer) {
+      if (!(context.getModelElement() instanceof IClass))
+         return;
 
-	@Override
-	public void update(VPAction action, VPContext context) {
-		if(context.getModelElement() == null) {
-			return ;
-		}
+      IDiagramElement[] diagramElements = ApplicationManager.instance()
+              .getDiagramManager()
+              .getActiveDiagram()
+              .getSelectedDiagramElement();
 
-		final IClass _class = (IClass) context.getModelElement();
-		final ITaggedValueContainer container = _class.getTaggedValues();
-		final Iterator<?> values = container == null ? null : container.taggedValueIterator();
-		final Iterator<?> stereotypes = _class.stereotypeModelIterator();
-		final Set<String> allStereotypes = StereotypeUtils.getOntoUMLClassStereotypeNames();
-		
-		switch(action.getActionId()) {
-			case ActionIds.PROPERTY_SET_ALLOWED:
-				
-				while(stereotypes != null && stereotypes.hasNext()) {
-					final IStereotype stereotype = (IStereotype) stereotypes.next();
+      Arrays.stream(diagramElements)
+              .filter(e -> e.getModelElement().getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS))
+              .map(e -> (IClass) e.getModelElement())
+              .forEach(consumer);
+   }
 
-					if(allStereotypes.contains(stereotype.getName())) {
-						action.setEnabled(true);
-						return ;
-					}
-				}
+   private ITaggedValue getTaggedValue(IClass _class, String taggedValueName) {
+      System.out.println("getTaggedValue "+_class.getName()+" "+taggedValueName);
+      String stereotype = _class.toStereotypeArray() != null && _class.toStereotypeArray().length > 0 ?
+              _class.toStereotypeArray()[0] : null;
 
-				action.setEnabled(false);
-				break;
-			case ActionIds.PROPERTY_SET_IS_ABSTRACT:
-				action.setEnabled(true);
-				action.setSelected(_class.isAbstract());
-				break;
-			case ActionIds.PROPERTY_SET_IS_DERIVED:
-				action.setEnabled(true);
-				action.setSelected(_class.getName().trim().startsWith("/"));
-				break;
-			case ActionIds.PROPERTY_SET_IS_EXTENSIONAL:
-				while(values != null && values.hasNext()) {
-					final ITaggedValue value = (ITaggedValue) values.next();
+      // Escape in case the stereotype is missing or incorrect
+      if (stereotype == null || !StereotypeUtils.getOntoUMLClassStereotypeNames().contains(stereotype))
+         return null;
 
-					if(value.getName().equals(StereotypeUtils.PROPERTY_IS_EXTENSIONAL)) {
-						action.setEnabled(true);
-						action.setSelected(value.getValueAsString().toLowerCase().equals("true"));
-						return;
-					}
-				}
+      // Reapply stereotype making sure that the tagged values are there
+       StereotypeUtils.applyStereotype(_class, stereotype);
 
-				action.setEnabled(_class.hasStereotype(StereotypeUtils.STR_COLLECTIVE));
-				action.setSelected(false);
-				break;
-			case ActionIds.PROPERTY_SET_IS_POWERTYPE:
-				while(values != null && values.hasNext()) {
-					final ITaggedValue value = (ITaggedValue) values.next();
+      // Searches for tagged value
+      ITaggedValueContainer taggedValueContainer = _class.getTaggedValues();
 
-					if(value.getName().equals(StereotypeUtils.PROPERTY_IS_POWERTYPE)) {
-						action.setEnabled(true);
-						action.setSelected(value.getValueAsString().toLowerCase().equals("true"));
-						return;
-					}
-				}
+      // Deletes old tagged value
+      ITaggedValue allowedTagged = taggedValueContainer.getTaggedValueByName("allowed");
+      if(allowedTagged!=null)
+         taggedValueContainer.removeTaggedValue(allowedTagged);
 
-				action.setEnabled(_class.hasStereotype(StereotypeUtils.STR_TYPE));
-				action.setSelected(false);
-				break;
-			case ActionIds.PROPERTY_SET_ORDER:
-				action.setEnabled(_class.hasStereotype(StereotypeUtils.STR_TYPE));
-				break;
-		}
-	}
+      if (taggedValueContainer != null)
+        return taggedValueContainer.getTaggedValueByName(taggedValueName);
+
+      return null;
+   }
+
+   private void setBooleanTaggedValue(VPContext context, IClass clickedClass, String metaProperty) {
+      final ITaggedValue booleanTaggedValue = getTaggedValue(clickedClass, metaProperty);
+      final boolean value = booleanTaggedValue != null && Boolean.parseBoolean(booleanTaggedValue.getValueAsString());
+
+      setPropertyOnSelectedClasses(context, cla -> {
+         ITaggedValue taggedValue = getTaggedValue(cla, metaProperty);
+
+         if (taggedValue == null)
+            return;
+
+         taggedValue.setValue(!value);
+      });
+   }
+
+   private void setOrderProperty(VPContext context, IClass clickedClass) {
+      final ITaggedValue baseTaggedValue = getTaggedValue(clickedClass, StereotypeUtils.PROPERTY_ORDER);
+
+      if (baseTaggedValue == null)
+         return;
+
+      final ViewManager vm = ApplicationManager.instance().getViewManager();
+      final SetOrderDialog dialog = new SetOrderDialog(baseTaggedValue.getValueAsString());
+
+      vm.showDialog(dialog);
+
+      setPropertyOnSelectedClasses(context, cla -> {
+         String order = dialog.getOrder();
+         ITaggedValue taggedValue = getTaggedValue(cla, StereotypeUtils.PROPERTY_ORDER);
+
+         if (taggedValue == null)
+            return;
+
+         taggedValue.setValue(order);
+      });
+   }
+
+   private void setRestrictedTo(VPContext context, IClass clickedClass) {
+      final ITaggedValue baseTaggedValue = getTaggedValue(clickedClass, StereotypeUtils.PROPERTY_RESTRICTED_TO);
+
+      if (baseTaggedValue == null)
+         return;
+
+      final ViewManager vm = ApplicationManager.instance().getViewManager();
+      final SelectMultipleOptionsDialog dialog = new SelectMultipleOptionsDialog(baseTaggedValue.getValueAsString());
+
+      vm.showDialog(dialog);
+
+      setPropertyOnSelectedClasses(context, cla -> {
+         String restrictedTo = dialog.getSelectedValues();
+         ITaggedValue taggedValue = getTaggedValue(cla, StereotypeUtils.PROPERTY_RESTRICTED_TO);
+
+         if (taggedValue == null)
+            return;
+
+         taggedValue.setValue(restrictedTo);
+      });
+   }
+
 }

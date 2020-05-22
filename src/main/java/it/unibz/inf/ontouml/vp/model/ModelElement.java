@@ -172,7 +172,7 @@ public interface ModelElement {
       JsonObject obj = new JsonObject();
       ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
       List<String> ignoredClassValues =
-              Arrays.asList(new String[]{StereotypeUtils.PROPERTY_ALLOWED,
+              Arrays.asList(new String[]{StereotypeUtils.PROPERTY_RESTRICTED_TO,
                      StereotypeUtils.PROPERTY_IS_EXTENSIONAL,
                      StereotypeUtils.PROPERTY_IS_POWERTYPE,
                      StereotypeUtils.PROPERTY_ORDER});

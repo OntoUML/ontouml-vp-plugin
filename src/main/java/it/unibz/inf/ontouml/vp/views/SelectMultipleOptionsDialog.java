@@ -84,7 +84,7 @@ public class SelectMultipleOptionsDialog implements IDialogHandler {
     @Override
     public void prepare(IDialog dialog) {
         this._dialog = dialog;
-        dialog.setTitle("Select allowed natures");
+        dialog.setTitle("Restrict allowed natures");
         dialog.pack();
     }
 
@@ -119,12 +119,12 @@ public class SelectMultipleOptionsDialog implements IDialogHandler {
 
     public void setSelectedValues(String selectedValuesString) {
         final List<String> selectedList = Arrays.asList(selectedValuesString.replaceAll(" +", "").split(","));
-        final List<String> allNatures = StereotypeUtils.getAllowedNaturesList();
-        Collections.sort(allNatures);
+        final List<String> restrictedNatures = StereotypeUtils.getRestrictedNaturesList();
+        Collections.sort(restrictedNatures);
 
-        this._selectionsPane.setLayout(new GridLayout(allNatures.size()/2 + allNatures.size()%2,2));
+        this._selectionsPane.setLayout(new GridLayout(restrictedNatures.size()/2 + restrictedNatures.size()%2,2));
 
-        for (String nature : allNatures) {
+        for (String nature : restrictedNatures) {
             final JCheckBox checkBox = new JCheckBox(nature);
 
             this._selectionsPane.add(checkBox);
