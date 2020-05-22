@@ -262,17 +262,19 @@ public class JCheckBoxTree extends JTree {
 			nameNode = "Generalization";
 			String nameFrom = "generalizationFrom";
 			String nameTo = "generalizationTo";
-
-			if (((IGeneralization) obj).getFrom() == null) {
-				nameFrom = "";
-			} else {
-				nameFrom = ((IGeneralization) obj).getFrom().getName();
-			}
+			
+			//VP has the inverse order for getTo and getFrom
 
 			if (((IGeneralization) obj).getTo() == null) {
+				nameFrom = "";
+			} else {
+				nameFrom = ((IGeneralization) obj).getTo().getName();
+			}
+
+			if (((IGeneralization) obj).getFrom() == null) {
 				nameTo = "";
 			} else {
-				nameTo = ((IGeneralization) obj).getTo().getName();
+				nameTo = ((IGeneralization) obj).getFrom().getName();
 			}
 
 			nameNode = "(" + nameFrom + " -> " + nameTo + ")";

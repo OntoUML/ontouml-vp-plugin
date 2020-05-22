@@ -1100,17 +1100,19 @@ public class ExportToGUFOView extends JPanel {
 			name = "Generalization";
 			String nameFrom = "generalizationFrom";
 			String nameTo = "generalizationTo";
-
-			if (((IGeneralization) element).getFrom() == null) {
-				nameFrom = "";
-			} else {
-				nameFrom = ((IGeneralization) element).getFrom().getName();
-			}
+			
+			//VP has the inverse order for getTo and getFrom
 
 			if (((IGeneralization) element).getTo() == null) {
+				nameFrom = "";
+			} else {
+				nameFrom = ((IGeneralization) element).getTo().getName();
+			}
+
+			if (((IGeneralization) element).getFrom() == null) {
 				nameTo = "";
 			} else {
-				nameTo = ((IGeneralization) element).getTo().getName();
+				nameTo = ((IGeneralization) element).getFrom().getName();
 			}
 
 			name = "(" + nameFrom + " -> " + nameTo + ")";
