@@ -8,16 +8,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.ProjectManager;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IProject;
-import com.vp.plugin.model.IStereotype;
-import com.vp.plugin.model.ITaggedValue;
-import com.vp.plugin.model.ITaggedValueContainer;
-import com.vp.plugin.model.ITaggedValueDefinition;
-import com.vp.plugin.model.ITaggedValueDefinitionContainer;
+import com.vp.plugin.model.*;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 public class StereotypeUtils {
@@ -161,7 +156,7 @@ public class StereotypeUtils {
    }
 
    public static Set<String> getOntoUMLClassStereotypeNames() {
-      final Set<String> str_names = new HashSet<String>();
+      final Set<String> str_names = new HashSet<>();
 
       str_names.add(STR_TYPE);
 
@@ -189,7 +184,7 @@ public class StereotypeUtils {
    }
 
    public static Set<String> getOntoUMLAssociationStereotypeNames() {
-      final Set<String> str_names = new HashSet<String>();
+      final Set<String> str_names = new HashSet<>();
 
       str_names.add(STR_INSTANTIATION);
 
@@ -214,7 +209,7 @@ public class StereotypeUtils {
    }
 
    public static Set<String> getOntoUMLAttributeStereotypeNames() {
-      final Set<String> str_names = new HashSet<String>();
+      final Set<String> str_names = new HashSet<>();
 
       str_names.add(STR_BEGIN);
       str_names.add(STR_END);
@@ -284,7 +279,7 @@ public class StereotypeUtils {
          }
 
          final ITaggedValueDefinition[] definitionsArray = definitionsContainer.toTaggedValueDefinitionArray();
-         final Map<String, ITaggedValueDefinition> definitions = new HashMap<String, ITaggedValueDefinition>();
+         final Map<String, ITaggedValueDefinition> definitions = new HashMap<>();
 
          for (int j = 0; definitionsArray != null && j < definitionsArray.length; j++) {
             definitions.put(definitionsArray[j].getName(), definitionsArray[j]);
@@ -361,86 +356,47 @@ public class StereotypeUtils {
 
    public static void applyStereotype(IModelElement element, String stereotypeName) {
       // Tries to retrieve the stereotype
-      if (STEREOTYPE_ELEMENTS == null) {
+      if (STEREOTYPE_ELEMENTS == null)
          generate();
-      }
 
       final IStereotype stereotype = STEREOTYPE_ELEMENTS.get(stereotypeName);
 
-      if (stereotype == null || !element.getModelType().equals(stereotype.getBaseType())) {
-         // TODO: check the necessity of throwing some exception here
+      // TODO: check the necessity of throwing some exception here
+      if (stereotype == null || !element.getModelType().equals(stereotype.getBaseType()))
          return;
-      }
 
-      // Saves previous tag values
-      final ITaggedValueContainer oldContainer = element.getTaggedValues();
-      final Iterator<?> oldValues = oldContainer != null ? oldContainer.taggedValueIterator() : null;
-      String restrictedToTagValue = null;
-      String isExtensionalTagValue = null;
-      String isPowertypeTagValue = null;
-      String orderTagValue = null;
-      // TODO: save other tagged values if needed
+      final ITaggedValueContainer container = element.getTaggedValues();
+      Map<String, Object> taggedValueMap = new HashMap<>();
 
-      while (oldValues != null && oldValues.hasNext()) {
-         final ITaggedValue oldValue = (ITaggedValue) oldValues.next();
+      if (container != null) {
+         ITaggedValue[] taggedValues = container.toTaggedValueArray();
 
-         if (oldValue.getName().equals(PROPERTY_RESTRICTED_TO))
-            restrictedToTagValue = oldValue.getValueAsString();
-
-         if (oldValue.getName().equals(PROPERTY_IS_EXTENSIONAL) && STR_COLLECTIVE.equals(stereotypeName))
-            isExtensionalTagValue = oldValue.getValueAsString();
-
-         if (oldValue.getName().equals(PROPERTY_IS_POWERTYPE) && STR_TYPE.equals(stereotypeName))
-            isPowertypeTagValue = oldValue.getValueAsString();
-
-         if (oldValue.getName().equals(PROPERTY_ORDER) && STR_TYPE.equals(stereotypeName))
-            orderTagValue = oldValue.getValueAsString();
-
-         // Deletes old tags that are part of the profile
-         if (oldValue.getName().equals(PROPERTY_RESTRICTED_TO)
-                 || oldValue.getName().equals(PROPERTY_IS_EXTENSIONAL)
-                 || oldValue.getName().equals(PROPERTY_IS_POWERTYPE)
-                 || oldValue.getName().equals(PROPERTY_ORDER)
-                 || oldValue.getName().equals("allowed")) {
-            System.out.println("Remove: " + oldValue.getName());
-            oldContainer.removeTaggedValue(oldValue);
-            oldValue.delete();
+         // 1. Saves and deletes tagged values associated to a stereotype
+         for (ITaggedValue tv : taggedValues) {
+            if (tv.getTagDefinition() != null) {
+               taggedValueMap.put(tv.getName(), tv.getValue());
+               tv.delete();
+            }
          }
       }
 
-      // Removes old stereotypes
-      for (IStereotype oldStereotype : element.toStereotypeModelArray()) {
-         element.removeStereotype(oldStereotype);
-      }
+      // 2. Removes old stereotypes
+      for (IStereotype s : element.toStereotypeModelArray())
+         element.removeStereotype(s);
 
-//      final Iterator<?> oldStereotypes = element.stereotypeModelIterator();
-//      while (oldStereotypes.hasNext()) {
-//         final IStereotype oldStereotype = (IStereotype) oldStereotypes.next();
-//         System.out.println(oldStereotype.getName());
-//         System.out.println(Arrays.toString());
-//         element.removeStereotype(oldStereotype);
-//      }
-
-      // Adds new stereotype
+      // 3. Adds new stereotype
       element.addStereotype(stereotype);
 
-      // Set "restrictedTo" tag according to previous value
-      final ITaggedValueContainer newContainer = element.getTaggedValues();
-      final Iterator<?> newValues = newContainer != null ? newContainer.taggedValueIterator() : null;
+      // 4. Reapply tagged values
+      ITaggedValue[] taggedValues = element.getTaggedValues().toTaggedValueArray();
 
-      while (newValues != null && newValues.hasNext()) {
-         final ITaggedValue newValue = (ITaggedValue) newValues.next();
-
-         if (newValue.getName().equals(PROPERTY_RESTRICTED_TO) && restrictedToTagValue != null) {
-            newValue.setValue(restrictedToTagValue);
-         } else if (newValue.getName().equals(PROPERTY_IS_EXTENSIONAL) && isExtensionalTagValue != null) {
-            newValue.setValue(isExtensionalTagValue);
-         } else if (newValue.getName().equals(PROPERTY_IS_POWERTYPE) && isPowertypeTagValue != null) {
-            newValue.setValue(isPowertypeTagValue);
-         } else if (newValue.getName().equals(PROPERTY_ORDER) && orderTagValue != null) {
-            newValue.setValue(orderTagValue);
-         }
+      for (ITaggedValue taggedValue : taggedValues) {
+         Object oldValue = taggedValueMap.get(taggedValue.getName());
+         if (oldValue != null)
+            taggedValue.setValue(oldValue.toString());
       }
+
+      deleteTaggedValue(element, "allowed");
    }
 
    public static void setRestrictedTo(IModelElement element, String stereotypeName) {
@@ -480,6 +436,9 @@ public class StereotypeUtils {
          case STR_ROLE_MIXIN:
          case STR_PHASE_MIXIN:
          case STR_KIND:
+         case STR_SUBKIND:
+         case STR_ROLE:
+         case STR_PHASE:
             return NATURE_FUNCTIONAL_COMPLEX;
          case STR_COLLECTIVE:
             return NATURE_COLLECTIVE;
@@ -491,16 +450,66 @@ public class StereotypeUtils {
             return NATURE_QUALITY;
          case STR_MODE:
             return NATURE_MODE;
-         case STR_SUBKIND:
-         case STR_ROLE:
-         case STR_PHASE:
-            return NATURE_FUNCTIONAL_COMPLEX;
          case STR_ENUMERATION:
-            return NATURE_ABSTRACT;
          case STR_DATATYPE:
             return NATURE_ABSTRACT;
          default:
             return "";
       }
    }
+
+   public static ITaggedValue reapplyStereotypeAndGetTaggedValue(IClass _class, String taggedValueName) {
+      // Delete allowed tagged value if exists
+      deleteTaggedValue(_class, "allowed");
+
+      ITaggedValue taggedValue = getTaggedValue(_class, taggedValueName);
+      if (taggedValue == null) {
+         boolean successfullyApplied = reapplyCurrentStereotype(_class);
+         if (!successfullyApplied)
+            return null;
+      }
+
+      //Retrieves desired tagged value
+      return getTaggedValue(_class, taggedValueName);
+   }
+
+   public static boolean reapplyCurrentStereotype(IClass _class) {
+      String stereotype = _class.toStereotypeArray() != null && _class.toStereotypeArray().length > 0 ?
+              _class.toStereotypeArray()[0] : null;
+
+      // Escape in case the stereotype is missing or incorrect
+      if (stereotype == null || !getOntoUMLClassStereotypeNames().contains(stereotype))
+         return false;
+
+      // Reapply stereotype making sure that the tagged values are there
+      applyStereotype(_class, stereotype);
+
+      return true;
+   }
+
+   public static ITaggedValue getTaggedValue(IModelElement element, String name) {
+      ITaggedValueContainer container = element.getTaggedValues();
+
+      if (container == null)
+         return null;
+
+      try {
+         return container.getTaggedValueByName(name);
+      } catch (Exception e) {
+         return null;
+      }
+   }
+
+   public static void deleteTaggedValue(IModelElement element, String name) {
+      ITaggedValueContainer container = element.getTaggedValues();
+
+      if (container != null) {
+         ITaggedValue[] taggedValues = container.toTaggedValueArray();
+         for (ITaggedValue tv : taggedValues) {
+            if(tv.getName().equals(name))
+               tv.delete();
+         }
+      }
+   }
+
 }

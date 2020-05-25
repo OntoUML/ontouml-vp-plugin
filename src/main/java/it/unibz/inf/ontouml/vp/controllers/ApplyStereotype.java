@@ -81,7 +81,7 @@ public class ApplyStereotype implements VPContextActionController {
          case ActionIds.HISTORICAL_ROLE:
          case ActionIds.HISTORICAL_ROLE_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_HISTORICAL_ROLE);
-            StereotypeUtils.setRestrictedTo(element, StereotypeUtils.STR_HISTORICAL_ROLE);
+//            StereotypeUtils.setRestrictedTo(element, StereotypeUtils.STR_HISTORICAL_ROLE);
             break;
          case ActionIds.EVENT:
          case ActionIds.EVENT_FIXED:
@@ -101,7 +101,7 @@ public class ApplyStereotype implements VPContextActionController {
          case ActionIds.SUBKIND:
          case ActionIds.SUBKIND_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_SUBKIND);
-            StereotypeUtils.setRestrictedTo(element, StereotypeUtils.STR_SUBKIND);
+//            StereotypeUtils.setRestrictedTo(element, StereotypeUtils.STR_SUBKIND);
             break;
          case ActionIds.ROLE_MIXIN:
          case ActionIds.ROLE_MIXIN_FIXED:
@@ -110,7 +110,7 @@ public class ApplyStereotype implements VPContextActionController {
          case ActionIds.ROLE:
          case ActionIds.ROLE_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_ROLE);
-            StereotypeUtils.setRestrictedTo(element, StereotypeUtils.STR_ROLE);
+//            StereotypeUtils.setRestrictedTo(element, StereotypeUtils.STR_ROLE);
             break;
          case ActionIds.RELATOR:
          case ActionIds.RELATOR_FIXED:
@@ -134,7 +134,7 @@ public class ApplyStereotype implements VPContextActionController {
          case ActionIds.PHASE:
          case ActionIds.PHASE_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_PHASE);
-            StereotypeUtils.setRestrictedTo(element, StereotypeUtils.STR_PHASE);
+//            StereotypeUtils.setRestrictedTo(element, StereotypeUtils.STR_PHASE);
             break;
          case ActionIds.MODE:
          case ActionIds.MODE_FIXED:

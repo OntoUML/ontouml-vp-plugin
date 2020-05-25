@@ -155,38 +155,12 @@ public class ApplyProperties implements VPContextActionController {
               .forEach(consumer);
    }
 
-   private ITaggedValue getTaggedValue(IClass _class, String taggedValueName) {
-      System.out.println("getTaggedValue "+_class.getName()+" "+taggedValueName);
-      String stereotype = _class.toStereotypeArray() != null && _class.toStereotypeArray().length > 0 ?
-              _class.toStereotypeArray()[0] : null;
-
-      // Escape in case the stereotype is missing or incorrect
-      if (stereotype == null || !StereotypeUtils.getOntoUMLClassStereotypeNames().contains(stereotype))
-         return null;
-
-      // Reapply stereotype making sure that the tagged values are there
-       StereotypeUtils.applyStereotype(_class, stereotype);
-
-      // Searches for tagged value
-      ITaggedValueContainer taggedValueContainer = _class.getTaggedValues();
-
-      // Deletes old tagged value
-      ITaggedValue allowedTagged = taggedValueContainer.getTaggedValueByName("allowed");
-      if(allowedTagged!=null)
-         taggedValueContainer.removeTaggedValue(allowedTagged);
-
-      if (taggedValueContainer != null)
-        return taggedValueContainer.getTaggedValueByName(taggedValueName);
-
-      return null;
-   }
-
    private void setBooleanTaggedValue(VPContext context, IClass clickedClass, String metaProperty) {
-      final ITaggedValue booleanTaggedValue = getTaggedValue(clickedClass, metaProperty);
+      final ITaggedValue booleanTaggedValue = StereotypeUtils.reapplyStereotypeAndGetTaggedValue(clickedClass, metaProperty);
       final boolean value = booleanTaggedValue != null && Boolean.parseBoolean(booleanTaggedValue.getValueAsString());
 
       setPropertyOnSelectedClasses(context, cla -> {
-         ITaggedValue taggedValue = getTaggedValue(cla, metaProperty);
+         ITaggedValue taggedValue = StereotypeUtils.reapplyStereotypeAndGetTaggedValue(cla, metaProperty);
 
          if (taggedValue == null)
             return;
@@ -196,7 +170,7 @@ public class ApplyProperties implements VPContextActionController {
    }
 
    private void setOrderProperty(VPContext context, IClass clickedClass) {
-      final ITaggedValue baseTaggedValue = getTaggedValue(clickedClass, StereotypeUtils.PROPERTY_ORDER);
+      final ITaggedValue baseTaggedValue = StereotypeUtils.reapplyStereotypeAndGetTaggedValue(clickedClass, StereotypeUtils.PROPERTY_ORDER);
 
       if (baseTaggedValue == null)
          return;
@@ -208,7 +182,7 @@ public class ApplyProperties implements VPContextActionController {
 
       setPropertyOnSelectedClasses(context, cla -> {
          String order = dialog.getOrder();
-         ITaggedValue taggedValue = getTaggedValue(cla, StereotypeUtils.PROPERTY_ORDER);
+         ITaggedValue taggedValue = StereotypeUtils.reapplyStereotypeAndGetTaggedValue(cla, StereotypeUtils.PROPERTY_ORDER);
 
          if (taggedValue == null)
             return;
@@ -218,11 +192,9 @@ public class ApplyProperties implements VPContextActionController {
    }
 
    private void setRestrictedTo(VPContext context, IClass clickedClass) {
-      final ITaggedValue baseTaggedValue = getTaggedValue(clickedClass, StereotypeUtils.PROPERTY_RESTRICTED_TO);
-
+      final ITaggedValue baseTaggedValue = StereotypeUtils.reapplyStereotypeAndGetTaggedValue(clickedClass, StereotypeUtils.PROPERTY_RESTRICTED_TO);
       if (baseTaggedValue == null)
          return;
-
       final ViewManager vm = ApplicationManager.instance().getViewManager();
       final SelectMultipleOptionsDialog dialog = new SelectMultipleOptionsDialog(baseTaggedValue.getValueAsString());
 
@@ -230,7 +202,7 @@ public class ApplyProperties implements VPContextActionController {
 
       setPropertyOnSelectedClasses(context, cla -> {
          String restrictedTo = dialog.getSelectedValues();
-         ITaggedValue taggedValue = getTaggedValue(cla, StereotypeUtils.PROPERTY_RESTRICTED_TO);
+         ITaggedValue taggedValue = StereotypeUtils.reapplyStereotypeAndGetTaggedValue(cla, StereotypeUtils.PROPERTY_RESTRICTED_TO);
 
          if (taggedValue == null)
             return;
