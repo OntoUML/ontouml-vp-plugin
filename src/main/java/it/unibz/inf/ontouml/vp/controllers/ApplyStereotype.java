@@ -76,32 +76,32 @@ public class ApplyStereotype implements VPContextActionController {
          case ActionIds.TYPE:
          case ActionIds.TYPE_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_TYPE);
-            StereotypeUtils.setRestrictedTo(element, StereotypeUtils.STR_TYPE);
+            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_TYPE);
             break;
          case ActionIds.HISTORICAL_ROLE:
          case ActionIds.HISTORICAL_ROLE_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_HISTORICAL_ROLE);
-//            StereotypeUtils.setRestrictedTo(element, StereotypeUtils.STR_HISTORICAL_ROLE);
+//            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_HISTORICAL_ROLE);
             break;
          case ActionIds.EVENT:
          case ActionIds.EVENT_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_EVENT);
-            StereotypeUtils.setRestrictedTo(element, StereotypeUtils.STR_EVENT);
+            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_EVENT);
             break;
          case ActionIds.ENUMERATION:
          case ActionIds.ENUMERATION_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_ENUMERATION);
-            StereotypeUtils.setRestrictedTo(element, StereotypeUtils.STR_ENUMERATION);
+            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_ENUMERATION);
             break;
          case ActionIds.DATATYPE:
          case ActionIds.DATATYPE_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_DATATYPE);
-            StereotypeUtils.setRestrictedTo(element, StereotypeUtils.STR_DATATYPE);
+            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_DATATYPE);
             break;
          case ActionIds.SUBKIND:
          case ActionIds.SUBKIND_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_SUBKIND);
-//            StereotypeUtils.setRestrictedTo(element, StereotypeUtils.STR_SUBKIND);
+//            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_SUBKIND);
             break;
          case ActionIds.ROLE_MIXIN:
          case ActionIds.ROLE_MIXIN_FIXED:
@@ -110,22 +110,22 @@ public class ApplyStereotype implements VPContextActionController {
          case ActionIds.ROLE:
          case ActionIds.ROLE_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_ROLE);
-//            StereotypeUtils.setRestrictedTo(element, StereotypeUtils.STR_ROLE);
+//            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_ROLE);
             break;
          case ActionIds.RELATOR:
          case ActionIds.RELATOR_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_RELATOR);
-            StereotypeUtils.setRestrictedTo(element, StereotypeUtils.STR_RELATOR);
+            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_RELATOR);
             break;
          case ActionIds.QUANTITY:
          case ActionIds.QUANTITY_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_QUANTITY);
-            StereotypeUtils.setRestrictedTo(element, StereotypeUtils.STR_QUANTITY);
+            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_QUANTITY);
             break;
          case ActionIds.QUALITY:
          case ActionIds.QUALITY_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_QUALITY);
-            StereotypeUtils.setRestrictedTo(element, StereotypeUtils.STR_QUALITY);
+            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_QUALITY);
             break;
          case ActionIds.PHASE_MIXIN:
          case ActionIds.PHASE_MIXIN_FIXED:
@@ -134,12 +134,12 @@ public class ApplyStereotype implements VPContextActionController {
          case ActionIds.PHASE:
          case ActionIds.PHASE_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_PHASE);
-//            StereotypeUtils.setRestrictedTo(element, StereotypeUtils.STR_PHASE);
+//            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_PHASE);
             break;
          case ActionIds.MODE:
          case ActionIds.MODE_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_MODE);
-            StereotypeUtils.setRestrictedTo(element, StereotypeUtils.STR_MODE);
+            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_MODE);
             break;
          case ActionIds.MIXIN:
          case ActionIds.MIXIN_FIXED:
@@ -148,12 +148,12 @@ public class ApplyStereotype implements VPContextActionController {
          case ActionIds.KIND:
          case ActionIds.KIND_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_KIND);
-            StereotypeUtils.setRestrictedTo(element, StereotypeUtils.STR_KIND);
+            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_KIND);
             break;
          case ActionIds.COLLECTIVE:
          case ActionIds.COLLECTIVE_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_COLLECTIVE);
-            StereotypeUtils.setRestrictedTo(element, StereotypeUtils.STR_COLLECTIVE);
+            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_COLLECTIVE);
             break;
          case ActionIds.CATEGORY:
          case ActionIds.CATEGORY_FIXED:
@@ -235,19 +235,16 @@ public class ApplyStereotype implements VPContextActionController {
 
       boolean isSmartModelingEnabled = Configurations.getInstance().getProjectConfigurations()
               .isSmartModellingEnabled();
+      boolean isClass = element.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS);
+      boolean isAssociation = element.getModelType().equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
 
-      if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
-         if (isSmartModelingEnabled)
-            SmartModelling.setClassMetaProperties((IClass) element);
-      }
+      if (isSmartModelingEnabled && isClass)
+         SmartModelling.setClassMetaProperties((IClass) element);
 
-      if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION)) {
-         if (isSmartModelingEnabled)
-            SmartModelling.setAssociationMetaProperties((IAssociation) element);
-      }
+      if (isSmartModelingEnabled && isAssociation)
+         SmartModelling.setAssociationMetaProperties((IAssociation) element);
 
-      if (Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled())
-         SmartColoring.smartPaint();
+      SmartColoring.paintAll();
    }
 
    private void defineActionBehavior(VPAction action, IModelElement element) {

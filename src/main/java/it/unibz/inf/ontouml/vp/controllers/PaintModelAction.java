@@ -11,27 +11,27 @@ import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 
 public class PaintModelAction implements VPActionController {
 
-	@Override
-	public void performAction(VPAction arg0) {
-		
-		if (!Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled()) {
-			final int enableSmartPaint = ViewUtils.smartPaintEnableDialog();
+   @Override
+   public void performAction(VPAction arg0) {
 
-			if(enableSmartPaint == JOptionPane.YES_OPTION) {
-				Configurations.getInstance().getProjectConfigurations().setAutomaticColoringEnabled(true);
-				SmartColoring.smartPaint();
-			}
-		}
-		else {
-			final int proceedSmartPaintAction = ViewUtils.smartPaintConfirmationDialog();
+      if (!Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled()) {
+         final int enableSmartPaint = ViewUtils.smartPaintEnableDialog();
 
-			if(proceedSmartPaintAction == JOptionPane.YES_OPTION) {
-				SmartColoring.smartPaint();
-			}
-		}
-	}
+         if (enableSmartPaint == JOptionPane.YES_OPTION) {
+            Configurations.getInstance().getProjectConfigurations().setAutomaticColoringEnabled(true);
+            SmartColoring.paintAll();
+         }
+      } else {
+         final int proceedSmartPaintAction = ViewUtils.smartPaintConfirmationDialog();
 
-	@Override
-	public void update(VPAction arg0) {}
+         if (proceedSmartPaintAction == JOptionPane.YES_OPTION) {
+            SmartColoring.paintAll();
+         }
+      }
+   }
+
+   @Override
+   public void update(VPAction arg0) {
+   }
 
 }

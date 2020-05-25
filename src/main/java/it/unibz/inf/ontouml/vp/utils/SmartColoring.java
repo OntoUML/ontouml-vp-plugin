@@ -59,6 +59,26 @@ public class SmartColoring {
    public static final Color COLOR_FOR_NON_SPECIFIC = new Color(224, 224, 224);
 
    /**
+    * Runs twice over the diagram and paint all the elements.
+    */
+   public static void paintAll() {
+      if (!Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled())
+         return;
+
+      final IProject project = ApplicationManager.instance().getProjectManager().getProject();
+      final IModelElement[] modelElements = project
+              .toAllLevelModelElementArray(IModelElementFactory.MODEL_TYPE_CLASS);
+
+//       TODO: this method was running twice because it must guarantee that all ultimate
+//       sortals were painted. Improve the code by not relying on the color of classes
+//       related by generalization.
+//      for (int i = 0; i <= 1; i++)
+
+      for (int j = 0; modelElements != null && j < modelElements.length; j++)
+         SmartColoring.paint((IClass) modelElements[j]);
+   }
+
+   /**
     * Paints occurrences of a class based on the "restrictTo" meta-property. Affects class occurrences in all diagrams.
     * No effect whenever auto-coloring is disabled or color is <code>null</code>.
     *
@@ -88,7 +108,6 @@ public class SmartColoring {
     * @return the color of the class
     */
    private static Color getColor(IClass _class) {
-      System.out.println("Paint " + _class.getName());
       ITaggedValue taggedValue = StereotypeUtils.getTaggedValue(_class, StereotypeUtils.PROPERTY_RESTRICTED_TO);
 
       if (taggedValue == null)
@@ -246,23 +265,5 @@ public class SmartColoring {
 
    }
 
-   // TODO: this method runs twice because it must guarantee that all ultimate
-   // sortals were painted. Improve the code by not relying on the color of classes
-   // related by generalization.
-
-   /**
-    * Runs twice over the diagram and paint all the elements.
-    */
-   public static void smartPaint() {
-      final IProject project = ApplicationManager.instance().getProjectManager().getProject();
-      final IModelElement[] modelElements = project
-              .toAllLevelModelElementArray(IModelElementFactory.MODEL_TYPE_CLASS);
-
-      for (int i = 0; i <= 1; i++) {
-         for (int j = 0; modelElements != null && j < modelElements.length; j++) {
-            SmartColoring.paint((IClass) modelElements[j]);
-         }
-      }
-   }
 
 }

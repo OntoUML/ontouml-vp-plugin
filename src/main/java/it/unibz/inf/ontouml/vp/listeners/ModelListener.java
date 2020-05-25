@@ -30,7 +30,7 @@ public class ModelListener implements PropertyChangeListener {
 
 				if (modelElement.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
 					SmartColoring.paint((IClass) modelElement);
-					SmartColoring.smartPaint();
+					SmartColoring.paintAll();
 				}
 
 				if (modelElement.getModelType().equals(IModelElementFactory.MODEL_TYPE_GENERALIZATION)) {

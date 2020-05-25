@@ -49,14 +49,14 @@ public class DiagramListener implements IDiagramListener {
 	@Override
 	public void diagramElementRemoved(IDiagramUIModel diagram, IDiagramElement shape) {
 		if (Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled()) {
-			SmartColoring.smartPaint();
+			SmartColoring.paintAll();
 		}
 	}
 
 	@Override
 	public void diagramUIModelLoaded(IDiagramUIModel diagram) {
 		if (Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled()) {
-			SmartColoring.smartPaint();
+			SmartColoring.paintAll();
 		}
 	}
 

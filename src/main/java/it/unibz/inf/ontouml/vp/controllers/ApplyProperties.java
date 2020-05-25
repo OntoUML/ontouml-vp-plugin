@@ -42,13 +42,13 @@ public class ApplyProperties implements VPContextActionController {
 
          case ActionIds.PROPERTY_SET_IS_ABSTRACT:
             boolean isAbstract = !clickedClass.isAbstract();
-            setPropertyOnSelectedClasses(context, cla -> cla.setAbstract(isAbstract));
+            forEachSelectedClass(context, cla -> cla.setAbstract(isAbstract));
             break;
 
          case ActionIds.PROPERTY_SET_IS_DERIVED:
             boolean removeSlash = clickedClass.getName().trim().startsWith("/");
 
-            setPropertyOnSelectedClasses(context, cla -> {
+            forEachSelectedClass(context, cla -> {
                String currentName = cla.getName().trim();
 
                if (removeSlash && currentName.startsWith("/"))
@@ -140,7 +140,7 @@ public class ApplyProperties implements VPContextActionController {
       }
    }
 
-   private void setPropertyOnSelectedClasses(VPContext context, Consumer<IClass> consumer) {
+   private void forEachSelectedClass(VPContext context, Consumer<IClass> consumer) {
       if (!(context.getModelElement() instanceof IClass))
          return;
 
@@ -159,7 +159,7 @@ public class ApplyProperties implements VPContextActionController {
       final ITaggedValue booleanTaggedValue = StereotypeUtils.reapplyStereotypeAndGetTaggedValue(clickedClass, metaProperty);
       final boolean value = booleanTaggedValue != null && Boolean.parseBoolean(booleanTaggedValue.getValueAsString());
 
-      setPropertyOnSelectedClasses(context, cla -> {
+      forEachSelectedClass(context, cla -> {
          ITaggedValue taggedValue = StereotypeUtils.reapplyStereotypeAndGetTaggedValue(cla, metaProperty);
 
          if (taggedValue == null)
@@ -170,18 +170,17 @@ public class ApplyProperties implements VPContextActionController {
    }
 
    private void setOrderProperty(VPContext context, IClass clickedClass) {
-      final ITaggedValue baseTaggedValue = StereotypeUtils.reapplyStereotypeAndGetTaggedValue(clickedClass, StereotypeUtils.PROPERTY_ORDER);
+      final ITaggedValue baseTaggedValue =
+              StereotypeUtils.reapplyStereotypeAndGetTaggedValue(clickedClass, StereotypeUtils.PROPERTY_ORDER);
 
       if (baseTaggedValue == null)
          return;
 
-      final ViewManager vm = ApplicationManager.instance().getViewManager();
       final SetOrderDialog dialog = new SetOrderDialog(baseTaggedValue.getValueAsString());
+      ApplicationManager.instance().getViewManager().showDialog(dialog);
+      final String order = dialog.getOrder();
 
-      vm.showDialog(dialog);
-
-      setPropertyOnSelectedClasses(context, cla -> {
-         String order = dialog.getOrder();
+      forEachSelectedClass(context, cla -> {
          ITaggedValue taggedValue = StereotypeUtils.reapplyStereotypeAndGetTaggedValue(cla, StereotypeUtils.PROPERTY_ORDER);
 
          if (taggedValue == null)
@@ -192,17 +191,21 @@ public class ApplyProperties implements VPContextActionController {
    }
 
    private void setRestrictedTo(VPContext context, IClass clickedClass) {
-      final ITaggedValue baseTaggedValue = StereotypeUtils.reapplyStereotypeAndGetTaggedValue(clickedClass, StereotypeUtils.PROPERTY_RESTRICTED_TO);
+      System.out.println("\nClicked class: " + clickedClass.getName());
+      final ITaggedValue baseTaggedValue =
+              StereotypeUtils.reapplyStereotypeAndGetTaggedValue(clickedClass, StereotypeUtils.PROPERTY_RESTRICTED_TO);
+
       if (baseTaggedValue == null)
          return;
-      final ViewManager vm = ApplicationManager.instance().getViewManager();
+
       final SelectMultipleOptionsDialog dialog = new SelectMultipleOptionsDialog(baseTaggedValue.getValueAsString());
+      ApplicationManager.instance().getViewManager().showDialog(dialog);
+      final String restrictedTo = dialog.getSelectedValues();
 
-      vm.showDialog(dialog);
-
-      setPropertyOnSelectedClasses(context, cla -> {
-         String restrictedTo = dialog.getSelectedValues();
-         ITaggedValue taggedValue = StereotypeUtils.reapplyStereotypeAndGetTaggedValue(cla, StereotypeUtils.PROPERTY_RESTRICTED_TO);
+      forEachSelectedClass(context, cla -> {
+         System.out.println("setRestrictedTo on class: " + cla.getName());
+         ITaggedValue taggedValue =
+                 StereotypeUtils.reapplyStereotypeAndGetTaggedValue(cla, StereotypeUtils.PROPERTY_RESTRICTED_TO);
 
          if (taggedValue == null)
             return;
