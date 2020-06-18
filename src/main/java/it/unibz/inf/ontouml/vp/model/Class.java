@@ -11,11 +11,16 @@ import com.vp.plugin.model.*;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Implementation of ModelElement to handle IClass and IDataType objects to be
@@ -342,4 +347,184 @@ public class Class implements ModelElement {
 
       this.literals.add(literal);
    }
+
+   public static Set<IClass> getParents(IClass _class) {
+		final Set<IClass> parents = new HashSet<IClass>();
+		final ISimpleRelationship[] relationships = _class.toToRelationshipArray();
+
+		for (int i = 0; relationships != null && i < relationships.length; i++) {
+			if(relationships[i] instanceof IGeneralization) {
+				final IGeneralization generalization = (IGeneralization) relationships[i];
+				final IModelElement parent = Generalization.getGeneral(generalization);
+
+				if (parent instanceof IClass) {
+					parents.add((IClass) parent);
+				}
+			}
+		}
+
+		return parents;
+	}
+
+	public static Set<IClass> getChildren(IClass _class) {
+		final Set<IClass> children = new HashSet<IClass>();
+		final ISimpleRelationship[] relationships = _class.toFromRelationshipArray();
+
+		for (int i = 0; relationships != null && i < relationships.length; i++) {
+			if(relationships[i] instanceof IGeneralization) {
+				final IGeneralization generalization = (IGeneralization) relationships[i];
+				final IModelElement child = Generalization.getSpecific(generalization);
+
+				if (child instanceof IClass) {
+					children.add((IClass) child);
+				}
+			}
+		}
+
+		return children;
+	}
+
+	public static Set<IClass> getAncestors(IClass _class) {
+		final Set<IClass> ancestors = new HashSet<IClass>();
+		final Set<IClass> parents = getChildren(_class);
+
+		for (IClass parent : parents) {
+			ancestors.addAll(getDescendants(parent));
+			ancestors.add(parent);
+		}
+
+		return ancestors;
+	}
+
+	public static Set<IClass> getDescendants(IClass _class) {
+		final Set<IClass> descendants = new HashSet<IClass>();
+		final Set<IClass> children = getChildren(_class);
+
+		for (IClass child : children) {
+			descendants.addAll(getDescendants(child));
+			descendants.add(child);
+		}
+
+		return descendants;
+	}
+
+	public static void applyOnChildren(IClass _class, Consumer<IClass> function) {
+		final Set<IClass> children = getChildren(_class);
+
+		for (IClass child : children) {
+			function.accept(child);
+		}
+	}
+
+	public static void applyOnParents(IClass _class, Consumer<IClass>  function) {
+		final Set<IClass> parents = getParents(_class);
+
+		for (IClass parent : parents) {
+			function.accept(parent);
+		}
+	}
+
+	public static void applyOnDescendants(IClass _class, Function<IClass,Boolean> function) {
+		final Set<IClass> children = getChildren(_class);
+
+		for (IClass child : children) {
+			final boolean shouldContinue = function.apply(child);
+			if(shouldContinue) {
+				applyOnDescendants(child, function);
+			}
+		}
+	}
+
+	public static void applyOnAncestors(IClass _class, Function<IClass,Boolean> function) {
+		final Set<IClass> parents = getParents(_class);
+
+		for (IClass parent : parents) {
+			final boolean shouldContinue = function.apply(parent);
+			if(shouldContinue) {
+				applyOnAncestors(parent, function);
+			}
+		}
+   }
+
+   public static void setRestrictedTo(IModelElement element, String natures) {
+		if(element.getTaggedValues() == null) { 
+			return ; 
+		}
+
+		Iterator<?> values = element.getTaggedValues().taggedValueIterator();
+			
+		while(values != null && values.hasNext()) {
+			final ITaggedValue value = (ITaggedValue) values.next();
+			
+			if(value.getName().equals(StereotypeUtils.PROPERTY_RESTRICTED_TO)) {
+				final List<String> sortList = Arrays.asList(natures.split("\\s+"));
+				Collections.sort(sortList);
+				final Set<String> noDuplicates = new LinkedHashSet<String>(sortList);
+				final String newRestrictions = noDuplicates.toString()
+						.replaceAll("[\\[\\],]", "").trim();
+				final String currentRestrictions = value.getValueAsString() != null ?
+						value.getValueAsString() : "" ;
+				
+				if(!currentRestrictions.equals(newRestrictions)) {
+					value.setValue(newRestrictions);
+				}
+
+				return ;
+			}
+		}
+	}
+
+	public static void setDefaultRestrictedTo(IClass element, String stereotypeName) {
+		final String defaultNature = StereotypeUtils.getDefaultNature(stereotypeName);
+		setRestrictedTo(element, defaultNature);
+	}
+
+	public static void setDefaultRestrictedTo(IClass _class) {
+		setDefaultRestrictedTo(_class, StereotypeUtils.getUniqueStereotype(_class));
+	}
+
+	public static String getRestrictedTo(IClass _class) {
+		final ITaggedValueContainer container = _class.getTaggedValues();
+		final Iterator<?> values = container != null ? container.taggedValueIterator() : null;
+
+		while(values != null && values.hasNext()) {
+			final ITaggedValue value = (ITaggedValue) values.next();
+			if(value.getName().equals(StereotypeUtils.PROPERTY_RESTRICTED_TO)) {
+				return value.getValueAsString();
+			}
+		}
+
+		return null;
+	}
+
+	private static Set<String> getRestrictedToAsSet(IClass _class) {
+		String restrictionsString = getRestrictedTo(_class);
+		restrictionsString = restrictionsString == null ? "" : restrictionsString;
+
+		final List<String> sortList = Arrays.asList(restrictionsString.split("\\s+"));
+		Collections.sort(sortList);
+
+		final Set<String> noDuplicates = new LinkedHashSet<String>(sortList);
+
+		return noDuplicates;
+	}
+
+	public static String getRestrictedTo(Set<IClass> classes) {
+		final Set<String> classesRestrictions = new LinkedHashSet<>();
+
+		for (IClass _class : classes) {
+			classesRestrictions.addAll(getRestrictedToAsSet(_class));
+		}
+
+		return classesRestrictions.toString().replaceAll("[\\[\\],]", "").trim();
+	}
+
+	public static void addRestrictedTo(IClass _class, String additionalNatures) {
+		final String allowedNatures = getRestrictedTo(_class);
+		final String newRestrictions = String.join(" ", allowedNatures, additionalNatures)
+				.replaceAll("null", "");;
+		setRestrictedTo(_class, newRestrictions);
+	}
+   
+
 }

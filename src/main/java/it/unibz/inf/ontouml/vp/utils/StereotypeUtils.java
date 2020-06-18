@@ -219,12 +219,46 @@ public class StereotypeUtils {
       return str_names;
    }
 
+   public static Set<String> getNonSortalStereotypeNames() {
+		final Set<String> str_names = new HashSet<String>();
+
+		str_names.add(STR_CATEGORY);
+		str_names.add(STR_MIXIN);
+		str_names.add(STR_ROLE_MIXIN);
+		str_names.add(STR_PHASE_MIXIN);
+
+		return str_names;
+	}
+
+	public static Set<String> getUltimateSortalStereotypeNames() {
+		final Set<String> str_names = new HashSet<String>();
+
+		str_names.add(STR_KIND);
+		str_names.add(STR_COLLECTIVE);
+		str_names.add(STR_QUANTITY);
+		str_names.add(STR_RELATOR);
+		str_names.add(STR_QUALITY);
+		str_names.add(STR_MODE);
+
+		return str_names;
+	}
+
+	public static Set<String> getSortalStereotypeNames() {
+		final Set<String> str_names = new HashSet<String>();
+
+		str_names.add(STR_SUBKIND);
+		str_names.add(STR_ROLE);
+		str_names.add(STR_PHASE);
+
+		return str_names;
+	}
+
    /**
     * Method to be called whenever a project is opened to properly install all
     * stereotypes.
     */
    public static void generate() {
-      System.out.println("\n\n\n\n\n\nGENERATE\n\n\n\n\n\n");
+      // System.out.println("\n\n\n\n\n\nGENERATE\n\n\n\n\n\n");
       final Map<String, IStereotype> iStereotypeMap = STEREOTYPE_ELEMENTS != null ?
               STEREOTYPE_ELEMENTS : new HashMap<>();
 
@@ -429,30 +463,6 @@ public class StereotypeUtils {
 
    }
 
-   public static void setDefaultRestrictedTo(IModelElement element, String stereotypeName) {
-      if (element.getTaggedValues() == null)
-         return;
-
-      Iterator<?> values = element.getTaggedValues().taggedValueIterator();
-
-      while (values.hasNext()) {
-         final ITaggedValue value = (ITaggedValue) values.next();
-         final ITaggedValueDefinition definition = value != null ? value.getTagDefinition() : null;
-         final IStereotype valueStereotype = definition != null ?
-                 value.getTagDefinitionStereotype() : null;
-         final String valueStereotypeName = valueStereotype != null ?
-                 valueStereotype.getName() : null;
-
-         if (
-                 value.getName().equals(PROPERTY_RESTRICTED_TO) &&
-                         stereotypeName.equals(valueStereotypeName)
-         ) {
-            final String defaultNature = getDefaultNature(stereotypeName);
-            value.setValue(StereotypeUtils.toRestrictedNaturesString(defaultNature));
-         }
-      }
-   }
-
    public static String getDefaultNature(String stereotype) {
       switch (stereotype) {
          case STR_TYPE:
@@ -537,5 +547,11 @@ public class StereotypeUtils {
          }
       }
    }
+
+   public static String getUniqueStereotype(IModelElement element) {
+		return element.stereotypeCount() == 1 ?
+			element.toStereotypeModelArray()[0].getName() :
+			null;
+	}
 
 }

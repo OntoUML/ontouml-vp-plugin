@@ -76,6 +76,15 @@
                     toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.OpenConfigurationsAction" />
             </action>
+            <action 
+					id="it.unibz.inf.ontouml.vp.actions.ReloadClassesAction"
+					actionType="generalAction" 
+					label="Reload Plugin - DEBUG" 
+					tooltip="Reload Plugin" 
+					style="normal"
+					toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ReloadClassesActionController" />
+			</action>
         </actionSet>
 
         <contextSensitiveActionSet id="it.unibz.inf.ontouml.vp.ClassProperties">

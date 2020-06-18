@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeUIModel;
+import com.vp.plugin.diagram.shape.IClassUIModel;
 import com.vp.plugin.model.*;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
@@ -98,6 +99,17 @@ public class SmartColoring {
             ((IShapeUIModel) classView).getFillColor().setColor1(defaultColor);
          else
             classView.setForeground(defaultColor);
+      }
+   }
+
+   public static void paint(IClassUIModel classDiagramElement) {
+		final IClass _class = classDiagramElement.getModelElement() instanceof IClass ? 
+				(IClass) classDiagramElement.getModelElement() :
+				null;
+      final Color defaultColor = getColor(_class);
+
+		if(defaultColor != null) { 
+         classDiagramElement .getFillColor().setColor1(defaultColor);
       }
    }
 

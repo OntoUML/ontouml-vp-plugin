@@ -7,14 +7,16 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import com.vp.plugin.ApplicationManager;
-import com.vp.plugin.ViewManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPContext;
 import com.vp.plugin.action.VPContextActionController;
 import com.vp.plugin.diagram.IDiagramElement;
-import com.vp.plugin.model.*;
-
+import com.vp.plugin.model.IClass;
+import com.vp.plugin.model.IStereotype;
+import com.vp.plugin.model.ITaggedValue;
+import com.vp.plugin.model.ITaggedValueContainer;
 import com.vp.plugin.model.factory.IModelElementFactory;
+
 import it.unibz.inf.ontouml.vp.features.constraints.ActionIds;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 import it.unibz.inf.ontouml.vp.views.SelectMultipleOptionsDialog;

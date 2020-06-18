@@ -9,8 +9,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.ApplicationManager;
-import com.vp.plugin.diagram.IDiagramElement;
-import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationClass;
 import com.vp.plugin.model.IClass;

@@ -12,6 +12,7 @@ import com.vp.plugin.model.*;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.features.constraints.ActionIds;
+import it.unibz.inf.ontouml.vp.model.Class;
 import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.SmartColoring;
 import it.unibz.inf.ontouml.vp.utils.SmartModelling;
@@ -76,7 +77,7 @@ public class ApplyStereotype implements VPContextActionController {
          case ActionIds.TYPE:
          case ActionIds.TYPE_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_TYPE);
-            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_TYPE);
+            Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIds.HISTORICAL_ROLE:
          case ActionIds.HISTORICAL_ROLE_FIXED:
@@ -86,17 +87,17 @@ public class ApplyStereotype implements VPContextActionController {
          case ActionIds.EVENT:
          case ActionIds.EVENT_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_EVENT);
-            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_EVENT);
+            Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIds.ENUMERATION:
          case ActionIds.ENUMERATION_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_ENUMERATION);
-            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_ENUMERATION);
+            Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIds.DATATYPE:
          case ActionIds.DATATYPE_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_DATATYPE);
-            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_DATATYPE);
+            Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIds.SUBKIND:
          case ActionIds.SUBKIND_FIXED:
@@ -115,17 +116,17 @@ public class ApplyStereotype implements VPContextActionController {
          case ActionIds.RELATOR:
          case ActionIds.RELATOR_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_RELATOR);
-            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_RELATOR);
+            Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIds.QUANTITY:
          case ActionIds.QUANTITY_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_QUANTITY);
-            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_QUANTITY);
+            Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIds.QUALITY:
          case ActionIds.QUALITY_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_QUALITY);
-            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_QUALITY);
+            Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIds.PHASE_MIXIN:
          case ActionIds.PHASE_MIXIN_FIXED:
@@ -139,7 +140,7 @@ public class ApplyStereotype implements VPContextActionController {
          case ActionIds.MODE:
          case ActionIds.MODE_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_MODE);
-            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_MODE);
+            Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIds.MIXIN:
          case ActionIds.MIXIN_FIXED:
@@ -148,12 +149,12 @@ public class ApplyStereotype implements VPContextActionController {
          case ActionIds.KIND:
          case ActionIds.KIND_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_KIND);
-            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_KIND);
+            Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIds.COLLECTIVE:
          case ActionIds.COLLECTIVE_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_COLLECTIVE);
-            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_COLLECTIVE);
+            Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIds.CATEGORY:
          case ActionIds.CATEGORY_FIXED:

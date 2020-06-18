@@ -8,11 +8,8 @@ import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
-import it.unibz.inf.ontouml.vp.listeners.DiagramListener;
-import it.unibz.inf.ontouml.vp.listeners.ModelListener;
-import it.unibz.inf.ontouml.vp.listeners.ProjectDiagramListener;
 import it.unibz.inf.ontouml.vp.listeners.ProjectListener;
-import it.unibz.inf.ontouml.vp.listeners.ProjectModelListener;
+import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 
 /**
  * Implementation of VPPlugin responsible for configuring OntoUML Plugin's
@@ -30,13 +27,9 @@ public class OntoUMLPlugin implements VPPlugin {
    public static IModelElement[] allModelElements;
    public static boolean isPluginActive;
 
-   public static ModelListener MODEL_LISTENER = new ModelListener();
-   public static DiagramListener DIAGRAM_LISTENER = new DiagramListener();
-   public static ProjectModelListener PROJECT_MODEL_LISTENER = new ProjectModelListener();
-   public static ProjectDiagramListener PROJECT_DIAGRAM_LISTENER = new ProjectDiagramListener();
-
    private static boolean isExportToGUFOWindowOpen;
    private static boolean isConfigWindowOpen;
+   private static ProjectListener projectListener;
 
    /**
     * OntoUMLPlugin constructor. Declared to make explicit Open API requirements.
@@ -54,11 +47,11 @@ public class OntoUMLPlugin implements VPPlugin {
     */
    @Override
    public void loaded(VPPluginInfo pluginInfo) {
-      ProjectManager pm = ApplicationManager.instance().getProjectManager();
-      IProject p = pm.getProject();
-      p.addProjectListener(new ProjectListener());
-      p.addProjectDiagramListener(OntoUMLPlugin.PROJECT_DIAGRAM_LISTENER);
-      p.addProjectModelListener(OntoUMLPlugin.PROJECT_MODEL_LISTENER);
+      final ProjectManager pm = ApplicationManager.instance().getProjectManager();
+      final IProject p = pm.getProject();
+
+      projectListener = new ProjectListener();
+      p.addProjectListener(projectListener);
 
       OntoUMLPlugin.allModelElements =
               pm.getSelectableStereotypesForModelType(IModelElementFactory.MODEL_TYPE_CLASS, p, true);
@@ -89,5 +82,11 @@ public class OntoUMLPlugin implements VPPlugin {
    public static boolean getConfigWindowOpen() {
       return isConfigWindowOpen;
    }
+
+   public static void reload() {
+      ViewUtils.log("Reloading plugin: "+PLUGIN_ID);
+      ApplicationManager.instance().reloadPluginClasses(PLUGIN_ID);
+      // TODO: try to integrate listener to the reload process
+	}
 
 }
