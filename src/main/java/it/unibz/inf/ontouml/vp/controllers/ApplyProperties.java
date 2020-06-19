@@ -18,9 +18,11 @@ import com.vp.plugin.model.ITaggedValueContainer;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.features.constraints.ActionIds;
+import it.unibz.inf.ontouml.vp.model.Class;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 import it.unibz.inf.ontouml.vp.views.SelectMultipleOptionsDialog;
 import it.unibz.inf.ontouml.vp.views.SetOrderDialog;
+import v.chq.cla;
 
 /**
  * Implementation of context sensitive action of change OntoUML stereotypes in model elements.
@@ -194,25 +196,29 @@ public class ApplyProperties implements VPContextActionController {
 
    private void setRestrictedTo(VPContext context, IClass clickedClass) {
       System.out.println("\nClicked class: " + clickedClass.getName());
-      final ITaggedValue baseTaggedValue =
-              StereotypeUtils.reapplyStereotypeAndGetTaggedValue(clickedClass, StereotypeUtils.PROPERTY_RESTRICTED_TO);
+      // final ITaggedValue baseTaggedValue =
+      //         StereotypeUtils.reapplyStereotypeAndGetTaggedValue(clickedClass, StereotypeUtils.PROPERTY_RESTRICTED_TO);
+      String currentRestrictions = Class.getRestrictedTo(clickedClass);
+      currentRestrictions = currentRestrictions == null ? "" : currentRestrictions;
 
-      if (baseTaggedValue == null)
-         return;
+      // if (baseTaggedValue == null)
+      //    return;
 
-      final SelectMultipleOptionsDialog dialog = new SelectMultipleOptionsDialog(baseTaggedValue.getValueAsString());
+      // final SelectMultipleOptionsDialog dialog = new SelectMultipleOptionsDialog(baseTaggedValue.getValueAsString());
+      final SelectMultipleOptionsDialog dialog = new SelectMultipleOptionsDialog(currentRestrictions);
       ApplicationManager.instance().getViewManager().showDialog(dialog);
-      final String restrictedTo = dialog.getSelectedValues();
+      final String newRestrictions = dialog.getSelectedValues();
 
       forEachSelectedClass(context, cla -> {
          System.out.println("setRestrictedTo on class: " + cla.getName());
-         ITaggedValue taggedValue =
-                 StereotypeUtils.reapplyStereotypeAndGetTaggedValue(cla, StereotypeUtils.PROPERTY_RESTRICTED_TO);
+         Class.setRestrictedTo(cla, newRestrictions);
+         // ITaggedValue taggedValue =
+         //         StereotypeUtils.reapplyStereotypeAndGetTaggedValue(cla, StereotypeUtils.PROPERTY_RESTRICTED_TO);
 
-         if (taggedValue == null)
-            return;
+         // if (taggedValue == null)
+         //    return;
 
-         taggedValue.setValue(restrictedTo);
+         // taggedValue.setValue(restrictedTo);
       });
    }
 
