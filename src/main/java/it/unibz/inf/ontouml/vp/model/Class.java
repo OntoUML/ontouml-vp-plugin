@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.*;
+import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of ModelElement to handle IClass and IDataType objects to be
@@ -446,18 +448,48 @@ public class Class implements ModelElement {
 		}
    }
 
-   public static void setRestrictedTo(IModelElement element, String natures) {
-		if(element.getTaggedValues() == null) { 
+   // public static ITaggedValue getRestrictedToValue(IClass _class) {
+      // final String propertyName = StereotypeUtils.PROPERTY_RESTRICTED_TO;
+      // ITaggedValueContainer container = _class.getTaggedValues();
+      // ITaggedValue restrictedTo = container != null ?
+      //       container.getTaggedValueByName(propertyName) :
+      //       null ;
+      
+      // restrictedTo = container.createTaggedValue();
+      // container.removeTaggedValue(arg0);
+      // restrictedTo.setTagDefinition(arg0);
+
+      
+      // if(container == null) { return null; }
+
+      // IStereotype stereotype = StereotypeUtils.getUniqueStereotype(_class);
+      // ITaggedValueDefinitionContainer definitionContainer =
+      //       stereotype.getTaggedValueDefinitions();
+      // ITaggedValueDefinition definition = 
+      //       definitionContainer.getTaggedValueDefinitionByName(propertyName);
+      
+      // definition.cre
+
+      // if(
+      //    stereotype == null ||
+      //    StereotypeUtils.STEREOTYPE_ELEMENTS.containsKey(stereotype.getName())
+      // ) {
+      //    return null;
+      // }
+   // }
+
+   public static void setRestrictedTo(IClass _class, String restrictions) {
+		if(_class.getTaggedValues() == null) { 
 			return ; 
 		}
 
-		Iterator<?> values = element.getTaggedValues().taggedValueIterator();
+		Iterator<?> values = _class.getTaggedValues().taggedValueIterator();
 			
 		while(values != null && values.hasNext()) {
 			final ITaggedValue value = (ITaggedValue) values.next();
 			
 			if(value.getName().equals(StereotypeUtils.PROPERTY_RESTRICTED_TO)) {
-				final List<String> sortList = Arrays.asList(natures.split("\\s+"));
+				final List<String> sortList = Arrays.asList(restrictions.split("\\s+"));
 				Collections.sort(sortList);
 				final Set<String> noDuplicates = new LinkedHashSet<String>(sortList);
 				final String newRestrictions = noDuplicates.toString()
@@ -471,52 +503,100 @@ public class Class implements ModelElement {
 
 				return ;
 			}
-		}
+      }
+
+
+      
+      // final ITaggedValueContainer container = _class.getTaggedValues();
+      // ITaggedValue restrictedTo = container != null ? 
+      //       container.getTaggedValueByName(StereotypeUtils.PROPERTY_RESTRICTED_TO) :
+      //       null;
+      
+      // if(restrictedTo == null) {
+      //    final IStereotype stereotype = StereotypeUtils.getUniqueStereotype(_class);
+         
+      //    if (StereotypeUtils.STEREOTYPE_ELEMENTS.containsValue(stereotype)) {
+      //       IModelElementFactory.instance().createTaggedValue();
+      //       ITaggedValueDefinitionContainer stereotype.getTaggedValueDefinitions();
+      //    } else {
+      //       return ;
+      //    }
+      // }
+
+      // final String oldRestrictions = restrictedTo != null ?
+      //       restrictedTo.getValueAsString() : null;
+      // final String newRestrictions = Arrays.stream(restrictions.split("\\s+"))
+      //       .distinct().collect(Collectors.joining(" "));
+      
+      // if(oldRestrictions == null || !oldRestrictions.equals(newRestrictions)) {
+      //    restrictedTo.setValue(newRestrictions);
+      // }
 	}
 
-	public static void setDefaultRestrictedTo(IClass element, String stereotypeName) {
+	private static void setDefaultRestrictedTo(IClass element, String stereotypeName) {
 		final String defaultNature = StereotypeUtils.getDefaultNature(stereotypeName);
 		setRestrictedTo(element, defaultNature);
 	}
 
 	public static void setDefaultRestrictedTo(IClass _class) {
-		setDefaultRestrictedTo(_class, StereotypeUtils.getUniqueStereotype(_class));
+      setDefaultRestrictedTo(_class, 
+         StereotypeUtils.getUniqueStereotypeName(_class));
 	}
 
 	public static String getRestrictedTo(IClass _class) {
-		final ITaggedValueContainer container = _class.getTaggedValues();
-		final Iterator<?> values = container != null ? container.taggedValueIterator() : null;
+		// final ITaggedValueContainer container = _class.getTaggedValues();
+		// final Iterator<?> values = container != null ? container.taggedValueIterator() : null;
 
-		while(values != null && values.hasNext()) {
-			final ITaggedValue value = (ITaggedValue) values.next();
-			if(value.getName().equals(StereotypeUtils.PROPERTY_RESTRICTED_TO)) {
-				return value.getValueAsString();
-			}
-		}
+		// while(values != null && values.hasNext()) {
+		// 	final ITaggedValue value = (ITaggedValue) values.next();
+		// 	if(value.getName().equals(StereotypeUtils.PROPERTY_RESTRICTED_TO)) {
+		// 		return value.getValueAsString();
+		// 	}
+		// }
 
-		return null;
+      // return null;
+      
+      final ITaggedValueContainer container = _class.getTaggedValues();
+      final ITaggedValue restrictedTo = container != null ? 
+            container.getTaggedValueByName(StereotypeUtils.PROPERTY_RESTRICTED_TO) :
+            null;
+      
+      return restrictedTo != null ? restrictedTo.getValueAsString() : null;
 	}
 
-	private static Set<String> getRestrictedToAsSet(IClass _class) {
-		String restrictionsString = getRestrictedTo(_class);
-		restrictionsString = restrictionsString == null ? "" : restrictionsString;
+	// private static Set<String> getRestrictedToAsSet(IClass _class) {
+	// 	String restrictionsString = getRestrictedTo(_class);
+	// 	restrictionsString = restrictionsString == null ? "" : restrictionsString;
 
-		final List<String> sortList = Arrays.asList(restrictionsString.split("\\s+"));
-		Collections.sort(sortList);
+	// 	final List<String> sortList = Arrays.asList(restrictionsString.split("\\s+"));
+	// 	Collections.sort(sortList);
 
-		final Set<String> noDuplicates = new LinkedHashSet<String>(sortList);
+	// 	final Set<String> noDuplicates = new LinkedHashSet<String>(sortList);
 
-		return noDuplicates;
-	}
+	// 	return noDuplicates;
+	// }
 
 	public static String getRestrictedTo(Set<IClass> classes) {
-		final Set<String> classesRestrictions = new LinkedHashSet<>();
+		// final Set<String> classesRestrictions = new LinkedHashSet<>();
 
-		for (IClass _class : classes) {
-			classesRestrictions.addAll(getRestrictedToAsSet(_class));
-		}
+		// for (IClass _class : classes) {
+		// 	classesRestrictions.addAll(getRestrictedToAsSet(_class));
+		// }
 
-		return classesRestrictions.toString().replaceAll("[\\[\\],]", "").trim();
+      // return classesRestrictions.toString().replaceAll("[\\[\\],]", "").trim();
+      String classesRestrictions = "";
+
+      for (IClass _class : classes) {
+         final String _classRestrictions = getRestrictedTo(_class);
+         if (_classRestrictions != null) {
+            classesRestrictions += _classRestrictions;
+         }
+      }
+
+      classesRestrictions = Arrays.stream(classesRestrictions.split("\\s+"))
+            .distinct().collect(Collectors.joining(" "));
+      
+      return !classesRestrictions.equals("") ? classesRestrictions : null;
 	}
 
 	public static void addRestrictedTo(IClass _class, String additionalNatures) {
@@ -524,7 +604,122 @@ public class Class implements ModelElement {
 		final String newRestrictions = String.join(" ", allowedNatures, additionalNatures)
 				.replaceAll("null", "");;
 		setRestrictedTo(_class, newRestrictions);
-	}
+   }
    
+   public static boolean hasRestrictedTo(IClass _class) {
+      final ITaggedValueContainer container = _class.getTaggedValues();
+      final ITaggedValue restrictedTo = container != null ?
+            container.getTaggedValueByName(StereotypeUtils.PROPERTY_RESTRICTED_TO) :
+            null;
+      
+      return restrictedTo != null;
+   }
+   
+   public static String getOrder(IClass _class) {
+      final ITaggedValueContainer container = _class.getTaggedValues();
+      final ITaggedValue order = container != null ?
+            container.getTaggedValueByName(StereotypeUtils.PROPERTY_ORDER) :
+            null;
+      
+      return order != null ? order.getValueAsString() : null ;
+   }
+
+   public static void setOrder(IClass _class, String newOrder) {
+      final ITaggedValueContainer container = _class.getTaggedValues();
+      final ITaggedValue order = container != null ?
+            container.getTaggedValueByName(StereotypeUtils.PROPERTY_ORDER) :
+            null;
+      
+      if (order != null) {
+         order.setValue(newOrder);
+      }
+   }
+
+   public static boolean hasOrder(IClass _class) {
+      final ITaggedValueContainer container = _class.getTaggedValues();
+      final ITaggedValue order = container != null ?
+            container.getTaggedValueByName(StereotypeUtils.PROPERTY_ORDER) :
+            null;
+      
+      return order != null;
+   }
+
+   public static boolean getIsPowertype(IClass _class) {
+      final ITaggedValueContainer container = _class.getTaggedValues();
+      final ITaggedValue isPowertype = container != null ?
+            container.getTaggedValueByName(StereotypeUtils.PROPERTY_IS_POWERTYPE) :
+            null;
+      final String isPowertypeValue = isPowertype != null ?
+            isPowertype.getValueAsString() : "" ;
+      
+      return Boolean.parseBoolean(isPowertypeValue);
+   }
+
+   public static void setIsPowertype(IClass _class, boolean isPowertypeValue) {
+      final ITaggedValueContainer container = _class.getTaggedValues();
+      final ITaggedValue isPowertype = container != null ?
+            container.getTaggedValueByName(StereotypeUtils.PROPERTY_IS_POWERTYPE) :
+            null;
+      
+      if (isPowertype != null) {
+         isPowertype.setValue(isPowertypeValue);
+      }
+   }
+
+   public static boolean hasIsPowertype(IClass _class) {
+      final ITaggedValueContainer container = _class.getTaggedValues();
+      final ITaggedValue isPowertype = container != null ?
+            container.getTaggedValueByName(StereotypeUtils.PROPERTY_IS_POWERTYPE) :
+            null;
+      
+      return isPowertype != null;
+   }
+
+   public static boolean getIsExtenstional(IClass _class) {
+      final ITaggedValueContainer container = _class.getTaggedValues();
+      final ITaggedValue isExtenstional = container != null ?
+            container.getTaggedValueByName(StereotypeUtils.PROPERTY_IS_EXTENSIONAL) :
+            null;
+      final String isExtenstionalValue = isExtenstional != null ?
+            isExtenstional.getValueAsString() : "" ;
+      
+      return Boolean.parseBoolean(isExtenstionalValue);
+   }
+
+   public static void setIsExtenstional(IClass _class, boolean isExtenstionalValue) {
+      final ITaggedValueContainer container = _class.getTaggedValues();
+      final ITaggedValue isExtenstional = container != null ?
+            container.getTaggedValueByName(StereotypeUtils.PROPERTY_IS_EXTENSIONAL) :
+            null;
+      
+      if (isExtenstional != null) {
+         isExtenstional.setValue(isExtenstionalValue);
+      }
+   }
+
+   public static boolean hasIsExtenstional(IClass _class) {
+      final ITaggedValueContainer container = _class.getTaggedValues();
+      final ITaggedValue isExtenstional = container != null ?
+            container.getTaggedValueByName(StereotypeUtils.PROPERTY_IS_EXTENSIONAL) :
+            null;
+      
+      return isExtenstional != null;
+   }
+
+   public static boolean getIsDerived(IClass _class) {
+      return _class.getName().trim().startsWith("/");
+   }
+
+   public static void setIsDerived(IClass _class, boolean isDerived) {
+      String currentName = _class.getName().trim();
+
+      if (getIsDerived(_class)) {
+         _class.setName(currentName.substring(1));
+      }
+
+      if (getIsDerived(_class)) {
+         _class.setName("/" + currentName);
+      }
+   }
 
 }

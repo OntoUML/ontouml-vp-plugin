@@ -17,7 +17,7 @@ public class ModelListener implements PropertyChangeListener {
 	// Property change names of interest events
 	// Events on classes
 	final public static String PCN_STEREOTYPES = "stereotypes";
-	final public static String PCN_RESTRICTED_TO = "restrictedTo";
+	final public static String PCN_RESTRICTED_TO = StereotypeUtils.PROPERTY_RESTRICTED_TO;
 	final public static String PCN_FROM_RELATIONSHIP_ADDED = "fromRelationshipAdded";
 	final public static String PCN_FROM_RELATIONSHIP_REMOVED = "fromRelationshipRemoved";
 	final public static String PCN_TO_RELATIONSHIP_ADDED = "toRelationshipAdded";
@@ -123,7 +123,7 @@ public class ModelListener implements PropertyChangeListener {
 	private void enforceAndPropagateRestrictedTo(PropertyChangeEvent event) {
 		final IClass _class = event.getSource() instanceof IClass ?
 				(IClass) event.getSource() : null;
-		final String stereotype = StereotypeUtils.getUniqueStereotype(_class);
+		final String stereotype = StereotypeUtils.getUniqueStereotypeName(_class);
 		final Object newValue = event.getNewValue();
 		final Object oldValue = event.getOldValue();
 
@@ -191,7 +191,7 @@ public class ModelListener implements PropertyChangeListener {
 		final IClass _class = classObject instanceof IClass ?
 				(IClass) classObject : null ;
 		final String stereotype = _class != null ?
-				StereotypeUtils.getUniqueStereotype(_class) : null;
+				StereotypeUtils.getUniqueStereotypeName(_class) : null;
 
 		if(_class == null || stereotype == null) { return ; }
 
@@ -227,7 +227,7 @@ public class ModelListener implements PropertyChangeListener {
 	private void propagateRestrictionsToDescendants(IClass _class) {
 		Class.applyOnDescendants(_class, descendent -> {
 			String descendentStereotype = 
-					StereotypeUtils.getUniqueStereotype(descendent);
+					StereotypeUtils.getUniqueStereotypeName(descendent);
 			
 			if(!interestStereotypes.contains(descendentStereotype)) {
 				return false;
@@ -251,7 +251,7 @@ public class ModelListener implements PropertyChangeListener {
 	private Set<IClass> getSortalParents(IClass _class) {
 		final Set<IClass> sortalParents = Class.getParents(_class);
 		sortalParents.removeIf(parent -> {
-			final String parentStereotype = StereotypeUtils.getUniqueStereotype(parent);
+			final String parentStereotype = StereotypeUtils.getUniqueStereotypeName(parent);
 			return !interestStereotypes.contains(parentStereotype);
 		});
 

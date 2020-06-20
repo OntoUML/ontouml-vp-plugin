@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.util.LinkedList;
 
 import com.vp.plugin.ApplicationManager;
+import com.vp.plugin.DiagramManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPContext;
 import com.vp.plugin.action.VPContextActionController;
@@ -58,7 +59,12 @@ public class ApplyStereotype implements VPContextActionController {
       if (context.getModelElement().getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS) && !isClassSelectionAllowed())
          action.setEnabled(false);
 
-      IDiagramElement[] diagramElements = ApplicationManager.instance().getDiagramManager().getActiveDiagram().getSelectedDiagramElement();
+      final DiagramManager dm = ApplicationManager
+            .instance().getDiagramManager();
+      IDiagramElement[] diagramElements = 
+            dm.getActiveDiagram() != null ?
+            dm.getActiveDiagram().getSelectedDiagramElement() :
+            null;
 
       if (diagramElements == null) {
          defineActionBehavior(action, context.getModelElement());
@@ -265,7 +271,12 @@ public class ApplyStereotype implements VPContextActionController {
 
    private boolean isClassSelectionAllowed() {
 
-      IDiagramElement[] diagramElements = ApplicationManager.instance().getDiagramManager().getActiveDiagram().getSelectedDiagramElement();
+      final DiagramManager dm = ApplicationManager.instance()
+            .getDiagramManager();
+      IDiagramElement[] diagramElements = 
+            dm.getActiveDiagram() != null ?
+            dm.getActiveDiagram().getSelectedDiagramElement() :
+            null ;
       LinkedList<String> superClasses = new LinkedList<>();
 
       if (diagramElements == null)

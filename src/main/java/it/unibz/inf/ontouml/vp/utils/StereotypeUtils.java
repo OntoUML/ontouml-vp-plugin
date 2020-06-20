@@ -548,9 +548,15 @@ public class StereotypeUtils {
       }
    }
 
-   public static String getUniqueStereotype(IModelElement element) {
+   public static String getUniqueStereotypeName(IModelElement element) {
 		return element.stereotypeCount() == 1 ?
 			element.toStereotypeModelArray()[0].getName() :
+			null;
+   }
+   
+   public static IStereotype getUniqueStereotype(IModelElement element) {
+		return element.stereotypeCount() == 1 ?
+			element.toStereotypeModelArray()[0] :
 			null;
 	}
 
