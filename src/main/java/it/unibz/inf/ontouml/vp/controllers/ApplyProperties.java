@@ -2,7 +2,6 @@ package it.unibz.inf.ontouml.vp.controllers;
 
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -13,13 +12,12 @@ import com.vp.plugin.action.VPContextActionController;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IClass;
-import com.vp.plugin.model.IStereotype;
 import com.vp.plugin.model.ITaggedValue;
-import com.vp.plugin.model.ITaggedValueContainer;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.features.constraints.ActionIds;
 import it.unibz.inf.ontouml.vp.model.Class;
+import it.unibz.inf.ontouml.vp.model.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 import it.unibz.inf.ontouml.vp.views.SelectMultipleOptionsDialog;
 import it.unibz.inf.ontouml.vp.views.SetOrderDialog;
@@ -49,24 +47,14 @@ public class ApplyProperties implements VPContextActionController {
             break;
 
          case ActionIds.PROPERTY_SET_IS_ABSTRACT:
-            boolean isAbstract = !clickedClass.isAbstract();
-            forEachSelectedClass(context, cla -> cla.setAbstract(isAbstract));
+            final boolean isAbstract = clickedClass.isAbstract();
+            forEachSelectedClass(context, cla -> cla.setAbstract(!isAbstract));
             break;
 
          case ActionIds.PROPERTY_SET_IS_DERIVED:
-            // boolean removeSlash = clickedClass.getName().trim().startsWith("/");
-
-            // forEachSelectedClass(context, cla -> {
-            //    String currentName = cla.getName().trim();
-
-            //    if (removeSlash && currentName.startsWith("/"))
-            //       cla.setName(currentName.substring(1));
-
-            //    if (!removeSlash && !currentName.startsWith("/"))
-            //       cla.setName("/" + currentName);
-            // });
+            final boolean isDerived = ModelElement.getIsDerived(clickedClass);
             forEachSelectedClass(context, selected ->  {
-               Class.setIsDerived(selected, !Class.getIsDerived(selected));
+               ModelElement.setIsDerived(selected, !isDerived);
             });
             break;
          case ActionIds.PROPERTY_SET_IS_EXTENSIONAL:
@@ -93,25 +81,12 @@ public class ApplyProperties implements VPContextActionController {
       }
 
       final IClass _class = (IClass) context.getModelElement();
-      // final ITaggedValueContainer container = _class.getTaggedValues();
-      // final Iterator<?> values = container == null ? null : container.taggedValueIterator();
-      // final Iterator<?> stereotypes = _class.stereotypeModelIterator();
       final String stereotype = StereotypeUtils.getUniqueStereotypeName(_class);
-      final Set<String> allStereotypes = StereotypeUtils.getOntoUMLClassStereotypeNames();
+      final Set<String> allClassStereotypes = StereotypeUtils.getOntoUMLClassStereotypeNames();
 
       switch (action.getActionId()) {
          case ActionIds.PROPERTY_SET_RESTRICTED_TO:
-            // while (stereotypes != null && stereotypes.hasNext()) {
-            //    final IStereotype stereotype = (IStereotype) stereotypes.next();
-
-            //    if (allStereotypes.contains(stereotype.getName())) {
-            //       action.setEnabled(true);
-            //       return;
-            //    }
-            // }
-
-            // action.setEnabled(false);
-            action.setEnabled(allStereotypes.contains(stereotype));
+            action.setEnabled(allClassStereotypes.contains(stereotype));
             break;
          case ActionIds.PROPERTY_SET_IS_ABSTRACT:
             action.setEnabled(true);
@@ -119,38 +94,13 @@ public class ApplyProperties implements VPContextActionController {
             break;
          case ActionIds.PROPERTY_SET_IS_DERIVED:
             action.setEnabled(true);
-            // action.setSelected(_class.getName().trim().startsWith("/"));
-            action.setSelected(Class.getIsDerived(_class));
+            action.setSelected(ModelElement.getIsDerived(_class));
             break;
          case ActionIds.PROPERTY_SET_IS_EXTENSIONAL:
-            // while (values != null && values.hasNext()) {
-            //    final ITaggedValue value = (ITaggedValue) values.next();
-
-            //    if (value.getName().equals(StereotypeUtils.PROPERTY_IS_EXTENSIONAL)) {
-            //       action.setEnabled(true);
-            //       action.setSelected(value.getValueAsString().toLowerCase().equals("true"));
-            //       return;
-            //    }
-            // }
-
-            // action.setEnabled(_class.hasStereotype(StereotypeUtils.STR_COLLECTIVE));
-            // action.setSelected(false);
             action.setEnabled(StereotypeUtils.STR_COLLECTIVE.equals(stereotype));
-            action.setSelected(Class.getIsExtenstional(_class));
+            action.setSelected(Class.getIsExtensional(_class));
             break;
          case ActionIds.PROPERTY_SET_IS_POWERTYPE:
-            // while (values != null && values.hasNext()) {
-            //    final ITaggedValue value = (ITaggedValue) values.next();
-
-            //    if (value.getName().equals(StereotypeUtils.PROPERTY_IS_POWERTYPE)) {
-            //       action.setEnabled(true);
-            //       action.setSelected(value.getValueAsString().toLowerCase().equals("true"));
-            //       return;
-            //    }
-            // }
-
-            // action.setEnabled(_class.hasStereotype(StereotypeUtils.STR_TYPE));
-            // action.setSelected(false);
             action.setEnabled(StereotypeUtils.STR_TYPE.equals(stereotype));
             action.setSelected(Class.getIsPowertype(_class));
             break;
@@ -164,18 +114,15 @@ public class ApplyProperties implements VPContextActionController {
       if (!(context.getModelElement() instanceof IClass))
          return;
 
-      String contextType = context.getContextType();
-      IDiagramUIModel diagram = context.getDiagram();
-      IClass _class = (IClass) context.getModelElement();
+      final IDiagramUIModel diagram = context.getDiagram();
+      final IClass _class = (IClass) context.getModelElement();
 
       if(diagram == null) {
          consumer.accept(_class);
          return ;
       }
 
-      IDiagramElement[] diagramElements = ApplicationManager.instance()
-              .getDiagramManager()
-              .getActiveDiagram()
+      final IDiagramElement[] diagramElements = context.getDiagram()
               .getSelectedDiagramElement();
 
       Arrays.stream(diagramElements)

@@ -9,13 +9,15 @@ import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPContext;
 import com.vp.plugin.action.VPContextActionController;
 import com.vp.plugin.diagram.IDiagramElement;
-import com.vp.plugin.model.*;
+import com.vp.plugin.model.IAssociation;
+import com.vp.plugin.model.IClass;
+import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.ISimpleRelationship;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.features.constraints.ActionIds;
 import it.unibz.inf.ontouml.vp.model.Class;
 import it.unibz.inf.ontouml.vp.utils.Configurations;
-import it.unibz.inf.ontouml.vp.utils.SmartColoring;
 import it.unibz.inf.ontouml.vp.utils.SmartModelling;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
@@ -88,7 +90,6 @@ public class ApplyStereotype implements VPContextActionController {
          case ActionIds.HISTORICAL_ROLE:
          case ActionIds.HISTORICAL_ROLE_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_HISTORICAL_ROLE);
-//            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_HISTORICAL_ROLE);
             break;
          case ActionIds.EVENT:
          case ActionIds.EVENT_FIXED:
@@ -108,7 +109,6 @@ public class ApplyStereotype implements VPContextActionController {
          case ActionIds.SUBKIND:
          case ActionIds.SUBKIND_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_SUBKIND);
-//            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_SUBKIND);
             break;
          case ActionIds.ROLE_MIXIN:
          case ActionIds.ROLE_MIXIN_FIXED:
@@ -117,7 +117,6 @@ public class ApplyStereotype implements VPContextActionController {
          case ActionIds.ROLE:
          case ActionIds.ROLE_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_ROLE);
-//            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_ROLE);
             break;
          case ActionIds.RELATOR:
          case ActionIds.RELATOR_FIXED:
@@ -141,7 +140,6 @@ public class ApplyStereotype implements VPContextActionController {
          case ActionIds.PHASE:
          case ActionIds.PHASE_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_PHASE);
-//            StereotypeUtils.setDefaultRestrictedTo(element, StereotypeUtils.STR_PHASE);
             break;
          case ActionIds.MODE:
          case ActionIds.MODE_FIXED:
@@ -250,8 +248,6 @@ public class ApplyStereotype implements VPContextActionController {
 
       if (isSmartModelingEnabled && isAssociation)
          SmartModelling.setAssociationMetaProperties((IAssociation) element);
-
-      SmartColoring.paintAll();
    }
 
    private void defineActionBehavior(VPAction action, IModelElement element) {

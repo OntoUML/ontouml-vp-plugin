@@ -109,7 +109,7 @@ public class SelectMultipleOptionsDialog implements IDialogHandler {
                 final JCheckBox checkBox = (JCheckBox) checkBoxes[i];
                 if(checkBox.isSelected()) {
                     selectedValues.append(selectedValues.length() == 0 ? 
-                        checkBox.getText() : ", " + checkBox.getText());
+                        checkBox.getText() : " " + checkBox.getText());
                 }
             }
         }
@@ -118,11 +118,14 @@ public class SelectMultipleOptionsDialog implements IDialogHandler {
     }
 
     public void setSelectedValues(String selectedValuesString) {
-        final List<String> selectedList = Arrays.asList(selectedValuesString.replaceAll(" +", "").split(","));
-        final List<String> restrictedNatures = StereotypeUtils.getRestrictedNaturesList();
+        final List<String> selectedList = 
+                Arrays.asList(selectedValuesString.split("\\s+"));
+        final List<String> restrictedNatures = StereotypeUtils.getRestrictionsList();
         Collections.sort(restrictedNatures);
 
-        this._selectionsPane.setLayout(new GridLayout(restrictedNatures.size()/2 + restrictedNatures.size()%2,2));
+        this._selectionsPane.setLayout(
+            new GridLayout(restrictedNatures.size()/2 
+                + restrictedNatures.size()%2,2));
 
         for (String nature : restrictedNatures) {
             final JCheckBox checkBox = new JCheckBox(nature);

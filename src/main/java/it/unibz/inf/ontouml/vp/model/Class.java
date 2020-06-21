@@ -1,16 +1,5 @@
 package it.unibz.inf.ontouml.vp.model;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import com.vp.plugin.model.*;
-import com.vp.plugin.model.factory.IModelElementFactory;
-
-import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,6 +12,24 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+import com.vp.plugin.model.IAttribute;
+import com.vp.plugin.model.IClass;
+import com.vp.plugin.model.IDataType;
+import com.vp.plugin.model.IEnumerationLiteral;
+import com.vp.plugin.model.IGeneralization;
+import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.ISimpleRelationship;
+import com.vp.plugin.model.ITaggedValue;
+import com.vp.plugin.model.ITaggedValueContainer;
+
+import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 /**
  * Implementation of ModelElement to handle IClass and IDataType objects to be
@@ -124,12 +131,7 @@ public class Class implements ModelElement {
       setAbstract(source.isAbstract());
       setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
 
-      if (source.getName().trim().startsWith("/")) {
-         setName(source.getName().substring(1));
-         this.isDerived = true;
-      } else {
-         setName(source.getName().trim());
-      }
+      this.isDerived = ModelElement.getIsDerived(source);
 
       setDescription(source.getDescription());
 
@@ -196,44 +198,40 @@ public class Class implements ModelElement {
 
    private void loadTags(IClass source) {
       if (source.getTaggedValues() != null) {
-         final Iterator<?> values = source.getTaggedValues().taggedValueIterator();
+         final JsonParser parser = new JsonParser();
 
-         while (values.hasNext()) {
-            try {
-               final ITaggedValue value = (ITaggedValue) values.next();
-               final JsonParser parser = new JsonParser();
+         if(hasRestrictedTo(source)) {
+            String restrictedTo = getRestrictedTo(source);
 
-               if (value.getName().equals(StereotypeUtils.PROPERTY_RESTRICTED_TO)) {
-                  String valueString = value.getValueAsString();
-                  valueString = valueString.trim()
-                          .replaceAll(" +", "")
-                          .replaceAll(",", "\",\"");
-
-                  final JsonElement restrictedTo = !valueString.equals("") ? parser.parse("[\"" + valueString + "\"]") : parser.parse("[]");
-                  this.restrictedTo = restrictedTo.isJsonArray() && ((JsonArray) restrictedTo).size() > 0 ?
-                          (JsonArray) restrictedTo : null;
-               }
-
-               if (value.getName().equals(StereotypeUtils.PROPERTY_IS_EXTENSIONAL)) {
-                  if (source.hasStereotype(StereotypeUtils.STR_COLLECTIVE))
-                     this.isExtensional = parser.parse(Boolean.valueOf(value.getValueAsString()).toString());
-                  else
-                     this.isExtensional = parser.parse("null");
-               }
-
-               if (value.getName().equals(StereotypeUtils.PROPERTY_IS_POWERTYPE)) {
-                  if (source.hasStereotype(StereotypeUtils.STR_TYPE))
-                     this.isPowertype = parser.parse(Boolean.valueOf(value.getValueAsString()).toString());
-                  else
-                     this.isPowertype = parser.parse("null");
-               }
-
-               if (value.getName().equals(StereotypeUtils.PROPERTY_ORDER))
-                  this.order = value.getValueAsString();
-
-            } catch (Exception e) {
-               e.printStackTrace();
+            if (restrictedTo == null) {
+               this.restrictedTo = null;
+            } else {
+               restrictedTo = restrictedTo.trim()
+                     .replaceAll(" +", "").replaceAll(",", "\",\"");
+               
+            final JsonElement restrictedToArray = !restrictedTo.equals("") ?
+                  parser.parse("[\"" + restrictedTo + "\"]") :
+                  parser.parse("[]");
+            this.restrictedTo = 
+                  restrictedToArray.isJsonArray() && ((JsonArray) restrictedToArray).size() > 0 ?
+                  (JsonArray) restrictedToArray : null;
             }
+         }
+
+         if(hasIsExtensional(source)) {
+            this.isExtensional = parser.parse(""+getIsExtensional(source));
+         } else {
+            this.isExtensional = parser.parse("null");
+         }
+
+         if(hasIsPowertype(source)) {
+            this.isPowertype = parser.parse(""+getIsPowertype(source));
+         } else {
+            this.isPowertype = parser.parse("null");
+         }
+
+         if(hasOrder(source)) {
+            this.order = getOrder(source);
          }
       }
    }
@@ -448,36 +446,6 @@ public class Class implements ModelElement {
 		}
    }
 
-   // public static ITaggedValue getRestrictedToValue(IClass _class) {
-      // final String propertyName = StereotypeUtils.PROPERTY_RESTRICTED_TO;
-      // ITaggedValueContainer container = _class.getTaggedValues();
-      // ITaggedValue restrictedTo = container != null ?
-      //       container.getTaggedValueByName(propertyName) :
-      //       null ;
-      
-      // restrictedTo = container.createTaggedValue();
-      // container.removeTaggedValue(arg0);
-      // restrictedTo.setTagDefinition(arg0);
-
-      
-      // if(container == null) { return null; }
-
-      // IStereotype stereotype = StereotypeUtils.getUniqueStereotype(_class);
-      // ITaggedValueDefinitionContainer definitionContainer =
-      //       stereotype.getTaggedValueDefinitions();
-      // ITaggedValueDefinition definition = 
-      //       definitionContainer.getTaggedValueDefinitionByName(propertyName);
-      
-      // definition.cre
-
-      // if(
-      //    stereotype == null ||
-      //    StereotypeUtils.STEREOTYPE_ELEMENTS.containsKey(stereotype.getName())
-      // ) {
-      //    return null;
-      // }
-   // }
-
    public static void setRestrictedTo(IClass _class, String restrictions) {
 		if(_class.getTaggedValues() == null) { 
 			return ; 
@@ -488,8 +456,11 @@ public class Class implements ModelElement {
 		while(values != null && values.hasNext()) {
 			final ITaggedValue value = (ITaggedValue) values.next();
 			
-			if(value.getName().equals(StereotypeUtils.PROPERTY_RESTRICTED_TO)) {
-				final List<String> sortList = Arrays.asList(restrictions.split("\\s+"));
+			if(
+            value.getName().equals(StereotypeUtils.PROPERTY_RESTRICTED_TO)
+         ) {
+            final String notNull = restrictions != null ? restrictions : "";
+				final List<String> sortList = Arrays.asList(notNull.split("\\s+"));
 				Collections.sort(sortList);
 				final Set<String> noDuplicates = new LinkedHashSet<String>(sortList);
 				final String newRestrictions = noDuplicates.toString()
@@ -504,37 +475,10 @@ public class Class implements ModelElement {
 				return ;
 			}
       }
-
-
-      
-      // final ITaggedValueContainer container = _class.getTaggedValues();
-      // ITaggedValue restrictedTo = container != null ? 
-      //       container.getTaggedValueByName(StereotypeUtils.PROPERTY_RESTRICTED_TO) :
-      //       null;
-      
-      // if(restrictedTo == null) {
-      //    final IStereotype stereotype = StereotypeUtils.getUniqueStereotype(_class);
-         
-      //    if (StereotypeUtils.STEREOTYPE_ELEMENTS.containsValue(stereotype)) {
-      //       IModelElementFactory.instance().createTaggedValue();
-      //       ITaggedValueDefinitionContainer stereotype.getTaggedValueDefinitions();
-      //    } else {
-      //       return ;
-      //    }
-      // }
-
-      // final String oldRestrictions = restrictedTo != null ?
-      //       restrictedTo.getValueAsString() : null;
-      // final String newRestrictions = Arrays.stream(restrictions.split("\\s+"))
-      //       .distinct().collect(Collectors.joining(" "));
-      
-      // if(oldRestrictions == null || !oldRestrictions.equals(newRestrictions)) {
-      //    restrictedTo.setValue(newRestrictions);
-      // }
 	}
 
 	private static void setDefaultRestrictedTo(IClass element, String stereotypeName) {
-		final String defaultNature = StereotypeUtils.getDefaultNature(stereotypeName);
+		final String defaultNature = StereotypeUtils.getDefaultRestrictedTo(stereotypeName);
 		setRestrictedTo(element, defaultNature);
 	}
 
@@ -544,18 +488,6 @@ public class Class implements ModelElement {
 	}
 
 	public static String getRestrictedTo(IClass _class) {
-		// final ITaggedValueContainer container = _class.getTaggedValues();
-		// final Iterator<?> values = container != null ? container.taggedValueIterator() : null;
-
-		// while(values != null && values.hasNext()) {
-		// 	final ITaggedValue value = (ITaggedValue) values.next();
-		// 	if(value.getName().equals(StereotypeUtils.PROPERTY_RESTRICTED_TO)) {
-		// 		return value.getValueAsString();
-		// 	}
-		// }
-
-      // return null;
-      
       final ITaggedValueContainer container = _class.getTaggedValues();
       final ITaggedValue restrictedTo = container != null ? 
             container.getTaggedValueByName(StereotypeUtils.PROPERTY_RESTRICTED_TO) :
@@ -564,26 +496,7 @@ public class Class implements ModelElement {
       return restrictedTo != null ? restrictedTo.getValueAsString() : null;
 	}
 
-	// private static Set<String> getRestrictedToAsSet(IClass _class) {
-	// 	String restrictionsString = getRestrictedTo(_class);
-	// 	restrictionsString = restrictionsString == null ? "" : restrictionsString;
-
-	// 	final List<String> sortList = Arrays.asList(restrictionsString.split("\\s+"));
-	// 	Collections.sort(sortList);
-
-	// 	final Set<String> noDuplicates = new LinkedHashSet<String>(sortList);
-
-	// 	return noDuplicates;
-	// }
-
 	public static String getRestrictedTo(Set<IClass> classes) {
-		// final Set<String> classesRestrictions = new LinkedHashSet<>();
-
-		// for (IClass _class : classes) {
-		// 	classesRestrictions.addAll(getRestrictedToAsSet(_class));
-		// }
-
-      // return classesRestrictions.toString().replaceAll("[\\[\\],]", "").trim();
       String classesRestrictions = "";
 
       for (IClass _class : classes) {
@@ -675,51 +588,35 @@ public class Class implements ModelElement {
       return isPowertype != null;
    }
 
-   public static boolean getIsExtenstional(IClass _class) {
+   public static boolean getIsExtensional(IClass _class) {
       final ITaggedValueContainer container = _class.getTaggedValues();
-      final ITaggedValue isExtenstional = container != null ?
+      final ITaggedValue isExtensional = container != null ?
             container.getTaggedValueByName(StereotypeUtils.PROPERTY_IS_EXTENSIONAL) :
             null;
-      final String isExtenstionalValue = isExtenstional != null ?
-            isExtenstional.getValueAsString() : "" ;
+      final String isExtensionalValue = isExtensional != null ?
+            isExtensional.getValueAsString() : "" ;
       
-      return Boolean.parseBoolean(isExtenstionalValue);
+      return Boolean.parseBoolean(isExtensionalValue);
    }
 
-   public static void setIsExtenstional(IClass _class, boolean isExtenstionalValue) {
+   public static void setIsExtensional(IClass _class, boolean isExtensionalValue) {
       final ITaggedValueContainer container = _class.getTaggedValues();
-      final ITaggedValue isExtenstional = container != null ?
-            container.getTaggedValueByName(StereotypeUtils.PROPERTY_IS_EXTENSIONAL) :
-            null;
-      
-      if (isExtenstional != null) {
-         isExtenstional.setValue(isExtenstionalValue);
-      }
-   }
-
-   public static boolean hasIsExtenstional(IClass _class) {
-      final ITaggedValueContainer container = _class.getTaggedValues();
-      final ITaggedValue isExtenstional = container != null ?
+      final ITaggedValue isExtensional = container != null ?
             container.getTaggedValueByName(StereotypeUtils.PROPERTY_IS_EXTENSIONAL) :
             null;
       
-      return isExtenstional != null;
+      if (isExtensional != null) {
+         isExtensional.setValue(isExtensionalValue);
+      }
    }
 
-   public static boolean getIsDerived(IClass _class) {
-      return _class.getName().trim().startsWith("/");
-   }
-
-   public static void setIsDerived(IClass _class, boolean isDerived) {
-      String currentName = _class.getName().trim();
-
-      if (getIsDerived(_class)) {
-         _class.setName(currentName.substring(1));
-      }
-
-      if (getIsDerived(_class)) {
-         _class.setName("/" + currentName);
-      }
+   public static boolean hasIsExtensional(IClass _class) {
+      final ITaggedValueContainer container = _class.getTaggedValues();
+      final ITaggedValue isExtensional = container != null ?
+            container.getTaggedValueByName(StereotypeUtils.PROPERTY_IS_EXTENSIONAL) :
+            null;
+      
+      return isExtensional != null;
    }
 
 }

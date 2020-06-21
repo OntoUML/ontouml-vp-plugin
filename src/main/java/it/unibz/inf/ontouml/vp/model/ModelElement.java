@@ -213,4 +213,20 @@ public interface ModelElement {
 
       return obj;
    }
+
+   public static boolean getIsDerived(IModelElement element) {
+      return element.getName().trim().startsWith("/");
+   }
+
+   public static void setIsDerived(IModelElement element, boolean isDerived) {
+      final String currentName = element.getName() != null ?
+            element.getName().trim() : "";
+
+      if (getIsDerived(element)) {
+         element.setName(currentName.substring(1));
+      } else {
+         element.setName("/" + currentName);
+      }
+   }
+
 }

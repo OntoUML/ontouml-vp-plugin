@@ -45,7 +45,16 @@ public class ProjectListener implements IProjectListener {
 	}
 
 	@Override
-	public void projectNewed(IProject project) {}
+	public void projectNewed(IProject project) {
+		try {
+			if(project == null) { return ; }
+			
+			addListeners();
+			StereotypeUtils.generate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	@Override
 	public void projectOpened(IProject project) {}
