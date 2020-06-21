@@ -100,7 +100,7 @@ public class SmartColoring {
          final String stereotype = 
                StereotypeUtils.getUniqueStereotypeName(_class);
          final Set<String> allStereotypes = 
-               StereotypeUtils.getOntoUMLAssociationStereotypeNames();
+               StereotypeUtils.getOntoUMLClassStereotypeNames();
          
          if(!allStereotypes.contains(stereotype)) {
             return null;

@@ -15,6 +15,7 @@ public class ProjectListener implements IProjectListener {
 		projectModelListener = new ProjectModelListener();
 		projectDiagramListener = new ProjectDiagramListener();
 		addListeners();
+		StereotypeUtils.generate();
 	}
 
 	private void addListeners() {
