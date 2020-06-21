@@ -326,35 +326,48 @@ public class StereotypeUtils {
             restrictedTo.setName(PROPERTY_RESTRICTED_TO);
             restrictedTo.setType(ITaggedValueDefinition.TYPE_TEXT);
             restrictedTo.setDefaultValue(getDefaultRestrictedTo(stereotypeName));
+            restrictedTo.setTagDefStereotype(stereotype);
             definitionsContainer.addTaggedValueDefinition(restrictedTo);
          }
 
          // Adds "isExtensional" to all STR_COLLECTIVE IStereotype
-         if (stereotype.getName().equals(STR_COLLECTIVE) && !definitions.containsKey(PROPERTY_IS_EXTENSIONAL)) {
+         if (
+            stereotype.getName().equals(STR_COLLECTIVE) && 
+            !definitions.containsKey(PROPERTY_IS_EXTENSIONAL)
+         ) {
             final ITaggedValueDefinition isExtensional = IModelElementFactory.instance()
                     .createTaggedValueDefinition();
             isExtensional.setName(PROPERTY_IS_EXTENSIONAL);
             isExtensional.setType(ITaggedValueDefinition.TYPE_BOOLEAN);
             isExtensional.setDefaultValue("false");
+            isExtensional.setTagDefStereotype(stereotype);
             definitionsContainer.addTaggedValueDefinition(isExtensional);
          }
 
          // Adds "isPowertype" to all STR_TYPE IStereotype
-         if (stereotype.getName().equals(STR_TYPE) && !definitions.containsKey(PROPERTY_IS_POWERTYPE)) {
+         if (
+            stereotype.getName().equals(STR_TYPE) && 
+            !definitions.containsKey(PROPERTY_IS_POWERTYPE)
+         ) {
             final ITaggedValueDefinition isPowertype = IModelElementFactory.instance()
                     .createTaggedValueDefinition();
             isPowertype.setName(PROPERTY_IS_POWERTYPE);
             isPowertype.setType(ITaggedValueDefinition.TYPE_BOOLEAN);
             isPowertype.setDefaultValue("false");
+            isPowertype.setTagDefStereotype(stereotype);
             definitionsContainer.addTaggedValueDefinition(isPowertype);
          }
 
          // Adds "order" to all STR_TYPE IStereotype
-         if (stereotype.getName().equals(STR_TYPE) && !definitions.containsKey(PROPERTY_ORDER)) {
+         if (
+            stereotype.getName().equals(STR_TYPE) && 
+            !definitions.containsKey(PROPERTY_ORDER)
+         ) {
             final ITaggedValueDefinition order = IModelElementFactory.instance().createTaggedValueDefinition();
             order.setName(PROPERTY_ORDER);
             order.setType(ITaggedValueDefinition.TYPE_TEXT);
             order.setDefaultValue("2");
+            order.setTagDefStereotype(stereotype);
             definitionsContainer.addTaggedValueDefinition(order);
          }
 
@@ -432,7 +445,7 @@ public class StereotypeUtils {
                System.out.println(tv.getName() + ": allowed");
                taggedValueMap.put(tv.getName(), tv.getValue());
                container.removeTaggedValue(tv);
-               // tv.delete();
+               tv.delete();
             } else if (isOntoUMLTag) {
                // It does not remove non-OntoUML tags
                System.out.println(tv.getName() + ": has tag definition");
@@ -442,7 +455,7 @@ public class StereotypeUtils {
                }
 
                container.removeTaggedValue(tv);
-               // tv.delete();
+               tv.delete();
             }
          }
 

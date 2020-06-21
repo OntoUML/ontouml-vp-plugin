@@ -14,6 +14,7 @@ public class ProjectListener implements IProjectListener {
 	public ProjectListener() {
 		projectModelListener = new ProjectModelListener();
 		projectDiagramListener = new ProjectDiagramListener();
+		addListeners();
 	}
 
 	private void addListeners() {
