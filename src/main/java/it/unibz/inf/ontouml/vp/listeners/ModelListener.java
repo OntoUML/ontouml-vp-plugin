@@ -15,6 +15,7 @@ import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 public class ModelListener implements PropertyChangeListener {
 
 	// Property change names of interest events
+	final public static String PCN_MODEL_VIEW_ADDED = "modelViewAdded";
 	// Events on classes
 	final public static String PCN_STEREOTYPES = "stereotypes";
 	final public static String PCN_RESTRICTED_TO = StereotypeUtils.PROPERTY_RESTRICTED_TO;
@@ -67,6 +68,9 @@ public class ModelListener implements PropertyChangeListener {
 				break;
 			case PCN_RESTRICTED_TO:
 				enforceAndPropagateRestrictedTo(event);
+				smartPaint(event);
+				break;
+			case PCN_MODEL_VIEW_ADDED:
 				smartPaint(event);
 				break;
 		}
