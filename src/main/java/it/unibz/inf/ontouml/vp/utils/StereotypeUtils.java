@@ -433,13 +433,13 @@ public class StereotypeUtils {
       switch (stereotype) {
          case STR_TYPE:
             return RESTRICTED_TO_TYPE;
-         case STR_HISTORICAL_ROLE:
          case STR_EVENT:
             return RESTRICTED_TO_EVENT;
          case STR_CATEGORY:
          case STR_MIXIN:
          case STR_ROLE_MIXIN:
          case STR_PHASE_MIXIN:
+         case STR_HISTORICAL_ROLE:
             return RESTRICTED_TO_FUNCTIONAL_COMPLEX;
          case STR_KIND:
             return RESTRICTED_TO_FUNCTIONAL_COMPLEX;

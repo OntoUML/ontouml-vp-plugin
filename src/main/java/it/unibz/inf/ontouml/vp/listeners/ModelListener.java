@@ -52,15 +52,6 @@ public class ModelListener implements PropertyChangeListener {
 		}
 	}
 
-	/**
-	 * Processes changes on the stereotype or restriction (tagged value restrictedTo)
-	 * of an instance of IClass.
-	 * 
-	 * Changes to stereotypes or the tagged value trigger the verification and
-	 * (in certain cases) propagation of the restrictions down the hierarchy.
-	 * 
-	 * Changes to the tagged value trigger the smart painting.
-	 */
 	private void processClassEvent(PropertyChangeEvent event) {
 		switch(event.getPropertyName()) {
 			case PCN_STEREOTYPES:
@@ -76,13 +67,6 @@ public class ModelListener implements PropertyChangeListener {
 		}
 	}
 
-	/**
-	 * Triggers the verification of the restrictions on new and old values
-	 * when changing the general or specific of a generalization.
-	 * 
-	 * In case of change on general, also trigger the verification on the
-	 * specific.
-	 */
 	private void processGeneralizationEvent(PropertyChangeEvent event) {
 		final IGeneralization sourceGen = event.getSource() instanceof IGeneralization ?
 				(IGeneralization) event.getSource() : null;
@@ -111,19 +95,6 @@ public class ModelListener implements PropertyChangeListener {
 		}
 	}
 
-	/**
-	 * Verifies and makes sure that entities have their correct restrictions.
-	 * 
-	 * The fixed restrictions are simply enforced.
-	 * 
-	 * The restrictions of «type» and kinds is enforced and propagated to
-	 * their descendants.
-	 * 
-	 * The restrictions of sortals and historical roles is updated based on 
-	 * their sortal parents and propagated (if there is any update).
-	 * 
-	 * Non-sortals and classes without a proper stereotype are ignored.
-	 */
 	private void enforceAndPropagateRestrictedTo(PropertyChangeEvent event) {
 		final IClass _class = event.getSource() instanceof IClass ?
 				(IClass) event.getSource() : null;
@@ -137,10 +108,6 @@ public class ModelListener implements PropertyChangeListener {
 			case StereotypeUtils.STR_EVENT:
 			case StereotypeUtils.STR_DATATYPE:
 			case StereotypeUtils.STR_ENUMERATION:
-				// if(!newValue.equals(oldValue)) {
-				// 	Class.setDefaultRestrictedTo(_class);
-				// }
-				// break;
 			case StereotypeUtils.STR_KIND:
 			case StereotypeUtils.STR_COLLECTIVE:
 			case StereotypeUtils.STR_QUANTITY:
@@ -186,11 +153,6 @@ public class ModelListener implements PropertyChangeListener {
 		}
 	}
 
-	/**
-	 * For subkinds, phases, roles, and historical roles, update the value
-	 * of restrictedTo based on the of its sortal parents and triggers
-	 * the update of sortal descendants.
-	 */
 	private void lookupAndPropagateRestrictedTo(Object classObject) {
 		final IClass _class = classObject instanceof IClass ?
 				(IClass) classObject : null ;
@@ -203,7 +165,6 @@ public class ModelListener implements PropertyChangeListener {
 			case StereotypeUtils.STR_SUBKIND:
 			case StereotypeUtils.STR_ROLE:
 			case StereotypeUtils.STR_PHASE:
-			case StereotypeUtils.STR_HISTORICAL_ROLE:
 				final Set<IClass> interestParents = getSortalParents(_class);
 				final String parentsRestrictions = Class.getRestrictedTo(interestParents);
 				
@@ -219,15 +180,6 @@ public class ModelListener implements PropertyChangeListener {
 		}
 	}
 
-	/**
-	 * Moves through the sortals and historical roles (kinds excluded) that
-	 * are descendants of _class updating their values of restrictedTo.
-	 * 
-	 * The value of restrictedTo is updated if it is different from the current.
-	 * 
-	 * It goes recursively and stops if the descendent is not a sortal or a
-	 * historical role or if restrictedTo is not updated.
-	 */
 	private void propagateRestrictionsToDescendants(IClass _class) {
 		Class.applyOnDescendants(_class, descendent -> {
 			String descendentStereotype = 
