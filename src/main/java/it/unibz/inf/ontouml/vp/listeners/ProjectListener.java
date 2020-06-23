@@ -40,7 +40,6 @@ public class ProjectListener implements IProjectListener {
 			if(project == null) { return ; }
 			
 			addListeners();
-			StereotypeUtils.generate();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -52,7 +51,6 @@ public class ProjectListener implements IProjectListener {
 			if(project == null) { return ; }
 			
 			addListeners();
-			StereotypeUtils.generate();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

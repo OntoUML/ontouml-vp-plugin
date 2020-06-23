@@ -141,6 +141,7 @@ public class ModelListener implements PropertyChangeListener {
 			case StereotypeUtils.STR_ROLE_MIXIN:
 			case StereotypeUtils.STR_PHASE_MIXIN:
 			case StereotypeUtils.STR_MIXIN:
+			case StereotypeUtils.STR_HISTORICAL_ROLE:
 				if(!newValue.equals(oldValue)) {
 					propagateRestrictionsToDescendants(_class);
 				}

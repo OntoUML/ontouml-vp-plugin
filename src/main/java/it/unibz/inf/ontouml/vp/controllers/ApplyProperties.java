@@ -97,7 +97,8 @@ public class ApplyProperties implements VPContextActionController {
                   Arrays.asList(StereotypeUtils.STR_CATEGORY,
                      StereotypeUtils.STR_MIXIN,
                      StereotypeUtils.STR_PHASE_MIXIN,
-                     StereotypeUtils.STR_ROLE_MIXIN);
+                     StereotypeUtils.STR_ROLE_MIXIN,
+                     StereotypeUtils.STR_HISTORICAL_ROLE);
                
                action.setEnabled(!isSmartModelingEnabled ||
                   nonFixedRestrictedTo.contains(stereotype));
