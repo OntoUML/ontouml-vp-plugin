@@ -76,7 +76,7 @@
                     toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.OpenConfigurationsAction" />
             </action>
-            <action 
+            <!-- <action 
 					id="it.unibz.inf.ontouml.vp.actions.ReloadClassesAction"
 					actionType="generalAction" 
 					label="Reload Plugin - DEBUG" 
@@ -84,7 +84,7 @@
 					style="normal"
 					toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
 				<actionController class="it.unibz.inf.ontouml.vp.controllers.ReloadClassesActionController" />
-			</action>
+			</action> -->
         </actionSet>
 
         <contextSensitiveActionSet id="it.unibz.inf.ontouml.vp.ClassProperties">
@@ -154,13 +154,15 @@
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
             
-            <action id="it.unibz.inf.ontouml.vp.addRoleMixinStereotype" label="RoleMixin" style="normal" menuPath="ontoUMLMenu1/#">
-                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
-            </action>
-            
             <action id="it.unibz.inf.ontouml.vp.addRoleStereotype" label="Role" style="normal" menuPath="ontoUMLMenu1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
+
+            <action id="it.unibz.inf.ontouml.vp.addPhaseStereotype" label="Phase" style="normal" menuPath="ontoUMLMenu1/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+            </action>
+
+            <separator id="it.unibz.inf.ontouml.vp.separator3" menuPath="ontoUMLMenu1/#" />
 
             <action id="it.unibz.inf.ontouml.vp.addRelatorStereotype" label="Relator" style="normal" menuPath="ontoUMLMenu1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
@@ -174,19 +176,7 @@
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
 
-            <action id="it.unibz.inf.ontouml.vp.addPhaseMixinStereotype" label="PhaseMixin" style="normal" menuPath="ontoUMLMenu1/#">
-                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
-            </action>
-
-            <action id="it.unibz.inf.ontouml.vp.addPhaseStereotype" label="Phase" style="normal" menuPath="ontoUMLMenu1/#">
-                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
-            </action>
-
             <action id="it.unibz.inf.ontouml.vp.addModeStereotype" label="Mode" style="normal" menuPath="ontoUMLMenu1/#">
-                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
-            </action>
-
-            <action id="it.unibz.inf.ontouml.vp.addMixinStereotype" label="Mixin" style="normal" menuPath="ontoUMLMenu1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
             
@@ -195,6 +185,20 @@
             </action>
 
             <action id="it.unibz.inf.ontouml.vp.addCollectiveStereotype" label="Collective" style="normal" menuPath="ontoUMLMenu1/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+            </action>
+
+            <separator id="it.unibz.inf.ontouml.vp.separator4" menuPath="ontoUMLMenu1/#" />
+            
+            <action id="it.unibz.inf.ontouml.vp.addRoleMixinStereotype" label="RoleMixin" style="normal" menuPath="ontoUMLMenu1/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+            </action>
+
+            <action id="it.unibz.inf.ontouml.vp.addPhaseMixinStereotype" label="PhaseMixin" style="normal" menuPath="ontoUMLMenu1/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+            </action>
+
+            <action id="it.unibz.inf.ontouml.vp.addMixinStereotype" label="Mixin" style="normal" menuPath="ontoUMLMenu1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
         
@@ -253,6 +257,12 @@
             <action id="it.unibz.inf.ontouml.vp.addMemberOfStereotype" label="MemberOf" style="normal" menuPath="ontoUMLMenu2/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
+                
+            <action id="it.unibz.inf.ontouml.vp.addComponentOfStereotype" label="ComponentOf" style="normal" menuPath="ontoUMLMenu2/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+            </action>
+
+            <separator id="it.unibz.inf.ontouml.vp.AssociationSeparator2" menuPath="ontoUMLMenu2/#" />
 
             <action id="it.unibz.inf.ontouml.vp.addMediationStereotype" label="Mediation" style="normal" menuPath="ontoUMLMenu2/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
@@ -263,10 +273,6 @@
             </action>
 
             <action id="it.unibz.inf.ontouml.vp.addExternalDependenceStereotype" label="ExternalDependence" style="normal" menuPath="ontoUMLMenu2/#">
-                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
-            </action>
-                
-            <action id="it.unibz.inf.ontouml.vp.addComponentOfStereotype" label="ComponentOf" style="normal" menuPath="ontoUMLMenu2/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
 
@@ -317,13 +323,15 @@
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
 
-            <action id="it.unibz.inf.ontouml.vp.addRoleMixinStereotype.fixedMenu" label="RoleMixin" style="normal" menuPath="ontoUMLMenu1.fixedMenu/#">
-                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
-            </action>
-
             <action id="it.unibz.inf.ontouml.vp.addRoleStereotype.fixedMenu" label="Role" style="normal" menuPath="ontoUMLMenu1.fixedMenu/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
+
+            <action id="it.unibz.inf.ontouml.vp.addPhaseStereotype.fixedMenu" label="Phase" style="normal" menuPath="ontoUMLMenu1.fixedMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+            </action>
+
+            <separator id="it.unibz.inf.ontouml.vp.separator3.fixedMenu" menuPath="ontoUMLMenu1.fixedMenu/#" />
 
             <action id="it.unibz.inf.ontouml.vp.addRelatorStereotype.fixedMenu" label="Relator" style="normal" menuPath="ontoUMLMenu1.fixedMenu/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
@@ -337,19 +345,7 @@
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
 
-            <action id="it.unibz.inf.ontouml.vp.addPhaseMixinStereotype.fixedMenu" label="PhaseMixin" style="normal" menuPath="ontoUMLMenu1.fixedMenu/#">
-                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
-            </action>
-
-            <action id="it.unibz.inf.ontouml.vp.addPhaseStereotype.fixedMenu" label="Phase" style="normal" menuPath="ontoUMLMenu1.fixedMenu/#">
-                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
-            </action>
-
             <action id="it.unibz.inf.ontouml.vp.addModeStereotype.fixedMenu" label="Mode" style="normal" menuPath="ontoUMLMenu1.fixedMenu/#">
-                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
-            </action>
-
-            <action id="it.unibz.inf.ontouml.vp.addMixinStereotype.fixedMenu" label="Mixin" style="normal" menuPath="ontoUMLMenu1.fixedMenu/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
 
@@ -358,6 +354,20 @@
             </action>
 
             <action id="it.unibz.inf.ontouml.vp.addCollectiveStereotype.fixedMenu" label="Collective" style="normal" menuPath="ontoUMLMenu1.fixedMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+            </action>
+
+            <separator id="it.unibz.inf.ontouml.vp.separator4.fixedMenu" menuPath="ontoUMLMenu1.fixedMenu/#" />
+
+            <action id="it.unibz.inf.ontouml.vp.addRoleMixinStereotype.fixedMenu" label="RoleMixin" style="normal" menuPath="ontoUMLMenu1.fixedMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+            </action>
+
+            <action id="it.unibz.inf.ontouml.vp.addPhaseMixinStereotype.fixedMenu" label="PhaseMixin" style="normal" menuPath="ontoUMLMenu1.fixedMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+            </action>
+
+            <action id="it.unibz.inf.ontouml.vp.addMixinStereotype.fixedMenu" label="Mixin" style="normal" menuPath="ontoUMLMenu1.fixedMenu/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
 
@@ -417,6 +427,12 @@
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
 
+            <action id="it.unibz.inf.ontouml.vp.addComponentOfStereotype.fixedMenu" label="ComponentOf" style="normal" menuPath="ontoUMLMenu2.fixedMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+            </action>
+
+            <separator id="it.unibz.inf.ontouml.vp.AssociationSeparator2.fixedMenu" menuPath="ontoUMLMenu2.fixedMenu/#" />
+
             <action id="it.unibz.inf.ontouml.vp.addMediationStereotype.fixedMenu" label="Mediation" style="normal" menuPath="ontoUMLMenu2.fixedMenu/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
@@ -426,10 +442,6 @@
             </action>
 
             <action id="it.unibz.inf.ontouml.vp.addExternalDependenceStereotype.fixedMenu" label="ExternalDependence" style="normal" menuPath="ontoUMLMenu2.fixedMenu/#">
-                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
-            </action>
-
-            <action id="it.unibz.inf.ontouml.vp.addComponentOfStereotype.fixedMenu" label="ComponentOf" style="normal" menuPath="ontoUMLMenu2.fixedMenu/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
 

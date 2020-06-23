@@ -10,8 +10,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.vp.plugin.ApplicationManager;
-import com.vp.plugin.ProjectManager;
-import com.vp.plugin.model.*;
+import com.vp.plugin.model.IClass;
+import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.IProject;
+import com.vp.plugin.model.IStereotype;
+import com.vp.plugin.model.ITaggedValue;
+import com.vp.plugin.model.ITaggedValueContainer;
+import com.vp.plugin.model.ITaggedValueDefinition;
+import com.vp.plugin.model.ITaggedValueDefinitionContainer;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 public class StereotypeUtils {

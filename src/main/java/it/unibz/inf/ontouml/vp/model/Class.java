@@ -131,7 +131,12 @@ public class Class implements ModelElement {
       setAbstract(source.isAbstract());
       setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
 
-      this.isDerived = ModelElement.getIsDerived(source);
+      if (source.getName().trim().startsWith("/")) {
+         setName(source.getName().substring(1));
+         this.isDerived = true;
+      } else {
+         setName(source.getName().trim());
+      }
 
       setDescription(source.getDescription());
 
@@ -154,6 +159,7 @@ public class Class implements ModelElement {
          setName(source.getName().trim());
       }
 
+      // TODO: change this to apply only to default VP datatypes
       if (restrictedTo == null) {
          restrictedTo = new JsonArray();
          restrictedTo.add("abstract");
@@ -207,7 +213,7 @@ public class Class implements ModelElement {
                this.restrictedTo = null;
             } else {
                restrictedTo = restrictedTo.trim()
-                     .replaceAll(" +", "").replaceAll(",", "\",\"");
+                     .replaceAll(" +", ",").replaceAll(",", "\",\"");
                
             final JsonElement restrictedToArray = !restrictedTo.equals("") ?
                   parser.parse("[\"" + restrictedTo + "\"]") :
@@ -502,7 +508,7 @@ public class Class implements ModelElement {
       for (IClass _class : classes) {
          final String _classRestrictions = getRestrictedTo(_class);
          if (_classRestrictions != null) {
-            classesRestrictions += _classRestrictions;
+            classesRestrictions += " " + _classRestrictions;
          }
       }
 
@@ -511,13 +517,6 @@ public class Class implements ModelElement {
       
       return !classesRestrictions.equals("") ? classesRestrictions : null;
 	}
-
-	public static void addRestrictedTo(IClass _class, String additionalNatures) {
-		final String allowedNatures = getRestrictedTo(_class);
-		final String newRestrictions = String.join(" ", allowedNatures, additionalNatures)
-				.replaceAll("null", "");;
-		setRestrictedTo(_class, newRestrictions);
-   }
    
    public static boolean hasRestrictedTo(IClass _class) {
       final ITaggedValueContainer container = _class.getTaggedValues();

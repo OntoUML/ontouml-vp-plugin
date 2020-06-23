@@ -9,6 +9,7 @@ import com.vp.plugin.model.IGeneralization;
 
 import it.unibz.inf.ontouml.vp.model.Class;
 import it.unibz.inf.ontouml.vp.model.Generalization;
+import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.SmartColoring;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
@@ -53,12 +54,21 @@ public class ModelListener implements PropertyChangeListener {
 	}
 
 	private void processClassEvent(PropertyChangeEvent event) {
+		final boolean isSmartModelingEnabled = Configurations
+				.getInstance()
+				.getProjectConfigurations()
+				.isSmartModellingEnabled();
+		
 		switch(event.getPropertyName()) {
 			case PCN_STEREOTYPES:
-				enforceAndPropagateRestrictedTo(event);
+				if(isSmartModelingEnabled) {
+					enforceAndPropagateRestrictedTo(event);
+				}
 				break;
 			case PCN_RESTRICTED_TO:
-				enforceAndPropagateRestrictedTo(event);
+				if(isSmartModelingEnabled) {
+					enforceAndPropagateRestrictedTo(event);
+				}
 				smartPaint(event);
 				break;
 			case PCN_MODEL_VIEW_ADDED:
@@ -68,6 +78,13 @@ public class ModelListener implements PropertyChangeListener {
 	}
 
 	private void processGeneralizationEvent(PropertyChangeEvent event) {
+		final boolean isSmartModelingEnabled = Configurations
+				.getInstance()
+				.getProjectConfigurations()
+				.isSmartModellingEnabled();
+		
+		if(!isSmartModelingEnabled) { return ; }
+		
 		final IGeneralization sourceGen = event.getSource() instanceof IGeneralization ?
 				(IGeneralization) event.getSource() : null;
 

@@ -123,19 +123,48 @@ public class SelectMultipleOptionsDialog implements IDialogHandler {
         final List<String> restrictedNatures = StereotypeUtils.getRestrictionsList();
         Collections.sort(restrictedNatures);
 
-        this._selectionsPane.setLayout(
-            new GridLayout(restrictedNatures.size()/2 
-                + restrictedNatures.size()%2,2));
+        this._selectionsPane.setLayout(new GridLayout(3,3));
 
-        for (String nature : restrictedNatures) {
-            final JCheckBox checkBox = new JCheckBox(nature);
+        JCheckBox checkBox;
 
-            this._selectionsPane.add(checkBox);
-            
-            if(selectedList.contains(nature)) {
-                checkBox.setSelected(true);
-            }
-        }
+        // Line 1, Column 1
+        checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_COLLECTIVE);
+        this._selectionsPane.add(checkBox);
+        checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_COLLECTIVE));
+        // Line 1, Column 2
+        checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_MODE);
+        this._selectionsPane.add(checkBox);
+        checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_MODE));
+        // Line 1, Column 3
+        checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_ABSTRACT);
+        this._selectionsPane.add(checkBox);
+        checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_ABSTRACT));
+        
+        // Line 2, Column 1
+        checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_FUNCTIONAL_COMPLEX);
+        this._selectionsPane.add(checkBox);
+        checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_FUNCTIONAL_COMPLEX));
+        // Line 2, Column 2
+        checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_QUALITY);
+        this._selectionsPane.add(checkBox);
+        checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_QUALITY));
+        // Line 2, Column 3
+        checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_EVENT);
+        this._selectionsPane.add(checkBox);
+        checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_EVENT));
+        
+        // Line 3, Column 1
+        checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_QUANTITY);
+        this._selectionsPane.add(checkBox);
+        checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_QUANTITY));
+        // Line 3, Column 2
+        checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_RELATOR);
+        this._selectionsPane.add(checkBox);
+        checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_RELATOR));
+        // Line 3, Column 3
+        checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_TYPE);
+        this._selectionsPane.add(checkBox);
+        checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_TYPE));
     }
 
 }

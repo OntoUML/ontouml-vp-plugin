@@ -2,6 +2,7 @@ package it.unibz.inf.ontouml.vp.controllers;
 
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -18,6 +19,7 @@ import com.vp.plugin.model.factory.IModelElementFactory;
 import it.unibz.inf.ontouml.vp.features.constraints.ActionIds;
 import it.unibz.inf.ontouml.vp.model.Class;
 import it.unibz.inf.ontouml.vp.model.ModelElement;
+import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 import it.unibz.inf.ontouml.vp.views.SelectMultipleOptionsDialog;
 import it.unibz.inf.ontouml.vp.views.SetOrderDialog;
@@ -86,7 +88,22 @@ public class ApplyProperties implements VPContextActionController {
 
       switch (action.getActionId()) {
          case ActionIds.PROPERTY_SET_RESTRICTED_TO:
-            action.setEnabled(allClassStereotypes.contains(stereotype));
+            if (allClassStereotypes.contains(stereotype)) {
+               final boolean isSmartModelingEnabled = 
+                  Configurations.getInstance()
+                     .getProjectConfigurations()
+                     .isSmartModellingEnabled();
+               final List<String> nonFixedRestrictedTo =
+                  Arrays.asList(StereotypeUtils.STR_CATEGORY,
+                     StereotypeUtils.STR_MIXIN,
+                     StereotypeUtils.STR_PHASE_MIXIN,
+                     StereotypeUtils.STR_ROLE_MIXIN);
+               
+               action.setEnabled(!isSmartModelingEnabled ||
+                  nonFixedRestrictedTo.contains(stereotype));
+            } else {
+               action.setEnabled(false);
+            }
             break;
          case ActionIds.PROPERTY_SET_IS_ABSTRACT:
             action.setEnabled(true);
