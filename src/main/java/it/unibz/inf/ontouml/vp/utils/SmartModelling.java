@@ -171,7 +171,10 @@ public class SmartModelling {
 			removeAggregationKind(association);
 			return;
 		case StereotypeUtils.STR_PARTICIPATION:
-			if (targetStereotype.equals(StereotypeUtils.STR_HISTORICAL_ROLE))
+			if (
+				targetStereotype.equals(StereotypeUtils.STR_HISTORICAL_ROLE) ||
+				targetStereotype.equals(StereotypeUtils.STR_HISTORICAL_ROLE_MIXIN)
+			)
 				setCardinalityIfEmpty(source, "1..*");
 			else
 				setCardinalityIfEmpty(source, "0..*");

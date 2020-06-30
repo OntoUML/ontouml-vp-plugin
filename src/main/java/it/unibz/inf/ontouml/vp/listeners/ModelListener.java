@@ -34,7 +34,6 @@ public class ModelListener implements PropertyChangeListener {
 		interestStereotypes = StereotypeUtils.getSortalStereotypeNames();
 		interestStereotypes.addAll(StereotypeUtils.getUltimateSortalStereotypeNames());
 		interestStereotypes.add(StereotypeUtils.STR_TYPE);
-		interestStereotypes.add(StereotypeUtils.STR_HISTORICAL_ROLE);
 	}
 
 	@Override
@@ -141,7 +140,7 @@ public class ModelListener implements PropertyChangeListener {
 			case StereotypeUtils.STR_ROLE_MIXIN:
 			case StereotypeUtils.STR_PHASE_MIXIN:
 			case StereotypeUtils.STR_MIXIN:
-			case StereotypeUtils.STR_HISTORICAL_ROLE:
+			case StereotypeUtils.STR_HISTORICAL_ROLE_MIXIN:
 				if(!newValue.equals(oldValue)) {
 					propagateRestrictionsToDescendants(_class);
 				}
@@ -149,6 +148,7 @@ public class ModelListener implements PropertyChangeListener {
 			case StereotypeUtils.STR_SUBKIND:
 			case StereotypeUtils.STR_ROLE:
 			case StereotypeUtils.STR_PHASE:
+			case StereotypeUtils.STR_HISTORICAL_ROLE:
 				final Set<IClass> sortalParents = getSortalParents(_class);
 				final String parentsRestrictions = Class.getRestrictedTo(sortalParents);
 				String currentRestrictions = Class.getRestrictedTo(_class);
@@ -157,15 +157,8 @@ public class ModelListener implements PropertyChangeListener {
 						"" : currentRestrictions;
 				
 				if(!currentRestrictions.equals(parentsRestrictions)){
-					if (
-						StereotypeUtils.STR_HISTORICAL_ROLE.equals(stereotype) &&
-						sortalParents.isEmpty()
-					) {
-						propagateRestrictionsToDescendants(_class);
-					} else {
-						Class.setRestrictedTo(_class, parentsRestrictions);
-						propagateRestrictionsToDescendants(_class);
-					}
+					Class.setRestrictedTo(_class, parentsRestrictions);
+					propagateRestrictionsToDescendants(_class);
 				}
 				break;
 		}
@@ -183,6 +176,7 @@ public class ModelListener implements PropertyChangeListener {
 			case StereotypeUtils.STR_SUBKIND:
 			case StereotypeUtils.STR_ROLE:
 			case StereotypeUtils.STR_PHASE:
+			case StereotypeUtils.STR_HISTORICAL_ROLE:
 				final Set<IClass> interestParents = getSortalParents(_class);
 				final String parentsRestrictions = Class.getRestrictedTo(interestParents);
 				

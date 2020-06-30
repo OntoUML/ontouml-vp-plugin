@@ -143,6 +143,10 @@
             <action id="it.unibz.inf.ontouml.vp.addHistoricalRoleStereotype" label="HistoricalRole" style="normal" menuPath="ontoUMLMenu1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
+
+            <action id="it.unibz.inf.ontouml.vp.addHistoricalRoleMixinStereotype" label="HistoricalRoleMixin" style="normal" menuPath="ontoUMLMenu1/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+            </action>
             
             <action id="it.unibz.inf.ontouml.vp.addEventStereotype" label="Event" style="normal" menuPath="ontoUMLMenu1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
@@ -310,6 +314,10 @@
             <separator id="it.unibz.inf.ontouml.vp.separator2.fixedMenu" menuPath="ontoUMLMenu1.fixedMenu/#"/>
 
             <action id="it.unibz.inf.ontouml.vp.addHistoricalRoleStereotype.fixedMenu" label="HistoricalRole" style="normal" menuPath="ontoUMLMenu1.fixedMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+            </action>
+
+            <action id="it.unibz.inf.ontouml.vp.addHistoricalRoleMixinStereotype.fixedMenu" label="HistoricalRoleMixin" style="normal" menuPath="ontoUMLMenu1.fixedMenu/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
 

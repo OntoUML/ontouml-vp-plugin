@@ -28,6 +28,7 @@ public class StereotypeUtils {
    public static final String STR_TYPE = "type";
 
    public static final String STR_HISTORICAL_ROLE = "historicalRole";
+   public static final String STR_HISTORICAL_ROLE_MIXIN = "historicalRoleMixin";
    public static final String STR_EVENT = "event";
 
    public static final String STR_CATEGORY = "category";
@@ -102,6 +103,7 @@ public class StereotypeUtils {
       str_names.add(STR_TYPE);
 
       str_names.add(STR_HISTORICAL_ROLE);
+      str_names.add(STR_HISTORICAL_ROLE_MIXIN);
       str_names.add(STR_EVENT);
 
       str_names.add(STR_ENUMERATION);
@@ -198,6 +200,7 @@ public class StereotypeUtils {
 		str_names.add(STR_SUBKIND);
 		str_names.add(STR_ROLE);
 		str_names.add(STR_PHASE);
+		str_names.add(STR_HISTORICAL_ROLE);
 
 		return str_names;
 	}
@@ -445,7 +448,7 @@ public class StereotypeUtils {
          case STR_MIXIN:
          case STR_ROLE_MIXIN:
          case STR_PHASE_MIXIN:
-         case STR_HISTORICAL_ROLE:
+         case STR_HISTORICAL_ROLE_MIXIN:
             return RESTRICTED_TO_FUNCTIONAL_COMPLEX;
          case STR_KIND:
             return RESTRICTED_TO_FUNCTIONAL_COMPLEX;
@@ -465,6 +468,7 @@ public class StereotypeUtils {
          case STR_SUBKIND:
          case STR_ROLE:
          case STR_PHASE:
+         case STR_HISTORICAL_ROLE:
          default:
             return "";
       }

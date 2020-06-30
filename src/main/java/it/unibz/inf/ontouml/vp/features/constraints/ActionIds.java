@@ -6,6 +6,7 @@ public final class ActionIds {
 	public static final String TYPE = "it.unibz.inf.ontouml.vp.addTypeStereotype";
 
 	public static final String HISTORICAL_ROLE = "it.unibz.inf.ontouml.vp.addHistoricalRoleStereotype";
+	public static final String HISTORICAL_ROLE_MIXIN = "it.unibz.inf.ontouml.vp.addHistoricalRoleMixinStereotype";
 	public static final String EVENT = "it.unibz.inf.ontouml.vp.addEventStereotype";
 
 	public static final String ENUMERATION = "it.unibz.inf.ontouml.vp.addEnumerationStereotype";
@@ -53,6 +54,7 @@ public final class ActionIds {
 	public static final String TYPE_FIXED = "it.unibz.inf.ontouml.vp.addTypeStereotype.fixedMenu";
 
 	public static final String HISTORICAL_ROLE_FIXED = "it.unibz.inf.ontouml.vp.addHistoricalRoleStereotype.fixedMenu";
+	public static final String HISTORICAL_ROLE_MIXIN_FIXED = "it.unibz.inf.ontouml.vp.addHistoricalRoleMixinStereotype.fixedMenu";
 	public static final String EVENT_FIXED = "it.unibz.inf.ontouml.vp.addEventStereotype.fixedMenu";
 
 	public static final String ENUMERATION_FIXED = "it.unibz.inf.ontouml.vp.addEnumerationStereotype.fixedMenu";

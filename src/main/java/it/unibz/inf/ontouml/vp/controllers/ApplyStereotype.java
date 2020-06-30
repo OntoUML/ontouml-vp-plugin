@@ -91,6 +91,10 @@ public class ApplyStereotype implements VPContextActionController {
          case ActionIds.HISTORICAL_ROLE_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_HISTORICAL_ROLE);
             break;
+         case ActionIds.HISTORICAL_ROLE_MIXIN:
+         case ActionIds.HISTORICAL_ROLE_MIXIN_FIXED:
+            StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_HISTORICAL_ROLE_MIXIN);
+            break;
          case ActionIds.EVENT:
          case ActionIds.EVENT_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_EVENT);

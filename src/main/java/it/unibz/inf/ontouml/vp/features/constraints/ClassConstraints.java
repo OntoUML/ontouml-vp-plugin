@@ -43,13 +43,19 @@ public class ClassConstraints {
 			put(StereotypeUtils.STR_MODE, new ArrayList<>(Arrays.asList(ActionIds.CATEGORY, ActionIds.MIXIN)));
 			put(StereotypeUtils.STR_QUALITY, new ArrayList<>(Arrays.asList(ActionIds.CATEGORY, ActionIds.MIXIN)));
 			put(StereotypeUtils.STR_SUBKIND, new ArrayList<>(Arrays.asList(ActionIds.KIND, ActionIds.QUANTITY, ActionIds.COLLECTIVE, ActionIds.RELATOR, ActionIds.MODE, ActionIds.QUALITY, ActionIds.SUBKIND, ActionIds.CATEGORY, ActionIds.MIXIN)));
+			// TODO: update StereotypeUtils.STR_ROLE
 			put(StereotypeUtils.STR_ROLE, new ArrayList<>(Arrays.asList(ActionIds.KIND, ActionIds.QUANTITY, ActionIds.COLLECTIVE, ActionIds.RELATOR, ActionIds.MODE, ActionIds.QUALITY, ActionIds.SUBKIND, ActionIds.ROLE, ActionIds.PHASE, ActionIds.MIXIN, ActionIds.ROLE_MIXIN, ActionIds.HISTORICAL_ROLE, ActionIds.TYPE)));
+			// TODO: update StereotypeUtils.STR_PHASE
 			put(StereotypeUtils.STR_PHASE, new ArrayList<>(Arrays.asList(ActionIds.KIND, ActionIds.QUANTITY, ActionIds.COLLECTIVE, ActionIds.RELATOR, ActionIds.MODE, ActionIds.QUALITY, ActionIds.SUBKIND, ActionIds.PHASE, ActionIds.MIXIN, ActionIds.PHASE_MIXIN, ActionIds.TYPE)));
 			put(StereotypeUtils.STR_CATEGORY, new ArrayList<>(Arrays.asList(ActionIds.CATEGORY, ActionIds.MIXIN)));
 			put(StereotypeUtils.STR_MIXIN, new ArrayList<>(Arrays.asList(ActionIds.MIXIN)));
-			put(StereotypeUtils.STR_ROLE_MIXIN, new ArrayList<>(Arrays.asList(ActionIds.CATEGORY, ActionIds.MIXIN, ActionIds.ROLE_MIXIN)));
+			// TODO: test StereotypeUtils.STR_ROLE_MIXIN
+			put(StereotypeUtils.STR_ROLE_MIXIN, new ArrayList<>(Arrays.asList(ActionIds.CATEGORY, ActionIds.MIXIN, ActionIds.ROLE_MIXIN, ActionIds.PHASE_MIXIN, ActionIds.HISTORICAL_ROLE_MIXIN)));
 			put(StereotypeUtils.STR_PHASE_MIXIN, new ArrayList<>(Arrays.asList(ActionIds.CATEGORY, ActionIds.MIXIN, ActionIds.PHASE_MIXIN)));
-			put(StereotypeUtils.STR_HISTORICAL_ROLE, new ArrayList<>(Arrays.asList(ActionIds.KIND, ActionIds.QUANTITY, ActionIds.COLLECTIVE, ActionIds.RELATOR, ActionIds.MODE, ActionIds.QUALITY, ActionIds.SUBKIND, ActionIds.ROLE, ActionIds.PHASE, ActionIds.MIXIN, ActionIds.ROLE_MIXIN, ActionIds.HISTORICAL_ROLE, ActionIds.TYPE)));
+			// TODO: test StereotypeUtils.STR_HISTORICAL_ROLE
+			put(StereotypeUtils.STR_HISTORICAL_ROLE, new ArrayList<>(Arrays.asList(ActionIds.KIND, ActionIds.QUANTITY, ActionIds.COLLECTIVE, ActionIds.RELATOR, ActionIds.MODE, ActionIds.QUALITY, ActionIds.SUBKIND, ActionIds.ROLE, ActionIds.PHASE, ActionIds.CATEGORY, ActionIds.MIXIN, ActionIds.ROLE_MIXIN, ActionIds.PHASE_MIXIN, ActionIds.HISTORICAL_ROLE, ActionIds.HISTORICAL_ROLE_MIXIN, ActionIds.TYPE)));
+			// TODO: test StereotypeUtils.STR_HISTORICAL_ROLE_MIXIN
+			put(StereotypeUtils.STR_HISTORICAL_ROLE_MIXIN, new ArrayList<>(Arrays.asList(ActionIds.CATEGORY, ActionIds.MIXIN, ActionIds.ROLE_MIXIN, ActionIds.PHASE_MIXIN, ActionIds.HISTORICAL_ROLE_MIXIN)));
 			put(StereotypeUtils.STR_EVENT, new ArrayList<>(Arrays.asList(ActionIds.EVENT)));
 			put(StereotypeUtils.STR_TYPE, new ArrayList<>(Arrays.asList(ActionIds.TYPE)));
 			put(StereotypeUtils.STR_DATATYPE, new ArrayList<>(Arrays.asList(ActionIds.DATATYPE)));
