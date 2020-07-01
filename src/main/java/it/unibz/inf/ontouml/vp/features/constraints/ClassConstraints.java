@@ -1,65 +1,92 @@
 package it.unibz.inf.ontouml.vp.features.constraints;
 
-import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
-
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
+import com.vp.plugin.ApplicationManager;
+import com.vp.plugin.VPPluginInfo;
+
+import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 
 public class ClassConstraints {
 
-	@SuppressWarnings("serial")
-	public static final Map<String, ArrayList<String>> allowedSubCombinations = new HashMap<String, ArrayList<String>>() {
-		{
-			put(StereotypeUtils.STR_KIND, new ArrayList<>(Arrays.asList(ActionIds.SUBKIND, ActionIds.ROLE, ActionIds.PHASE, ActionIds.HISTORICAL_ROLE)));
-			put(StereotypeUtils.STR_QUANTITY, new ArrayList<>(Arrays.asList(ActionIds.SUBKIND, ActionIds.ROLE, ActionIds.PHASE, ActionIds.HISTORICAL_ROLE)));
-			put(StereotypeUtils.STR_COLLECTIVE, new ArrayList<>(Arrays.asList(ActionIds.SUBKIND, ActionIds.ROLE, ActionIds.PHASE, ActionIds.HISTORICAL_ROLE)));
-			put(StereotypeUtils.STR_RELATOR, new ArrayList<>(Arrays.asList(ActionIds.SUBKIND, ActionIds.ROLE, ActionIds.PHASE, ActionIds.HISTORICAL_ROLE)));
-			put(StereotypeUtils.STR_MODE, new ArrayList<>(Arrays.asList(ActionIds.SUBKIND, ActionIds.ROLE, ActionIds.PHASE, ActionIds.HISTORICAL_ROLE)));
-			put(StereotypeUtils.STR_QUALITY, new ArrayList<>(Arrays.asList(ActionIds.SUBKIND, ActionIds.ROLE, ActionIds.PHASE, ActionIds.HISTORICAL_ROLE)));
-			put(StereotypeUtils.STR_SUBKIND, new ArrayList<>(Arrays.asList(ActionIds.SUBKIND, ActionIds.ROLE, ActionIds.PHASE, ActionIds.HISTORICAL_ROLE)));
-			put(StereotypeUtils.STR_ROLE, new ArrayList<>(Arrays.asList(ActionIds.ROLE, ActionIds.HISTORICAL_ROLE)));
-			put(StereotypeUtils.STR_PHASE, new ArrayList<>(Arrays.asList(ActionIds.ROLE, ActionIds.PHASE, ActionIds.HISTORICAL_ROLE)));
-			put(StereotypeUtils.STR_CATEGORY, new ArrayList<>(Arrays.asList(ActionIds.KIND, ActionIds.QUANTITY, ActionIds.COLLECTIVE, ActionIds.RELATOR, ActionIds.MODE, ActionIds.QUALITY, ActionIds.SUBKIND, ActionIds.CATEGORY, ActionIds.ROLE_MIXIN, ActionIds.PHASE_MIXIN)));
-			put(StereotypeUtils.STR_MIXIN, new ArrayList<>(Arrays.asList(ActionIds.KIND, ActionIds.QUANTITY, ActionIds.COLLECTIVE, ActionIds.RELATOR, ActionIds.MODE, ActionIds.QUALITY, ActionIds.SUBKIND, ActionIds.ROLE, ActionIds.PHASE, ActionIds.CATEGORY, ActionIds.MIXIN, ActionIds.ROLE_MIXIN, ActionIds.PHASE_MIXIN, ActionIds.HISTORICAL_ROLE)));
-			put(StereotypeUtils.STR_ROLE_MIXIN, new ArrayList<>(Arrays.asList(ActionIds.ROLE, ActionIds.ROLE_MIXIN, ActionIds.HISTORICAL_ROLE)));
-			put(StereotypeUtils.STR_PHASE_MIXIN, new ArrayList<>(Arrays.asList(ActionIds.PHASE, ActionIds.PHASE_MIXIN)));
-			put(StereotypeUtils.STR_HISTORICAL_ROLE, new ArrayList<>(Arrays.asList(ActionIds.ROLE, ActionIds.HISTORICAL_ROLE)));
-			put(StereotypeUtils.STR_EVENT, new ArrayList<>(Arrays.asList(ActionIds.EVENT)));
-			put(StereotypeUtils.STR_TYPE, new ArrayList<>(Arrays.asList(ActionIds.ROLE, ActionIds.PHASE, ActionIds.HISTORICAL_ROLE, ActionIds.TYPE)));
-			put(StereotypeUtils.STR_DATATYPE, new ArrayList<>(Arrays.asList(ActionIds.DATATYPE)));
-			put(StereotypeUtils.STR_ENUMERATION, new ArrayList<>(Arrays.asList(ActionIds.ENUMERATION)));			
-		}
-	};
+	final private static Type mapOfListsType = new TypeToken<Map<String, List<String>>>() {
+	}.getType();
+	private static String filename = "generalization_constraints.json";
+	private static String filepath;
+
+	private static JsonObject constraints;
+	private static Map<String,List<String>> constraintsOnSpecific, constraintsOnGeneral;
 	
-	@SuppressWarnings("serial")
-	public static final Map<String, ArrayList<String>> allowedSuperCombinations = new HashMap<String, ArrayList<String>>() {
-		{
-			put(StereotypeUtils.STR_KIND, new ArrayList<>(Arrays.asList(ActionIds.CATEGORY, ActionIds.MIXIN)));
-			put(StereotypeUtils.STR_QUANTITY, new ArrayList<>(Arrays.asList(ActionIds.CATEGORY, ActionIds.MIXIN)));
-			put(StereotypeUtils.STR_COLLECTIVE, new ArrayList<>(Arrays.asList(ActionIds.CATEGORY, ActionIds.MIXIN)));
-			put(StereotypeUtils.STR_RELATOR, new ArrayList<>(Arrays.asList(ActionIds.CATEGORY, ActionIds.MIXIN)));
-			put(StereotypeUtils.STR_MODE, new ArrayList<>(Arrays.asList(ActionIds.CATEGORY, ActionIds.MIXIN)));
-			put(StereotypeUtils.STR_QUALITY, new ArrayList<>(Arrays.asList(ActionIds.CATEGORY, ActionIds.MIXIN)));
-			put(StereotypeUtils.STR_SUBKIND, new ArrayList<>(Arrays.asList(ActionIds.KIND, ActionIds.QUANTITY, ActionIds.COLLECTIVE, ActionIds.RELATOR, ActionIds.MODE, ActionIds.QUALITY, ActionIds.SUBKIND, ActionIds.CATEGORY, ActionIds.MIXIN)));
-			// TODO: update StereotypeUtils.STR_ROLE
-			put(StereotypeUtils.STR_ROLE, new ArrayList<>(Arrays.asList(ActionIds.KIND, ActionIds.QUANTITY, ActionIds.COLLECTIVE, ActionIds.RELATOR, ActionIds.MODE, ActionIds.QUALITY, ActionIds.SUBKIND, ActionIds.ROLE, ActionIds.PHASE, ActionIds.MIXIN, ActionIds.ROLE_MIXIN, ActionIds.HISTORICAL_ROLE, ActionIds.TYPE)));
-			// TODO: update StereotypeUtils.STR_PHASE
-			put(StereotypeUtils.STR_PHASE, new ArrayList<>(Arrays.asList(ActionIds.KIND, ActionIds.QUANTITY, ActionIds.COLLECTIVE, ActionIds.RELATOR, ActionIds.MODE, ActionIds.QUALITY, ActionIds.SUBKIND, ActionIds.PHASE, ActionIds.MIXIN, ActionIds.PHASE_MIXIN, ActionIds.TYPE)));
-			put(StereotypeUtils.STR_CATEGORY, new ArrayList<>(Arrays.asList(ActionIds.CATEGORY, ActionIds.MIXIN)));
-			put(StereotypeUtils.STR_MIXIN, new ArrayList<>(Arrays.asList(ActionIds.MIXIN)));
-			// TODO: test StereotypeUtils.STR_ROLE_MIXIN
-			put(StereotypeUtils.STR_ROLE_MIXIN, new ArrayList<>(Arrays.asList(ActionIds.CATEGORY, ActionIds.MIXIN, ActionIds.ROLE_MIXIN, ActionIds.PHASE_MIXIN, ActionIds.HISTORICAL_ROLE_MIXIN)));
-			put(StereotypeUtils.STR_PHASE_MIXIN, new ArrayList<>(Arrays.asList(ActionIds.CATEGORY, ActionIds.MIXIN, ActionIds.PHASE_MIXIN)));
-			// TODO: test StereotypeUtils.STR_HISTORICAL_ROLE
-			put(StereotypeUtils.STR_HISTORICAL_ROLE, new ArrayList<>(Arrays.asList(ActionIds.KIND, ActionIds.QUANTITY, ActionIds.COLLECTIVE, ActionIds.RELATOR, ActionIds.MODE, ActionIds.QUALITY, ActionIds.SUBKIND, ActionIds.ROLE, ActionIds.PHASE, ActionIds.CATEGORY, ActionIds.MIXIN, ActionIds.ROLE_MIXIN, ActionIds.PHASE_MIXIN, ActionIds.HISTORICAL_ROLE, ActionIds.HISTORICAL_ROLE_MIXIN, ActionIds.TYPE)));
-			// TODO: test StereotypeUtils.STR_HISTORICAL_ROLE_MIXIN
-			put(StereotypeUtils.STR_HISTORICAL_ROLE_MIXIN, new ArrayList<>(Arrays.asList(ActionIds.CATEGORY, ActionIds.MIXIN, ActionIds.ROLE_MIXIN, ActionIds.PHASE_MIXIN, ActionIds.HISTORICAL_ROLE_MIXIN)));
-			put(StereotypeUtils.STR_EVENT, new ArrayList<>(Arrays.asList(ActionIds.EVENT)));
-			put(StereotypeUtils.STR_TYPE, new ArrayList<>(Arrays.asList(ActionIds.TYPE)));
-			put(StereotypeUtils.STR_DATATYPE, new ArrayList<>(Arrays.asList(ActionIds.DATATYPE)));
-			put(StereotypeUtils.STR_ENUMERATION, new ArrayList<>(Arrays.asList(ActionIds.ENUMERATION)));			
+	private static void loadConstraints() {
+		try {
+			if(filepath == null) {
+				final ApplicationManager app = ApplicationManager.instance();
+				final VPPluginInfo[] plugins = app.getPluginInfos();
+				
+				for (VPPluginInfo plugin : plugins) {
+					if(plugin.getPluginId().equals(OntoUMLPlugin.PLUGIN_ID)) {
+						File pluginDir = plugin.getPluginDir();
+						filepath = pluginDir.getAbsolutePath() + File.separator + filename;
+					}
+				}
+			}
+			
+			final JsonParser parser = new JsonParser();
+			final JsonElement element = parser.parse(new FileReader(filepath));
+			constraints = element.getAsJsonObject();
+			
+			final Gson gson = new Gson();
+			constraintsOnGeneral = gson.fromJson(constraints.getAsJsonObject("constraintsOnGeneral"), mapOfListsType);
+			constraintsOnSpecific = gson.fromJson(constraints.getAsJsonObject("constraintsOnSpecific"), mapOfListsType);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		}
-	};
+	}
+
+	public static List<String> getAllowedActionIDsOnGeneral(String stereotype) {
+		if(constraints == null) {
+			loadConstraints();
+		}
+		
+		List<String> allowedStereotypes = constraintsOnGeneral.get(stereotype);
+		
+		if(allowedStereotypes == null) {
+			allowedStereotypes = new ArrayList<String>();
+		}
+		
+		return allowedStereotypes
+				.stream()
+				.map(allowed -> ActionIds.classStereotypeToActionID(allowed))
+				.collect(Collectors.toList());
+	}
+	
+	public static List<String> getAllowedActionIDsOnSpecific(String stereotype) {
+		if(constraints == null) {
+			loadConstraints();
+		}
+		
+		List<String> allowedStereotypes = constraintsOnSpecific.get(stereotype);
+		
+		if(allowedStereotypes == null) {
+			allowedStereotypes = new ArrayList<String>();
+		}
+		
+		return allowedStereotypes
+				.stream()
+				.map(allowed -> ActionIds.classStereotypeToActionID(allowed))
+				.collect(Collectors.toList());
+	}
+
 }

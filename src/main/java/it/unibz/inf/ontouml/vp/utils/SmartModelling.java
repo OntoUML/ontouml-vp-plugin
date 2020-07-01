@@ -5,6 +5,7 @@ import it.unibz.inf.ontouml.vp.features.constraints.ClassConstraints;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.AbstractMap.SimpleEntry;
 
 import com.vp.plugin.action.VPAction;
@@ -255,7 +256,8 @@ public class SmartModelling {
 		// continue if both ends has ONLY ONE stereotype in both ends
 		final String sourceStereotype = sourceStereotypes.get(0);
 		final String targetStereotype = targetStereotypes.get(0);
-		final ArrayList<String> allowedCombinations = AssociationConstraints.allowedCombinations.get(new SimpleEntry<String, String>(sourceStereotype, targetStereotype));
+//		final ArrayList<String> allowedCombinations = AssociationConstraints.allowedCombinations.get(new SimpleEntry<String, String>(sourceStereotype, targetStereotype));
+		final List<String> allowedCombinations = AssociationConstraints.getAllowedActionIDs(sourceStereotype, targetStereotype);
 
 		if (allowedCombinations == null || !allowedCombinations.contains(action.getActionId()))
 			action.setEnabled(false);
@@ -286,7 +288,7 @@ public class SmartModelling {
 				action.setEnabled(false);
 			
 			final String superStereotype = superClassStereotypes.get(0);
-			final ArrayList<String> allowedCombinationsSub = ClassConstraints.allowedSubCombinations.get(superStereotype);
+			final List<String> allowedCombinationsSub = ClassConstraints.getAllowedActionIDsOnGeneral(superStereotype);
 
 			if (allowedCombinationsSub == null || !allowedCombinationsSub.contains(action.getActionId()))
 				action.setEnabled(false);
@@ -310,7 +312,7 @@ public class SmartModelling {
 				action.setEnabled(false);
 
 			final String subStereotype = subClassStereotypes.get(0);
-			final ArrayList<String> allowedCombinationsSuper = ClassConstraints.allowedSuperCombinations.get(subStereotype);
+			final List<String> allowedCombinationsSuper = ClassConstraints.getAllowedActionIDsOnSpecific(subStereotype);
 
 			if (allowedCombinationsSuper == null || !allowedCombinationsSuper.contains(action.getActionId()))
 				action.setEnabled(false);

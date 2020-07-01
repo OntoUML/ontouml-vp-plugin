@@ -1,5 +1,7 @@
 package it.unibz.inf.ontouml.vp.features.constraints;
 
+import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
+
 public final class ActionIds {
 
 	// Class stereotypes (ordered as in plugin.xml)
@@ -105,4 +107,88 @@ public final class ActionIds {
 	public static final String PROPERTY_SET_IS_ABSTRACT = "it.unibz.inf.ontouml.vp.ClassProperties.isAbstract";
 	public static final String PROPERTY_SET_IS_POWERTYPE = "it.unibz.inf.ontouml.vp.ClassProperties.isPowertype";
 	public static final String PROPERTY_SET_ORDER = "it.unibz.inf.ontouml.vp.ClassProperties.order";
+
+	public static String classStereotypeToActionID(String stereotype) {
+		switch(stereotype) {
+			case StereotypeUtils.STR_TYPE:
+				return TYPE;
+			case StereotypeUtils.STR_HISTORICAL_ROLE:
+				return HISTORICAL_ROLE;
+			case StereotypeUtils.STR_HISTORICAL_ROLE_MIXIN:
+				return HISTORICAL_ROLE_MIXIN;
+			case StereotypeUtils.STR_EVENT:
+				return EVENT;
+			case StereotypeUtils.STR_CATEGORY:
+				return CATEGORY;
+			case StereotypeUtils.STR_MIXIN:
+				return MIXIN;
+			case StereotypeUtils.STR_ROLE_MIXIN:
+				return ROLE_MIXIN;
+			case StereotypeUtils.STR_PHASE_MIXIN:
+				return PHASE_MIXIN;
+			case StereotypeUtils.STR_KIND:
+				return KIND;
+			case StereotypeUtils.STR_COLLECTIVE:
+				return COLLECTIVE;
+			case StereotypeUtils.STR_QUANTITY:
+				return QUANTITY;
+			case StereotypeUtils.STR_RELATOR:
+				return RELATOR;
+			case StereotypeUtils.STR_QUALITY:
+				return QUALITY;
+			case StereotypeUtils.STR_MODE:
+				return MODE;
+			case StereotypeUtils.STR_SUBKIND:
+				return SUBKIND;
+			case StereotypeUtils.STR_ROLE:
+				return ROLE;
+			case StereotypeUtils.STR_PHASE:
+				return PHASE;
+			case StereotypeUtils.STR_ENUMERATION:
+				return ENUMERATION;
+			case StereotypeUtils.STR_DATATYPE:
+				return DATATYPE;
+			default:
+				return  null;
+		}
+	}
+	
+	public static String associationStereotypeToActionID(String stereotype) {
+		switch(stereotype) {
+			case StereotypeUtils.STR_INSTANTIATION:
+			    return INSTANTIATION;
+			case StereotypeUtils.STR_TERMINATION:
+			    return TERMINATION;
+			case StereotypeUtils.STR_PARTICIPATIONAL:
+			    return PARTICIPATIONAL;
+			case StereotypeUtils.STR_PARTICIPATION:
+			    return PARTICIPATION;
+			case StereotypeUtils.STR_HISTORICAL_DEPENDENCE:
+			    return HISTORICAL_DEPENDENCE;
+			case StereotypeUtils.STR_CREATION:
+			    return CREATION;
+			case StereotypeUtils.STR_MANIFESTATION:
+			    return MANIFESTATION;
+			case StereotypeUtils.STR_SUB_QUANTITY_OF:
+			    return SUB_QUANTITY_OF;
+			case StereotypeUtils.STR_SUB_COLLECTION_OF:
+			    return SUB_COLLECTION_OF;
+			case StereotypeUtils.STR_MEMBER_OF:
+			    return MEMBER_OF;
+			case StereotypeUtils.STR_MEDIATION:
+			    return MEDIATION;
+			case StereotypeUtils.STR_MATERIAL:
+			    return MATERIAL;
+			case StereotypeUtils.STR_EXTERNAL_DEPENDENCE:
+			    return EXTERNAL_DEPENDENCE;
+			case StereotypeUtils.STR_COMPONENT_OF:
+			    return COMPONENT_OF;
+			case StereotypeUtils.STR_COMPARATIVE:
+			    return COMPARATIVE;
+			case StereotypeUtils.STR_CHARACTERIZATION:
+			    return CHARACTERIZATION;
+		    default:
+		    	return null;
+		}
+	}
 }

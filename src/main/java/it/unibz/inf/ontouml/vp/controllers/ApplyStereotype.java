@@ -51,15 +51,19 @@ public class ApplyStereotype implements VPContextActionController {
       }
    }
 
+   // TODO: change this method to be independent of diagram elements
    @Override
    public void update(VPAction action, VPContext context) {
-      if (action.getActionId().contains("fixedMenu"))
-         return;
-
       action.setEnabled(true);
 
-      if (context.getModelElement().getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS) && !isClassSelectionAllowed())
+      if (action.getActionId().contains("fixedMenu")) { return ; }
+
+      if (
+         context.getModelElement().getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS) &&
+         !isClassSelectionAllowed()
+      ) {
          action.setEnabled(false);
+      }
 
       final DiagramManager dm = ApplicationManager
             .instance().getDiagramManager();
