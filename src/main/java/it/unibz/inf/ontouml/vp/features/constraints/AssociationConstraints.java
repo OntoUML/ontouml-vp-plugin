@@ -28,7 +28,7 @@ public class AssociationConstraints {
 	
 	final private static Type mapOfListsType = new TypeToken<Map<String, List<String>>>() {
 	}.getType();
-	private static String filename = "association_constraints.json.json";
+	private static String filename = "association_constraints.json";
 	private static String filepath;
 
 	private static Map<String,List<String>> constraints;
