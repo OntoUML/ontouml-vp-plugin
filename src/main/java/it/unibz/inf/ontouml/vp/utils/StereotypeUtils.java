@@ -35,12 +35,14 @@ public class StereotypeUtils {
    public static final String STR_MIXIN = "mixin";
    public static final String STR_ROLE_MIXIN = "roleMixin";
    public static final String STR_PHASE_MIXIN = "phaseMixin";
+   
    public static final String STR_KIND = "kind";
    public static final String STR_COLLECTIVE = "collective";
    public static final String STR_QUANTITY = "quantity";
    public static final String STR_RELATOR = "relator";
    public static final String STR_QUALITY = "quality";
    public static final String STR_MODE = "mode";
+   
    public static final String STR_SUBKIND = "subkind";
    public static final String STR_ROLE = "role";
    public static final String STR_PHASE = "phase";

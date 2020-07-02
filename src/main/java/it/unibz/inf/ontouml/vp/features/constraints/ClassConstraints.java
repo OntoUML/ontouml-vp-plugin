@@ -27,7 +27,7 @@ public class ClassConstraints {
 	private static String filepath;
 
 	private static JsonObject constraints;
-	private static Map<String,List<String>> constraintsOnSpecific, constraintsOnGeneral;
+	private static Map<String,List<String>> allowedSuperClassesFor, allowedSubClassesFor;
 	
 	private static void loadConstraints() {
 		try {
@@ -48,8 +48,8 @@ public class ClassConstraints {
 			constraints = element.getAsJsonObject();
 			
 			final Gson gson = new Gson();
-			constraintsOnGeneral = gson.fromJson(constraints.getAsJsonObject("constraintsOnGeneral"), mapOfListsType);
-			constraintsOnSpecific = gson.fromJson(constraints.getAsJsonObject("constraintsOnSpecific"), mapOfListsType);
+			allowedSubClassesFor = gson.fromJson(constraints.getAsJsonObject("allowedSubClassesFor"), mapOfListsType);
+			allowedSuperClassesFor = gson.fromJson(constraints.getAsJsonObject("allowedSuperClassesFor"), mapOfListsType);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -60,7 +60,7 @@ public class ClassConstraints {
 			loadConstraints();
 		}
 		
-		List<String> allowedStereotypes = constraintsOnGeneral.get(stereotype);
+		List<String> allowedStereotypes = allowedSubClassesFor.get(stereotype);
 		
 		if(allowedStereotypes == null) {
 			allowedStereotypes = new ArrayList<String>();
@@ -77,7 +77,7 @@ public class ClassConstraints {
 			loadConstraints();
 		}
 		
-		List<String> allowedStereotypes = constraintsOnSpecific.get(stereotype);
+		List<String> allowedStereotypes = allowedSuperClassesFor.get(stereotype);
 		
 		if(allowedStereotypes == null) {
 			allowedStereotypes = new ArrayList<String>();

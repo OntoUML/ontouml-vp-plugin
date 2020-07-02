@@ -19,6 +19,7 @@ import javax.swing.border.EmptyBorder;
 import com.vp.plugin.view.IDialog;
 import com.vp.plugin.view.IDialogHandler;
 
+import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 public class SelectMultipleOptionsDialog implements IDialogHandler {
@@ -122,6 +123,8 @@ public class SelectMultipleOptionsDialog implements IDialogHandler {
                 Arrays.asList(selectedValuesString.split("\\s+"));
         final List<String> restrictedNatures = StereotypeUtils.getRestrictionsList();
         Collections.sort(restrictedNatures);
+        final boolean isSmartModelingEnabled = Configurations.getInstance()
+        		.getProjectConfigurations().isSmartModellingEnabled();
 
         this._selectionsPane.setLayout(new GridLayout(3,3));
 
@@ -138,7 +141,12 @@ public class SelectMultipleOptionsDialog implements IDialogHandler {
         // Line 1, Column 3
         checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_ABSTRACT);
         this._selectionsPane.add(checkBox);
-        checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_ABSTRACT));
+        if(isSmartModelingEnabled) {
+        	checkBox.setSelected(false);
+        	checkBox.setEnabled(false);
+        } else {
+        	checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_ABSTRACT));
+        }
         
         // Line 2, Column 1
         checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_FUNCTIONAL_COMPLEX);
@@ -151,7 +159,12 @@ public class SelectMultipleOptionsDialog implements IDialogHandler {
         // Line 2, Column 3
         checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_EVENT);
         this._selectionsPane.add(checkBox);
-        checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_EVENT));
+        if(isSmartModelingEnabled) {
+        	checkBox.setSelected(false);
+        	checkBox.setEnabled(false);
+        } else {
+        	checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_EVENT));
+        }
         
         // Line 3, Column 1
         checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_QUANTITY);
@@ -164,7 +177,12 @@ public class SelectMultipleOptionsDialog implements IDialogHandler {
         // Line 3, Column 3
         checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_TYPE);
         this._selectionsPane.add(checkBox);
-        checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_TYPE));
+        if(isSmartModelingEnabled) {
+        	checkBox.setSelected(false);
+        	checkBox.setEnabled(false);
+        } else {
+        	checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_TYPE));
+        }
     }
 
 }

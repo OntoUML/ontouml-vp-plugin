@@ -1,28 +1,22 @@
 package it.unibz.inf.ontouml.vp.features.constraints;
 
-import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
-import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
-
-import java.util.AbstractMap.SimpleEntry;
-import java.util.stream.Collectors;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
-import com.vp.plugin.ApplicationManager;
-import com.vp.plugin.VPPluginInfo;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
+import com.vp.plugin.ApplicationManager;
+import com.vp.plugin.VPPluginInfo;
+
+import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 
 public class AssociationConstraints {
 	
@@ -73,6 +67,21 @@ public class AssociationConstraints {
 				.collect(Collectors.toList());
 	}
 	
+	public static List<String> getAllowedAssociations(String sourceStereotype, String targetStereotype) {
+		if(constraints == null) {
+			loadConstraints();
+		}
+		
+		List<String> allowedStereotypes = constraints.get(sourceStereotype + ":" + targetStereotype);
+		
+		if(allowedStereotypes == null) {
+			allowedStereotypes = new ArrayList<String>();
+		}
+		
+		return allowedStereotypes;
+	}
+	
+	/*
 	@SuppressWarnings("serial")
 	public static final Map<SimpleEntry<String, String>, ArrayList<String>> allowedCombinations = new HashMap<SimpleEntry<String, String>, ArrayList<String>>(){
 		{
@@ -419,7 +428,7 @@ public class AssociationConstraints {
 //		put(new SimpleEntry<String, String>(StereotypeUtils.STR_TYPE, StereotypeUtils.STR_ENUMERATION), new ArrayList<>());
 		}
 	};
-		
+	*/
 	
 
 }
