@@ -43,7 +43,8 @@ import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 
 /**
  * 
- * Class responsible for facilitating display of messages on Visual Paradigm's log.
+ * Class responsible for facilitating display of messages on Visual Paradigm's
+ * log.
  * 
  * @author Claudenir Fonseca
  * @author Victor Viola
@@ -109,7 +110,8 @@ public class ViewUtils {
 	}
 
 	public static void simpleDialog(String title, String message) {
-		ApplicationManager.instance().getViewManager().showConfirmDialog(null, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+		ApplicationManager.instance().getViewManager().showConfirmDialog(null, message, title,
+				JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
 
 	public static void cleanAndShowMessage(String message) {
@@ -120,7 +122,8 @@ public class ViewUtils {
 		messageList.add(timestamp() + message);
 		JList<Object> list = new JList<>(messageList.toArray());
 		JScrollPane parentContainer = new JScrollPane(list);
-		ApplicationManager.instance().getViewManager().showMessagePaneComponent(OntoUMLPlugin.PLUGIN_ID, ViewUtils.SCOPE_PLUGIN, parentContainer);
+		ApplicationManager.instance().getViewManager().showMessagePaneComponent(OntoUMLPlugin.PLUGIN_ID,
+				ViewUtils.SCOPE_PLUGIN, parentContainer);
 
 	}
 
@@ -134,7 +137,8 @@ public class ViewUtils {
 
 		switch (imageName) {
 		case SIMPLE_LOGO:
-			return Paths.get(pluginDir.getAbsolutePath(), "icons", "logo", SIMPLE_LOGO_FILENAME).toFile().getAbsolutePath();
+			return Paths.get(pluginDir.getAbsolutePath(), "icons", "logo", SIMPLE_LOGO_FILENAME).toFile()
+					.getAbsolutePath();
 		case NAVIGATION_LOGO:
 			return Paths.get(pluginDir.getAbsolutePath(), "icons", NAVIGATION_LOGO_FILENAME).toFile().getAbsolutePath();
 		case MORE_HORIZ_LOGO:
@@ -144,11 +148,14 @@ public class ViewUtils {
 		case CLASS_LOGO:
 			return Paths.get(pluginDir.getAbsolutePath(), "icons", CLASS_LOGO_FILENAME).toFile().getAbsolutePath();
 		case ASSOCIATION_LOGO:
-			return Paths.get(pluginDir.getAbsolutePath(), "icons", ASSOCIATION_LOGO_FILENAME).toFile().getAbsolutePath();
+			return Paths.get(pluginDir.getAbsolutePath(), "icons", ASSOCIATION_LOGO_FILENAME).toFile()
+					.getAbsolutePath();
 		case GENERALIZATION_LOGO:
-			return Paths.get(pluginDir.getAbsolutePath(), "icons", GENERALIZATION_LOGO_FILENAME).toFile().getAbsolutePath();
+			return Paths.get(pluginDir.getAbsolutePath(), "icons", GENERALIZATION_LOGO_FILENAME).toFile()
+					.getAbsolutePath();
 		case GENERALIZATION_SET_LOGO:
-			return Paths.get(pluginDir.getAbsolutePath(), "icons", GENERALIZATION_SET_LOGO_FILENAME).toFile().getAbsolutePath();
+			return Paths.get(pluginDir.getAbsolutePath(), "icons", GENERALIZATION_SET_LOGO_FILENAME).toFile()
+					.getAbsolutePath();
 		case DIAGRAM_LOGO:
 			return Paths.get(pluginDir.getAbsolutePath(), "icons", DIAGRAM_LOGO_FILENAME).toFile().getAbsolutePath();
 		case DATATYPE_LOGO:
@@ -187,12 +194,15 @@ public class ViewUtils {
 
 				if (isElementInCurrentDiagram(id)) {
 					final StringBuilder errorMessage = new StringBuilder();
-					errorMessage.append(!error.get("severity").isJsonNull() ? error.get("severity").getAsString().toUpperCase() : "");
+					errorMessage.append(
+							!error.get("severity").isJsonNull() ? error.get("severity").getAsString().toUpperCase()
+									: "");
 					errorMessage.append(": ");
 					errorMessage.append(!error.get("title").isJsonNull() ? error.get("title").getAsString() : "");
 					errorMessage.append(" ");
-					errorMessage.append(!error.get("description").isJsonNull() ? error.get("description").getAsString() : "");
-	
+					errorMessage.append(
+							!error.get("description").isJsonNull() ? error.get("description").getAsString() : "");
+
 					errorList.add(timestamp() + errorMessage.toString());
 					idModelElementList.add(id);
 				}
@@ -200,9 +210,11 @@ public class ViewUtils {
 				// final String id = error.getAsJsonObject("source").get("id").getAsString();
 
 				// if (isElementInCurrentDiagram(id)) {
-				// 	final String errorMessage = error.get("severity").getAsString() + ":" + " " + error.get("title").getAsString() + " " + error.get("description").getAsString();
-				// 	errorList.add(timestamp() + errorMessage);
-				// 	idModelElementList.add(id);
+				// final String errorMessage = error.get("severity").getAsString() + ":" + " " +
+				// error.get("title").getAsString() + " " +
+				// error.get("description").getAsString();
+				// errorList.add(timestamp() + errorMessage);
+				// idModelElementList.add(id);
 				// }
 			}
 
@@ -212,7 +224,8 @@ public class ViewUtils {
 			list.addMouseMotionListener(listener);
 
 			JScrollPane parentContainer = new JScrollPane(list);
-			ApplicationManager.instance().getViewManager().showMessagePaneComponent(OntoUMLPlugin.PLUGIN_ID, SCOPE_PLUGIN, parentContainer);
+			ApplicationManager.instance().getViewManager().showMessagePaneComponent(OntoUMLPlugin.PLUGIN_ID,
+					SCOPE_PLUGIN, parentContainer);
 
 		} catch (JsonSyntaxException e) {
 			verificationServerErrorDialog(responseMessage);
@@ -234,13 +247,15 @@ public class ViewUtils {
 			for (JsonElement elem : response) {
 				final JsonObject error = elem.getAsJsonObject();
 				final String id = error.getAsJsonObject("source").get("id").getAsString();
-				
+
 				final StringBuilder errorMessage = new StringBuilder();
-				errorMessage.append(!error.get("severity").isJsonNull() ? error.get("severity").getAsString().toUpperCase() : "");
+				errorMessage.append(
+						!error.get("severity").isJsonNull() ? error.get("severity").getAsString().toUpperCase() : "");
 				errorMessage.append(": ");
 				errorMessage.append(!error.get("title").isJsonNull() ? error.get("title").getAsString() : "");
 				errorMessage.append(" ");
-				errorMessage.append(!error.get("description").isJsonNull() ? error.get("description").getAsString() : "");
+				errorMessage
+						.append(!error.get("description").isJsonNull() ? error.get("description").getAsString() : "");
 
 				errorList.add(timestamp() + errorMessage.toString());
 				idModelElementList.add(id);
@@ -253,7 +268,8 @@ public class ViewUtils {
 			list.addMouseMotionListener(listener);
 
 			JScrollPane parentContainer = new JScrollPane(list);
-			ApplicationManager.instance().getViewManager().showMessagePaneComponent(OntoUMLPlugin.PLUGIN_ID, SCOPE_PLUGIN, parentContainer);
+			ApplicationManager.instance().getViewManager().showMessagePaneComponent(OntoUMLPlugin.PLUGIN_ID,
+					SCOPE_PLUGIN, parentContainer);
 
 		} catch (JsonSyntaxException e) {
 			verificationServerErrorDialog(responseMessage);
@@ -261,58 +277,55 @@ public class ViewUtils {
 	}
 
 	public static void verificationServerErrorDialog(String userMessage) {
-		ApplicationManager.instance().getViewManager()
-				.showConfirmDialog(null, userMessage, "Verification Service", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+		ApplicationManager.instance().getViewManager().showConfirmDialog(null, userMessage, "Verification Service",
+				JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
 
 	public static void verificationConcludedDialog(int nIssues) {
 		if (nIssues > 0) {
-			ApplicationManager
-					.instance()
-					.getViewManager()
-					.showConfirmDialog(null, "Issues found in your project: " + nIssues + ".\n" + "For details, click on the \"Show Message\" icon on the bottom right corner of the app.",
-							"Verification Service", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+			ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+					"Issues found in your project: " + nIssues + ".\n"
+							+ "For details, click on the \"Show Message\" icon on the bottom right corner of the app.",
+					"Verification Service", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+					new ImageIcon(getFilePath(SIMPLE_LOGO)));
 		} else {
-			ApplicationManager
-					.instance()
-					.getViewManager()
-					.showConfirmDialog(null, "No issues were found in your project.", "Verification Service", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
-							new ImageIcon(getFilePath(SIMPLE_LOGO)));
+			ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+					"No issues were found in your project.", "Verification Service", JOptionPane.DEFAULT_OPTION,
+					JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
 		}
 	}
 
 	public static void verificationDiagramConcludedDialog(int nIssues, String diagramName) {
 		if (nIssues > 0) {
-			ApplicationManager
-					.instance()
-					.getViewManager()
-					.showConfirmDialog(null,
-							"Issues found in diagram \"" + diagramName + "\": " + nIssues + ".\n" + "For details, click on the \"Show Message\" icon on the bottom right corner of the app.",
-							"Verification Service", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+			ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+					"Issues found in diagram \"" + diagramName + "\": " + nIssues + ".\n"
+							+ "For details, click on the \"Show Message\" icon on the bottom right corner of the app.",
+					"Verification Service", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+					new ImageIcon(getFilePath(SIMPLE_LOGO)));
 		} else {
-			ApplicationManager
-					.instance()
-					.getViewManager()
-					.showConfirmDialog(null, "No issues were found in diagram \"" + diagramName + "\".\n" + "Other issues may still exist in your project.", "Verification Service",
-							JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+			ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+					"No issues were found in diagram \"" + diagramName + "\".\n"
+							+ "Other issues may still exist in your project.",
+					"Verification Service", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+					new ImageIcon(getFilePath(SIMPLE_LOGO)));
 		}
 	}
 
 	public static void verificationFailedDialog(String msg) {
-		ApplicationManager.instance().getViewManager()
-				.showConfirmDialog(null, msg, "Verification Service", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+		ApplicationManager.instance().getViewManager().showConfirmDialog(null, msg, "Verification Service",
+				JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
 
 	public static boolean verificationFailedDialogWithOption(String msg, int httpCode) {
 		final ProjectConfigurations configurations = Configurations.getInstance().getProjectConfigurations();
 
-		if (configurations.isCustomServerEnabled() && (httpCode == HttpURLConnection.HTTP_NOT_FOUND || httpCode == HttpURLConnection.HTTP_INTERNAL_ERROR)) {
+		if (configurations.isCustomServerEnabled() && (httpCode == HttpURLConnection.HTTP_NOT_FOUND
+				|| httpCode == HttpURLConnection.HTTP_INTERNAL_ERROR)) {
 
-			int option = ApplicationManager
-					.instance()
-					.getViewManager()
-					.showConfirmDialog(null, msg + "\nDo you want to retry using the default server?", "Verification Service", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
-							new ImageIcon(getFilePath(SIMPLE_LOGO)));
+			int option = ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+					msg + "\nDo you want to retry using the default server?", "Verification Service",
+					JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+					new ImageIcon(getFilePath(SIMPLE_LOGO)));
 
 			if (option == JOptionPane.OK_OPTION) {
 				configurations.setCustomServerEnabled(false);
@@ -328,19 +341,20 @@ public class ViewUtils {
 	}
 
 	public static void exportToGUFOIssueDialog(String msg) {
-		ApplicationManager.instance().getViewManager().showConfirmDialog(null, msg, "Export to gUFO", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+		ApplicationManager.instance().getViewManager().showConfirmDialog(null, msg, "Export to gUFO",
+				JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
 
 	public static boolean exportToGUFOIssueDialogWithOption(String msg, int httpCode) {
 		final ProjectConfigurations configurations = Configurations.getInstance().getProjectConfigurations();
 
-		if (configurations.isCustomServerEnabled() && (httpCode == HttpURLConnection.HTTP_NOT_FOUND || httpCode == HttpURLConnection.HTTP_INTERNAL_ERROR)) {
+		if (configurations.isCustomServerEnabled() && (httpCode == HttpURLConnection.HTTP_NOT_FOUND
+				|| httpCode == HttpURLConnection.HTTP_INTERNAL_ERROR)) {
 
-			int option = ApplicationManager
-					.instance()
-					.getViewManager()
-					.showConfirmDialog(null, msg + "\nDo you want to retry using the default server?", "Export to gUFO", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
-							new ImageIcon(getFilePath(SIMPLE_LOGO)));
+			int option = ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+					msg + "\nDo you want to retry using the default server?", "Export to gUFO",
+					JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+					new ImageIcon(getFilePath(SIMPLE_LOGO)));
 
 			if (option == JOptionPane.OK_OPTION) {
 				configurations.setCustomServerEnabled(false);
@@ -356,25 +370,25 @@ public class ViewUtils {
 	}
 
 	public static int smartPaintEnableDialog() {
-		return ApplicationManager
-				.instance()
-				.getViewManager()
-				.showConfirmDialog(null, "Smart Paint is disabled. Do you want to enable this feature?\n" + "Warning: this feature will affect all diagrams within the project.", "Smart Paint",
-						JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+		return ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+				"Smart Paint is disabled. Do you want to enable this feature?\n"
+						+ "Warning: this feature will affect all diagrams within the project.",
+				"Smart Paint", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+				new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
 
 	public static int smartPaintConfirmationDialog() {
-		return ApplicationManager
-				.instance()
-				.getViewManager()
-				.showConfirmDialog(null, "Warning: this feature will affect all diagrams within the project.\n" + "Do you want to proceed?", "Smart Paint", JOptionPane.YES_NO_OPTION,
-						JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+		return ApplicationManager.instance().getViewManager().showConfirmDialog(null,
+				"Warning: this feature will affect all diagrams within the project.\n" + "Do you want to proceed?",
+				"Smart Paint", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+				new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
 
 	public static void saveFile(BufferedReader buffer) throws IOException {
 		final Configurations configs = Configurations.getInstance();
 		final ProjectConfigurations projectConfigurations = configs.getProjectConfigurations();
-		final FileDialog fd = new FileDialog((Frame) ApplicationManager.instance().getViewManager().getRootFrame(), "Choose destination", FileDialog.SAVE);
+		final FileDialog fd = new FileDialog((Frame) ApplicationManager.instance().getViewManager().getRootFrame(),
+				"Choose destination", FileDialog.SAVE);
 
 		String suggestedFolderPath = projectConfigurations.getExportGUFOFolderPath();
 		String suggestedFileName = projectConfigurations.getExportGUFOFilename();
@@ -398,12 +412,13 @@ public class ViewUtils {
 			projectConfigurations.setExportGUFOFilename(fileName);
 			configs.save();
 		}
-		
+
 		ViewUtils.cleanAndShowMessage("File saved successfuly.");
 	}
 
 	public static String getCurrentClassDiagramName() {
-		final IDiagramUIModel[] diagramArray = ApplicationManager.instance().getProjectManager().getProject().toDiagramArray();
+		final IDiagramUIModel[] diagramArray = ApplicationManager.instance().getProjectManager().getProject()
+				.toDiagramArray();
 
 		if (diagramArray == null)
 			return null;
@@ -417,7 +432,8 @@ public class ViewUtils {
 	}
 
 	public static String getCurrentClassDiagramId() {
-		final IDiagramUIModel[] diagramArray = ApplicationManager.instance().getProjectManager().getProject().toDiagramArray();
+		final IDiagramUIModel[] diagramArray = ApplicationManager.instance().getProjectManager().getProject()
+				.toDiagramArray();
 
 		if (diagramArray == null)
 			return null;
@@ -432,7 +448,8 @@ public class ViewUtils {
 
 	public static IDiagramUIModel getCurrentClassDiagram() {
 
-		return ApplicationManager.instance().getProjectManager().getProject().getDiagramById(getCurrentClassDiagramId());
+		return ApplicationManager.instance().getProjectManager().getProject()
+				.getDiagramById(getCurrentClassDiagramId());
 	}
 
 	public static boolean isElementInCurrentDiagram(String id) {
@@ -466,7 +483,8 @@ public class ViewUtils {
 	}
 
 	public static boolean isElementInAnyDiagram(String elementId) {
-		final IDiagramUIModel[] diagramArray = ApplicationManager.instance().getProjectManager().getProject().toDiagramArray();
+		final IDiagramUIModel[] diagramArray = ApplicationManager.instance().getProjectManager().getProject()
+				.toDiagramArray();
 
 		if (diagramArray == null)
 			return false;
@@ -511,7 +529,8 @@ public class ViewUtils {
 			}
 		}
 
-		// In case the active diagram does not contain it, get the master view or the first diagram element for that element
+		// In case the active diagram does not contain it, get the master view or the
+		// first diagram element for that element
 		if (diagramElement == null) {
 			if (element.getMasterView() != null) {
 				diagramElement = element.getMasterView();
@@ -529,14 +548,22 @@ public class ViewUtils {
 
 	public static String setOrderDialog(String currentOrder) {
 		final ViewManager vm = ApplicationManager.instance().getViewManager();
-		final String msg = "Please enter a value for the type order,\n"
-				+ "where '*' represents an orderless type:";
+		final String msg = "Please enter a value for the type order,\n" + "where '*' represents an orderless type:";
 		final String title = "Set type order";
 		final Icon icon = new ImageIcon(getFilePath(SIMPLE_LOGO));
 
-		return (String) vm.showInputDialog(vm.getRootFrame(), msg, title, JOptionPane.PLAIN_MESSAGE, icon, null, currentOrder); 
-		// ApplicationManager.instance().getViewManager().showConfirmDialog(null, msg, "Export to gUFO",
-		// 		JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+		return (String) vm.showInputDialog(vm.getRootFrame(), msg, title, JOptionPane.PLAIN_MESSAGE, icon, null,
+				currentOrder);
+	}
+
+	public static void reportBugErrorDialog(boolean isOperationNotAllowed) {
+		final String msg = isOperationNotAllowed
+				? "Unable to open the browser. Please visit https://github.com/OntoUML/ontouml-vp-plugin/ to submit bugs."
+				: "Something went wrong. Please visit https://github.com/OntoUML/ontouml-vp-plugin/ to submit bugs.";
+		
+		final ViewManager vm = ApplicationManager.instance().getViewManager();
+		vm.showConfirmDialog(null, msg, "Verification Service", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE,
+				new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
 }
 

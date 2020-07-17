@@ -76,6 +76,17 @@
                     toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.OpenConfigurationsAction" />
             </action>
+            <action 
+                    id="it.unibz.inf.ontouml.vp.actions.ReportErrorAction"
+                    actionType="generalAction"
+                    description="Opens a bug report form on the browser."
+                    style="normal"
+                    tooltip="Opens a bug report form on the browser."
+                    icon="icons/toolbar/sign-orange.png"
+                    label="Report Error"
+                    toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ReportErrorAction" />
+            </action>
             <!-- <action 
 					id="it.unibz.inf.ontouml.vp.actions.ReloadClassesAction"
 					actionType="generalAction" 
