@@ -13,10 +13,63 @@ If you are interested to know more, feel free to open an issue to provide feedba
 
 ## Contents
 
+* [Overview](#overview)
 * [User Instructions](#user-instructions)
 * [Developer Instructions](#developer-instructions)
 * [Report Errors](#report-errors)
 * [FAQ](#faq)
+
+___
+
+## Overview
+
+The **OntoUML Plugin for Visual Paradigm** adds to any version of Visual Paradigm features designed for OntoUML modelers. These features range from enabling OntoUML stereotypes in class diagrams to model verification and transformation.
+
+WARNING: some more advanced features are based on web services that process your model remotely. The software processing these models is also [openly available](https://github.com/OntoUML/ontouml-server) and if you prefer to have your models processed in your own server, you are able to set it up and change the server URL in the plugin's settings.
+
+### Features
+
+#### OntoUML Enhanced Modeling
+
+Stereotypes and meta-properties that are essential to OntoUML modeling are easily available to classes, associations and attributes with a simple right-click.
+
+![GIF showing a OntoUML model being edited](./resources/feature-modeling.gif)
+
+![A screenshot of a suggested list of stereotypes in a context menu](./resources/feature-suggested-stereotypes.png)
+
+![A screenshot of meta-properties editing in context menu](./resources/feature-meta-properties.png)
+
+![A screenshot of restricted instances menu selection](./resources/feature-restricte-to.png)
+
+Try selecting multiple elements to fast update your models!.
+
+#### Smart Paint
+
+Automatic diagram painting based on the possible instances of classes with highlighted ultimate sortals (i.e., «kind», «collective», «quantity», «relator», «mode», and «quality») for improved model readability.
+
+![A screenshot of an automatically painted diagram](./resources/feature-smart-paint.png)
+
+#### Model Verification
+
+Automatic verification of OntoUML syntactical rules.
+
+![A gif exemplifying the model verification feature](./resources/feature-verification.gif)
+
+#### Model Transformation to OWL with gUFO
+
+Model transformation into OWL with support of the [Lightweight Implementation of the Unified Foundational Ontology (UFO) - gUFO](https://nemo-ufes.github.io/gufo/).
+
+![A screenshot showing the "transformation to gUFO" window](./resources/feature-gufo.png)
+
+#### Continuos Updates
+
+The remote features are constantly updated and any fixes to them you not require you to update your Visual Paradigm plugin.
+
+And last, but not least, this project is supported by the [OntoUML.org](https://ontouml.org/) community and its set of features will only grow, incorporating new and updated OntoUML technologies.
+
+![A screenshot showing the toolbar of the OntoUML plugin](./resources/feature-toolbar.png)
+
+Back to [top](#ontouml-plugin-for-visual-paradigm).
 
 ___
 
@@ -143,6 +196,8 @@ If you have a GitHub account, head over to our [issues section](https://github.c
 If you don't have a GitHub account but still would like to contribute by reporting an error in our plugin, please fill in this [form](https://forms.gle/btx7CDSy9kn5yb3WA) sharing as many details as you wish. We will be creating a issue to discuss and solve any problems and improve our tool.
 
 Before submitting issues, however, search for [previous issues](https://github.com/OntoUML/ontouml-vp-plugin/issues) or questions in our [FAQ](#faq) as there may already be a solution to your problem.
+
+Also, the more detailed your issue the better. Therefore, we encourage you to share with us details on what happened, screenshot, project files (either `.vpp` files or [exported XML projects](https://www.visual-paradigm.com/support/documents/vpuserguide/124/218/6848_exportingxml.html)), and Visual Paradigm logs (see [how to retrieve Visual Paradigm's log](https://knowhow.visual-paradigm.com/technical-support/vp-log/)). Remember that the issues you post (differently from the [form](https://forms.gle/btx7CDSy9kn5yb3WA)) are public.
 
 Back to [top](#ontouml-plugin-for-visual-paradigm).
 
