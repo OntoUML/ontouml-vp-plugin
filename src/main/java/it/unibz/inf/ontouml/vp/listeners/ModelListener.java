@@ -53,151 +53,151 @@ public class ModelListener implements PropertyChangeListener {
 	}
 
 	private void processClassEvent(PropertyChangeEvent event) {
-		final boolean isSmartModelingEnabled = Configurations
-				.getInstance()
-				.getProjectConfigurations()
+		final boolean isSmartModelingEnabled = Configurations.getInstance().getProjectConfigurations()
 				.isSmartModellingEnabled();
-		
-		switch(event.getPropertyName()) {
-			case PCN_STEREOTYPES:
-				if(isSmartModelingEnabled) {
-					enforceAndPropagateRestrictedTo(event);
-				}
-				break;
-			case PCN_RESTRICTED_TO:
-				if(isSmartModelingEnabled) {
-					enforceAndPropagateRestrictedTo(event);
-				}
-				smartPaint(event);
-				break;
-			case PCN_MODEL_VIEW_ADDED:
-				smartPaint(event);
-				break;
+
+		switch (event.getPropertyName()) {
+		case PCN_STEREOTYPES:
+			if (isSmartModelingEnabled) {
+				enforceAndPropagateRestrictedTo(event);
+			}
+			break;
+		case PCN_RESTRICTED_TO:
+			if (isSmartModelingEnabled) {
+				enforceAndPropagateRestrictedTo(event);
+			}
+			smartPaint(event);
+			break;
+		case PCN_MODEL_VIEW_ADDED:
+			smartPaint(event);
+			break;
 		}
 	}
 
 	private void processGeneralizationEvent(PropertyChangeEvent event) {
-		final boolean isSmartModelingEnabled = Configurations
-				.getInstance()
-				.getProjectConfigurations()
+		final boolean isSmartModelingEnabled = Configurations.getInstance().getProjectConfigurations()
 				.isSmartModellingEnabled();
-		
-		if(!isSmartModelingEnabled) { return ; }
-		
-		final IGeneralization sourceGen = event.getSource() instanceof IGeneralization ?
-				(IGeneralization) event.getSource() : null;
 
-		switch(event.getPropertyName()) {
-			case PCN_TO_MODEL:
-				lookupAndPropagateRestrictedTo(event.getOldValue());
-				lookupAndPropagateRestrictedTo(event.getNewValue());
-				break;
-			case PCN_FROM_MODEL:
-				lookupAndPropagateRestrictedTo(event.getOldValue());
-				lookupAndPropagateRestrictedTo(event.getNewValue());
-				lookupAndPropagateRestrictedTo(Generalization.getSpecific(sourceGen));
-				break;
+		if (!isSmartModelingEnabled) {
+			return;
+		}
+
+		final IGeneralization sourceGen = event.getSource() instanceof IGeneralization
+				? (IGeneralization) event.getSource()
+				: null;
+
+		switch (event.getPropertyName()) {
+		case PCN_TO_MODEL:
+			lookupAndPropagateRestrictedTo(event.getOldValue());
+			lookupAndPropagateRestrictedTo(event.getNewValue());
+			break;
+		case PCN_FROM_MODEL:
+			lookupAndPropagateRestrictedTo(event.getOldValue());
+			lookupAndPropagateRestrictedTo(event.getNewValue());
+			lookupAndPropagateRestrictedTo(Generalization.getSpecific(sourceGen));
+			break;
 		}
 	}
 
 	private void smartPaint(PropertyChangeEvent event) {
-		final IClass _class = event.getSource() instanceof IClass ?
-				(IClass) event.getSource() : null;
+		if (!Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled()) {
+			return;
+		}
+
+		final IClass _class = event.getSource() instanceof IClass ? (IClass) event.getSource() : null;
 		final Object newRestriction = event.getNewValue();
 		final Object oldRestriction = event.getOldValue();
 
-		if(_class != null && !newRestriction.equals(oldRestriction)) {
+		if (_class != null && !newRestriction.equals(oldRestriction)) {
 			SmartColoring.paint(_class);
 		}
 	}
 
 	private void enforceAndPropagateRestrictedTo(PropertyChangeEvent event) {
-		final IClass _class = event.getSource() instanceof IClass ?
-				(IClass) event.getSource() : null;
+		final IClass _class = event.getSource() instanceof IClass ? (IClass) event.getSource() : null;
 		final String stereotype = StereotypeUtils.getUniqueStereotypeName(_class);
 		final Object newValue = event.getNewValue();
 		final Object oldValue = event.getOldValue();
 
-		if(stereotype == null) { return ; }
+		if (stereotype == null) {
+			return;
+		}
 
 		switch (stereotype) {
-			case StereotypeUtils.STR_EVENT:
-			case StereotypeUtils.STR_DATATYPE:
-			case StereotypeUtils.STR_ENUMERATION:
-			case StereotypeUtils.STR_KIND:
-			case StereotypeUtils.STR_COLLECTIVE:
-			case StereotypeUtils.STR_QUANTITY:
-			case StereotypeUtils.STR_RELATOR:
-			case StereotypeUtils.STR_MODE:
-			case StereotypeUtils.STR_QUALITY:
-			case StereotypeUtils.STR_TYPE:
-				if(!newValue.equals(oldValue)) {
-					Class.setDefaultRestrictedTo(_class);
-					propagateRestrictionsToDescendants(_class);
-				}
-				break;
-			case StereotypeUtils.STR_CATEGORY:
-			case StereotypeUtils.STR_ROLE_MIXIN:
-			case StereotypeUtils.STR_PHASE_MIXIN:
-			case StereotypeUtils.STR_MIXIN:
-			case StereotypeUtils.STR_HISTORICAL_ROLE_MIXIN:
-				if(!newValue.equals(oldValue)) {
-					propagateRestrictionsToDescendants(_class);
-				}
-				break;
-			case StereotypeUtils.STR_SUBKIND:
-			case StereotypeUtils.STR_ROLE:
-			case StereotypeUtils.STR_PHASE:
-			case StereotypeUtils.STR_HISTORICAL_ROLE:
-				final Set<IClass> sortalParents = getSortalParents(_class);
-				final String parentsRestrictions = Class.getRestrictedTo(sortalParents);
-				String currentRestrictions = Class.getRestrictedTo(_class);
-				
-				currentRestrictions = currentRestrictions == null ? 
-						"" : currentRestrictions;
-				
-				if(!currentRestrictions.equals(parentsRestrictions)){
-					Class.setRestrictedTo(_class, parentsRestrictions);
-					propagateRestrictionsToDescendants(_class);
-				}
-				break;
+		case StereotypeUtils.STR_EVENT:
+		case StereotypeUtils.STR_DATATYPE:
+		case StereotypeUtils.STR_ENUMERATION:
+		case StereotypeUtils.STR_KIND:
+		case StereotypeUtils.STR_COLLECTIVE:
+		case StereotypeUtils.STR_QUANTITY:
+		case StereotypeUtils.STR_RELATOR:
+		case StereotypeUtils.STR_MODE:
+		case StereotypeUtils.STR_QUALITY:
+		case StereotypeUtils.STR_TYPE:
+			if (!newValue.equals(oldValue)) {
+				Class.setDefaultRestrictedTo(_class);
+				propagateRestrictionsToDescendants(_class);
+			}
+			break;
+		case StereotypeUtils.STR_CATEGORY:
+		case StereotypeUtils.STR_ROLE_MIXIN:
+		case StereotypeUtils.STR_PHASE_MIXIN:
+		case StereotypeUtils.STR_MIXIN:
+		case StereotypeUtils.STR_HISTORICAL_ROLE_MIXIN:
+			if (!newValue.equals(oldValue)) {
+				propagateRestrictionsToDescendants(_class);
+			}
+			break;
+		case StereotypeUtils.STR_SUBKIND:
+		case StereotypeUtils.STR_ROLE:
+		case StereotypeUtils.STR_PHASE:
+		case StereotypeUtils.STR_HISTORICAL_ROLE:
+			final Set<IClass> sortalParents = getSortalParents(_class);
+			final String parentsRestrictions = Class.getRestrictedTo(sortalParents);
+			String currentRestrictions = Class.getRestrictedTo(_class);
+
+			currentRestrictions = currentRestrictions == null ? "" : currentRestrictions;
+
+			if (!currentRestrictions.equals(parentsRestrictions)) {
+				Class.setRestrictedTo(_class, parentsRestrictions);
+				propagateRestrictionsToDescendants(_class);
+			}
+			break;
 		}
 	}
 
 	private void lookupAndPropagateRestrictedTo(Object classObject) {
-		final IClass _class = classObject instanceof IClass ?
-				(IClass) classObject : null ;
-		final String stereotype = _class != null ?
-				StereotypeUtils.getUniqueStereotypeName(_class) : null;
+		final IClass _class = classObject instanceof IClass ? (IClass) classObject : null;
+		final String stereotype = _class != null ? StereotypeUtils.getUniqueStereotypeName(_class) : null;
 
-		if(_class == null || stereotype == null) { return ; }
+		if (_class == null || stereotype == null) {
+			return;
+		}
 
 		switch (stereotype) {
-			case StereotypeUtils.STR_SUBKIND:
-			case StereotypeUtils.STR_ROLE:
-			case StereotypeUtils.STR_PHASE:
-			case StereotypeUtils.STR_HISTORICAL_ROLE:
-				final Set<IClass> interestParents = getSortalParents(_class);
-				final String parentsRestrictions = Class.getRestrictedTo(interestParents);
-				
-				String currentRestrictions = Class.getRestrictedTo(_class);
-				currentRestrictions = currentRestrictions == null ? 
-						"" : currentRestrictions;
-				
-				if(!currentRestrictions.equals(parentsRestrictions)){
-					Class.setRestrictedTo(_class, parentsRestrictions);
-					propagateRestrictionsToDescendants(_class);
-				}
-				break;
+		case StereotypeUtils.STR_SUBKIND:
+		case StereotypeUtils.STR_ROLE:
+		case StereotypeUtils.STR_PHASE:
+		case StereotypeUtils.STR_HISTORICAL_ROLE:
+			final Set<IClass> interestParents = getSortalParents(_class);
+			final String parentsRestrictions = Class.getRestrictedTo(interestParents);
+
+			String currentRestrictions = Class.getRestrictedTo(_class);
+			currentRestrictions = currentRestrictions == null ? "" : currentRestrictions;
+
+			if (!currentRestrictions.equals(parentsRestrictions)) {
+				Class.setRestrictedTo(_class, parentsRestrictions);
+				propagateRestrictionsToDescendants(_class);
+			}
+			break;
 		}
 	}
 
 	private void propagateRestrictionsToDescendants(IClass _class) {
 		Class.applyOnDescendants(_class, descendent -> {
-			String descendentStereotype = 
-					StereotypeUtils.getUniqueStereotypeName(descendent);
-			
-			if(!interestStereotypes.contains(descendentStereotype)) {
+			String descendentStereotype = StereotypeUtils.getUniqueStereotypeName(descendent);
+
+			if (!interestStereotypes.contains(descendentStereotype)) {
 				return false;
 			}
 
@@ -207,7 +207,7 @@ public class ModelListener implements PropertyChangeListener {
 			String currentRestriction = Class.getRestrictedTo(descendent);
 			currentRestriction = currentRestriction == null ? "" : currentRestriction;
 
-			if(!currentRestriction.equals(newRestriction)) {
+			if (!currentRestriction.equals(newRestriction)) {
 				Class.setRestrictedTo(descendent, newRestriction);
 				return true;
 			}

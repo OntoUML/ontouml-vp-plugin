@@ -59,15 +59,13 @@ public class DiagramListener implements IDiagramListener {
 			diagram != null &&
 			Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled()
 		) {
-			return;
-		}
-
-		final Iterator<?> iter = diagram.diagramElementIterator();
-		while(iter != null && iter.hasNext()) {
-			final IDiagramElement next = (IDiagramElement) iter.next();
-			
-			if(next instanceof IClassUIModel) {
-				SmartColoring.paint((IClassUIModel) next);
+			final Iterator<?> iter = diagram.diagramElementIterator();
+			while(iter != null && iter.hasNext()) {
+				final IDiagramElement next = (IDiagramElement) iter.next();
+				
+				if(next instanceof IClassUIModel) {
+					SmartColoring.paint((IClassUIModel) next);
+				}
 			}
 		}
 	}

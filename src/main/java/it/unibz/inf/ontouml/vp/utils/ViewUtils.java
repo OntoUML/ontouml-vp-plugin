@@ -40,6 +40,7 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IModelElement;
 
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
+import it.unibz.inf.ontouml.vp.views.HTMLEnabledMessage;
 
 /**
  * 
@@ -557,13 +558,13 @@ public class ViewUtils {
 	}
 
 	public static void reportBugErrorDialog(boolean isOperationNotAllowed) {
-		final String msg = isOperationNotAllowed
-				? "Unable to open the browser. Please visit https://github.com/OntoUML/ontouml-vp-plugin/ to submit bugs."
-				: "Something went wrong. Please visit https://github.com/OntoUML/ontouml-vp-plugin/ to submit bugs.";
-		
 		final ViewManager vm = ApplicationManager.instance().getViewManager();
-		vm.showConfirmDialog(null, msg, "Verification Service", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE,
-				new ImageIcon(getFilePath(SIMPLE_LOGO)));
+		final String body = isOperationNotAllowed
+				? "Unable to open the browser. Please visit <a href=\"https://github.com/OntoUML/ontouml-vp-plugin/\">https://github.com/OntoUML/ontouml-vp-plugin/</a> to submit bugs."
+				: "Something went wrong. Please visit <a href=\"https://github.com/OntoUML/ontouml-vp-plugin/\">https://github.com/OntoUML/ontouml-vp-plugin/</a> to submit bugs.";
+		
+		vm.showConfirmDialog(null, new HTMLEnabledMessage(body), "Report Error", JOptionPane.DEFAULT_OPTION,
+				JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
 }
 
