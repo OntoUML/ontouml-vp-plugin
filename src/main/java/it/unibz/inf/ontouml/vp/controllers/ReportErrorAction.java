@@ -16,7 +16,7 @@ public class ReportErrorAction implements VPActionController {
 	public void performAction(VPAction arg0) {
 		try {
 			final Desktop desktop = Desktop.getDesktop();
-			final URI uri = new URI("https://forms.gle/btx7CDSy9kn5yb3WA");
+			final URI uri = new URI(REPORT_URL);
 			desktop.browse(uri);
 		} catch (UnsupportedOperationException unsupportedException) {
 			ViewUtils.reportBugErrorDialog(true);

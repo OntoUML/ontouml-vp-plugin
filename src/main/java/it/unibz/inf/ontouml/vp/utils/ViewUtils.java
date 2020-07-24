@@ -560,9 +560,11 @@ public class ViewUtils {
 	public static void reportBugErrorDialog(boolean isOperationNotAllowed) {
 		final ViewManager vm = ApplicationManager.instance().getViewManager();
 		final String body = isOperationNotAllowed
-				? "Unable to open the browser. Please visit <a href=\"https://github.com/OntoUML/ontouml-vp-plugin/\">https://github.com/OntoUML/ontouml-vp-plugin/</a> to submit bugs."
-				: "Something went wrong. Please visit <a href=\"https://github.com/OntoUML/ontouml-vp-plugin/\">https://github.com/OntoUML/ontouml-vp-plugin/</a> to submit bugs.";
-		
+				? "Unable to open the browser. Please visit <a href=\"" + OntoUMLPlugin.PLUGIN_REPO + "\">"
+						+ OntoUMLPlugin.PLUGIN_REPO + "</a> to submit bugs."
+				: "Something went wrong. Please visit <a href=\"" + OntoUMLPlugin.PLUGIN_REPO + "\">"
+						+ OntoUMLPlugin.PLUGIN_REPO + "</a> to submit bugs.";
+
 		vm.showConfirmDialog(null, new HTMLEnabledMessage(body), "Report Error", JOptionPane.DEFAULT_OPTION,
 				JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
