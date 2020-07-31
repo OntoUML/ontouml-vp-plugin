@@ -205,6 +205,10 @@ ___
 
 ## FAQ
 
+* [Why do I get the error message "The ID [...] is already in use"?](#why-do-i-get-the-error-message-"the-id-[...]-is-already-in-use"?)
+
+* [Why Protégé gives me an error message when I try to open my ontology exported to gUFO?](#why-protégé-gives-me-an-error-message-when-i-try-to-open-my-ontology-exported-to-gufo?)
+
 ### Why do I get the error message "The ID [...] is already in use"?
 
 ![Error message: ID already in use](./resources/faq-id-in-use.png)
@@ -214,5 +218,13 @@ Each Visual Paradigm plugin must (i) have an ID, and (ii) be installed in a spec
 ![Install plugin window](./resources/install-plugin-dialog-folder-path.png)
 
 To solve this issue, go to the `plugins` folder listed in the "Install Plugin" window (see above) and delete your old plugin folder before installing the new version. You may be required to re-open the application for that to take effect.
+
+### Why Protégé gives me an error message when I try to open my ontology exported to gUFO?
+
+Some users reported issues when trying to open their ontologies on [Protégé](https://protege.stanford.edu/) after using the ["Export to gUFO"](#Model-Transformation-to-OWL-with-gUFO) feature. In order to avoid this problem, we recommend you to use stable releases of Protégé (the desktop version) and avoid beta releases. You can find the latest release on their [official website]((https://protege.stanford.edu/)) and their complete list of releases in this [link](https://protegewiki.stanford.edu/wiki/Protege_Desktop_Old_Versions).
+
+Also, make sure that your machine is connected to the internet so Protégé can load the [gUFO](https://nemo-ufes.github.io/gufo/) ontology which is used but not included in the exported file.
+
+If you still have problems opening your ontology, please [report it](#Report-Errors) so we can improve our solutions.
 
 Back to [top](#ontouml-plugin-for-visual-paradigm).
