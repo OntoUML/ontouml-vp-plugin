@@ -69,6 +69,8 @@ And last, but not least, this project is supported by the [OntoUML.org](https://
 
 ![A screenshot showing the toolbar of the OntoUML plugin](./resources/feature-toolbar.png)
 
+In order to update to a new version of the plugin, please download the latest [release](https://github.com/OntoUML/ontouml-vp-plugin/releases) as a ZIP file and select it through the "Update Plugin" button in the plugin (available from version 0.3.0).
+
 Back to [top](#ontouml-plugin-for-visual-paradigm).
 
 ___
@@ -209,6 +211,8 @@ ___
 
 * [Why Protégé gives me an error message when I try to open my ontology exported to gUFO?](#why-protégé-gives-me-an-error-message-when-i-try-to-open-my-ontology-exported-to-gufo)
 
+* [I had an error while updating the plugin through the "Update Plugin" button and now it does not work](#I-had-an-error-while-updating-the-plugin-through-the-"Update-Plugin"-button-and-now-it-does-not-work)
+
 ### Why do I get the error message "The ID [...] is already in use"?
 
 ![Error message: ID already in use](./resources/faq-id-in-use.png)
@@ -226,5 +230,9 @@ Some users reported issues when trying to open their ontologies on [Protégé](h
 Also, make sure that your machine is connected to the internet so Protégé can load the [gUFO](https://nemo-ufes.github.io/gufo/) ontology which is used but not included in the exported file.
 
 If you still have problems opening your ontology, please [report it](#Report-Errors) so we can improve our solutions.
+
+### I had an error while updating the plugin through the "Update Plugin" button and now it does not work
+
+In that case, the error may have corrupted the previous installation. Please access the plugins folder of Visual Paradigm (instructions [here](#why-do-i-get-the-error-message-"the-id-[...]-is-already-in-use")) and manually remove old plugins' folders. After this, extract the new version you tried to update to into this (now empty) folder. If you have other Visual Paradigm plugins in these folder, there is no need to delete does, only the OntoUML one.
 
 Back to [top](#ontouml-plugin-for-visual-paradigm).
