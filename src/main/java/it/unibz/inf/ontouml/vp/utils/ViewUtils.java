@@ -568,6 +568,36 @@ public class ViewUtils {
 		vm.showConfirmDialog(null, new HTMLEnabledMessage(body), "Report Error", JOptionPane.DEFAULT_OPTION,
 				JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
+	
+	public static void updateDialog() {
+		final ViewManager vm = ApplicationManager.instance().getViewManager();
+		final StringBuilder builder = new StringBuilder();
+		builder.append("Please select the ZIP file containing the release of the OntoUML Plguin that you wish to install.<br>");
+		builder.append("The latest release is available at <a href=\"" + OntoUMLPlugin.PLUGIN_REPO + "\">" + OntoUMLPlugin.PLUGIN_REPO +"</a>.<br><br>");
+		builder.append("This procedure may take a couple of seconds.");
+
+		vm.showConfirmDialog(null, new HTMLEnabledMessage(builder.toString()), "Plugin Update", JOptionPane.DEFAULT_OPTION,
+				JOptionPane.PLAIN_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+	}
+	
+	public static void updateSuccessDialog() {
+		final ViewManager vm = ApplicationManager.instance().getViewManager();
+		final String msg = "Plugin successfully updated.\nPlease reopen the application for the changes to take effect.";
+
+		vm.showConfirmDialog(null, msg, "Plugin Update", JOptionPane.DEFAULT_OPTION,
+				JOptionPane.PLAIN_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+	}
+	
+	public static void updateErrorDialog() {
+		final ViewManager vm = ApplicationManager.instance().getViewManager();
+		final StringBuilder builder = new StringBuilder();
+		builder.append("Something went wrong during the update.<br>");
+		builder.append("In case your plugin becomes unavailable, you may find instructions at <a href=\"" + OntoUMLPlugin.PLUGIN_REPO + "\">" + OntoUMLPlugin.PLUGIN_REPO +"</a>.<br>");
+		builder.append("In this page you can also report this error and help us to improve our plugin.");
+
+		vm.showConfirmDialog(null, new HTMLEnabledMessage(builder.toString()), "Plugin Update Error", JOptionPane.DEFAULT_OPTION,
+				JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+	}
 }
 
 @SuppressWarnings("serial")

@@ -39,6 +39,7 @@ public class OntoUMLPlugin implements VPPlugin {
       // The constructor of a VPPlugin MUST NOT have parameters.
       isExportToGUFOWindowOpen = false;
       isConfigWindowOpen = false;
+      System.out.println("OntoUML Plugin (v" + PLUGIN_VERSION_RELEASE +") loaded successfully.");
    }
 
    /**

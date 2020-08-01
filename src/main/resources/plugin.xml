@@ -1,6 +1,6 @@
 <plugin
         id="it.unibz.inf.ontouml.vp"
-        description="OntoUML Plugin Visual Paradigm"
+        description="OntoUML Plugin Visual Paradigm v0.3.0"
         provider="University of Bolzano"
         class="it.unibz.inf.ontouml.vp.OntoUMLPlugin">
         
@@ -54,7 +54,7 @@
                     toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ExportToGUFOAction" />
             </action>
-            <action 
+            <!-- <action 
                     id="it.unibz.inf.ontouml.vp.actions.PaintModel"
                     actionType="generalAction"
                     description="Applies the smart paint algorithm to the project."
@@ -64,7 +64,7 @@
                     label="Smart Paint"
                     toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.PaintModelAction" />
-            </action>
+            </action> -->
             <action 
                     id="it.unibz.inf.ontouml.vp.actions.OpenConfigurationsAction"
                     actionType="generalAction"
@@ -87,7 +87,19 @@
                     toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ReportErrorAction" />
             </action>
-            <!-- <action 
+            <action 
+                    id="it.unibz.inf.ontouml.vp.actions.UpdatePluginAction"
+                    actionType="generalAction"
+                    description="Opens the plugin update dialog."
+                    style="normal"
+                    tooltip="Opens the plugin update dialog."
+                    icon="icons/toolbar/update-orange.png"
+                    label="Update Plugin"
+                    toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.UpdatePluginAction" />
+            </action>
+            <!--
+            <action 
 					id="it.unibz.inf.ontouml.vp.actions.ReloadClassesAction"
 					actionType="generalAction" 
 					label="Reload Plugin - DEBUG" 
@@ -95,7 +107,8 @@
 					style="normal"
 					toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
 				<actionController class="it.unibz.inf.ontouml.vp.controllers.ReloadClassesActionController" />
-			</action> -->
+			</action>
+			-->
         </actionSet>
 
         <contextSensitiveActionSet id="it.unibz.inf.ontouml.vp.ClassProperties">

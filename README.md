@@ -205,9 +205,9 @@ ___
 
 ## FAQ
 
-* [Why do I get the error message "The ID [...] is already in use"?](#why-do-i-get-the-error-message-"the-id-[...]-is-already-in-use"?)
+* [Why do I get the error message "The ID [...] is already in use"?](#why-do-i-get-the-error-message-"the-id-[...]-is-already-in-use")
 
-* [Why Protégé gives me an error message when I try to open my ontology exported to gUFO?](#why-protégé-gives-me-an-error-message-when-i-try-to-open-my-ontology-exported-to-gufo?)
+* [Why Protégé gives me an error message when I try to open my ontology exported to gUFO?](#why-protégé-gives-me-an-error-message-when-i-try-to-open-my-ontology-exported-to-gufo)
 
 ### Why do I get the error message "The ID [...] is already in use"?
 

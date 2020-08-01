@@ -21,9 +21,6 @@ public class HTMLEnabledMessage extends JEditorPane {
             @Override
             public void hyperlinkUpdate(HyperlinkEvent e) {
                 if (e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) {
-                    // Process the click event on the link (for example with java.awt.Desktop.getDesktop().browse())
-                    System.out.println(e.getURL()+" was clicked");
-                    
                     try {
             			final Desktop desktop = Desktop.getDesktop();
             			desktop.browse(e.getURL().toURI());
