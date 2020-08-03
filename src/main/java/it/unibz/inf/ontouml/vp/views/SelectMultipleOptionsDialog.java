@@ -126,7 +126,7 @@ public class SelectMultipleOptionsDialog implements IDialogHandler {
         final boolean isSmartModelingEnabled = Configurations.getInstance()
         		.getProjectConfigurations().isSmartModellingEnabled();
 
-        this._selectionsPane.setLayout(new GridLayout(3,3));
+        this._selectionsPane.setLayout(new GridLayout(4,3));
 
         JCheckBox checkBox;
 
@@ -175,6 +175,20 @@ public class SelectMultipleOptionsDialog implements IDialogHandler {
         this._selectionsPane.add(checkBox);
         checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_RELATOR));
         // Line 3, Column 3
+        checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_SITUATION);
+        this._selectionsPane.add(checkBox);
+        if(isSmartModelingEnabled) {
+        	checkBox.setSelected(false);
+        	checkBox.setEnabled(false);
+        } else {
+        	checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_SITUATION));
+        }
+        
+        // Line 4, Column 1
+        this._selectionsPane.add(new JLabel());
+        // Line 4, Column 2
+        this._selectionsPane.add(new JLabel());
+        // Line 4, Column 3
         checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_TYPE);
         this._selectionsPane.add(checkBox);
         if(isSmartModelingEnabled) {

@@ -104,6 +104,11 @@ public class ApplyStereotype implements VPContextActionController {
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_EVENT);
             Class.setDefaultRestrictedTo((IClass) element);
             break;
+         case ActionIds.SITUATION:
+         case ActionIds.SITUATION_FIXED:
+            StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_SITUATION);
+            Class.setDefaultRestrictedTo((IClass) element);
+            break;
          case ActionIds.ENUMERATION:
          case ActionIds.ENUMERATION_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_ENUMERATION);
@@ -199,6 +204,14 @@ public class ApplyStereotype implements VPContextActionController {
          case ActionIds.MANIFESTATION:
          case ActionIds.MANIFESTATION_FIXED:
             StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_MANIFESTATION);
+            break;
+         case ActionIds.BRINGS_ABOUT:
+         case ActionIds.BRINGS_ABOUT_FIXED:
+            StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_BRINGS_ABOUT);
+            break;
+         case ActionIds.TRIGGERS:
+         case ActionIds.TRIGGERS_FIXED:
+            StereotypeUtils.applyStereotype(element, StereotypeUtils.STR_TRIGGERS);
             break;
          case ActionIds.MATERIAL:
          case ActionIds.MATERIAL_FIXED:

@@ -10,6 +10,8 @@ public final class ActionIds {
 	public static final String HISTORICAL_ROLE = "it.unibz.inf.ontouml.vp.addHistoricalRoleStereotype";
 	public static final String HISTORICAL_ROLE_MIXIN = "it.unibz.inf.ontouml.vp.addHistoricalRoleMixinStereotype";
 	public static final String EVENT = "it.unibz.inf.ontouml.vp.addEventStereotype";
+	
+	public static final String SITUATION = "it.unibz.inf.ontouml.vp.addSituationStereotype";
 
 	public static final String ENUMERATION = "it.unibz.inf.ontouml.vp.addEnumerationStereotype";
 	public static final String DATATYPE = "it.unibz.inf.ontouml.vp.addDatatypeStereotype";
@@ -37,6 +39,9 @@ public final class ActionIds {
 	public static final String HISTORICAL_DEPENDENCE = "it.unibz.inf.ontouml.vp.addHistoricalDependenceStereotype";
 	public static final String CREATION = "it.unibz.inf.ontouml.vp.addCreationStereotype";
 	public static final String MANIFESTATION = "it.unibz.inf.ontouml.vp.addManifestationStereotype";
+	
+	public static final String BRINGS_ABOUT= "it.unibz.inf.ontouml.vp.addBringsAboutStereotype";
+	public static final String TRIGGERS= "it.unibz.inf.ontouml.vp.addTriggersStereotype";
 
 	public static final String SUB_QUANTITY_OF = "it.unibz.inf.ontouml.vp.addSubQuantityStereotype";
 	public static final String SUB_COLLECTION_OF = "it.unibz.inf.ontouml.vp.addSubCollectionStereotype";
@@ -58,6 +63,8 @@ public final class ActionIds {
 	public static final String HISTORICAL_ROLE_FIXED = "it.unibz.inf.ontouml.vp.addHistoricalRoleStereotype.fixedMenu";
 	public static final String HISTORICAL_ROLE_MIXIN_FIXED = "it.unibz.inf.ontouml.vp.addHistoricalRoleMixinStereotype.fixedMenu";
 	public static final String EVENT_FIXED = "it.unibz.inf.ontouml.vp.addEventStereotype.fixedMenu";
+	
+	public static final String SITUATION_FIXED = "it.unibz.inf.ontouml.vp.addSituationStereotype.fixedMenu";
 
 	public static final String ENUMERATION_FIXED = "it.unibz.inf.ontouml.vp.addEnumerationStereotype.fixedMenu";
 	public static final String DATATYPE_FIXED = "it.unibz.inf.ontouml.vp.addDatatypeStereotype.fixedMenu";
@@ -85,6 +92,9 @@ public final class ActionIds {
 	public static final String HISTORICAL_DEPENDENCE_FIXED = "it.unibz.inf.ontouml.vp.addHistoricalDependenceStereotype.fixedMenu";
 	public static final String CREATION_FIXED = "it.unibz.inf.ontouml.vp.addCreationStereotype.fixedMenu";
 	public static final String MANIFESTATION_FIXED = "it.unibz.inf.ontouml.vp.addManifestationStereotype.fixedMenu";
+	
+	public static final String BRINGS_ABOUT_FIXED = "it.unibz.inf.ontouml.vp.addBringsStereotype.fixedMenu";
+	public static final String TRIGGERS_FIXED = "it.unibz.inf.ontouml.vp.addTriggersStereotype.fixedMenu";
 
 	public static final String SUB_QUANTITY_OF_FIXED = "it.unibz.inf.ontouml.vp.addSubQuantityStereotype.fixedMenu";
 	public static final String SUB_COLLECTION_OF_FIXED = "it.unibz.inf.ontouml.vp.addSubCollectionStereotype.fixedMenu";
@@ -118,6 +128,8 @@ public final class ActionIds {
 				return HISTORICAL_ROLE_MIXIN;
 			case StereotypeUtils.STR_EVENT:
 				return EVENT;
+			case StereotypeUtils.STR_SITUATION:
+				return SITUATION;
 			case StereotypeUtils.STR_CATEGORY:
 				return CATEGORY;
 			case StereotypeUtils.STR_MIXIN:
@@ -169,6 +181,10 @@ public final class ActionIds {
 			    return CREATION;
 			case StereotypeUtils.STR_MANIFESTATION:
 			    return MANIFESTATION;
+			case StereotypeUtils.STR_BRINGS_ABOUT:
+			    return BRINGS_ABOUT;
+			case StereotypeUtils.STR_TRIGGERS:
+			    return TRIGGERS;
 			case StereotypeUtils.STR_SUB_QUANTITY_OF:
 			    return SUB_QUANTITY_OF;
 			case StereotypeUtils.STR_SUB_COLLECTION_OF:

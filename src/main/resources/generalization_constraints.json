@@ -16,6 +16,7 @@
 		"historicalRole": ["role","historicalRole"],
 		"historicalRoleMixin": ["role","roleMixin","historicalRole","historicalRoleMixin"],
 		"event": ["event"],
+		"situation": ["situation"],
 		"type": ["role","phase","historicalRole","type"],
 		"enumeration": ["enumeration"],
 		"datatype": ["datatype"]
@@ -37,6 +38,7 @@
 		"historicalRole": ["kind","quantity","collective","relator","mode","quality","subkind","category","mixin","historicalRole","historicalRoleMixin","type"],
 		"historicalRoleMixin": ["category","mixin","historicalRoleMixin"],
 		"event": ["event"],
+		"situation": ["situation"],
 		"type": ["type"],
 		"enumeration": ["enumeration"],
 		"datatype": ["datatype"]

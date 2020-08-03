@@ -30,6 +30,8 @@ public class StereotypeUtils {
    public static final String STR_HISTORICAL_ROLE = "historicalRole";
    public static final String STR_HISTORICAL_ROLE_MIXIN = "historicalRoleMixin";
    public static final String STR_EVENT = "event";
+   
+   public static final String STR_SITUATION = "situation";
 
    public static final String STR_CATEGORY = "category";
    public static final String STR_MIXIN = "mixin";
@@ -72,6 +74,9 @@ public class StereotypeUtils {
    public static final String STR_HISTORICAL_DEPENDENCE = "historicalDependence";
    public static final String STR_CREATION = "creation";
    public static final String STR_MANIFESTATION = "manifestation";
+   
+   public static final String STR_BRINGS_ABOUT = "bringsAbout";
+   public static final String STR_TRIGGERS = "triggers";
 
    // Attribute stereotypes
    public static final String STR_BEGIN = "begin";
@@ -85,6 +90,7 @@ public class StereotypeUtils {
    public static final String RESTRICTED_TO_MODE = "mode";
    public static final String RESTRICTED_TO_QUALITY = "quality";
    public static final String RESTRICTED_TO_EVENT = "event";
+   public static final String RESTRICTED_TO_SITUATION = "situation";
    public static final String RESTRICTED_TO_TYPE = "type";
    public static final String RESTRICTED_TO_ABSTRACT = "abstract";
 
@@ -107,6 +113,8 @@ public class StereotypeUtils {
       str_names.add(STR_HISTORICAL_ROLE);
       str_names.add(STR_HISTORICAL_ROLE_MIXIN);
       str_names.add(STR_EVENT);
+      
+      str_names.add(STR_SITUATION);
 
       str_names.add(STR_ENUMERATION);
       str_names.add(STR_DATATYPE);
@@ -139,6 +147,9 @@ public class StereotypeUtils {
       str_names.add(STR_HISTORICAL_DEPENDENCE);
       str_names.add(STR_CREATION);
       str_names.add(STR_MANIFESTATION);
+      
+      str_names.add(STR_BRINGS_ABOUT);
+      str_names.add(STR_TRIGGERS);
 
       str_names.add(STR_MATERIAL);
       str_names.add(STR_MEDIATION);
@@ -347,13 +358,11 @@ public class StereotypeUtils {
          .collect(Collectors.joining(" "));
    }
 
-   public static List<String> getRestrictionsList() {
-      return Arrays.asList(RESTRICTED_TO_COLLECTIVE,
-         RESTRICTED_TO_EVENT, RESTRICTED_TO_MODE,
-         RESTRICTED_TO_FUNCTIONAL_COMPLEX, RESTRICTED_TO_QUALITY,
-         RESTRICTED_TO_QUANTITY, RESTRICTED_TO_RELATOR,
-         RESTRICTED_TO_TYPE, RESTRICTED_TO_ABSTRACT);
-   }
+	public static List<String> getRestrictionsList() {
+		return Arrays.asList(RESTRICTED_TO_COLLECTIVE, RESTRICTED_TO_EVENT, RESTRICTED_TO_SITUATION, RESTRICTED_TO_MODE,
+				RESTRICTED_TO_FUNCTIONAL_COMPLEX, RESTRICTED_TO_QUALITY, RESTRICTED_TO_QUANTITY, RESTRICTED_TO_RELATOR,
+				RESTRICTED_TO_TYPE, RESTRICTED_TO_ABSTRACT);
+	}
 
    public static void applyStereotype(IModelElement element, String stereotypeName) {
       final IStereotype stereotype = getStereotype(stereotypeName);
@@ -445,7 +454,9 @@ public class StereotypeUtils {
          case STR_TYPE:
             return RESTRICTED_TO_TYPE;
          case STR_EVENT:
-            return RESTRICTED_TO_EVENT;
+             return RESTRICTED_TO_EVENT;
+         case STR_SITUATION:
+             return RESTRICTED_TO_SITUATION;
          case STR_CATEGORY:
          case STR_MIXIN:
          case STR_ROLE_MIXIN:

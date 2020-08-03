@@ -163,6 +163,10 @@
             </action>
     
             <separator id="it.unibz.inf.ontouml.vp.separator2" menuPath="ontoUMLMenu1/#"/>
+            
+            <action id="it.unibz.inf.ontouml.vp.addSituationStereotype" label="Situation" style="normal" menuPath="ontoUMLMenu1/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+            </action>
 
             <action id="it.unibz.inf.ontouml.vp.addHistoricalRoleStereotype" label="HistoricalRole" style="normal" menuPath="ontoUMLMenu1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
@@ -248,6 +252,10 @@
 
             <separator id="it.unibz.inf.ontouml.vp.AssociationSeparator1" menuPath="ontoUMLMenu2/#" />
             
+            <action id="it.unibz.inf.ontouml.vp.addTriggersStereotype" label="Triggers" style="normal" menuPath="ontoUMLMenu2/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+            </action>
+            
             <action id="it.unibz.inf.ontouml.vp.addTerminationStereotype" label="Termination" style="normal" menuPath="ontoUMLMenu2/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
@@ -259,6 +267,10 @@
             <action id="it.unibz.inf.ontouml.vp.addParticipationStereotype" label="Participation" style="normal" menuPath="ontoUMLMenu2/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
+            
+            <action id="it.unibz.inf.ontouml.vp.addManifestationStereotype" label="Manifestation" style="normal" menuPath="ontoUMLMenu2/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+            </action>
 
             <action id="it.unibz.inf.ontouml.vp.addHistoricalDependenceStereotype" label="HistoricalDependence" style="normal" menuPath="ontoUMLMenu2/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
@@ -268,7 +280,7 @@
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
             
-            <action id="it.unibz.inf.ontouml.vp.addManifestationStereotype" label="Manifestation" style="normal" menuPath="ontoUMLMenu2/#">
+            <action id="it.unibz.inf.ontouml.vp.addBringsAboutStereotype" label="BringsAbout" style="normal" menuPath="ontoUMLMenu2/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
             
@@ -336,6 +348,10 @@
             </action>
 
             <separator id="it.unibz.inf.ontouml.vp.separator2.fixedMenu" menuPath="ontoUMLMenu1.fixedMenu/#"/>
+            
+            <action id="it.unibz.inf.ontouml.vp.addSituationStereotype.fixedMenu" label="Situation" style="normal" menuPath="ontoUMLMenu1.fixedMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+            </action>
 
             <action id="it.unibz.inf.ontouml.vp.addHistoricalRoleStereotype.fixedMenu" label="HistoricalRole" style="normal" menuPath="ontoUMLMenu1.fixedMenu/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
@@ -420,6 +436,10 @@
             </action>
 
             <separator id="it.unibz.inf.ontouml.vp.AssociationSeparator1.fixedMenu" menuPath="ontoUMLMenu2.fixedMenu/#" />
+            
+            <action id="it.unibz.inf.ontouml.vp.addTriggersStereotype.fixedMenu" label="Triggers" style="normal" menuPath="ontoUMLMenu2.fixedMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+            </action>
 
             <action id="it.unibz.inf.ontouml.vp.addTerminationStereotype.fixedMenu" label="Termination" style="normal" menuPath="ontoUMLMenu2.fixedMenu/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
@@ -433,6 +453,10 @@
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
 
+            <action id="it.unibz.inf.ontouml.vp.addManifestationStereotype.fixedMenu" label="Manifestation" style="normal" menuPath="ontoUMLMenu2.fixedMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
+            </action>
+
             <action id="it.unibz.inf.ontouml.vp.addHistoricalDependenceStereotype.fixedMenu" label="HistoricalDependence" style="normal" menuPath="ontoUMLMenu2.fixedMenu/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
@@ -440,8 +464,8 @@
             <action id="it.unibz.inf.ontouml.vp.addCreationStereotype.fixedMenu" label="Creation" style="normal" menuPath="ontoUMLMenu2.fixedMenu/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
-
-            <action id="it.unibz.inf.ontouml.vp.addManifestationStereotype.fixedMenu" label="Manifestation" style="normal" menuPath="ontoUMLMenu2.fixedMenu/#">
+            
+            <action id="it.unibz.inf.ontouml.vp.addBringsStereotype.fixedMenu" label="BringsAbout" style="normal" menuPath="ontoUMLMenu2.fixedMenu/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
             </action>
 

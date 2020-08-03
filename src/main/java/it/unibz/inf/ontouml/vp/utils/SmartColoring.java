@@ -29,6 +29,7 @@ public class SmartColoring {
 	public static final Color COLOR_FOR_COLLECTIVE = new Color(255, 218, 221);
 	public static final Color COLOR_FOR_COLLECTIVE_DARK = new Color(255, 153, 163);
 	public static final Color COLOR_FOR_EVENT = new Color(252, 252, 212);
+	public static final Color COLOR_FOR_SITUATION = new Color(252, 252, 212);
 	public static final Color COLOR_FOR_MODE = new Color(192, 237, 255);
 	public static final Color COLOR_FOR_MODE_DARK = new Color(112, 215, 255);
 	public static final Color COLOR_FOR_FUNCTIONAL_COMPLEX = new Color(255, 218, 221);
@@ -124,6 +125,8 @@ public class SmartColoring {
 			return ultimateSortalStereotypes.contains(stereotype) ? COLOR_FOR_COLLECTIVE_DARK : COLOR_FOR_COLLECTIVE;
 		case StereotypeUtils.RESTRICTED_TO_EVENT:
 			return COLOR_FOR_EVENT;
+		case StereotypeUtils.RESTRICTED_TO_SITUATION:
+			return COLOR_FOR_SITUATION;
 		case StereotypeUtils.RESTRICTED_TO_MODE:
 			return ultimateSortalStereotypes.contains(stereotype) ? COLOR_FOR_MODE_DARK : COLOR_FOR_MODE;
 		case StereotypeUtils.RESTRICTED_TO_FUNCTIONAL_COMPLEX:
