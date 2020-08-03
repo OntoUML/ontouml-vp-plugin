@@ -107,12 +107,12 @@ public class SmartModelling {
 			setAggregationKind(association);
 			return;
 		case StereotypeUtils.STR_MATERIAL:
-			if (targetStereotype.equals(StereotypeUtils.STR_ROLE))
+			if (targetStereotype.equals(StereotypeUtils.STR_ROLE) || targetStereotype.equals(StereotypeUtils.STR_ROLE_MIXIN))
 				setCardinalityIfEmpty(source, "1..*");
 			else
 				setCardinalityIfEmpty(source, "0..*");
 
-			if (sourceStereotype.equals(StereotypeUtils.STR_ROLE))
+			if (sourceStereotype.equals(StereotypeUtils.STR_ROLE) || sourceStereotype.equals(StereotypeUtils.STR_ROLE_MIXIN))
 				setCardinalityIfEmpty(target, "1..*");
 			else
 				setCardinalityIfEmpty(target, "0..*");
@@ -127,7 +127,7 @@ public class SmartModelling {
 			removeAggregationKind(association);
 			return;
 		case StereotypeUtils.STR_MEDIATION:
-			if (targetStereotype.equals(StereotypeUtils.STR_ROLE))
+			if (targetStereotype.equals(StereotypeUtils.STR_ROLE) || targetStereotype.equals(StereotypeUtils.STR_ROLE_MIXIN))
 				setCardinalityIfEmpty(source, "1..*");
 			else
 				setCardinalityIfEmpty(source, "0..*");
