@@ -1,5 +1,7 @@
 package it.unibz.inf.ontouml.vp.utils;
 
+import java.util.HashSet;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -8,6 +10,10 @@ import com.google.gson.annotations.SerializedName;
  * Class that captures user preferences for a given project and enables JSON serialization.
  * 
  * @author Claudenir Fonseca
+ * @author Victor Viola
+ *
+ */
+/**
  * @author Victor Viola
  *
  */
@@ -55,6 +61,50 @@ public class ProjectConfigurations {
 	@SerializedName("exportGUFOFileName")
 	@Expose()
 	private String exportGUFOFileName;
+	
+	@SerializedName("exportGUFOIRI")
+	@Expose()
+	private String exportGUFOIRI;
+	
+	@SerializedName("exportGUFOFormat")
+	@Expose()
+	private String exportGUFOFormat;
+	
+	@SerializedName("exportGUFOURIFormat")
+	@Expose()
+	private String exportGUFOURIFormat;
+	
+	@SerializedName("exportGUFOElementsDiagramTree")
+	@Expose()
+	private HashSet<String> exportGUFOElementsDiagramTree;
+	
+	@SerializedName("exportGUFOElementsPackageTree")
+	@Expose()
+	private HashSet<String> exportGUFOElementsPackageTree;
+	
+	@SerializedName("exportGUFOInverseBox")
+	@Expose()
+	private String exportGUFOInverseBox;
+	
+	@SerializedName("exportGUFOObjectBox")
+	@Expose()
+	private String exportGUFOObjectBox;
+	
+	@SerializedName("exportGUFOAnalysisBox")
+	@Expose()
+	private String exportGUFOAnalysisBox;
+	
+	@SerializedName("exportGUFOPackagesBox")
+	@Expose()
+	private String exportGUFOPackagesBox;
+	
+	@SerializedName("exportGUFOElementMapping")
+	@Expose()
+	private String exportGUFOElementMapping;
+	
+	@SerializedName("exportGUFOPackageMapping")
+	@Expose()
+	private String exportGUFOPackageMapping;
 	
 	@SerializedName("isExportEnabled")
 	@Expose()
@@ -253,6 +303,93 @@ public class ProjectConfigurations {
 		return exportGUFOFileName;
 	}
 	
+	public String getExportGUFOIRI() {
+		return exportGUFOIRI;
+	}
+
+	public void setExportGUFOIRI(String exportGUFOIRI) {
+		this.exportGUFOIRI = exportGUFOIRI;
+	}
+
+	public String getExportGUFOFormat() {
+		return exportGUFOFormat;
+	}
+
+	public void setExportGUFOFormat(String exportGUFOFormat) {
+		this.exportGUFOFormat = exportGUFOFormat;
+	}
+
+	public String getExportGUFOURIFormat() {
+		return exportGUFOURIFormat;
+	}
+
+	public void setExportGUFOURIFormat(String exportGUFOURIFormat) {
+		this.exportGUFOURIFormat = exportGUFOURIFormat;
+	}
+	
+	public HashSet<String> getExportGUFOElementsDiagramTree() {
+		return exportGUFOElementsDiagramTree;
+	}
+
+	public void setExportGUFOElementsDiagramTree(HashSet<String> exportGUFOElementsDiagramTree) {
+		this.exportGUFOElementsDiagramTree = exportGUFOElementsDiagramTree;
+	}
+
+	public HashSet<String> getExportGUFOElementsPackageTree() {
+		return exportGUFOElementsPackageTree;
+	}
+
+	public void setExportGUFOElementsPackageTree(HashSet<String> exportGUFOElementsPackageTree) {
+		this.exportGUFOElementsPackageTree = exportGUFOElementsPackageTree;
+	}
+	
+	public String getExportGUFOInverseBox() {
+		return exportGUFOInverseBox;
+	}
+
+	public void setExportGUFOInverseBox(String exportGUFOInverseBox) {
+		this.exportGUFOInverseBox = exportGUFOInverseBox;
+	}
+	
+	public String getExportGUFOObjectBox() {
+		return exportGUFOObjectBox;
+	}
+
+	public void setExportGUFOObjectBox(String exportGUFOObjectBox) {
+		this.exportGUFOObjectBox = exportGUFOObjectBox;
+	}
+	
+	public String getExportGUFOAnalysisBox() {
+		return exportGUFOAnalysisBox;
+	}
+
+	public void setExportGUFOAnalysisBox(String exportGUFOAnalysisBox) {
+		this.exportGUFOAnalysisBox = exportGUFOAnalysisBox;
+	}
+	
+	public String getExportGUFOPackagesBox() {
+		return exportGUFOPackagesBox;
+	}
+
+	public void setExportGUFOPackagesBox(String exportGUFOPackagesBox) {
+		this.exportGUFOPackagesBox = exportGUFOPackagesBox;
+	}
+	
+	public String getExportGUFOElementMapping() {
+		return exportGUFOElementMapping;
+	}
+
+	public void setExportGUFOElementMapping(String exportGUFOElementMapping) {
+		this.exportGUFOElementMapping = exportGUFOElementMapping;
+	}
+	
+	public String getExportGUFOPackageMapping() {
+		return exportGUFOPackageMapping;
+	}
+
+	public void setExportGUFOPackageMapping(String exportGUFOPackageMapping) {
+		this.exportGUFOPackageMapping = exportGUFOPackageMapping;
+	}
 	
 	/**
 	 * 

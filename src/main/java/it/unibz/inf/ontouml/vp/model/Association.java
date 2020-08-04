@@ -1,6 +1,7 @@
 package it.unibz.inf.ontouml.vp.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import com.google.gson.JsonObject;
@@ -70,6 +71,30 @@ public class Association implements ModelElement {
 
 		addProperty(new Property((IAssociationEnd) source.getFromEnd()));
 		addProperty(new Property((IAssociationEnd) source.getToEnd()));
+
+		String[] stereotypes = source.toStereotypeArray();
+		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
+			addStereotype(stereotypes[i]);
+		}
+
+		setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
+		setAbstract(source.isAbstract());
+		setDerived(source.isDerived());
+	}
+	
+	public Association(IAssociation source, HashSet<String> modelElements) {
+		this.sourceModelElement = source;
+
+		this.type = ModelElement.TYPE_RELATION;
+		this.id = source.getId();
+		setName(source.getName());
+		setDescription(source.getDescription());
+
+		if(modelElements.contains(source.getFromEnd().getId()))
+			addProperty(new Property((IAssociationEnd) source.getFromEnd()));
+		
+		if(modelElements.contains(source.getToEnd().getId()))
+			addProperty(new Property((IAssociationEnd) source.getToEnd()));
 
 		String[] stereotypes = source.toStereotypeArray();
 		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {

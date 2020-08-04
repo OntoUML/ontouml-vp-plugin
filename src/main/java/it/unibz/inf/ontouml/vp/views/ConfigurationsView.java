@@ -146,6 +146,7 @@ public class ConfigurationsView extends JPanel {
 				updateConfigurationsValues(configurations);
 				Configurations.getInstance().save();
 				_dialog.close();
+				OntoUMLPlugin.setConfigWindowOpen(false);
 			}
 			
 		});

@@ -19,6 +19,7 @@ import javax.swing.border.EmptyBorder;
 import com.vp.plugin.view.IDialog;
 import com.vp.plugin.view.IDialogHandler;
 
+import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 public class SelectMultipleOptionsDialog implements IDialogHandler {
@@ -84,7 +85,7 @@ public class SelectMultipleOptionsDialog implements IDialogHandler {
     @Override
     public void prepare(IDialog dialog) {
         this._dialog = dialog;
-        dialog.setTitle("Select allowed natures");
+        dialog.setTitle("Restrict allowed natures");
         dialog.pack();
     }
 
@@ -109,7 +110,7 @@ public class SelectMultipleOptionsDialog implements IDialogHandler {
                 final JCheckBox checkBox = (JCheckBox) checkBoxes[i];
                 if(checkBox.isSelected()) {
                     selectedValues.append(selectedValues.length() == 0 ? 
-                        checkBox.getText() : ", " + checkBox.getText());
+                        checkBox.getText() : " " + checkBox.getText());
                 }
             }
         }
@@ -118,20 +119,83 @@ public class SelectMultipleOptionsDialog implements IDialogHandler {
     }
 
     public void setSelectedValues(String selectedValuesString) {
-        final List<String> selectedList = Arrays.asList(selectedValuesString.replaceAll(" +", "").split(","));
-        final List<String> allNatures = StereotypeUtils.getAllowedNaturesList();
-        Collections.sort(allNatures);
+        final List<String> selectedList = 
+                Arrays.asList(selectedValuesString.split("\\s+"));
+        final List<String> restrictedNatures = StereotypeUtils.getRestrictionsList();
+        Collections.sort(restrictedNatures);
+        final boolean isSmartModelingEnabled = Configurations.getInstance()
+        		.getProjectConfigurations().isSmartModellingEnabled();
 
-        this._selectionsPane.setLayout(new GridLayout(allNatures.size()/2 + allNatures.size()%2,2));
+        this._selectionsPane.setLayout(new GridLayout(4,3));
 
-        for (String nature : allNatures) {
-            final JCheckBox checkBox = new JCheckBox(nature);
+        JCheckBox checkBox;
 
-            this._selectionsPane.add(checkBox);
-            
-            if(selectedList.contains(nature)) {
-                checkBox.setSelected(true);
-            }
+        // Line 1, Column 1
+        checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_COLLECTIVE);
+        this._selectionsPane.add(checkBox);
+        checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_COLLECTIVE));
+        // Line 1, Column 2
+        checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_MODE);
+        this._selectionsPane.add(checkBox);
+        checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_MODE));
+        // Line 1, Column 3
+        checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_ABSTRACT);
+        this._selectionsPane.add(checkBox);
+        if(isSmartModelingEnabled) {
+        	checkBox.setSelected(false);
+        	checkBox.setEnabled(false);
+        } else {
+        	checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_ABSTRACT));
+        }
+        
+        // Line 2, Column 1
+        checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_FUNCTIONAL_COMPLEX);
+        this._selectionsPane.add(checkBox);
+        checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_FUNCTIONAL_COMPLEX));
+        // Line 2, Column 2
+        checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_QUALITY);
+        this._selectionsPane.add(checkBox);
+        checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_QUALITY));
+        // Line 2, Column 3
+        checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_EVENT);
+        this._selectionsPane.add(checkBox);
+        if(isSmartModelingEnabled) {
+        	checkBox.setSelected(false);
+        	checkBox.setEnabled(false);
+        } else {
+        	checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_EVENT));
+        }
+        
+        // Line 3, Column 1
+        checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_QUANTITY);
+        this._selectionsPane.add(checkBox);
+        checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_QUANTITY));
+        // Line 3, Column 2
+        checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_RELATOR);
+        this._selectionsPane.add(checkBox);
+        checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_RELATOR));
+        // Line 3, Column 3
+        checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_SITUATION);
+        this._selectionsPane.add(checkBox);
+        if(isSmartModelingEnabled) {
+        	checkBox.setSelected(false);
+        	checkBox.setEnabled(false);
+        } else {
+        	checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_SITUATION));
+        }
+        
+        // Line 4, Column 1
+        this._selectionsPane.add(new JLabel());
+        // Line 4, Column 2
+        this._selectionsPane.add(new JLabel());
+        // Line 4, Column 3
+        checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_TYPE);
+        this._selectionsPane.add(checkBox);
+        if(isSmartModelingEnabled) {
+        	checkBox.setSelected(false);
+        	checkBox.setEnabled(false);
+        } else {
+        	checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_TYPE));
         }
     }
 

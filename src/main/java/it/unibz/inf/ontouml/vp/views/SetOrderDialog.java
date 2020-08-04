@@ -133,7 +133,7 @@ public class SetOrderDialog implements IDialogHandler {
     @Override
     public void prepare(IDialog dialog) {
         this._dialog = dialog;
-        dialog.setTitle("Select allowed natures");
+        dialog.setTitle("Set type order");
         dialog.pack();
     }
 

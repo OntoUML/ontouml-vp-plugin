@@ -5,6 +5,7 @@ import it.unibz.inf.ontouml.vp.features.constraints.ClassConstraints;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.AbstractMap.SimpleEntry;
 
 import com.vp.plugin.action.VPAction;
@@ -106,12 +107,12 @@ public class SmartModelling {
 			setAggregationKind(association);
 			return;
 		case StereotypeUtils.STR_MATERIAL:
-			if (targetStereotype.equals(StereotypeUtils.STR_ROLE))
+			if (targetStereotype.equals(StereotypeUtils.STR_ROLE) || targetStereotype.equals(StereotypeUtils.STR_ROLE_MIXIN))
 				setCardinalityIfEmpty(source, "1..*");
 			else
 				setCardinalityIfEmpty(source, "0..*");
 
-			if (sourceStereotype.equals(StereotypeUtils.STR_ROLE))
+			if (sourceStereotype.equals(StereotypeUtils.STR_ROLE) || sourceStereotype.equals(StereotypeUtils.STR_ROLE_MIXIN))
 				setCardinalityIfEmpty(target, "1..*");
 			else
 				setCardinalityIfEmpty(target, "0..*");
@@ -126,7 +127,7 @@ public class SmartModelling {
 			removeAggregationKind(association);
 			return;
 		case StereotypeUtils.STR_MEDIATION:
-			if (targetStereotype.equals(StereotypeUtils.STR_ROLE))
+			if (targetStereotype.equals(StereotypeUtils.STR_ROLE) || targetStereotype.equals(StereotypeUtils.STR_ROLE_MIXIN))
 				setCardinalityIfEmpty(source, "1..*");
 			else
 				setCardinalityIfEmpty(source, "0..*");
@@ -171,7 +172,10 @@ public class SmartModelling {
 			removeAggregationKind(association);
 			return;
 		case StereotypeUtils.STR_PARTICIPATION:
-			if (targetStereotype.equals(StereotypeUtils.STR_HISTORICAL_ROLE))
+			if (
+				targetStereotype.equals(StereotypeUtils.STR_HISTORICAL_ROLE) ||
+				targetStereotype.equals(StereotypeUtils.STR_HISTORICAL_ROLE_MIXIN)
+			)
 				setCardinalityIfEmpty(source, "1..*");
 			else
 				setCardinalityIfEmpty(source, "0..*");
@@ -243,7 +247,7 @@ public class SmartModelling {
 		final ArrayList<String> sourceStereotypes = new ArrayList<String>(Arrays.asList(source.toStereotypeArray()));
 		final ArrayList<String> targetStereotypes = new ArrayList<String>(Arrays.asList(target.toStereotypeArray()));
 
-		if (sourceStereotypes.size() > 1 || targetStereotypes.size() > 1) {
+		if (sourceStereotypes.size() != 1 || targetStereotypes.size() != 1) {
 			// if any end has more than 1 stereotypes nothing is allowed
 			action.setEnabled(false);
 			return;
@@ -252,7 +256,8 @@ public class SmartModelling {
 		// continue if both ends has ONLY ONE stereotype in both ends
 		final String sourceStereotype = sourceStereotypes.get(0);
 		final String targetStereotype = targetStereotypes.get(0);
-		final ArrayList<String> allowedCombinations = AssociationConstraints.allowedCombinations.get(new SimpleEntry<String, String>(sourceStereotype, targetStereotype));
+//		final ArrayList<String> allowedCombinations = AssociationConstraints.allowedCombinations.get(new SimpleEntry<String, String>(sourceStereotype, targetStereotype));
+		final List<String> allowedCombinations = AssociationConstraints.getAllowedActionIDs(sourceStereotype, targetStereotype);
 
 		if (allowedCombinations == null || !allowedCombinations.contains(action.getActionId()))
 			action.setEnabled(false);
@@ -283,7 +288,7 @@ public class SmartModelling {
 				action.setEnabled(false);
 			
 			final String superStereotype = superClassStereotypes.get(0);
-			final ArrayList<String> allowedCombinationsSub = ClassConstraints.allowedSubCombinations.get(superStereotype);
+			final List<String> allowedCombinationsSub = ClassConstraints.getAllowedActionIDsOnGeneral(superStereotype);
 
 			if (allowedCombinationsSub == null || !allowedCombinationsSub.contains(action.getActionId()))
 				action.setEnabled(false);
@@ -307,7 +312,7 @@ public class SmartModelling {
 				action.setEnabled(false);
 
 			final String subStereotype = subClassStereotypes.get(0);
-			final ArrayList<String> allowedCombinationsSuper = ClassConstraints.allowedSuperCombinations.get(subStereotype);
+			final List<String> allowedCombinationsSuper = ClassConstraints.getAllowedActionIDsOnSpecific(subStereotype);
 
 			if (allowedCombinationsSuper == null || !allowedCombinationsSuper.contains(action.getActionId()))
 				action.setEnabled(false);
