@@ -75,7 +75,7 @@ Users must select the elements that shall be exported to gUFO either selecting f
 
 ![A screenshot showing the "transformation to gUFO" window](./resources/feature-gufo.png)
 
-#### Continuos Updates
+#### Continuous Updates
 
 The remote features are constantly updated and any fixes to them you not require you to update your Visual Paradigm plugin.
 
