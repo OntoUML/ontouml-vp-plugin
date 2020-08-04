@@ -77,7 +77,7 @@ Users must select the elements that shall be exported to gUFO either selecting f
 
 #### Continuous Updates
 
-The remote features are constantly updated and any fixes to them you not require you to update your Visual Paradigm plugin.
+The cloud-based features offered in the plugin are periodically updated. Updates in these features usually do not require updates in the Visual Paradigm plugin.
 
 And last, but not least, this project is supported by the [OntoUML.org](https://ontouml.org/) community and its set of features will only grow, incorporating new and updated OntoUML technologies.
 
