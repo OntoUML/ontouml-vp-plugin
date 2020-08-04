@@ -17,16 +17,16 @@
                     style="normal"
                     tooltip="Tests if the model complies to OntoUML's syntactical constraints."
                     icon="icons/toolbar/check-circle-orange.png"
-                    label="Verification"
+                    label="Model Verification"
                     toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ModelVerificationAction" />
             </action>
             <action 
                     id="it.unibz.inf.ontouml.vp.actions.DiagramVerificationAction"
                     actionType="generalAction"
-                    description="Tests if the current diagram complies to OntoUML's syntactical constraints."
+                    description="Tests if the model complies to OntoUML's syntactical constraints and filters the issues related to the open diagram."
                     style="normal"
-                    tooltip="Tests if the current diagram complies to OntoUML's syntactical constraints."
+                    tooltip="Tests if the model complies to OntoUML's syntactical constraints and filters the issues related to the open diagram."
                     icon="icons/toolbar/check-mark-orange.png"
                     label="Diagram Verification"
                     toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
@@ -146,7 +146,7 @@
         <contextSensitiveActionSet id="it.unibz.inf.ontouml.vp.ClassStereotypes">
             <contextTypes all="false"/>
             <include type="Class"/>
-            <menu id="ontoUMLMenu1" label="Applicable Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
+            <menu id="ontoUMLMenu1" label="Suggested Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
 
             <action id="it.unibz.inf.ontouml.vp.addEnumerationStereotype" label="Enumeration" style="normal" menuPath="ontoUMLMenu1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>
@@ -244,7 +244,7 @@
             <contextTypes all="false"/>
             <include type="Association"/>
             
-            <menu id="ontoUMLMenu2" label="Applicable Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
+            <menu id="ontoUMLMenu2" label="Suggested Stereotypes" mnemonic="O" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
                 
             <action id="it.unibz.inf.ontouml.vp.addInstantiationStereotype" label="Instantiation" style="normal" menuPath="ontoUMLMenu2/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotype"/>

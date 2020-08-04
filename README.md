@@ -33,6 +33,8 @@ WARNING: some more advanced features are based on web services that process your
 
 Stereotypes and meta-properties that are essential to OntoUML modeling are easily available to classes, associations and attributes with a simple right-click.
 
+Notice that beyond the full list of stereotypes, a dynamic list of stereotypes is also available. This dynamic list is usually preferred during modeling as it filters wrong stereotypes for your class or association based on, respectively, their super/sub classes and their associated classes. The full list, however, tends to provide a faster and more flexible option during model fixing and refactoring.
+
 ![GIF showing a OntoUML model being edited](./resources/feature-modeling.gif)
 
 ![A screenshot of a suggested list of stereotypes in a context menu](./resources/feature-suggested-stereotypes.png)
@@ -41,7 +43,7 @@ Stereotypes and meta-properties that are essential to OntoUML modeling are easil
 
 ![A screenshot of restricted instances menu selection](./resources/feature-restricte-to.png)
 
-Try selecting multiple elements to fast update your models!.
+Try selecting multiple elements to fast update your models!
 
 #### Smart Paint
 
@@ -49,15 +51,27 @@ Automatic diagram painting based on the possible instances of classes with highl
 
 ![A screenshot of an automatically painted diagram](./resources/feature-smart-paint.png)
 
-#### Model Verification
+#### Smart Modeling
 
-Automatic verification of OntoUML syntactical rules.
+Smart modeling allows the plugin to set default values to OntoUML model elements based on their stereotypes that are different from the defaults of UML speeding up modeling.
+
+Since the Smart Paint feature depends on the "restrictedTo" meta-property, it is directly affected by Smart Modeling (responsible for assigning this meta-property).
+
+#### Model Verification and Diagram Verification
+
+Automatic verification of OntoUML syntactical rules which are reported to the user to manage. At the moment the list of constraints is being re-developed and users may find that new checks were introduced during the period they work on their products.
+
+The Diagram Verification feature performs the verification of the whole model but only displays issues about elements present in the currently open diagram, facilitating the user's task of fixing models.
 
 ![A gif exemplifying the model verification feature](./resources/feature-verification.gif)
 
 #### Model Transformation to OWL with gUFO
 
 Model transformation into OWL with support of the [Lightweight Implementation of the Unified Foundational Ontology (UFO) - gUFO](https://nemo-ufes.github.io/gufo/).
+
+Users must select the elements that shall be exported to gUFO either selecting from the model or from the desired diagrams. A number of options may also be set by the user for the transformation.
+
+**WARNING**: the transformation feature require the presence of no verification errors among the exported entities. In addition, partial transformations of the model should be executed with care as they may introduce violations of some syntactical constraint.
 
 ![A screenshot showing the "transformation to gUFO" window](./resources/feature-gufo.png)
 

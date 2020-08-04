@@ -98,10 +98,12 @@ public class OntoUMLServerUtils {
 				}
 			case HttpURLConnection.HTTP_BAD_REQUEST:
 				ViewUtils.exportToGUFOIssueDialog("Unable to transform the model due to an unexpected error."
-						+ "\nPlease check the model for any syntactical errors.");
+						+ "\nPlease check the model for any syntactical errors."
+						+ "\n\nWarning: partially exporting models to gUFO may introduce syntactical errors.");
 				System.out.println(responseReader.lines().collect(Collectors.joining()));
 				new Exception("Unable to transform the model due to an unexpected error."
-						+ "\nPlease check the model for any syntactical errors.").printStackTrace();
+						+ "\nPlease check the model for any syntactical errors."
+						+ "\n\nWarning: partially exporting models to gUFO may introduce syntactical errors.").printStackTrace();
 				return null;
 			case HttpURLConnection.HTTP_NOT_FOUND:
 				if (ViewUtils.exportToGUFOIssueDialogWithOption("Server not found.", HttpURLConnection.HTTP_NOT_FOUND))
