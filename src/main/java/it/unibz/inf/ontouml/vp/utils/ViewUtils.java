@@ -33,11 +33,13 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.DiagramManager;
+import com.vp.plugin.ProjectManager;
 import com.vp.plugin.ViewManager;
 import com.vp.plugin.diagram.IClassDiagramUIModel;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.IProject;
 
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 import it.unibz.inf.ontouml.vp.views.HTMLEnabledMessage;
@@ -484,24 +486,11 @@ public class ViewUtils {
 	}
 
 	public static boolean isElementInAnyDiagram(String elementId) {
-		final IDiagramUIModel[] diagramArray = ApplicationManager.instance().getProjectManager().getProject()
-				.toDiagramArray();
-
-		if (diagramArray == null)
-			return false;
-
-		for (IDiagramUIModel diagram : diagramArray) {
-			if (diagram instanceof IClassDiagramUIModel) {
-				for (IDiagramElement diagramElement : diagram.toDiagramElementArray()) {
-					IModelElement modelElement = diagramElement.getMetaModelElement();
-					if (modelElement.getId() != null && modelElement.getId().equals(elementId)) {
-						return true;
-					}
-				}
-			}
-		}
-
-		return false;
+		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
+		final IModelElement element = project.getModelElementById(elementId);
+		final IDiagramElement[] diagramElements = element != null ? element.getDiagramElements() : null;
+		
+		return diagramElements != null && diagramElements.length > 0;
 	}
 
 	public static void openSpecDiagramElement(String elementId) {
@@ -512,38 +501,45 @@ public class ViewUtils {
 		viewManager.openSpec(element, viewManager.getRootFrame());
 	}
 
-	public static void highlightDiagramElement(String elementId) {
+	public static void highlightDiagramElement(String modelElementId) {
 		final ApplicationManager app = ApplicationManager.instance();
-		final IModelElement element = app.getProjectManager().getProject().getModelElementById(elementId);
+		final IProject project = app.getProjectManager().getProject();
+		final IModelElement modelElement = project.getModelElementById(modelElementId);
+		
+		if(modelElement == null) {
+			return ;
+		}
+		
 		final DiagramManager diagramManager = app.getDiagramManager();
-		IDiagramElement diagramElement = null;
-
-		// Checks if the active diagram contains the element
-		if (diagramManager.getActiveDiagram() != null) {
-			final Iterator<?> iter = diagramManager.getActiveDiagram().diagramElementIterator();
-			while (iter.hasNext()) {
-				final IDiagramElement current = (IDiagramElement) iter.next();
-				if (current.getModelElement().equals(element)) {
-					diagramElement = current;
-					continue;
-				}
+		final IDiagramElement[] diagramElements = modelElement.getDiagramElements();
+		IDiagramElement activeView = null;
+		IDiagramElement masterView = null;
+		IDiagramElement firstView = null;
+		
+		for (int i=0; diagramElements != null && i < diagramElements.length; i++) {
+			IDiagramElement diagramElement = diagramElements[i];
+			
+			if(diagramElement == null) {
+				continue ;
+			}
+			
+			firstView = firstView == null ? diagramElement : firstView;
+			activeView = diagramElement.getDiagramUIModel().isOpened() ? diagramElement : activeView;
+			masterView = diagramElement.isMasterView() ? diagramElement : masterView;
+			
+			if(activeView != null) {
+				break ;
 			}
 		}
-
-		// In case the active diagram does not contain it, get the master view or the
-		// first diagram element for that element
-		if (diagramElement == null) {
-			if (element.getMasterView() != null) {
-				diagramElement = element.getMasterView();
-			} else {
-				final IDiagramElement[] diagramElements = element.getDiagramElements();
-				diagramElement = diagramElements != null ? diagramElements[0] : null;
-			}
+		
+		if(activeView != null) {
+			diagramManager.highlight(activeView);
 		}
-
-		// Highlights the diagram element if it is not null
-		if (diagramElement != null) {
-			diagramManager.highlight(diagramElement);
+		else if(masterView != null) {
+			diagramManager.highlight(masterView);
+		}
+		else if(firstView != null) {
+			diagramManager.highlight(firstView);
 		}
 	}
 
@@ -687,8 +683,9 @@ final class ContextMenuListener extends MouseAdapter {
 			menu = new ContextMenu();
 		} else {
 			menu = new ContextMenu(idModelElement);
-			if (!ViewUtils.isElementInAnyDiagram(idModelElement))
+			if (!ViewUtils.isElementInAnyDiagram(idModelElement)) {
 				menu.disableItem("Take me there!");
+			}
 		}
 
 		menu.show(e.getComponent(), e.getX(), e.getY());
