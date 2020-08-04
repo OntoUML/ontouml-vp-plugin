@@ -32,3 +32,5 @@ repo/
 .idea/
 *.iml
 ontouml-vp-plugin.zip
+
+.java-version

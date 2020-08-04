@@ -80,7 +80,7 @@ public class Property implements ModelElement {
 	@Expose
 	private String aggregationKind;
 
-	private Property(IModelElement source){
+	private Property(IModelElement source) {
 		this.sourceModelElement = source;
 
 		this.type = ModelElement.TYPE_PROPERTY;
@@ -99,7 +99,8 @@ public class Property implements ModelElement {
 		if (reference != null) {
 			setPropertyType(new Reference(reference));
 		} else {
-			System.out.println("Property type is a non-standard string: " + source.getTypeAsString());
+			System.out.println("Attribute " + source.getParent().getName() + "::" + source.getName()
+					+ " type is a non-standard string: " + source.getTypeAsString());
 		}
 
 		if (!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED)))
@@ -137,7 +138,13 @@ public class Property implements ModelElement {
 		if (reference != null) {
 			setPropertyType(new Reference(reference));
 		} else {
-			System.out.println("Property type is a non-standard string: " + source.getTypeAsString());
+			if (source != null && source.getParent() != null) {
+				System.out.println("Association End " + source.getParent().getName() + "::" + source.getName()
+						+ " type is a non-standard string: " + source.getTypeAsString());
+			}
+			else {
+				System.out.println("Strange...");
+			}
 		}
 
 		if (!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED)))
@@ -173,7 +180,7 @@ public class Property implements ModelElement {
 		this.sourceModelElement = null;
 
 		this.type = ModelElement.TYPE_PROPERTY;
-		this.id = associationClass.getId()+type.getId();
+		this.id = associationClass.getId() + type.getId();
 		setName(null);
 		setDescription(null);
 
@@ -211,7 +218,8 @@ public class Property implements ModelElement {
 	}
 
 	public void setDescription(String description) {
-		this.description = ModelElement.safeGetString(description);;
+		this.description = ModelElement.safeGetString(description);
+		;
 	}
 
 	public Reference getPropertyType() {
@@ -307,7 +315,7 @@ public class Property implements ModelElement {
 
 	public void removeSubsettedProperty(Reference ref) {
 		if (this.subsettedProperties != null && this.subsettedProperties.contains(ref))
-			this.stereotypes.remove(ref);
+			this.subsettedProperties.remove(ref);
 	}
 
 	public List<Reference> getRedefinedProperties() {
@@ -350,25 +358,23 @@ public class Property implements ModelElement {
 	}
 
 	public void setAggregationKind(String aggregationKind) {
-		System.out.println(aggregationKind);
-
-		if(aggregationKind==null) {
+		if (aggregationKind == null) {
 			this.aggregationKind = null;
 			return;
 		}
 
-		switch (aggregationKind.toUpperCase()){
-			case "NONE":
-				this.aggregationKind = "NONE";
-				return;
-			case "COMPOSITED":
-				this.aggregationKind = "COMPOSITE";
-				return;
-			case "SHARED":
-				this.aggregationKind = "SHARED";
-				return;
-			default:
-				this.aggregationKind = null;
+		switch (aggregationKind.toUpperCase()) {
+		case "NONE":
+			this.aggregationKind = "NONE";
+			return;
+		case "COMPOSITED":
+			this.aggregationKind = "COMPOSITE";
+			return;
+		case "SHARED":
+			this.aggregationKind = "SHARED";
+			return;
+		default:
+			this.aggregationKind = null;
 		}
 	}
 

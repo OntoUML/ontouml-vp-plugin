@@ -36,6 +36,11 @@ public class OpenConfigurationsAction implements VPActionController {
 	 */
 	@Override
 	public void performAction(VPAction action) {
+		if(OntoUMLPlugin.getConfigWindowOpen() == true)
+			return;
+		else
+			OntoUMLPlugin.setConfigWindowOpen(true);
+		
 		ApplicationManager.instance().getViewManager().showDialog(new ConfigurationsDialog());
 	}
 
@@ -55,7 +60,7 @@ public class OpenConfigurationsAction implements VPActionController {
 	 * Java components in Visual Paradigm.
 	 * 
 	 * More information available at
-	 *  {@link https://images.visual-paradigm.com/docs/plugin_user_guide/Plug-in_Users_Guide.pdf} .
+	 *  @link https://images.visual-paradigm.com/docs/plugin_user_guide/Plug-in_Users_Guide.pdf .
 	 * 
 	 * @author Claudenir Fonseca
 	 *
@@ -108,6 +113,7 @@ public class OpenConfigurationsAction implements VPActionController {
 		 */
 		@Override
 		public boolean canClosed() {
+			OntoUMLPlugin.setConfigWindowOpen(false);
 			return true;
 		}
 		

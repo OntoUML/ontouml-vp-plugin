@@ -4,8 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IGeneralization;
-import com.vp.plugin.model.ITaggedValue;
-import com.vp.plugin.model.ITaggedValueContainer;
+import com.vp.plugin.model.IModelElement;
 
 /**
  * 
@@ -118,4 +117,13 @@ public class Generalization implements ModelElement {
 	public void setSpecific(Reference specific) {
 		this.specific = specific;
 	}
+
+	public static IModelElement getGeneral(IGeneralization generalization) {
+		return generalization.getFrom();
+	}
+
+	public static IModelElement getSpecific(IGeneralization generalization) {
+		return generalization.getTo();
+	}
+	
 }

@@ -1,6 +1,8 @@
 package it.unibz.inf.ontouml.vp.views;
 
 import com.vp.plugin.view.IDialog;
+
+import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.ProjectConfigurations;
 
@@ -27,9 +29,12 @@ public class ConfigurationsView extends JPanel {
 	private JTextField _txtServerAddress;
 	
 	private JCheckBox _chckbxEnableAutoColoring;
+	private JCheckBox _chckbxEnableSmartModelling;
 	
 	private JButton _btnApply;
 	private JButton _btnResetDefaults;
+	
+	private JLabel pluginVersion;
 	
 	private IDialog _dialog;
 
@@ -84,7 +89,7 @@ public class ConfigurationsView extends JPanel {
 		gbc__txtServerAddress.gridx = 1;
 		gbc__txtServerAddress.gridy = 0;
 		_ontoUMLServerPanel.add(_txtServerAddress, gbc__txtServerAddress);
-		_txtServerAddress.setText("https://ontouml.herokuapp.com/v1/verification");
+		_txtServerAddress.setText("");
 		_txtServerAddress.setColumns(10);
 		
 		JPanel _exportPanel = new JPanel();
@@ -96,8 +101,30 @@ public class ConfigurationsView extends JPanel {
 		gbl__exportPanel.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		_exportPanel.setLayout(gbl__exportPanel);
 		
-		_chckbxEnableAutoColoring = new JCheckBox("Enable automatic coloring");
-		_optionsPanel.add(_chckbxEnableAutoColoring);
+		JPanel _smartPanel = new JPanel();
+		_optionsPanel.add(_smartPanel);
+		GridBagLayout gbl__smartPanel = new GridBagLayout();
+		gbl__smartPanel.columnWidths = new int[]{290, 247, 0, 0};
+		gbl__smartPanel.rowHeights = new int[]{0, 0};
+		gbl__smartPanel.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl__smartPanel.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+		_smartPanel.setLayout(gbl__smartPanel);
+			
+		_chckbxEnableAutoColoring = new JCheckBox("Enable Smart Paint");
+		GridBagConstraints gbc__chckbxEnableAutoColoring = new GridBagConstraints();
+		gbc__chckbxEnableAutoColoring.anchor = GridBagConstraints.WEST;
+		gbc__chckbxEnableAutoColoring.insets = new Insets(0, 0, 0, 5);
+		gbc__chckbxEnableAutoColoring.gridx = 0;
+		gbc__chckbxEnableAutoColoring.gridy = 0;
+		_smartPanel.add(_chckbxEnableAutoColoring, gbc__chckbxEnableAutoColoring);
+		
+		_chckbxEnableSmartModelling = new JCheckBox("Enable Smart Modelling");
+		GridBagConstraints gbc__chckbxEnableSmartModelling = new GridBagConstraints();
+		gbc__chckbxEnableSmartModelling.anchor = GridBagConstraints.WEST;
+		gbc__chckbxEnableSmartModelling.insets = new Insets(0, 0, 0, 5);
+		gbc__chckbxEnableSmartModelling.gridx = 0;
+		gbc__chckbxEnableSmartModelling.gridy = 1;
+		_smartPanel.add(_chckbxEnableSmartModelling, gbc__chckbxEnableSmartModelling);
 		
 		JPanel _controlButtonsPanel = new JPanel();
 		GridBagConstraints gbc__controlButtonsPanel = new GridBagConstraints();
@@ -112,13 +139,14 @@ public class ConfigurationsView extends JPanel {
 		gbl__controlButtonsPanel.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		_controlButtonsPanel.setLayout(gbl__controlButtonsPanel);
 		
-		_btnApply = new JButton("Apply and Close");
+		_btnApply = new JButton("Save");
 		_btnApply.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				updateConfigurationsValues(configurations);
 				Configurations.getInstance().save();
 				_dialog.close();
+				OntoUMLPlugin.setConfigWindowOpen(false);
 			}
 			
 		});
@@ -143,6 +171,17 @@ public class ConfigurationsView extends JPanel {
 		gbc__btnResetDefaults.gridx = 1;
 		gbc__btnResetDefaults.gridy = 0;
 		_controlButtonsPanel.add(_btnResetDefaults, gbc__btnResetDefaults);
+		
+		pluginVersion = new JLabel("plugin version: " + OntoUMLPlugin.PLUGIN_VERSION_RELEASE);
+		pluginVersion.setEnabled(false);
+		
+		GridBagConstraints gbc__versionLabel = new GridBagConstraints();
+		gbc__versionLabel.anchor = GridBagConstraints.SOUTHWEST;
+		gbc__versionLabel.gridx = 0;
+		gbc__versionLabel.gridy = 2;
+		
+		add(pluginVersion, gbc__versionLabel);
+		
 
 		updateComponentsValues(configurations);
 		updateComponentsStatus();
@@ -171,6 +210,7 @@ public class ConfigurationsView extends JPanel {
 		configurations.setServerURL(_txtServerAddress.getText());
 		
 		configurations.setAutomaticColoringEnabled(_chckbxEnableAutoColoring.isSelected());
+		configurations.setSmartModellingEnabled(_chckbxEnableSmartModelling.isSelected());
 	}
 	
 	/**
@@ -185,6 +225,7 @@ public class ConfigurationsView extends JPanel {
 		_txtServerAddress.setText(configurations.getServerURL());
 		
 		_chckbxEnableAutoColoring.setSelected(configurations.isAutomaticColoringEnabled());
+		_chckbxEnableSmartModelling.setSelected(configurations.isSmartModellingEnabled());
 	}
 	
 	/**
@@ -197,6 +238,7 @@ public class ConfigurationsView extends JPanel {
 		_txtServerAddress.setText(ProjectConfigurations.DEFAULT_SERVER_URL);
 
 		_chckbxEnableAutoColoring.setSelected(ProjectConfigurations.DEFAULT_IS_AUTOMATIC_COLORING_ENABLED);
+		_chckbxEnableSmartModelling.setSelected(ProjectConfigurations.DEFAULT_IS_AUTOMATIC_COLORING_ENABLED);
 	}
 	
 	/**
@@ -208,6 +250,7 @@ public class ConfigurationsView extends JPanel {
 		_chckbxEnableCustomServer.setEnabled(true);
 		_txtServerAddress.setEnabled(_chckbxEnableCustomServer.isSelected());
 		_chckbxEnableAutoColoring.setEnabled(true);	
+		_chckbxEnableSmartModelling.setEnabled(true);	
 	}
 
 }
