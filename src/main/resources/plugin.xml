@@ -98,7 +98,6 @@
                     toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.UpdatePluginAction" />
             </action>
-            <!--
             <action 
 					id="it.unibz.inf.ontouml.vp.actions.ReloadClassesAction"
 					actionType="generalAction" 
@@ -108,6 +107,7 @@
 					toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
 				<actionController class="it.unibz.inf.ontouml.vp.controllers.ReloadClassesActionController" />
 			</action>
+            <!--
 			-->
         </actionSet>
 
