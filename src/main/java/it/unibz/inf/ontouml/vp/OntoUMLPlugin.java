@@ -24,7 +24,8 @@ public class OntoUMLPlugin implements VPPlugin {
    public static final String PLUGIN_ID = "it.unibz.inf.ontouml.vp";
    public static final String PLUGIN_NAME = "OntoUML Plugin";
    public static final String PLUGIN_REPO = "https://github.com/OntoUML/ontouml-vp-plugin/";
-   public static final String PLUGIN_REPO_NAME = "OntoUML/ontouml-vp-plugin";
+   public static final String PLUGIN_REPO_OWNER = "OntoUML";
+   public static final String PLUGIN_REPO_NAME = "ontouml-vp-plugin";
 
    public static IModelElement[] allModelElements;
    public static boolean isPluginActive;

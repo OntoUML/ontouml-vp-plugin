@@ -50,6 +50,10 @@ public class Configurations {
 	@Expose()
 	private JsonObject latestAlphaRelease;
 	
+	@SerializedName("installedRelease")
+	@Expose()
+	private JsonObject installedRelease;
+	
 	@SerializedName("lastCheckForReleases")
 	@Expose()
 	private ZonedDateTime lastCheckForReleases;
@@ -59,6 +63,7 @@ public class Configurations {
 		this.releases = new JsonArray();
 		this.latestRelease = null;
 		this.latestAlphaRelease = null;
+		this.installedRelease = null;
 		this.lastCheckForReleases = ZonedDateTime.now();
 	}
 
@@ -99,6 +104,7 @@ public class Configurations {
 			final JsonObject release = item.getAsJsonObject();
 			final JsonElement created_at = release.get(GitHubUtils.PROP_CREATED_AT);
 			final JsonElement prerelease = release.get(GitHubUtils.PROP_PRERELEASE);
+			final JsonElement tag_name = release.get(GitHubUtils.PROP_TAG_NAME);
 
 			if (created_at != null && created_at.isJsonPrimitive()) {
 				ZonedDateTime releaseCreation = ZonedDateTime.parse(created_at.getAsString());
@@ -111,7 +117,11 @@ public class Configurations {
 							? release
 							: latestRelease;
 				}
-
+			}
+			
+			if(tag_name != null && tag_name.isJsonPrimitive()) {
+				installedRelease = tag_name.getAsString().equals(OntoUMLPlugin.PLUGIN_VERSION_RELEASE) ?
+						release : installedRelease;
 			}
 		});
 	}
@@ -122,6 +132,10 @@ public class Configurations {
 	
 	public JsonObject getLatestAlphaRelease() {
 		return this.latestRelease;
+	}
+	
+	public JsonObject getInstalledRelease() {
+		return this.installedRelease;
 	}
 
 	/**

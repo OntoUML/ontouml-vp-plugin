@@ -15,7 +15,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.swing.Icon;
@@ -489,7 +492,7 @@ public class ViewUtils {
 		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
 		final IModelElement element = project.getModelElementById(elementId);
 		final IDiagramElement[] diagramElements = element != null ? element.getDiagramElements() : null;
-		
+
 		return diagramElements != null && diagramElements.length > 0;
 	}
 
@@ -505,40 +508,38 @@ public class ViewUtils {
 		final ApplicationManager app = ApplicationManager.instance();
 		final IProject project = app.getProjectManager().getProject();
 		final IModelElement modelElement = project.getModelElementById(modelElementId);
-		
-		if(modelElement == null) {
-			return ;
+
+		if (modelElement == null) {
+			return;
 		}
-		
+
 		final DiagramManager diagramManager = app.getDiagramManager();
 		final IDiagramElement[] diagramElements = modelElement.getDiagramElements();
 		IDiagramElement activeView = null;
 		IDiagramElement masterView = null;
 		IDiagramElement firstView = null;
-		
-		for (int i=0; diagramElements != null && i < diagramElements.length; i++) {
+
+		for (int i = 0; diagramElements != null && i < diagramElements.length; i++) {
 			IDiagramElement diagramElement = diagramElements[i];
-			
-			if(diagramElement == null) {
-				continue ;
+
+			if (diagramElement == null) {
+				continue;
 			}
-			
+
 			firstView = firstView == null ? diagramElement : firstView;
 			activeView = diagramElement.getDiagramUIModel().isOpened() ? diagramElement : activeView;
 			masterView = diagramElement.isMasterView() ? diagramElement : masterView;
-			
-			if(activeView != null) {
-				break ;
+
+			if (activeView != null) {
+				break;
 			}
 		}
-		
-		if(activeView != null) {
+
+		if (activeView != null) {
 			diagramManager.highlight(activeView);
-		}
-		else if(masterView != null) {
+		} else if (masterView != null) {
 			diagramManager.highlight(masterView);
-		}
-		else if(firstView != null) {
+		} else if (firstView != null) {
 			diagramManager.highlight(firstView);
 		}
 	}
@@ -564,35 +565,71 @@ public class ViewUtils {
 		vm.showConfirmDialog(null, new HTMLEnabledMessage(body), "Report Error", JOptionPane.DEFAULT_OPTION,
 				JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
-	
+
 	public static void updateDialog() {
 		final ViewManager vm = ApplicationManager.instance().getViewManager();
 		final StringBuilder builder = new StringBuilder();
-		builder.append("Please select the ZIP file containing the release of the OntoUML Plguin that you wish to install.<br>");
-		builder.append("The latest release is available at <a href=\"" + OntoUMLPlugin.PLUGIN_REPO + "\">" + OntoUMLPlugin.PLUGIN_REPO +"</a>.<br><br>");
+		builder.append(
+				"Please select the ZIP file containing the release of the OntoUML Plguin that you wish to install.<br>");
+		builder.append("The latest release is available at <a href=\"" + OntoUMLPlugin.PLUGIN_REPO + "\">"
+				+ OntoUMLPlugin.PLUGIN_REPO + "</a>.<br><br>");
 		builder.append("This procedure may take a couple of seconds.");
 
-		vm.showConfirmDialog(null, new HTMLEnabledMessage(builder.toString()), "Plugin Update", JOptionPane.DEFAULT_OPTION,
-				JOptionPane.PLAIN_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+		vm.showConfirmDialog(null, new HTMLEnabledMessage(builder.toString()), "Plugin Update",
+				JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
-	
+
 	public static void updateSuccessDialog() {
 		final ViewManager vm = ApplicationManager.instance().getViewManager();
 		final String msg = "Plugin successfully updated.\nPlease reopen the application for the changes to take effect.";
 
-		vm.showConfirmDialog(null, msg, "Plugin Update", JOptionPane.DEFAULT_OPTION,
-				JOptionPane.PLAIN_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+		vm.showConfirmDialog(null, msg, "Plugin Update", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
+				new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
-	
+
 	public static void updateErrorDialog() {
 		final ViewManager vm = ApplicationManager.instance().getViewManager();
 		final StringBuilder builder = new StringBuilder();
 		builder.append("Something went wrong during the update.<br>");
-		builder.append("In case your plugin becomes unavailable, you may find instructions at <a href=\"" + OntoUMLPlugin.PLUGIN_REPO + "\">" + OntoUMLPlugin.PLUGIN_REPO +"</a>.<br>");
+		builder.append("In case your plugin becomes unavailable, you may find instructions at <a href=\""
+				+ OntoUMLPlugin.PLUGIN_REPO + "\">" + OntoUMLPlugin.PLUGIN_REPO + "</a>.<br>");
 		builder.append("In this page you can also report this error and help us to improve our plugin.");
 
-		vm.showConfirmDialog(null, new HTMLEnabledMessage(builder.toString()), "Plugin Update Error", JOptionPane.DEFAULT_OPTION,
-				JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+		vm.showConfirmDialog(null, new HTMLEnabledMessage(builder.toString()), "Plugin Update Error",
+				JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+	}
+
+	public static JsonObject selectReleaseToInstall() {
+		Map<String,JsonObject> map = new HashMap<>();
+		Configurations config = Configurations.getInstance();
+		JsonObject installedRelease = config.getInstalledRelease();
+		String installedReleaseTagName = installedRelease != null
+				? installedRelease.get(GitHubUtils.PROP_TAG_NAME).getAsString()
+				: null;
+		
+		config.getReleases().forEach(item -> {
+			JsonObject release = item.getAsJsonObject();
+			String releaseTagName = release.get(GitHubUtils.PROP_TAG_NAME).getAsString();
+			
+			releaseTagName = releaseTagName.equals(installedReleaseTagName)
+					? releaseTagName + " (installed version)" : releaseTagName; 
+			map.put(releaseTagName, release);
+		});
+		
+		ViewManager vm = ApplicationManager.instance().getViewManager();
+		Set<String> keys = map.keySet();
+		Object[] keysArray = new String[keys.size()];
+		keys.toArray(keysArray);
+		Object selectedValue = vm.showInputDialog(
+				vm.getRootFrame(),
+				"Select the desired version of the OntoUML Plugin:",
+				"Plugin Versions",
+				JOptionPane.QUESTION_MESSAGE,
+				new ImageIcon(getFilePath(SIMPLE_LOGO)),
+		        keysArray,
+		        keysArray[0]);
+		
+		return map.get(selectedValue);
 	}
 }
 
