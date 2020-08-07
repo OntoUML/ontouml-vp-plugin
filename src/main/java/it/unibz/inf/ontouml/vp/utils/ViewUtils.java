@@ -583,7 +583,7 @@ public class ViewUtils {
 
 			msg.append("Your plugin is up to date with the latest stable release.");
 			msg.append("\nIf you desire to install a different version of the plugin, click on \"Select release\".");
-			msg.append("\nBe aware that \"alpha\" releases are provide experimental new features that may present some issues.");
+			msg.append("\nBe aware that \"alpha\" releases provide experimental new features that may not be fully integrated to the plugin.");
 			msg.append("\n\nThe procedure may take a couple of seconds.");
 		} else {
 			options = new String[3];

@@ -1,11 +1,13 @@
 package it.unibz.inf.ontouml.vp.listeners;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.IProjectListener;
 
+import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.GitHubRelease;
 import it.unibz.inf.ontouml.vp.utils.GitHubUtils;
@@ -48,16 +50,26 @@ public class ProjectListener implements IProjectListener {
 			
 			// TODO: confirm plusDays() before PR
 			if(lastCheck != null && lastCheck.plusSeconds(1).isBefore(ZonedDateTime.now())) {
-				String currentLastestReleaseId = config.getLatestGitHubRelease().getId();
 				GitHubUtils.lookupUpdates();
-				String newLastestReleaseId = config.getLatestGitHubRelease().getId();
+				List<GitHubRelease> releases = config.getGitHubReleases();
+				GitHubRelease latestRelease = config.getLatestGitHubRelease();
+				boolean upToDate = false;
 				
-				if(currentLastestReleaseId == null || !currentLastestReleaseId.equals(newLastestReleaseId)) {
+				for (GitHubRelease release : releases) {
+					if(
+						release.getTagName().equals(OntoUMLPlugin.PLUGIN_VERSION_RELEASE)
+						&& release.getCreatedAt().isBefore(latestRelease.getCreatedAt())
+					) {
+						upToDate = true;
+					}
+				}
+				
+				if(!upToDate) {
 					System.out.println("New updates are available.");
 					ViewUtils.simpleLog("New updates are available. Go to \"Update Plugin\" to get the latest version of the OntoUML Plugin for Visual Paradigm.");
 				} else {
 					System.out.println("No new updates available.");
-					ViewUtils.simpleLog("Your OntoUML Plugin for Visual Paradigm is already up to date with our latest release.");
+					ViewUtils.simpleLog("Your OntoUML Plugin for Visual Paradigm is up to date with our latest release.");					
 				}
 			} else {
 				System.out.println("Last check for updates was already performed in the last 24 hours.");

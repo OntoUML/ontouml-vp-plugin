@@ -41,13 +41,14 @@ public class UpdatePluginAction implements VPActionController {
 			String destinationDirName = pluginAsset.getName().replace(".zip", "");
 			File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();
 			// TODO: remove downloadsDir
-			File downloadsDir = new File(pluginDir.getParentFile(), "downloads");
-			File destinationDir = new File(downloadsDir, destinationDirName);
+//			File downloadsDir = new File(pluginDir.getParentFile(), "downloads");
+//			File destinationDir = new File(downloadsDir, destinationDirName);
+			File destinationDir = new File(pluginDir.getParentFile(), destinationDirName);
 
 			System.out.println("DESTINATION: " + destinationDir);
 
 			UpdatePluginAction.unzip(downloadedFile, destinationDir);
-			deleteFolderContents(downloadsDir,
+			deleteFolderContents(pluginDir.getParentFile(),
 					content -> content.isDirectory() && content.getName().contains("ontouml-vp-plugin")
 					&& !content.getName().equals(destinationDirName));
 			ViewUtils.updateSuccessDialog();

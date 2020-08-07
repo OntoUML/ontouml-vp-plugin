@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 public class GitHubReleaseAsset {
 	
 	final public static String PROP_NAME = "name";
+	final public static String PROP_ID = "id";
 	final public static String PROP_BROWSER_DOWNLOAD_URL = "browser_download_url";
 	
 	public JsonObject source;
@@ -23,6 +24,15 @@ public class GitHubReleaseAsset {
 	
 	public String getDownloadUrl() {
 		return source.get(PROP_BROWSER_DOWNLOAD_URL).getAsString();
+	}
+	
+	public String getId() {
+		return source.get(PROP_ID).getAsString();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof GitHubRelease ? this.getId().equals(((GitHubRelease) obj).getId()) : false;
 	}
 
 }

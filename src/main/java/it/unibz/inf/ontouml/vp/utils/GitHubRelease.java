@@ -61,4 +61,9 @@ public class GitHubRelease {
 		return source.get(PROP_ID).getAsString();
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof GitHubRelease ? this.getId().equals(((GitHubRelease) obj).getId()) : false;
+	}
+	
 }
