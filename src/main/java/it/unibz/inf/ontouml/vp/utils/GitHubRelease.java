@@ -13,6 +13,7 @@ public class GitHubRelease {
 	final public static String PROP_CREATED_AT = "created_at";
 	final public static String PROP_PRERELEASE = "prerelease";
 	final public static String PROP_ASSETS = "assets";
+	final public static String PROP_ID = "id";
 
 	public JsonObject source;
 	
@@ -54,6 +55,10 @@ public class GitHubRelease {
 		}
 		
 		return null;
+	}
+
+	public String getId() {
+		return source.get(PROP_ID).getAsString();
 	}
 	
 }

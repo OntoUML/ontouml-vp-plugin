@@ -24,8 +24,15 @@ public class GitHubUtils {
 	final public static String GITHUB_API = "https://api.github.com";
 	final public static String REPOS = "/repos";
 	final public static String RELEASES = "/releases";
+	
+	public static void lookupUpdates() throws IOException {
+		JsonArray releases = GitHubUtils.getReleases();
+		Configurations config = Configurations.getInstance();
+		config.setReleases(releases);
+		config.save();
+	}
 
-	static public JsonArray getReleases() throws IOException {
+	public static JsonArray getReleases() throws IOException {
 		final URL url = new URL(GITHUB_API + REPOS + "/" + OntoUMLPlugin.PLUGIN_REPO_OWNER + "/"
 				+ OntoUMLPlugin.PLUGIN_REPO_NAME + RELEASES);
 		final HttpsURLConnection request = (HttpsURLConnection) url.openConnection();
@@ -53,7 +60,7 @@ public class GitHubUtils {
 		return releases;
 	}
 
-	static public File downloadReleaseAsset(GitHubReleaseAsset asset) throws MalformedURLException, IOException {
+	public static File downloadReleaseAsset(GitHubReleaseAsset asset) throws MalformedURLException, IOException {
 		final URL downloadURL = new URL(asset.getDownloadUrl());
 		final ReadableByteChannel rbc = Channels.newChannel(downloadURL.openStream());
 		final Path pluginDownloadDir = Files.createTempDirectory("pluginDownloadDir");

@@ -56,7 +56,7 @@ public class Configurations {
 
 	@SerializedName("lastCheckForReleases")
 	@Expose()
-	private ZonedDateTime lastCheckForReleases;
+	private String lastUpdatesCheck;
 
 	private Configurations() {
 		this.projects = new ArrayList<ProjectConfigurations>();
@@ -64,7 +64,7 @@ public class Configurations {
 		this.latestRelease = null;
 		this.latestAlphaRelease = null;
 		this.installedRelease = null;
-		this.lastCheckForReleases = ZonedDateTime.now();
+		this.lastUpdatesCheck = ZonedDateTime.now().toString();
 	}
 
 	private List<ProjectConfigurations> getProjectConfigurationsList() {
@@ -105,6 +105,28 @@ public class Configurations {
 			installedRelease = release.getTagName().equals(OntoUMLPlugin.PLUGIN_VERSION_RELEASE) ? release.source
 					: installedRelease;
 		});
+	}
+	
+	public String getLastUpdatesCheck() {
+		return lastUpdatesCheck;
+	}
+	
+	public void setLastUpdatesCheck(String lastUpdatesCheck) {
+		this.lastUpdatesCheck = lastUpdatesCheck;
+	}
+	
+	public List<GitHubRelease> getGitHubReleases() {
+		List<GitHubRelease> list = new ArrayList<>();
+		
+		if(releases != null) {
+			releases.forEach(release -> {
+				if(release != null && release.isJsonObject()) {
+					list.add(new GitHubRelease(release.getAsJsonObject()));
+				}
+			});
+		}
+		
+		return list;
 	}
 
 	public GitHubRelease getLatestGitHubRelease() {

@@ -10,13 +10,11 @@ import java.util.function.Predicate;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import com.google.gson.JsonArray;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
-import it.unibz.inf.ontouml.vp.utils.Configurations;
 import it.unibz.inf.ontouml.vp.utils.GitHubRelease;
 import it.unibz.inf.ontouml.vp.utils.GitHubReleaseAsset;
 import it.unibz.inf.ontouml.vp.utils.GitHubUtils;
@@ -30,11 +28,7 @@ public class UpdatePluginAction implements VPActionController {
 	public void performAction(VPAction arg0) {
 
 		try {
-			JsonArray releases = GitHubUtils.getReleases();
-			Configurations config = Configurations.getInstance();
-			config.setReleases(releases);
-			config.save();
-
+			GitHubUtils.lookupUpdates();
 			GitHubRelease selectedRelease = ViewUtils.updateDialog();
 			GitHubReleaseAsset pluginAsset = selectedRelease != null ? selectedRelease.getPluginAsset() : null;
 
