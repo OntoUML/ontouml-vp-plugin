@@ -15,10 +15,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.swing.Icon;
@@ -36,7 +36,6 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.DiagramManager;
-import com.vp.plugin.ProjectManager;
 import com.vp.plugin.ViewManager;
 import com.vp.plugin.diagram.IClassDiagramUIModel;
 import com.vp.plugin.diagram.IDiagramElement;
@@ -566,17 +565,53 @@ public class ViewUtils {
 				JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
 
-	public static void updateDialog() {
-		final ViewManager vm = ApplicationManager.instance().getViewManager();
-		final StringBuilder builder = new StringBuilder();
-		builder.append(
-				"Please select the ZIP file containing the release of the OntoUML Plguin that you wish to install.<br>");
-		builder.append("The latest release is available at <a href=\"" + OntoUMLPlugin.PLUGIN_REPO + "\">"
-				+ OntoUMLPlugin.PLUGIN_REPO + "</a>.<br><br>");
-		builder.append("This procedure may take a couple of seconds.");
+	public static GitHubRelease updateDialog() {
+		final Configurations config = Configurations.getInstance();
+		final GitHubRelease lastestRelease = config.getLatestGitHubRelease();
 
-		vm.showConfirmDialog(null, new HTMLEnabledMessage(builder.toString()), "Plugin Update",
-				JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
+		final boolean isUpToDate = lastestRelease.getTagName().equals(OntoUMLPlugin.PLUGIN_VERSION_RELEASE);
+		String[] options;
+		String initialSelection;
+		StringBuilder msg = new StringBuilder();
+
+		if (isUpToDate) {
+			options = new String[2];
+			options[0] = "Cancel";
+			options[1] = "Select release";
+
+			initialSelection = options[1];
+
+			msg.append("Your plugin is up to date with the latest stable release.");
+			msg.append("\nIf you desire to install a different version of the plugin, click on \"Select release\".");
+			msg.append("\n\n The procedure may take a couple of seconds.");
+		} else {
+			options = new String[3];
+			options[0] = "Cancel";
+			options[1] = "Select release";
+			options[2] = "Install latest release";
+
+			initialSelection = options[2];
+
+			msg.append("The latest stable release of the plugin is the version " + OntoUMLPlugin.PLUGIN_VERSION_RELEASE
+					+ ".");
+			msg.append(
+					"\nTo install this update, click on  \"Install latest release\", or click on \"Select a release\" to install a different version.");
+			msg.append("\n\n The procedure may take a couple of seconds.");
+		}
+
+		final ViewManager vm = ApplicationManager.instance().getViewManager();
+		int selectedOption = vm.showOptionDialog(vm.getRootFrame(), msg.toString(), "Plugin Update",
+				JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)),
+				options, initialSelection);
+
+		switch (selectedOption) {
+		case 2:
+			return lastestRelease;
+		case 1:
+			return selectReleaseToInstall();
+		default:
+			return null;
+		}
 	}
 
 	public static void updateSuccessDialog() {
@@ -590,7 +625,7 @@ public class ViewUtils {
 	public static void updateErrorDialog() {
 		final ViewManager vm = ApplicationManager.instance().getViewManager();
 		final StringBuilder builder = new StringBuilder();
-		builder.append("Something went wrong during the update.<br>");
+		builder.append("Something went wrong during the update. Please verify your connection.<br>");
 		builder.append("In case your plugin becomes unavailable, you may find instructions at <a href=\""
 				+ OntoUMLPlugin.PLUGIN_REPO + "\">" + OntoUMLPlugin.PLUGIN_REPO + "</a>.<br>");
 		builder.append("In this page you can also report this error and help us to improve our plugin.");
@@ -599,36 +634,30 @@ public class ViewUtils {
 				JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, new ImageIcon(getFilePath(SIMPLE_LOGO)));
 	}
 
-	public static JsonObject selectReleaseToInstall() {
-		Map<String,JsonObject> map = new HashMap<>();
-		Configurations config = Configurations.getInstance();
-		JsonObject installedRelease = config.getInstalledRelease();
-		String installedReleaseTagName = installedRelease != null
-				? installedRelease.get(GitHubUtils.PROP_TAG_NAME).getAsString()
-				: null;
-		
+	public static GitHubRelease selectReleaseToInstall() {
+		final Map<String, GitHubRelease> map = new HashMap<>();
+		final Configurations config = Configurations.getInstance();
+		final GitHubRelease installedRelease = config.getInstalledGitHubRelease();
+
 		config.getReleases().forEach(item -> {
-			JsonObject release = item.getAsJsonObject();
-			String releaseTagName = release.get(GitHubUtils.PROP_TAG_NAME).getAsString();
-			
-			releaseTagName = releaseTagName.equals(installedReleaseTagName)
-					? releaseTagName + " (installed version)" : releaseTagName; 
+			final GitHubRelease release = new GitHubRelease(item.getAsJsonObject());
+			String releaseTagName = release.getTagName();
+
+			releaseTagName = releaseTagName.equals(installedRelease.getTagName())
+					? releaseTagName + " (installed version)"
+					: releaseTagName;
 			map.put(releaseTagName, release);
 		});
-		
+
 		ViewManager vm = ApplicationManager.instance().getViewManager();
-		Set<String> keys = map.keySet();
+		List<String> keys = new ArrayList<String>(map.keySet());
+		keys.sort(Comparator.reverseOrder());
 		Object[] keysArray = new String[keys.size()];
 		keys.toArray(keysArray);
-		Object selectedValue = vm.showInputDialog(
-				vm.getRootFrame(),
-				"Select the desired version of the OntoUML Plugin:",
-				"Plugin Versions",
-				JOptionPane.QUESTION_MESSAGE,
-				new ImageIcon(getFilePath(SIMPLE_LOGO)),
-		        keysArray,
-		        keysArray[0]);
-		
+		Object selectedValue = vm.showInputDialog(vm.getRootFrame(),
+				"Select the desired version of the OntoUML Plugin:", "Plugin Versions", JOptionPane.QUESTION_MESSAGE,
+				new ImageIcon(getFilePath(SIMPLE_LOGO)), keysArray, keysArray[0]);
+
 		return map.get(selectedValue);
 	}
 }

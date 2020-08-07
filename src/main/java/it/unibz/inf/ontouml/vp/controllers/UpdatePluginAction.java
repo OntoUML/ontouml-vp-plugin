@@ -1,25 +1,26 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
-import java.awt.FileDialog;
-import java.awt.Frame;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.function.Predicate;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import com.google.gson.JsonArray;
 import com.vp.plugin.ApplicationManager;
-import com.vp.plugin.VPPluginInfo;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
+import it.unibz.inf.ontouml.vp.utils.Configurations;
+import it.unibz.inf.ontouml.vp.utils.GitHubRelease;
+import it.unibz.inf.ontouml.vp.utils.GitHubReleaseAsset;
+import it.unibz.inf.ontouml.vp.utils.GitHubUtils;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
-//import net.lingala.zip4j.core.ZipFile;
-//import net.lingala.zip4j.exception.ZipException;
 
 public class UpdatePluginAction implements VPActionController {
 
@@ -27,32 +28,41 @@ public class UpdatePluginAction implements VPActionController {
 
 	@Override
 	public void performAction(VPAction arg0) {
-		ViewUtils.updateDialog();
 
-		FileDialog fd = new FileDialog((Frame) ApplicationManager.instance().getViewManager().getRootFrame(),
-				"Select the zip file containing the OntoUML Plugin release", FileDialog.LOAD);
+		try {
+			JsonArray releases = GitHubUtils.getReleases();
+			Configurations config = Configurations.getInstance();
+			config.setReleases(releases);
+			config.save();
 
-		fd.setDirectory(null);
-		fd.setFile(null);
-		fd.setFilenameFilter((dir, name) -> name != null && name.endsWith(".zip"));
-		fd.setVisible(true);
+			GitHubRelease selectedRelease = ViewUtils.updateDialog();
+			GitHubReleaseAsset pluginAsset = selectedRelease != null ? selectedRelease.getPluginAsset() : null;
 
-		if (fd.getDirectory() != null && fd.getFile() != null) {
-			final String fileName = fd.getFile();
-			final VPPluginInfo info = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID);
-			final File pluginsDir = info.getPluginDir().getParentFile();
-			final File zipFile = new File(fd.getDirectory(), fileName);
-			final String destDirName = fileName.substring(0, fileName.lastIndexOf(".zip"));
-			try {
-				unzip(zipFile, pluginsDir.getAbsolutePath() + File.separator + destDirName);
-				deleteFolderContents(pluginsDir,
-						content -> content.isDirectory() && content.getName().contains("ontouml")
-								&& !content.getName().equals("ontouml-vp-plugin-0.3.0-SNAPSHOT"));
-				ViewUtils.updateSuccessDialog();
-			} catch (Exception e) {
-				ViewUtils.updateErrorDialog();
-				e.printStackTrace();
+			if (selectedRelease == null || pluginAsset == null) {
+				return;
 			}
+
+			File downloadedFile = GitHubUtils.downloadReleaseAsset(pluginAsset);
+
+			String destinationDirName = pluginAsset.getName().replace(".zip", "");
+			File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();
+			// TODO: remove downloadsDir
+			File downloadsDir = new File(pluginDir.getParentFile(), "downloads");
+			File destinationDir = new File(downloadsDir, destinationDirName);
+
+			System.out.println("DESTINATION: " + destinationDir);
+
+			UpdatePluginAction.unzip(downloadedFile, destinationDir);
+			deleteFolderContents(downloadsDir,
+					content -> content.isDirectory() && content.getName().contains("ontouml-vp-plugin")
+					&& !content.getName().equals(destinationDirName));
+			ViewUtils.updateSuccessDialog();
+		} catch (UnknownHostException uhe) {
+			ViewUtils.updateErrorDialog();
+			uhe.printStackTrace();
+		} catch (IOException ioe) {
+			ViewUtils.updateErrorDialog();
+			ioe.printStackTrace();
 		}
 	}
 
@@ -60,10 +70,9 @@ public class UpdatePluginAction implements VPActionController {
 	public void update(VPAction arg0) {
 	}
 
-	public static void unzip(File zipFile, String destDirectory) throws IOException {
-		File destDir = new File(destDirectory);
-		if (!destDir.exists()) {
-			destDir.mkdir();
+	private static void unzip(File zipFile, File destDirectory) throws IOException {
+		if (!destDirectory.exists()) {
+			destDirectory.mkdir();
 		}
 		ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFile));
 		ZipEntry entry = zipIn.getNextEntry();

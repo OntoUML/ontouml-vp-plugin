@@ -1,17 +1,5 @@
 package it.unibz.inf.ontouml.vp.utils;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import com.vp.plugin.ApplicationManager;
-import com.vp.plugin.model.IProject;
-import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,6 +7,18 @@ import java.nio.file.Files;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+import com.vp.plugin.ApplicationManager;
+import com.vp.plugin.model.IProject;
+
+import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 
 /**
  * 
@@ -49,11 +49,11 @@ public class Configurations {
 	@SerializedName("latestAlphaRelease")
 	@Expose()
 	private JsonObject latestAlphaRelease;
-	
+
 	@SerializedName("installedRelease")
 	@Expose()
 	private JsonObject installedRelease;
-	
+
 	@SerializedName("lastCheckForReleases")
 	@Expose()
 	private ZonedDateTime lastCheckForReleases;
@@ -86,56 +86,37 @@ public class Configurations {
 
 		this.releases = releases;
 
-		final JsonElement latestRelease_created_at = latestRelease != null
-				? this.latestRelease.getAsJsonObject().get(GitHubUtils.PROP_CREATED_AT)
-				: null;
-		final JsonElement latestAlphaRelease_created_at = latestAlphaRelease != null
-				? this.latestAlphaRelease.getAsJsonObject().get(GitHubUtils.PROP_CREATED_AT)
-				: null;
-
-		final ZonedDateTime latestReleaseCreation = latestRelease_created_at != null
-				? ZonedDateTime.parse(latestRelease_created_at.getAsString())
-				: null;
-		final ZonedDateTime latestAlphaReleaseCreation = latestAlphaRelease_created_at != null
-				? ZonedDateTime.parse(latestAlphaRelease_created_at.getAsString())
-				: null;
+		final GitHubRelease latestGitHubRelease = getLatestGitHubRelease();
+		final GitHubRelease latestAlphaGitHubRelease = getLatestAlphaGitHubRelease();
 
 		this.releases.forEach(item -> {
-			final JsonObject release = item.getAsJsonObject();
-			final JsonElement created_at = release.get(GitHubUtils.PROP_CREATED_AT);
-			final JsonElement prerelease = release.get(GitHubUtils.PROP_PRERELEASE);
-			final JsonElement tag_name = release.get(GitHubUtils.PROP_TAG_NAME);
+			final GitHubRelease release = new GitHubRelease(item.getAsJsonObject());
 
-			if (created_at != null && created_at.isJsonPrimitive()) {
-				ZonedDateTime releaseCreation = ZonedDateTime.parse(created_at.getAsString());
+			if (release.isPrerelease()) {
+				latestAlphaRelease = latestAlphaGitHubRelease == null
+						|| release.getCreatedAt().isAfter(latestAlphaGitHubRelease.getCreatedAt()) 
+							? release.source : latestAlphaRelease;
+			} else {
+				latestRelease = latestGitHubRelease == null
+						|| release.getCreatedAt().isAfter(latestGitHubRelease.getCreatedAt())
+							? release.source : latestRelease;
+			}
 
-				if (prerelease.getAsBoolean()) {
-					latestAlphaRelease = latestAlphaReleaseCreation == null
-							|| releaseCreation.isAfter(latestAlphaReleaseCreation) ? release : latestAlphaRelease;
-				} else {
-					latestRelease = latestReleaseCreation == null || releaseCreation.isAfter(latestReleaseCreation)
-							? release
-							: latestRelease;
-				}
-			}
-			
-			if(tag_name != null && tag_name.isJsonPrimitive()) {
-				installedRelease = tag_name.getAsString().equals(OntoUMLPlugin.PLUGIN_VERSION_RELEASE) ?
-						release : installedRelease;
-			}
+			installedRelease = release.getTagName().equals(OntoUMLPlugin.PLUGIN_VERSION_RELEASE) ? release.source
+					: installedRelease;
 		});
 	}
 
-	public JsonObject getLatestRelease() {
-		return this.latestRelease;
+	public GitHubRelease getLatestGitHubRelease() {
+		return latestRelease != null ? new GitHubRelease(latestRelease) : null;
 	}
-	
-	public JsonObject getLatestAlphaRelease() {
-		return this.latestRelease;
+
+	public GitHubRelease getLatestAlphaGitHubRelease() {
+		return latestAlphaRelease != null ? new GitHubRelease(latestAlphaRelease) : null;
 	}
-	
-	public JsonObject getInstalledRelease() {
-		return this.installedRelease;
+
+	public GitHubRelease getInstalledGitHubRelease() {
+		return installedRelease != null ? new GitHubRelease(installedRelease) : null;
 	}
 
 	/**
