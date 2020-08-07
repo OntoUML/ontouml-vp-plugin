@@ -46,7 +46,8 @@ public class ProjectListener implements IProjectListener {
 			String lastUpdateCheck = config.getLastUpdatesCheck();
 			ZonedDateTime lastCheck = ZonedDateTime.parse(lastUpdateCheck);
 			
-			if(lastCheck != null && lastCheck.plusDays(1).isBefore(ZonedDateTime.now())) {
+			// TODO: confirm plusDays() before PR
+			if(lastCheck != null && lastCheck.plusSeconds(1).isBefore(ZonedDateTime.now())) {
 				String currentLastestReleaseId = config.getLatestGitHubRelease().getId();
 				GitHubUtils.lookupUpdates();
 				String newLastestReleaseId = config.getLatestGitHubRelease().getId();
@@ -56,7 +57,7 @@ public class ProjectListener implements IProjectListener {
 					ViewUtils.simpleLog("New updates are available. Go to \"Update Plugin\" to get the latest version of the OntoUML Plugin for Visual Paradigm.");
 				} else {
 					System.out.println("No new updates available.");
-					ViewUtils.simpleLog("Your OntoUML Plugin for Visual Paradigm is to date with our latest release.");
+					ViewUtils.simpleLog("Your OntoUML Plugin for Visual Paradigm is already up to date with our latest release.");
 				}
 			} else {
 				System.out.println("Last check for updates was already performed in the last 24 hours.");

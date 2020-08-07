@@ -593,7 +593,7 @@ public class ViewUtils {
 
 			initialSelection = options[2];
 
-			msg.append("The latest stable release of the plugin is the version " + OntoUMLPlugin.PLUGIN_VERSION_RELEASE
+			msg.append("The latest stable release of the plugin is the version " + lastestRelease.getTagName()
 					+ ".");
 			msg.append(
 					"\nTo install this update, click on  \"Install latest release\", or click on \"Select a release\" to install a different version.");
@@ -640,14 +640,16 @@ public class ViewUtils {
 		final Map<String, GitHubRelease> map = new HashMap<>();
 		final Configurations config = Configurations.getInstance();
 		final GitHubRelease installedRelease = config.getInstalledGitHubRelease();
+		final String installedReleaseTagName = installedRelease != null
+				? installedRelease.getTagName() : null;
 
 		config.getReleases().forEach(item -> {
 			final GitHubRelease release = new GitHubRelease(item.getAsJsonObject());
 			String releaseTagName = release.getTagName();
 
-			releaseTagName = releaseTagName.equals(installedRelease.getTagName())
-					? releaseTagName + " (installed version)"
-					: releaseTagName;
+			releaseTagName = installedReleaseTagName != null && releaseTagName.equals(installedReleaseTagName)
+					? releaseTagName + " (installed version)" : releaseTagName;
+			
 			map.put(releaseTagName, release);
 		});
 

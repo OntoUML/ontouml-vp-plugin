@@ -65,6 +65,11 @@
                     toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.PaintModelAction" />
             </action> -->
+            
+            <menu id="it.unibz.inf.ontouml.vp.actionset1.menu1"
+            		menuPath="#it.unibz.inf.ontouml.vp.actionset1.toolbar1/#"
+            		icon="icons/logo/ontouml-simple-logo-small.png"/>
+            
             <action 
                     id="it.unibz.inf.ontouml.vp.actions.OpenConfigurationsAction"
                     actionType="generalAction"
@@ -73,7 +78,7 @@
                     tooltip="Opens the settings menu for the plugin."
                     icon="icons/toolbar/gear-orange.png"
                     label="Settings"
-                    toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
+                    menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.OpenConfigurationsAction" />
             </action>
             <action 
@@ -84,7 +89,7 @@
                     tooltip="Opens a bug report form on the browser."
                     icon="icons/toolbar/sign-orange.png"
                     label="Report Error"
-                    toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
+                    menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ReportErrorAction" />
             </action>
             <action 
@@ -95,9 +100,10 @@
                     tooltip="Opens the plugin update dialog."
                     icon="icons/toolbar/update-orange.png"
                     label="Update Plugin"
-                    toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
+                    menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.UpdatePluginAction" />
             </action>
+            <!--
             <action 
 					id="it.unibz.inf.ontouml.vp.actions.ReloadClassesAction"
 					actionType="generalAction" 
@@ -107,7 +113,6 @@
 					toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
 				<actionController class="it.unibz.inf.ontouml.vp.controllers.ReloadClassesActionController" />
 			</action>
-            <!--
 			-->
         </actionSet>
 
@@ -115,7 +120,7 @@
             <contextTypes all="false"/>
             <include type="Class"/>
             
-            <menu id="classPropertiesMenu" label="Meta-Properties" mnemonic="P" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>`
+            <menu id="classPropertiesMenu" label="Meta-Properties" mnemonic="P" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
 
             <action id="it.unibz.inf.ontouml.vp.ClassProperties.order" label="Set Order" style="normal" menuPath="classPropertiesMenu/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyProperties"/>

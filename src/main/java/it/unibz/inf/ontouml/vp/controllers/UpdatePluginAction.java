@@ -51,12 +51,9 @@ public class UpdatePluginAction implements VPActionController {
 					content -> content.isDirectory() && content.getName().contains("ontouml-vp-plugin")
 					&& !content.getName().equals(destinationDirName));
 			ViewUtils.updateSuccessDialog();
-		} catch (UnknownHostException uhe) {
+		} catch (Exception e) {
 			ViewUtils.updateErrorDialog();
-			uhe.printStackTrace();
-		} catch (IOException ioe) {
-			ViewUtils.updateErrorDialog();
-			ioe.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 
@@ -88,7 +85,9 @@ public class UpdatePluginAction implements VPActionController {
 	}
 
 	private static void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
-		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
+		File file = new File(filePath);
+		file.createNewFile();
+		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
 		byte[] bytesIn = new byte[BUFFER_SIZE];
 		int read = 0;
 		while ((read = zipIn.read(bytesIn)) != -1) {
