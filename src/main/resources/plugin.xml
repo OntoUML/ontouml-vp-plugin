@@ -17,7 +17,7 @@
                     style="normal"
                     tooltip="Tests if the model complies to OntoUML's syntactical constraints."
                     icon="icons/toolbar/check-circle-orange.png"
-                    label="Model Verification"
+                    label="Check Model"
                     toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ModelVerificationAction" />
             </action>
@@ -28,10 +28,14 @@
                     style="normal"
                     tooltip="Tests if the model complies to OntoUML's syntactical constraints and filters the issues related to the open diagram."
                     icon="icons/toolbar/check-mark-orange.png"
-                    label="Diagram Verification"
+                    label="Check Diagram"
                     toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
                  <actionController class="it.unibz.inf.ontouml.vp.controllers.DiagramVerificationAction" />
             </action>
+
+            <menu id="it.unibz.inf.ontouml.vp.actionset1.menu1"
+                  menuPath="#it.unibz.inf.ontouml.vp.actionset1.toolbar1/#"/>
+
             <action 
                     id="it.unibz.inf.ontouml.vp.actions.ModelExportAction"
                     actionType="generalAction"
@@ -39,8 +43,8 @@
                     style="normal"
                     tooltip="Exports the model into a JSON file formatted according to OntoUML JSON Schema."
                     icon="icons/toolbar/import-export-orange.png"
-                    label="Export JSON"
-                    toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
+                    label="Export to JSON"
+                    menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ModelExportAction" />
             </action>
             <action 
@@ -51,10 +55,11 @@
                     tooltip="Exports the OntoUML ontology to OWL gUFO."
                     icon="icons/toolbar/ufo-logo-cropped.png"
                     label="Export to gUFO"
-                    toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
+                    menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ExportToGUFOAction" />
             </action>
-            <!-- <action 
+
+            <!-- <action
                     id="it.unibz.inf.ontouml.vp.actions.PaintModel"
                     actionType="generalAction"
                     description="Applies the smart paint algorithm to the project."
@@ -65,11 +70,19 @@
                     toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.PaintModelAction" />
             </action> -->
-            
-            <menu id="it.unibz.inf.ontouml.vp.actionset1.menu1"
-            		menuPath="#it.unibz.inf.ontouml.vp.actionset1.toolbar1/#"
-            		icon="icons/logo/ontouml-simple-logo-small.png"/>
-            
+
+            <action
+                    id="it.unibz.inf.ontouml.vp.actions.UpdatePluginAction"
+                    actionType="generalAction"
+                    description="Opens the plugin update dialog."
+                    style="normal"
+                    tooltip="Opens the plugin update dialog."
+                    icon="icons/toolbar/update-orange.png"
+                    label="Update Plugin"
+                    menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.UpdatePluginAction" />
+            </action>
+
             <action 
                     id="it.unibz.inf.ontouml.vp.actions.OpenConfigurationsAction"
                     actionType="generalAction"
@@ -92,17 +105,7 @@
                     menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ReportErrorAction" />
             </action>
-            <action 
-                    id="it.unibz.inf.ontouml.vp.actions.UpdatePluginAction"
-                    actionType="generalAction"
-                    description="Opens the plugin update dialog."
-                    style="normal"
-                    tooltip="Opens the plugin update dialog."
-                    icon="icons/toolbar/update-orange.png"
-                    label="Update Plugin"
-                    menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
-                <actionController class="it.unibz.inf.ontouml.vp.controllers.UpdatePluginAction" />
-            </action>
+
             <!--
             <action 
 					id="it.unibz.inf.ontouml.vp.actions.ReloadClassesAction"
