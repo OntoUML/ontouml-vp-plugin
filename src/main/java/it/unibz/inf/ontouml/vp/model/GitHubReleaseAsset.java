@@ -2,6 +2,7 @@ package it.unibz.inf.ontouml.vp.model;
 
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class GitHubReleaseAsset {
 	
@@ -17,6 +18,7 @@ public class GitHubReleaseAsset {
 	@Expose()
 	private String name;
 	
+	@SerializedName("assetId")
 	@Expose()
 	private String id;
 	

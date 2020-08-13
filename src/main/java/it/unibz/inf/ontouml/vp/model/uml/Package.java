@@ -67,12 +67,6 @@ public class Package implements ModelElement {
             case IModelElementFactory.MODEL_TYPE_CLASS:
                addElement(new Class((IClass) child));
                break;
-            // TODO Add remaining elements, maybe by adding these to relation's
-            // source's package.
-            // case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
-            // case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
-            // case IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS:
-            // case IModelElementFactory.MODEL_TYPE_GENERALIZATION_SET:
          }
       }
 

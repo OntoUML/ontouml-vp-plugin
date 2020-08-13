@@ -78,7 +78,7 @@ public class ProjectListener implements IProjectListener {
 			config.setLastUpdatesCheck(ZonedDateTime.now().toString());
 			
 		} catch (Exception e) {
-			// TODO: handle exception
+			System.out.println("Failed to get releases from GitHub");
 			e.printStackTrace();
 		}
 	}

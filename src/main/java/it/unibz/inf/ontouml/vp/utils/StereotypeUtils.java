@@ -367,7 +367,6 @@ public class StereotypeUtils {
    public static void applyStereotype(IModelElement element, String stereotypeName) {
       final IStereotype stereotype = getStereotype(stereotypeName);
 
-      // TODO: check the necessity of throwing some exception here
       if (stereotype == null || !element.getModelType().equals(stereotype.getBaseType())){
          return;
       }

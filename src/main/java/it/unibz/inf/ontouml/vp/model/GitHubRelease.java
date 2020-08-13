@@ -32,6 +32,7 @@ public class GitHubRelease {
 	@Expose()
 	private GitHubReleaseAsset installationFileAsset;
 	
+	@SerializedName("releaseId")
 	@Expose()
 	private String id;
 	

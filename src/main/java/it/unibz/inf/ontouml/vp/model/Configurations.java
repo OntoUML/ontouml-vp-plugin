@@ -10,11 +10,8 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IProject;
 
@@ -34,27 +31,21 @@ public class Configurations {
 
 	private static Configurations instance;
 
-	@SerializedName("projects")
 	@Expose()
 	private List<ProjectConfigurations> projects;
 
-	@SerializedName("releases")
 	@Expose()
 	private List<GitHubRelease> releases;
 
-	@SerializedName("latestRelease")
 	@Expose()
 	private GitHubRelease latestRelease;
 
-	@SerializedName("latestAlphaRelease")
 	@Expose()
 	private GitHubRelease latestAlphaRelease;
 
-	@SerializedName("installedRelease")
 	@Expose()
 	private GitHubRelease installedRelease;
 
-	@SerializedName("lastUpdatesCheck")
 	@Expose()
 	private String lastUpdatesCheck;
 
