@@ -1,6 +1,6 @@
 package it.unibz.inf.ontouml.vp.views;
 
-import it.unibz.inf.ontouml.vp.utils.ServerRequest;
+import it.unibz.inf.ontouml.vp.model.ServerRequest;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 
 import java.awt.Dimension;

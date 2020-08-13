@@ -16,7 +16,7 @@ import com.vp.plugin.model.factory.IModelElementFactory;
 import it.unibz.inf.ontouml.vp.features.constraints.AssociationConstraints;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
-public class ReloadClassesAction implements VPActionController {
+public class ReloadClassesController implements VPActionController {
 
 	@Override
 	public void performAction(VPAction action) {

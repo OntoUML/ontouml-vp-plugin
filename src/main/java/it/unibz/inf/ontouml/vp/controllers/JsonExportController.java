@@ -23,7 +23,7 @@ import java.nio.file.Paths;
  *
  * @author Claudenir Fonseca
  */
-public class ModelExportAction implements VPActionController {
+public class JsonExportController implements VPActionController {
 
    private ProgressPanel progressPanel;
    private ProgressDialog loading;

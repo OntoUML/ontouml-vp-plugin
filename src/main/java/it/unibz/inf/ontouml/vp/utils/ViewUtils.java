@@ -2,11 +2,6 @@ package it.unibz.inf.ontouml.vp.utils;
 
 import java.awt.FileDialog;
 import java.awt.Frame;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -24,9 +19,7 @@ import java.util.stream.Collectors;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 
 import com.google.gson.JsonArray;
@@ -44,6 +37,7 @@ import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IProject;
 
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
+import it.unibz.inf.ontouml.vp.listeners.IssueLogMenuListener;
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.GitHubRelease;
 import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
@@ -61,11 +55,9 @@ import it.unibz.inf.ontouml.vp.views.HTMLEnabledMessage;
 public class ViewUtils {
 
 	public static final String SCOPE_PLUGIN = "OntoUML";
-	// public static final String SCOPE_ALL_PLUGINS = "";
 	public static final String SCOPE_VERIFICATION = "Verification Log";
 	public static final String SCOPE_DEVELOPMENT_LOG = "DevLog";
 
-	// images
 	public static final String SIMPLE_LOGO = "simple_logo";
 	public static final String SIMPLE_LOGO_FILENAME = "ontouml-simple-logo.png";
 	public static final String NAVIGATION_LOGO = "navigation";
@@ -88,14 +80,6 @@ public class ViewUtils {
 	public static final String DATATYPE_LOGO_FILENAME = "datatype.png";
 	public static final String ATTRIBUTE_LOGO = "attribute";
 	public static final String ATTRIBUTE_LOGO_FILENAME = "attribute.png";
-
-	// buttons
-	public static final String ADD_LOGO = "add";
-	public static final String ASTERISK_LOGO = "asterisk";
-	public static final String SUBTRACT_LOGO = "subtract";
-	public static final String ADD_LOGO_FILENAME = "add.png";
-	public static final String ASTERISK_LOGO_FILENAME = "asterisk.png";
-	public static final String SUBTRACT_LOGO_FILENAME = "subtract.png";
 
 	public static void log(String message) {
 		ApplicationManager.instance().getViewManager().showMessage(timestamp() + message);
@@ -170,12 +154,6 @@ public class ViewUtils {
 			return Paths.get(pluginDir.getAbsolutePath(), "icons", DATATYPE_LOGO_FILENAME).toFile().getAbsolutePath();
 		case ATTRIBUTE_LOGO:
 			return Paths.get(pluginDir.getAbsolutePath(), "icons", ATTRIBUTE_LOGO_FILENAME).toFile().getAbsolutePath();
-		case ADD_LOGO:
-			return Paths.get(pluginDir.getAbsolutePath(), "icons", ADD_LOGO_FILENAME).toFile().getAbsolutePath();
-		case ASTERISK_LOGO:
-			return Paths.get(pluginDir.getAbsolutePath(), "icons", ASTERISK_LOGO_FILENAME).toFile().getAbsolutePath();
-		case SUBTRACT_LOGO:
-			return Paths.get(pluginDir.getAbsolutePath(), "icons", SUBTRACT_LOGO_FILENAME).toFile().getAbsolutePath();
 		default:
 			return null;
 		}
@@ -214,20 +192,10 @@ public class ViewUtils {
 					errorList.add(timestamp() + errorMessage.toString());
 					idModelElementList.add(id);
 				}
-				// final JsonObject error = elem.getAsJsonObject();
-				// final String id = error.getAsJsonObject("source").get("id").getAsString();
-
-				// if (isElementInCurrentDiagram(id)) {
-				// final String errorMessage = error.get("severity").getAsString() + ":" + " " +
-				// error.get("title").getAsString() + " " +
-				// error.get("description").getAsString();
-				// errorList.add(timestamp() + errorMessage);
-				// idModelElementList.add(id);
-				// }
 			}
 
 			JList<Object> list = new JList<>(errorList.toArray());
-			ContextMenuListener listener = new ContextMenuListener(idModelElementList, list);
+			IssueLogMenuListener listener = new IssueLogMenuListener(idModelElementList, list);
 			list.addMouseListener(listener);
 			list.addMouseMotionListener(listener);
 
@@ -271,7 +239,7 @@ public class ViewUtils {
 			}
 
 			JList<Object> list = new JList<>(errorList.toArray());
-			ContextMenuListener listener = new ContextMenuListener(idModelElementList, list);
+			IssueLogMenuListener listener = new IssueLogMenuListener(idModelElementList, list);
 			list.addMouseListener(listener);
 			list.addMouseMotionListener(listener);
 

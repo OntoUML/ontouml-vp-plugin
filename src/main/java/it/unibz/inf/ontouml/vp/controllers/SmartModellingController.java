@@ -1,12 +1,8 @@
-package it.unibz.inf.ontouml.vp.utils;
-
-import it.unibz.inf.ontouml.vp.features.constraints.AssociationConstraints;
-import it.unibz.inf.ontouml.vp.features.constraints.ClassConstraints;
+package it.unibz.inf.ontouml.vp.controllers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.AbstractMap.SimpleEntry;
 
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.model.IAssociation;
@@ -16,7 +12,11 @@ import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.ISimpleRelationship;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
-public class SmartModelling {
+import it.unibz.inf.ontouml.vp.features.constraints.AssociationConstraints;
+import it.unibz.inf.ontouml.vp.features.constraints.ClassConstraints;
+import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
+
+public class SmartModellingController {
 
 	public static void setAggregationKind(IModelElement element) {
 		IAssociation association = (IAssociation) element;

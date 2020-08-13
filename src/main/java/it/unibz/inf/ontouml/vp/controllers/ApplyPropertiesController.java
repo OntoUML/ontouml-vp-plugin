@@ -21,8 +21,8 @@ import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
-import it.unibz.inf.ontouml.vp.views.SelectMultipleOptionsDialog;
-import it.unibz.inf.ontouml.vp.views.SetOrderDialog;
+import it.unibz.inf.ontouml.vp.views.SelectRestrictionsView;
+import it.unibz.inf.ontouml.vp.views.SetOrderView;
 
 /**
  * Implementation of context sensitive action of change OntoUML stereotypes in model elements.
@@ -30,7 +30,7 @@ import it.unibz.inf.ontouml.vp.views.SetOrderDialog;
  * @author Claudenir Fonseca
  * @author Victor Viola
  */
-public class ApplyProperties implements VPContextActionController {
+public class ApplyPropertiesController implements VPContextActionController {
 
    @Override
    public void performAction(VPAction action, VPContext context, ActionEvent event) {
@@ -170,7 +170,7 @@ public class ApplyProperties implements VPContextActionController {
       if (baseTaggedValue == null)
          return;
 
-      final SetOrderDialog dialog = new SetOrderDialog(baseTaggedValue.getValueAsString());
+      final SetOrderView dialog = new SetOrderView(baseTaggedValue.getValueAsString());
       ApplicationManager.instance().getViewManager().showDialog(dialog);
       final String order = dialog.getOrder();
 
@@ -189,7 +189,7 @@ public class ApplyProperties implements VPContextActionController {
       String currentRestrictions = Class.getRestrictedTo(clickedClass);
       currentRestrictions = currentRestrictions == null ? "" : currentRestrictions;
 
-      final SelectMultipleOptionsDialog dialog = new SelectMultipleOptionsDialog(currentRestrictions);
+      final SelectRestrictionsView dialog = new SelectRestrictionsView(currentRestrictions);
       ApplicationManager.instance().getViewManager().showDialog(dialog);
       final String newRestrictions = dialog.getSelectedValues();
 

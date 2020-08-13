@@ -3,7 +3,6 @@ package it.unibz.inf.ontouml.vp.views;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Font;
-import java.net.URI;
 
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;

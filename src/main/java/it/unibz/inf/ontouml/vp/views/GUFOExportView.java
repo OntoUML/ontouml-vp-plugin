@@ -31,6 +31,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.diagram.IDiagramUIModel;
+import com.vp.plugin.model.IAssociation;
+import com.vp.plugin.model.IAssociationClass;
+import com.vp.plugin.model.IAssociationEnd;
+import com.vp.plugin.model.IAttribute;
+import com.vp.plugin.model.IGeneralization;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.factory.IModelElementFactory;
@@ -39,9 +44,9 @@ import com.vp.plugin.view.IDialog;
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
-import it.unibz.inf.ontouml.vp.utils.ServerRequest;
+import it.unibz.inf.ontouml.vp.model.ServerRequest;
 
-public class ExportToGUFOView extends JPanel {
+public class GUFOExportView extends JPanel {
    private static final long serialVersionUID = 1L;
 
    private JTextField IRItxt;
@@ -79,7 +84,7 @@ public class ExportToGUFOView extends JPanel {
    private IModelElement[] elementsMapping;
    private IModelElement[] packagesMapping;
 
-   public ExportToGUFOView(ProjectConfigurations configurations, ServerRequest request) {
+   public GUFOExportView(ProjectConfigurations configurations, ServerRequest request) {
       setSize(new Dimension(680, 550));
       setLayout(new GridLayout(1, 1));
 
@@ -364,7 +369,7 @@ public class ExportToGUFOView extends JPanel {
       String[] nameElements = new String[elementsMapping.length];
 
       for (int i = 0; i < elementsMapping.length; i++)
-         nameElements[i] = NameUtil.getDisplayName(elementsMapping[i]);
+         nameElements[i] = getDisplayName(elementsMapping[i]);
 
       namesBox = new JComboBox<>(nameElements);
       ((JLabel) namesBox.getRenderer()).setHorizontalAlignment(JLabel.LEFT);
@@ -855,14 +860,6 @@ public class ExportToGUFOView extends JPanel {
                   aux.add(((IDiagramUIModel) node.getUserObject()).getId());
             }
          }
-         /*
-          * final IProject project =
-          * ApplicationManager.instance().getProjectManager().getProject(); final
-          * String[] datatypes = { IModelElementFactory.MODEL_TYPE_DATA_TYPE };
-          *
-          * for (IModelElement datatype : project.toModelElementArray(datatypes))
-          * aux.add(datatype.getId());
-          */
       }
 
    }
@@ -969,6 +966,78 @@ public class ExportToGUFOView extends JPanel {
 
    }
 
+	public static String getDisplayName(Object obj) {
+		if (obj == null)
+			return "";
 
+		if (obj instanceof String)
+			return obj.toString();
+
+		if (obj instanceof IDiagramUIModel) {
+			IDiagramUIModel diagram = (IDiagramUIModel) obj;
+
+			return diagram.getName() != null ? diagram.getName() : "Diagram";
+		}
+
+		if (obj instanceof IAttribute) {
+			IAttribute attribute = (IAttribute) obj;
+
+			String attributeName = attribute.getName() != null ? attribute.getName() : "";
+
+			String attributeType = "";
+			if (attribute.getType() != null)
+				attributeType = attribute.getTypeAsString();
+
+			return attributeName + " : " + attributeType;
+		}
+
+		if (obj instanceof IAssociation) {
+			IAssociation association = (IAssociation) obj;
+			String assocName = "";
+
+			if (association.getName() != null && !association.getName().equals(""))
+				assocName = association.getName() + " ";
+
+			String nameFrom = association.getFrom() == null ? "" : association.getFrom().getName();
+			String nameTo = association.getTo() == null ? "" : association.getTo().getName();
+
+			return assocName + "(" + nameFrom + " -> " + nameTo + ")";
+		}
+
+		if (obj instanceof IAssociationEnd) {
+			IAssociationEnd assocEnd = (IAssociationEnd) obj;
+
+			String endName = assocEnd.getName() != null ? assocEnd.getName() : "";
+			String typeName = assocEnd.getType() != null ? assocEnd.getTypeAsString() : "";
+
+			return endName + " : " + typeName;
+		}
+
+		if (obj instanceof IGeneralization) {
+			IGeneralization generalization = (IGeneralization) obj;
+
+			String childTypeName = generalization.getTo() != null ? generalization.getTo().getName() : "";
+			String parentTypeName = generalization.getFrom() != null ? generalization.getFrom().getName() : "";
+
+			return "(" + childTypeName + " -> " + parentTypeName + ")";
+		}
+
+		if (obj instanceof IAssociationClass) {
+			IAssociationClass assocClass = (IAssociationClass) obj;
+
+			String nameFrom = assocClass.getFrom() != null ? assocClass.getFrom().getName() : "";
+			String nameTo = assocClass.getTo() != null ? assocClass.getTo().getName() : "";
+
+			return "(" + nameFrom + " -> " + nameTo + ")";
+
+		}
+
+		if (obj instanceof IModelElement) {
+			IModelElement element = (IModelElement) obj;
+			return element.getName() != null ? element.getName() : "ModelElement " + element.getId();
+		}
+
+		return "Element";
+	}
 
 }

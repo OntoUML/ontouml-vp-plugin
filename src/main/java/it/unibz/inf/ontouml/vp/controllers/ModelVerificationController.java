@@ -8,9 +8,8 @@ import com.vp.plugin.action.VPActionController;
 import com.vp.plugin.view.IDialog;
 import com.vp.plugin.view.IDialogHandler;
 
+import it.unibz.inf.ontouml.vp.model.ServerRequest;
 import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
-import it.unibz.inf.ontouml.vp.utils.OntoUMLServerUtils;
-import it.unibz.inf.ontouml.vp.utils.ServerRequest;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 import it.unibz.inf.ontouml.vp.views.ProgressPanel;
 
@@ -21,7 +20,7 @@ import it.unibz.inf.ontouml.vp.views.ProgressPanel;
  * @author Claudenir Fonseca
  *
  */
-public class ModelVerificationAction implements VPActionController {
+public class ModelVerificationController implements VPActionController {
 
 	private ProgressPanel progressPanel;
 	private ProgressDialog loading;
@@ -92,7 +91,7 @@ public class ModelVerificationAction implements VPActionController {
 		public void run() {
 			while (keepRunning()) {
 				try {
-					final String response = OntoUMLServerUtils.requestModelVerification(ModelElement.generateModel(true), loading);
+					final String response = OntoUMLServerAccessController.requestModelVerification(ModelElement.generateModel(true), loading);
 
 					if (keepRunning()) {
 						if (response != null) {

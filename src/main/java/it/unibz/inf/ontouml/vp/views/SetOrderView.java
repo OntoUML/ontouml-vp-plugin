@@ -5,6 +5,8 @@ import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.nio.file.Paths;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -14,20 +16,28 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.view.IDialog;
 import com.vp.plugin.view.IDialogHandler;
 
-import it.unibz.inf.ontouml.vp.utils.ViewUtils;
+import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 
-public class SetOrderDialog implements IDialogHandler {
+public class SetOrderView implements IDialogHandler {
+	
+
+	private static final String ADD_LOGO = "add";
+	private static final String ASTERISK_LOGO = "asterisk";
+	private static final String SUBTRACT_LOGO = "subtract";
+	private static final String ADD_LOGO_FILENAME = "add.png";
+	private static final String ASTERISK_LOGO_FILENAME = "asterisk.png";
+	private static final String SUBTRACT_LOGO_FILENAME = "subtract.png";
 
     private IDialog _dialog;
-    // private Component _component;
     private boolean cancelledExit = true;
     private String currentString = "";
     private JTextField _inputField;
 
-    public SetOrderDialog(String current) {
+    public SetOrderView(String current) {
         super();
         this.currentString = current;
     }
@@ -40,11 +50,11 @@ public class SetOrderDialog implements IDialogHandler {
         _inputField = new JTextField(this.currentString);
         _inputField.setColumns(10);
 
-        ImageIcon addIcon = new ImageIcon(ViewUtils.getFilePath(ViewUtils.ADD_LOGO));
+        ImageIcon addIcon = new ImageIcon(getFilePath(ADD_LOGO));
         addIcon.setImage(addIcon.getImage().getScaledInstance(17, 17, Image.SCALE_SMOOTH));
-        ImageIcon subtractIcon = new ImageIcon(ViewUtils.getFilePath(ViewUtils.SUBTRACT_LOGO));
+        ImageIcon subtractIcon = new ImageIcon(getFilePath(SUBTRACT_LOGO));
         subtractIcon.setImage(subtractIcon.getImage().getScaledInstance(17, 17, Image.SCALE_SMOOTH));
-        ImageIcon asteriskIcon = new ImageIcon(ViewUtils.getFilePath(ViewUtils.ASTERISK_LOGO));
+        ImageIcon asteriskIcon = new ImageIcon(getFilePath(ASTERISK_LOGO));
         asteriskIcon.setImage(asteriskIcon.getImage().getScaledInstance(17, 17, Image.SCALE_SMOOTH));
 
         final JButton addButton = new JButton(addIcon);
@@ -124,8 +134,6 @@ public class SetOrderDialog implements IDialogHandler {
 
         line.setAlignmentX(Component.LEFT_ALIGNMENT);
         bottomPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        // this._component = panel;
         
         return panel;
     }
@@ -148,5 +156,20 @@ public class SetOrderDialog implements IDialogHandler {
     public String getOrder() {
         return this.cancelledExit ? this.currentString : this._inputField.getText();
     }
+    
+    private static String getFilePath(String imageName) {
+		final File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();
+
+		switch (imageName) {
+		case ADD_LOGO:
+			return Paths.get(pluginDir.getAbsolutePath(), "icons", ADD_LOGO_FILENAME).toFile().getAbsolutePath();
+		case ASTERISK_LOGO:
+			return Paths.get(pluginDir.getAbsolutePath(), "icons", ASTERISK_LOGO_FILENAME).toFile().getAbsolutePath();
+		case SUBTRACT_LOGO:
+			return Paths.get(pluginDir.getAbsolutePath(), "icons", SUBTRACT_LOGO_FILENAME).toFile().getAbsolutePath();
+		default:
+			return null;
+		}
+	}
 
 }

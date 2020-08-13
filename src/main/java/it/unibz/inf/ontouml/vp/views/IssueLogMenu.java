@@ -1,20 +1,23 @@
-package it.unibz.inf.ontouml.vp.utils;
+package it.unibz.inf.ontouml.vp.views;
 
 import javax.swing.*;
+
+import it.unibz.inf.ontouml.vp.utils.ViewUtils;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 @SuppressWarnings("serial")
-final class ContextMenu extends JPopupMenu {
+public final class IssueLogMenu extends JPopupMenu {
 	private JMenuItem takeMeThere;
 	private JMenuItem openSpec;
 	private ActionListener menuListener;
 
-	public ContextMenu() {
+	public IssueLogMenu() {
 
 	}
 
-	public ContextMenu(String idModelElement) {
+	public IssueLogMenu(String idModelElement) {
 
 		menuListener = new ActionListener() {
 			@Override

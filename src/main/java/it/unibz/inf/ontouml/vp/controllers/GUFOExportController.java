@@ -18,11 +18,10 @@ import com.vp.plugin.view.IDialogHandler;
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
+import it.unibz.inf.ontouml.vp.model.ServerRequest;
 import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
-import it.unibz.inf.ontouml.vp.utils.OntoUMLServerUtils;
-import it.unibz.inf.ontouml.vp.utils.ServerRequest;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
-import it.unibz.inf.ontouml.vp.views.ExportToGUFOView;
+import it.unibz.inf.ontouml.vp.views.GUFOExportView;
 import it.unibz.inf.ontouml.vp.views.ProgressPanel;
 
 /**
@@ -32,14 +31,14 @@ import it.unibz.inf.ontouml.vp.views.ProgressPanel;
  * @author Claudenir Fonseca
  *
  */
-public class ExportToGUFOAction implements VPActionController {
+public class GUFOExportController implements VPActionController {
 
 	private ProgressPanel progressPanel;
 	private ProgressDialog loading;
 	private IDialog mainDialog;
 
 	private ExportDialog menu;
-	private ExportToGUFOView _exportMenuView;
+	private GUFOExportView _exportMenuView;
 	private IDialog _dialog;
 	MenuExport requestMenu;
 
@@ -138,7 +137,7 @@ public class ExportToGUFOAction implements VPActionController {
 		 */
 		@Override
 		public Component getComponent() {
-			_exportMenuView = new ExportToGUFOView(Configurations.getInstance().getProjectConfigurations(),
+			_exportMenuView = new GUFOExportView(Configurations.getInstance().getProjectConfigurations(),
 					requestMenu);
 			return _exportMenuView;
 		}
@@ -203,7 +202,7 @@ public class ExportToGUFOAction implements VPActionController {
 								loading = new ProgressDialog();
 								ApplicationManager.instance().getViewManager().showDialog(loading);
 
-								final BufferedReader gufo = OntoUMLServerUtils.transformToGUFO(
+								final BufferedReader gufo = OntoUMLServerAccessController.transformToGUFO(
 										ModelElement.generateModel(_exportMenuView.getSavedElements(), true),
 										projectConfigurations.getExportGUFOIRI(),
 										projectConfigurations.getExportGUFOFormat(),

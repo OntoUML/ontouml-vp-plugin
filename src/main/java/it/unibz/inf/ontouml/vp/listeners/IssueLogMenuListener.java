@@ -1,16 +1,20 @@
-package it.unibz.inf.ontouml.vp.utils;
+package it.unibz.inf.ontouml.vp.listeners;
 
 import javax.swing.*;
+
+import it.unibz.inf.ontouml.vp.utils.ViewUtils;
+import it.unibz.inf.ontouml.vp.views.IssueLogMenu;
+
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-final class ContextMenuListener extends MouseAdapter {
+public final class IssueLogMenuListener extends MouseAdapter {
 	private ArrayList<String> idModelElementList;
 	private JList<Object> messageList;
 
-	ContextMenuListener(ArrayList<String> list, JList<Object> messages) {
+	public IssueLogMenuListener(ArrayList<String> list, JList<Object> messages) {
 		super();
 		idModelElementList = list;
 		messageList = messages;
@@ -34,13 +38,13 @@ final class ContextMenuListener extends MouseAdapter {
 	}
 
 	private void doPop(MouseEvent e) {
-		ContextMenu menu;
+		IssueLogMenu menu;
 		String idModelElement = idModelElementList.get(messageList.locationToIndex(e.getPoint()));
 
 		if (idModelElement == null) {
-			menu = new ContextMenu();
+			menu = new IssueLogMenu();
 		} else {
-			menu = new ContextMenu(idModelElement);
+			menu = new IssueLogMenu(idModelElement);
 			if (!ViewUtils.isElementInAnyDiagram(idModelElement)) {
 				menu.disableItem("Take me there!");
 			}

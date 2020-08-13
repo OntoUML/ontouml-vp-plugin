@@ -10,7 +10,7 @@ import com.vp.plugin.model.IGeneralization;
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.model.uml.Generalization;
-import it.unibz.inf.ontouml.vp.utils.SmartColoring;
+import it.unibz.inf.ontouml.vp.utils.SmartColoringUtils;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 public class ModelListener implements PropertyChangeListener {
@@ -109,7 +109,7 @@ public class ModelListener implements PropertyChangeListener {
 		final Object oldRestriction = event.getOldValue();
 
 		if (_class != null && !newRestriction.equals(oldRestriction)) {
-			SmartColoring.paint(_class);
+			SmartColoringUtils.paint(_class);
 		}
 	}
 

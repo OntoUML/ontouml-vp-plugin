@@ -8,7 +8,7 @@ import com.vp.plugin.action.VPActionController;
 
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 
-public class ReportErrorAction implements VPActionController {
+public class ReportErrorController implements VPActionController {
 	
 	final private static String REPORT_URL = "https://forms.gle/btx7CDSy9kn5yb3WA";
 

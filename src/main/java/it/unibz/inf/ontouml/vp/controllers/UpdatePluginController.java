@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.function.Predicate;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -19,7 +18,7 @@ import it.unibz.inf.ontouml.vp.model.GitHubRelease;
 import it.unibz.inf.ontouml.vp.model.GitHubReleaseAsset;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 
-public class UpdatePluginAction implements VPActionController {
+public class UpdatePluginController implements VPActionController {
 
 	private static final int BUFFER_SIZE = 4096;
 
@@ -46,7 +45,7 @@ public class UpdatePluginAction implements VPActionController {
 
 			System.out.println("DESTINATION: " + destinationDir);
 
-			UpdatePluginAction.unzip(downloadedFile, destinationDir);
+			UpdatePluginController.unzip(downloadedFile, destinationDir);
 			deleteFolderContents(pluginDir.getParentFile(),
 					content -> content.isDirectory() && content.getName().contains("ontouml-vp-plugin")
 					&& !content.getName().equals(destinationDirName));

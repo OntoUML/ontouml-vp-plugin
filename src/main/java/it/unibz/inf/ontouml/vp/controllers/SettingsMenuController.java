@@ -21,7 +21,7 @@ import java.awt.*;
  * @author Claudenir Fonseca
  *
  */
-public class OpenConfigurationsAction implements VPActionController {
+public class SettingsMenuController implements VPActionController {
 	
 	private ConfigurationsView _configurationsMenuView;
 	private IDialog _dialog;

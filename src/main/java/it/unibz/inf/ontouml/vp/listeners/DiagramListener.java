@@ -8,7 +8,7 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.diagram.shape.IClassUIModel;
 
 import it.unibz.inf.ontouml.vp.model.Configurations;
-import it.unibz.inf.ontouml.vp.utils.SmartColoring;
+import it.unibz.inf.ontouml.vp.utils.SmartColoringUtils;
 
 public class DiagramListener implements IDiagramListener {
 
@@ -50,7 +50,7 @@ public class DiagramListener implements IDiagramListener {
 			diagramElement instanceof IClassUIModel &&
 			Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled()
 		) {
-			SmartColoring.paint((IClassUIModel) diagramElement);
+			SmartColoringUtils.paint((IClassUIModel) diagramElement);
 		}
 	}
 
@@ -64,7 +64,7 @@ public class DiagramListener implements IDiagramListener {
 				final IDiagramElement next = (IDiagramElement) iter.next();
 				
 				if(next instanceof IClassUIModel) {
-					SmartColoring.paint((IClassUIModel) next);
+					SmartColoringUtils.paint((IClassUIModel) next);
 				}
 			}
 		}

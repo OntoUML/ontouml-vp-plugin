@@ -1,4 +1,4 @@
-package it.unibz.inf.ontouml.vp.utils;
+package it.unibz.inf.ontouml.vp.controllers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,6 +18,7 @@ import com.vp.plugin.view.IDialogHandler;
 
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
+import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 
 /**
  * 
@@ -28,7 +29,7 @@ import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
  * @author Victor Viola
  *
  */
-public class OntoUMLServerUtils {
+public class OntoUMLServerAccessController {
 
 	private static final String TRANSFORM_GUFO_SERVICE_ENDPOINT = "/v1/transform/gufo";
 	private static final String VERIFICATION_SERVICE_ENDPOINT = "/v1/verify";

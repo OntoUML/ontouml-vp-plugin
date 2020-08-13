@@ -6,13 +6,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.shape.IClassUIModel;
 import com.vp.plugin.model.IClass;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IProject;
-import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
@@ -24,7 +20,7 @@ import it.unibz.inf.ontouml.vp.model.uml.Class;
  * @author Claudenir Fonseca
  * @author Tiago Prince Sales
  */
-public class SmartColoring {
+public class SmartColoringUtils {
 
 	public static final Color COLOR_FOR_ABSTRACT = new Color(255, 255, 255);
 	public static final Color COLOR_FOR_COLLECTIVE = new Color(255, 218, 221);
@@ -43,23 +39,6 @@ public class SmartColoring {
 	public static final Color COLOR_FOR_RELATOR_DARK = new Color(153, 255, 153);
 	public static final Color COLOR_FOR_TYPE = new Color(211, 211, 252);
 	public static final Color COLOR_FOR_NON_SPECIFIC = new Color(224, 224, 224);
-
-	/**
-	 * Runs twice over the diagram and paint all the elements.
-	 */
-	public static void paintAll() {
-		if (!Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled()) {
-			return;
-		}
-
-		final IProject project = ApplicationManager.instance().getProjectManager().getProject();
-		final IModelElement[] modelElements = project
-				.toAllLevelModelElementArray(IModelElementFactory.MODEL_TYPE_CLASS);
-
-		for (int j = 0; modelElements != null && j < modelElements.length; j++) {
-			SmartColoring.paint((IClass) modelElements[j]);
-		}
-	}
 
 	/**
 	 * Paints occurrences of a class based on the "restrictTo" meta-property.

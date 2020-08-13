@@ -10,9 +10,8 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.view.IDialog;
 import com.vp.plugin.view.IDialogHandler;
 
+import it.unibz.inf.ontouml.vp.model.ServerRequest;
 import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
-import it.unibz.inf.ontouml.vp.utils.OntoUMLServerUtils;
-import it.unibz.inf.ontouml.vp.utils.ServerRequest;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 import it.unibz.inf.ontouml.vp.views.ProgressPanel;
 
@@ -20,7 +19,7 @@ import it.unibz.inf.ontouml.vp.views.ProgressPanel;
  * Implementation of toolbar button action responsible for performing diagram verification.
  *
  */
-public class DiagramVerificationAction implements VPActionController {
+public class DiagramVerificationController implements VPActionController {
 
 	private ProgressPanel progressPanel;
 	private ProgressDialog loading;
@@ -110,7 +109,7 @@ public class DiagramVerificationAction implements VPActionController {
 		public void run() {
 			while (keepRunning()) {
 				try {
-					final String response = OntoUMLServerUtils.requestModelVerification(ModelElement.generateModel(true), loading);
+					final String response = OntoUMLServerAccessController.requestModelVerification(ModelElement.generateModel(true), loading);
 
 					if (keepRunning()) {
 						if (response != null) {

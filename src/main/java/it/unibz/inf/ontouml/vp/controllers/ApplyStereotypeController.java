@@ -18,7 +18,6 @@ import com.vp.plugin.model.factory.IModelElementFactory;
 import it.unibz.inf.ontouml.vp.features.constraints.ActionIds;
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
-import it.unibz.inf.ontouml.vp.utils.SmartModelling;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 /**
@@ -27,7 +26,7 @@ import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
  * @author Claudenir Fonseca
  * @author Victor Viola
  */
-public class ApplyStereotype implements VPContextActionController {
+public class ApplyStereotypeController implements VPContextActionController {
 
    @Override
    public void performAction(VPAction action, VPContext context, ActionEvent event) {
@@ -265,23 +264,23 @@ public class ApplyStereotype implements VPContextActionController {
       boolean isAssociation = element.getModelType().equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
 
       if (isSmartModelingEnabled && isClass)
-         SmartModelling.setClassMetaProperties((IClass) element);
+         SmartModellingController.setClassMetaProperties((IClass) element);
 
       if (isSmartModelingEnabled && isAssociation)
-         SmartModelling.setAssociationMetaProperties((IAssociation) element);
+         SmartModellingController.setAssociationMetaProperties((IAssociation) element);
    }
 
    private void defineActionBehavior(VPAction action, IModelElement element) {
 
       if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION)) {
          final IAssociation association = (IAssociation) element;
-         SmartModelling.manageAssociationStereotypes(association, action);
+         SmartModellingController.manageAssociationStereotypes(association, action);
          return;
       }
 
       if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
          final IClass _class = (IClass) element;
-         SmartModelling.manageClassStereotypes(_class, action);
+         SmartModellingController.manageClassStereotypes(_class, action);
          return;
       }
    }
