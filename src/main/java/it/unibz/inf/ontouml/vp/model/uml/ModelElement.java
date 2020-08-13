@@ -1,4 +1,4 @@
-package it.unibz.inf.ontouml.vp.model;
+package it.unibz.inf.ontouml.vp.model.uml;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;

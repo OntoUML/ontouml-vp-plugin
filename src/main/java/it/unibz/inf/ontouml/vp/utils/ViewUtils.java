@@ -44,6 +44,9 @@ import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IProject;
 
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
+import it.unibz.inf.ontouml.vp.model.Configurations;
+import it.unibz.inf.ontouml.vp.model.GitHubRelease;
+import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
 import it.unibz.inf.ontouml.vp.views.HTMLEnabledMessage;
 
 /**
@@ -374,21 +377,6 @@ public class ViewUtils {
 		}
 	}
 
-	public static int smartPaintEnableDialog() {
-		return ApplicationManager.instance().getViewManager().showConfirmDialog(null,
-				"Smart Paint is disabled. Do you want to enable this feature?\n"
-						+ "Warning: this feature will affect all diagrams within the project.",
-				"Smart Paint", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
-				new ImageIcon(getFilePath(SIMPLE_LOGO)));
-	}
-
-	public static int smartPaintConfirmationDialog() {
-		return ApplicationManager.instance().getViewManager().showConfirmDialog(null,
-				"Warning: this feature will affect all diagrams within the project.\n" + "Do you want to proceed?",
-				"Smart Paint", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
-				new ImageIcon(getFilePath(SIMPLE_LOGO)));
-	}
-
 	public static void saveFile(BufferedReader buffer) throws IOException {
 		final Configurations configs = Configurations.getInstance();
 		final ProjectConfigurations projectConfigurations = configs.getProjectConfigurations();
@@ -567,7 +555,7 @@ public class ViewUtils {
 
 	public static GitHubRelease updateDialog() {
 		final Configurations config = Configurations.getInstance();
-		final GitHubRelease lastestRelease = config.getLatestGitHubRelease();
+		final GitHubRelease lastestRelease = config.getLatestRelease();
 
 		final boolean isUpToDate = lastestRelease.getTagName().equals(OntoUMLPlugin.PLUGIN_VERSION_RELEASE);
 		String[] options;
@@ -639,12 +627,11 @@ public class ViewUtils {
 	public static GitHubRelease selectReleaseToInstall() {
 		final Map<String, GitHubRelease> map = new HashMap<>();
 		final Configurations config = Configurations.getInstance();
-		final GitHubRelease installedRelease = config.getInstalledGitHubRelease();
+		final GitHubRelease installedRelease = config.getInstalledRelease();
 		final String installedReleaseTagName = installedRelease != null
 				? installedRelease.getTagName() : null;
 
-		config.getReleases().forEach(item -> {
-			final GitHubRelease release = new GitHubRelease(item.getAsJsonObject());
+		config.getReleases().forEach(release -> {
 			String releaseTagName = release.getTagName();
 
 			releaseTagName = installedReleaseTagName != null && releaseTagName.equals(installedReleaseTagName)

@@ -15,9 +15,8 @@ import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
-import it.unibz.inf.ontouml.vp.utils.GitHubRelease;
-import it.unibz.inf.ontouml.vp.utils.GitHubReleaseAsset;
-import it.unibz.inf.ontouml.vp.utils.GitHubUtils;
+import it.unibz.inf.ontouml.vp.model.GitHubRelease;
+import it.unibz.inf.ontouml.vp.model.GitHubReleaseAsset;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 
 public class UpdatePluginAction implements VPActionController {
@@ -28,15 +27,15 @@ public class UpdatePluginAction implements VPActionController {
 	public void performAction(VPAction arg0) {
 
 		try {
-			GitHubUtils.lookupUpdates();
+			GitHubAccessController.lookupUpdates();
 			GitHubRelease selectedRelease = ViewUtils.updateDialog();
-			GitHubReleaseAsset pluginAsset = selectedRelease != null ? selectedRelease.getPluginAsset() : null;
+			GitHubReleaseAsset pluginAsset = selectedRelease != null ? selectedRelease.getInstallationFileAsset() : null;
 
 			if (selectedRelease == null || pluginAsset == null) {
 				return;
 			}
 
-			File downloadedFile = GitHubUtils.downloadReleaseAsset(pluginAsset);
+			File downloadedFile = GitHubAccessController.downloadReleaseAsset(pluginAsset);
 
 			String destinationDirName = pluginAsset.getName().replace(".zip", "");
 			File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();

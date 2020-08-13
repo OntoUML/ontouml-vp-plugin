@@ -7,9 +7,9 @@ import java.util.Set;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IGeneralization;
 
-import it.unibz.inf.ontouml.vp.model.Class;
-import it.unibz.inf.ontouml.vp.model.Generalization;
-import it.unibz.inf.ontouml.vp.utils.Configurations;
+import it.unibz.inf.ontouml.vp.model.Configurations;
+import it.unibz.inf.ontouml.vp.model.uml.Class;
+import it.unibz.inf.ontouml.vp.model.uml.Generalization;
 import it.unibz.inf.ontouml.vp.utils.SmartColoring;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 

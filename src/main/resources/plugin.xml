@@ -59,18 +59,6 @@
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ExportToGUFOAction" />
             </action>
 
-            <!-- <action
-                    id="it.unibz.inf.ontouml.vp.actions.PaintModel"
-                    actionType="generalAction"
-                    description="Applies the smart paint algorithm to the project."
-                    style="normal"
-                    tooltip="Applies the smart paint algorithm to the project."
-                    icon="icons/toolbar/format-paint-orange.png"
-                    label="Smart Paint"
-                    toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
-                <actionController class="it.unibz.inf.ontouml.vp.controllers.PaintModelAction" />
-            </action> -->
-
             <action
                     id="it.unibz.inf.ontouml.vp.actions.UpdatePluginAction"
                     actionType="generalAction"
@@ -114,7 +102,7 @@
 					tooltip="Reload Plugin" 
 					style="normal"
 					toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
-				<actionController class="it.unibz.inf.ontouml.vp.controllers.ReloadClassesActionController" />
+				<actionController class="it.unibz.inf.ontouml.vp.controllers.ReloadClassesAction" />
 			</action>
 			-->
         </actionSet>

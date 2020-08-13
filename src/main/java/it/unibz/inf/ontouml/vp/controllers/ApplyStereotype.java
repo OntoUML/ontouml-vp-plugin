@@ -16,8 +16,8 @@ import com.vp.plugin.model.ISimpleRelationship;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.features.constraints.ActionIds;
-import it.unibz.inf.ontouml.vp.model.Class;
-import it.unibz.inf.ontouml.vp.utils.Configurations;
+import it.unibz.inf.ontouml.vp.model.Configurations;
+import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.utils.SmartModelling;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 

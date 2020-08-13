@@ -1,19 +1,18 @@
-package it.unibz.inf.ontouml.vp.model;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+package it.unibz.inf.ontouml.vp.model.uml;
 
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.vp.plugin.model.IAssociation;
-import com.vp.plugin.model.IAssociationEnd;
+import com.vp.plugin.model.IAssociationClass;
+import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
- * Implementation of ModelElement to handle IAssociation objects to be
- * serialized as ontouml-schema/Association
+ * Implementation of ModelElement to handle IAssociationClass objects
+ * to be serialized as ontouml-schema/Association
  * 
  * @author Claudenir Fonseca
  * @author Tiago Prince Sales
@@ -21,9 +20,9 @@ import com.vp.plugin.model.IAssociationEnd;
  *
  */
 
-public class Association implements ModelElement {
+public class AssociationClass implements ModelElement {
 
-	private final IAssociation sourceModelElement;
+	private final IAssociationClass sourceModelElement;
 
 	@SerializedName("type")
 	@Expose
@@ -60,50 +59,21 @@ public class Association implements ModelElement {
 	@SerializedName("isDerived")
 	@Expose
 	private boolean isDerived;
-
-	public Association(IAssociation source) {
-		this.sourceModelElement = source;
-
-		this.type = ModelElement.TYPE_RELATION;
-		this.id = source.getId();
-		setName(source.getName());
-		setDescription(source.getDescription());
-
-		addProperty(new Property((IAssociationEnd) source.getFromEnd()));
-		addProperty(new Property((IAssociationEnd) source.getToEnd()));
-
-		String[] stereotypes = source.toStereotypeArray();
-		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
-			addStereotype(stereotypes[i]);
-		}
-
-		setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
-		setAbstract(source.isAbstract());
-		setDerived(source.isDerived());
-	}
 	
-	public Association(IAssociation source, HashSet<String> modelElements) {
+	public AssociationClass(IAssociationClass source) {
 		this.sourceModelElement = source;
-
-		this.type = ModelElement.TYPE_RELATION;
+		this.type = ModelElement.TYPE_ASSOCIATION_CLASS;
 		this.id = source.getId();
 		setName(source.getName());
 		setDescription(source.getDescription());
 
-		if(modelElements.contains(source.getFromEnd().getId()))
-			addProperty(new Property((IAssociationEnd) source.getFromEnd()));
-		
-		if(modelElements.contains(source.getToEnd().getId()))
-			addProperty(new Property((IAssociationEnd) source.getToEnd()));
+		Property sourceEnd = new Property(source, source.getFrom());
+		Property targetEnd = new Property(source, source.getTo());
 
-		String[] stereotypes = source.toStereotypeArray();
-		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
-			addStereotype(stereotypes[i]);
-		}
+		addStereotype(StereotypeUtils.STR_DERIVATION);
 
-		setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
-		setAbstract(source.isAbstract());
-		setDerived(source.isDerived());
+		addProperty(sourceEnd);
+		addProperty(targetEnd);
 	}
 
 	@Override
@@ -112,7 +82,7 @@ public class Association implements ModelElement {
 	}
 
 	@Override
-	public IAssociation getSourceModelElement() {
+	public IAssociationClass getSourceModelElement() {
 		return this.sourceModelElement;
 	}
 
@@ -210,5 +180,4 @@ public class Association implements ModelElement {
 	public void setDerived(boolean isDerived) {
 		this.isDerived = isDerived;
 	}
-
 }

@@ -1,4 +1,4 @@
-package it.unibz.inf.ontouml.vp.utils;
+package it.unibz.inf.ontouml.vp.model;
 
 import java.util.HashSet;
 

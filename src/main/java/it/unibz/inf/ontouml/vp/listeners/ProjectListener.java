@@ -8,9 +8,9 @@ import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.IProjectListener;
 
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
-import it.unibz.inf.ontouml.vp.utils.Configurations;
-import it.unibz.inf.ontouml.vp.utils.GitHubRelease;
-import it.unibz.inf.ontouml.vp.utils.GitHubUtils;
+import it.unibz.inf.ontouml.vp.controllers.GitHubAccessController;
+import it.unibz.inf.ontouml.vp.model.Configurations;
+import it.unibz.inf.ontouml.vp.model.GitHubRelease;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 
@@ -49,10 +49,10 @@ public class ProjectListener implements IProjectListener {
 			ZonedDateTime lastCheck = ZonedDateTime.parse(lastUpdateCheck);
 			
 			// TODO: confirm plusDays() before PR
-			if(lastCheck != null && lastCheck.plusSeconds(1).isBefore(ZonedDateTime.now())) {
-				GitHubUtils.lookupUpdates();
-				List<GitHubRelease> releases = config.getGitHubReleases();
-				GitHubRelease latestRelease = config.getLatestGitHubRelease();
+			if(lastCheck != null && lastCheck.plusDays(1).isBefore(ZonedDateTime.now())) {
+				GitHubAccessController.lookupUpdates();
+				List<GitHubRelease> releases = config.getReleases();
+				GitHubRelease latestRelease = config.getLatestRelease();
 				boolean upToDate = false;
 				
 				for (GitHubRelease release : releases) {

@@ -1,4 +1,4 @@
-package it.unibz.inf.ontouml.vp.utils;
+package it.unibz.inf.ontouml.vp.model;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -40,27 +40,27 @@ public class Configurations {
 
 	@SerializedName("releases")
 	@Expose()
-	private JsonArray releases;
+	private List<GitHubRelease> releases;
 
 	@SerializedName("latestRelease")
 	@Expose()
-	private JsonObject latestRelease;
+	private GitHubRelease latestRelease;
 
 	@SerializedName("latestAlphaRelease")
 	@Expose()
-	private JsonObject latestAlphaRelease;
+	private GitHubRelease latestAlphaRelease;
 
 	@SerializedName("installedRelease")
 	@Expose()
-	private JsonObject installedRelease;
+	private GitHubRelease installedRelease;
 
-	@SerializedName("lastCheckForReleases")
+	@SerializedName("lastUpdatesCheck")
 	@Expose()
 	private String lastUpdatesCheck;
 
 	private Configurations() {
 		this.projects = new ArrayList<ProjectConfigurations>();
-		this.releases = new JsonArray();
+		this.releases = new ArrayList<>();
 		this.latestRelease = null;
 		this.latestAlphaRelease = null;
 		this.installedRelease = null;
@@ -75,35 +75,33 @@ public class Configurations {
 		return getProjectConfigurationsList().add(projectConfigurations);
 	}
 
-	public JsonArray getReleases() {
+	public List<GitHubRelease> getReleases() {
 		return releases;
 	}
 
-	public void setReleases(JsonArray releases) {
+	public void setReleases(List<GitHubRelease> releases) {
 		if (releases == null) {
 			return;
 		}
 
 		this.releases = releases;
 
-		final GitHubRelease latestGitHubRelease = getLatestGitHubRelease();
-		final GitHubRelease latestAlphaGitHubRelease = getLatestAlphaGitHubRelease();
+		final GitHubRelease latestGitHubRelease = getLatestRelease();
+		final GitHubRelease latestAlphaGitHubRelease = getLatestAlphaRelease();
 
-		this.releases.forEach(item -> {
-			final GitHubRelease release = new GitHubRelease(item.getAsJsonObject());
-
+		this.releases.forEach(release -> {
 			if (release.isPrerelease()) {
 				latestAlphaRelease = latestAlphaGitHubRelease == null
 						|| release.getCreatedAt().isAfter(latestAlphaGitHubRelease.getCreatedAt()) 
-							? release.source : latestAlphaRelease;
+							? release : latestAlphaRelease;
 			} else {
 				latestRelease = latestGitHubRelease == null
 						|| release.getCreatedAt().isAfter(latestGitHubRelease.getCreatedAt())
-							? release.source : latestRelease;
+							? release : latestRelease;
 			}
 
-			installedRelease = release.getTagName().equals(OntoUMLPlugin.PLUGIN_VERSION_RELEASE) ? release.source
-					: installedRelease;
+			installedRelease = release.getTagName().equals(OntoUMLPlugin.PLUGIN_VERSION_RELEASE)
+					? release : installedRelease;
 		});
 	}
 	
@@ -114,31 +112,17 @@ public class Configurations {
 	public void setLastUpdatesCheck(String lastUpdatesCheck) {
 		this.lastUpdatesCheck = lastUpdatesCheck;
 	}
-	
-	public List<GitHubRelease> getGitHubReleases() {
-		List<GitHubRelease> list = new ArrayList<>();
-		
-		if(releases != null) {
-			releases.forEach(release -> {
-				if(release != null && release.isJsonObject()) {
-					list.add(new GitHubRelease(release.getAsJsonObject()));
-				}
-			});
-		}
-		
-		return list;
+
+	public GitHubRelease getLatestRelease() {
+		return latestRelease;
 	}
 
-	public GitHubRelease getLatestGitHubRelease() {
-		return latestRelease != null ? new GitHubRelease(latestRelease) : null;
+	public GitHubRelease getLatestAlphaRelease() {
+		return latestAlphaRelease;
 	}
 
-	public GitHubRelease getLatestAlphaGitHubRelease() {
-		return latestAlphaRelease != null ? new GitHubRelease(latestAlphaRelease) : null;
-	}
-
-	public GitHubRelease getInstalledGitHubRelease() {
-		return installedRelease != null ? new GitHubRelease(installedRelease) : null;
+	public GitHubRelease getInstalledRelease() {
+		return installedRelease;
 	}
 
 	/**

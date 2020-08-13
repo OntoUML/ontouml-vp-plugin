@@ -37,8 +37,8 @@ import com.vp.plugin.model.factory.IModelElementFactory;
 import com.vp.plugin.view.IDialog;
 
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
-import it.unibz.inf.ontouml.vp.utils.Configurations;
-import it.unibz.inf.ontouml.vp.utils.ProjectConfigurations;
+import it.unibz.inf.ontouml.vp.model.Configurations;
+import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
 import it.unibz.inf.ontouml.vp.utils.ServerRequest;
 
 public class ExportToGUFOView extends JPanel {

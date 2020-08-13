@@ -16,6 +16,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.vp.plugin.view.IDialogHandler;
 
+import it.unibz.inf.ontouml.vp.model.Configurations;
+import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
+
 /**
  * 
  * Class responsible for making requests to the OntoUML Server based on standard

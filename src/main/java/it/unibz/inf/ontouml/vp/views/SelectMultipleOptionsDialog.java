@@ -19,7 +19,7 @@ import javax.swing.border.EmptyBorder;
 import com.vp.plugin.view.IDialog;
 import com.vp.plugin.view.IDialogHandler;
 
-import it.unibz.inf.ontouml.vp.utils.Configurations;
+import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 public class SelectMultipleOptionsDialog implements IDialogHandler {

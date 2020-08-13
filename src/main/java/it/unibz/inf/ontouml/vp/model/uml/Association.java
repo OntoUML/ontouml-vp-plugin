@@ -1,18 +1,19 @@
-package it.unibz.inf.ontouml.vp.model;
+package it.unibz.inf.ontouml.vp.model.uml;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.vp.plugin.model.IAssociationClass;
-import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.vp.plugin.model.IAssociation;
+import com.vp.plugin.model.IAssociationEnd;
 
 /**
  * 
- * Implementation of ModelElement to handle IAssociationClass objects
- * to be serialized as ontouml-schema/Association
+ * Implementation of ModelElement to handle IAssociation objects to be
+ * serialized as ontouml-schema/Association
  * 
  * @author Claudenir Fonseca
  * @author Tiago Prince Sales
@@ -20,9 +21,9 @@ import java.util.List;
  *
  */
 
-public class AssociationClass implements ModelElement {
+public class Association implements ModelElement {
 
-	private final IAssociationClass sourceModelElement;
+	private final IAssociation sourceModelElement;
 
 	@SerializedName("type")
 	@Expose
@@ -59,21 +60,50 @@ public class AssociationClass implements ModelElement {
 	@SerializedName("isDerived")
 	@Expose
 	private boolean isDerived;
-	
-	public AssociationClass(IAssociationClass source) {
+
+	public Association(IAssociation source) {
 		this.sourceModelElement = source;
-		this.type = ModelElement.TYPE_ASSOCIATION_CLASS;
+
+		this.type = ModelElement.TYPE_RELATION;
 		this.id = source.getId();
 		setName(source.getName());
 		setDescription(source.getDescription());
 
-		Property sourceEnd = new Property(source, source.getFrom());
-		Property targetEnd = new Property(source, source.getTo());
+		addProperty(new Property((IAssociationEnd) source.getFromEnd()));
+		addProperty(new Property((IAssociationEnd) source.getToEnd()));
 
-		addStereotype(StereotypeUtils.STR_DERIVATION);
+		String[] stereotypes = source.toStereotypeArray();
+		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
+			addStereotype(stereotypes[i]);
+		}
 
-		addProperty(sourceEnd);
-		addProperty(targetEnd);
+		setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
+		setAbstract(source.isAbstract());
+		setDerived(source.isDerived());
+	}
+	
+	public Association(IAssociation source, HashSet<String> modelElements) {
+		this.sourceModelElement = source;
+
+		this.type = ModelElement.TYPE_RELATION;
+		this.id = source.getId();
+		setName(source.getName());
+		setDescription(source.getDescription());
+
+		if(modelElements.contains(source.getFromEnd().getId()))
+			addProperty(new Property((IAssociationEnd) source.getFromEnd()));
+		
+		if(modelElements.contains(source.getToEnd().getId()))
+			addProperty(new Property((IAssociationEnd) source.getToEnd()));
+
+		String[] stereotypes = source.toStereotypeArray();
+		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
+			addStereotype(stereotypes[i]);
+		}
+
+		setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
+		setAbstract(source.isAbstract());
+		setDerived(source.isDerived());
 	}
 
 	@Override
@@ -82,7 +112,7 @@ public class AssociationClass implements ModelElement {
 	}
 
 	@Override
-	public IAssociationClass getSourceModelElement() {
+	public IAssociation getSourceModelElement() {
 		return this.sourceModelElement;
 	}
 
@@ -180,4 +210,5 @@ public class AssociationClass implements ModelElement {
 	public void setDerived(boolean isDerived) {
 		this.isDerived = isDerived;
 	}
+
 }
