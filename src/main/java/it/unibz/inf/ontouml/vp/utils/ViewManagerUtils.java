@@ -52,7 +52,7 @@ import it.unibz.inf.ontouml.vp.views.HTMLEnabledMessage;
  * @author Victor Viola
  *
  */
-public class ViewUtils {
+public class ViewManagerUtils {
 
 	public static final String SCOPE_PLUGIN = "OntoUML";
 	public static final String SCOPE_VERIFICATION = "Verification Log";
@@ -81,24 +81,8 @@ public class ViewUtils {
 	public static final String ATTRIBUTE_LOGO = "attribute";
 	public static final String ATTRIBUTE_LOGO_FILENAME = "attribute.png";
 
-	public static void log(String message) {
-		ApplicationManager.instance().getViewManager().showMessage(timestamp() + message);
-	}
-
-	public static void log(String message, String scope) {
-		ApplicationManager.instance().getViewManager().showMessage(timestamp() + message, scope);
-	}
-
 	public static void simpleLog(String message) {
 		ApplicationManager.instance().getViewManager().showMessage(message);
-	}
-
-	public static void simpleLog(String message, String scope) {
-		ApplicationManager.instance().getViewManager().showMessage(message, scope);
-	}
-
-	public static void clearLog(String scope) {
-		ApplicationManager.instance().getViewManager().clearMessages(scope);
 	}
 
 	public static void simpleDialog(String title, String message) {
@@ -107,7 +91,6 @@ public class ViewUtils {
 	}
 
 	public static void cleanAndShowMessage(String message) {
-
 		ApplicationManager.instance().getViewManager().removeMessagePaneComponent(OntoUMLPlugin.PLUGIN_ID);
 
 		ArrayList<String> messageList = new ArrayList<String>();
@@ -115,7 +98,7 @@ public class ViewUtils {
 		JList<Object> list = new JList<>(messageList.toArray());
 		JScrollPane parentContainer = new JScrollPane(list);
 		ApplicationManager.instance().getViewManager().showMessagePaneComponent(OntoUMLPlugin.PLUGIN_ID,
-				ViewUtils.SCOPE_PLUGIN, parentContainer);
+				ViewManagerUtils.SCOPE_PLUGIN, parentContainer);
 
 	}
 
@@ -374,7 +357,7 @@ public class ViewUtils {
 			configs.save();
 		}
 
-		ViewUtils.cleanAndShowMessage("File saved successfuly.");
+		ViewManagerUtils.cleanAndShowMessage("File saved successfuly.");
 	}
 
 	public static String getCurrentClassDiagramName() {

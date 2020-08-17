@@ -9,7 +9,6 @@ import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.listeners.ProjectListener;
-import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 
 /**
  * Implementation of VPPlugin responsible for configuring OntoUML Plugin's
@@ -88,7 +87,7 @@ public class OntoUMLPlugin implements VPPlugin {
    }
 
    public static void reload() {
-      ViewUtils.log("Reloading plugin: "+PLUGIN_ID);
+//      ViewUtils.log("Reloading plugin: "+PLUGIN_ID);
       ApplicationManager.instance().reloadPluginClasses(PLUGIN_ID);
       // TODO: try to integrate listener to the reload process
 	}

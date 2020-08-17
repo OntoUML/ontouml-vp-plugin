@@ -2,7 +2,7 @@ package it.unibz.inf.ontouml.vp.views;
 
 import javax.swing.*;
 
-import it.unibz.inf.ontouml.vp.utils.ViewUtils;
+import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,11 +25,11 @@ public final class IssueLogMenu extends JPopupMenu {
 				switch (e.getActionCommand()) {
 				case "Take me there!":
 					System.out.println("Firing 'Highlight'");
-					ViewUtils.highlightDiagramElement(idModelElement);
+					ViewManagerUtils.highlightDiagramElement(idModelElement);
 					break;
 				case "Open Specification":
 					System.out.println("Firing 'Open Specification'");
-					ViewUtils.openSpecDiagramElement(idModelElement);
+					ViewManagerUtils.openSpecDiagramElement(idModelElement);
 					break;
 				default:
 					break;
@@ -37,9 +37,9 @@ public final class IssueLogMenu extends JPopupMenu {
 			}
 		};
 
-		takeMeThere = new JMenuItem("Take me there!", new ImageIcon(ViewUtils.getFilePath(ViewUtils.NAVIGATION_LOGO)));
+		takeMeThere = new JMenuItem("Take me there!", new ImageIcon(ViewManagerUtils.getFilePath(ViewManagerUtils.NAVIGATION_LOGO)));
 		takeMeThere.addActionListener(menuListener);
-		openSpec = new JMenuItem("Open Specification", new ImageIcon(ViewUtils.getFilePath(ViewUtils.MORE_HORIZ_LOGO)));
+		openSpec = new JMenuItem("Open Specification", new ImageIcon(ViewManagerUtils.getFilePath(ViewManagerUtils.MORE_HORIZ_LOGO)));
 		openSpec.addActionListener(menuListener);
 		add(takeMeThere);
 		add(openSpec);

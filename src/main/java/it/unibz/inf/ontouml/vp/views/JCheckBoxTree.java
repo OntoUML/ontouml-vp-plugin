@@ -44,7 +44,7 @@ import com.vp.plugin.model.IPackage;
 import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
-import it.unibz.inf.ontouml.vp.utils.ViewUtils;
+import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 
 public class JCheckBoxTree extends JTree {
 
@@ -175,25 +175,25 @@ public class JCheckBoxTree extends JTree {
 			}
 
 			if (obj instanceof IDiagramUIModel)
-				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.DIAGRAM_LOGO)));
+				label.setIcon(new ImageIcon(ViewManagerUtils.getFilePath(ViewManagerUtils.DIAGRAM_LOGO)));
 			else if (obj instanceof IClass)
-				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.CLASS_LOGO)));
+				label.setIcon(new ImageIcon(ViewManagerUtils.getFilePath(ViewManagerUtils.CLASS_LOGO)));
 			else if (obj instanceof IDataType)
-				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.DATATYPE_LOGO)));
+				label.setIcon(new ImageIcon(ViewManagerUtils.getFilePath(ViewManagerUtils.DATATYPE_LOGO)));
 			else if (obj instanceof IAttribute)
-				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.ATTRIBUTE_LOGO)));
+				label.setIcon(new ImageIcon(ViewManagerUtils.getFilePath(ViewManagerUtils.ATTRIBUTE_LOGO)));
 			else if (obj instanceof IAssociation)
-				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.ASSOCIATION_LOGO)));
+				label.setIcon(new ImageIcon(ViewManagerUtils.getFilePath(ViewManagerUtils.ASSOCIATION_LOGO)));
 			else if (obj instanceof IAssociationEnd)
-				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.ATTRIBUTE_LOGO)));
+				label.setIcon(new ImageIcon(ViewManagerUtils.getFilePath(ViewManagerUtils.ATTRIBUTE_LOGO)));
 			else if (obj instanceof IGeneralization)
-				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.GENERALIZATION_LOGO)));
+				label.setIcon(new ImageIcon(ViewManagerUtils.getFilePath(ViewManagerUtils.GENERALIZATION_LOGO)));
 			else if (obj instanceof IGeneralizationSet)
-				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.GENERALIZATION_SET_LOGO)));
+				label.setIcon(new ImageIcon(ViewManagerUtils.getFilePath(ViewManagerUtils.GENERALIZATION_SET_LOGO)));
 			else if (obj instanceof IAssociationClass)
-				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.ASSOCIATION_LOGO)));
+				label.setIcon(new ImageIcon(ViewManagerUtils.getFilePath(ViewManagerUtils.ASSOCIATION_LOGO)));
 			else
-				label.setIcon(new ImageIcon(ViewUtils.getFilePath(ViewUtils.PACKAGE_LOGO)));
+				label.setIcon(new ImageIcon(ViewManagerUtils.getFilePath(ViewManagerUtils.PACKAGE_LOGO)));
 
 			checkBox.setSelected(cn.isSelected);
 			checkBox.setText(getNameNode(node));

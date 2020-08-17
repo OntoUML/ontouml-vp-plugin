@@ -20,7 +20,7 @@ import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
 import it.unibz.inf.ontouml.vp.model.ServerRequest;
 import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
-import it.unibz.inf.ontouml.vp.utils.ViewUtils;
+import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 import it.unibz.inf.ontouml.vp.views.GUFOExportView;
 import it.unibz.inf.ontouml.vp.views.ProgressPanel;
 
@@ -178,7 +178,7 @@ public class GUFOExportController implements VPActionController {
 		public boolean canClosed() {
 			requestMenu.doStop();
 			OntoUMLPlugin.setExportToGUFOWindowOpen(false);
-			ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
+			ViewManagerUtils.cleanAndShowMessage("Request cancelled by the user.");
 			return true;
 		}
 
@@ -216,18 +216,18 @@ public class GUFOExportController implements VPActionController {
 
 								if (gufo != null) {
 									saveFile(gufo,projectConfigurations.getExportGUFOFormat());
-									ViewUtils.cleanAndShowMessage("Model exported successfully.");
+									ViewManagerUtils.cleanAndShowMessage("Model exported successfully.");
 									requestMenu.doStop();
 								} else {
 									menu.canClosed();
 									requestMenu.doStop();
-									ViewUtils.cleanAndShowMessage(
+									ViewManagerUtils.cleanAndShowMessage(
 											"Unable to transform to GUFO. Please check your model.");
 								}
 							} else {
 								menu.canClosed();
 								requestMenu.doStop();
-								ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
+								ViewManagerUtils.cleanAndShowMessage("Request cancelled by the user.");
 							}
 
 							OntoUMLPlugin.setExportToGUFOWindowOpen(false);

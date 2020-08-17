@@ -2,7 +2,7 @@ package it.unibz.inf.ontouml.vp.listeners;
 
 import javax.swing.*;
 
-import it.unibz.inf.ontouml.vp.utils.ViewUtils;
+import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 import it.unibz.inf.ontouml.vp.views.IssueLogMenu;
 
 import java.awt.*;
@@ -45,7 +45,7 @@ public final class IssueLogMenuListener extends MouseAdapter {
 			menu = new IssueLogMenu();
 		} else {
 			menu = new IssueLogMenu(idModelElement);
-			if (!ViewUtils.isElementInAnyDiagram(idModelElement)) {
+			if (!ViewManagerUtils.isElementInAnyDiagram(idModelElement)) {
 				menu.disableItem("Take me there!");
 			}
 		}

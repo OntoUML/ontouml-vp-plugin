@@ -9,7 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
-import it.unibz.inf.ontouml.vp.utils.ViewUtils;
+import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 
 public class HTMLEnabledMessage extends JEditorPane {
 	private static final long serialVersionUID = 1L;
@@ -24,13 +24,13 @@ public class HTMLEnabledMessage extends JEditorPane {
             			final Desktop desktop = Desktop.getDesktop();
             			desktop.browse(e.getURL().toURI());
             		} catch (UnsupportedOperationException unsupportedException) {
-            			ViewUtils.reportBugErrorDialog(true);
+            			ViewManagerUtils.reportBugErrorDialog(true);
             			unsupportedException.printStackTrace();
             		} catch (SecurityException securityException) {
-            			ViewUtils.reportBugErrorDialog(true);
+            			ViewManagerUtils.reportBugErrorDialog(true);
             			securityException.printStackTrace();
             		} catch(Exception exception) {
-            			ViewUtils.reportBugErrorDialog(false);
+            			ViewManagerUtils.reportBugErrorDialog(false);
             			exception.printStackTrace();
             		}
                 }

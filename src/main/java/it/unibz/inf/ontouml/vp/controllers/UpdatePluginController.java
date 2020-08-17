@@ -16,7 +16,7 @@ import com.vp.plugin.action.VPActionController;
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 import it.unibz.inf.ontouml.vp.model.GitHubRelease;
 import it.unibz.inf.ontouml.vp.model.GitHubReleaseAsset;
-import it.unibz.inf.ontouml.vp.utils.ViewUtils;
+import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 
 public class UpdatePluginController implements VPActionController {
 
@@ -27,7 +27,7 @@ public class UpdatePluginController implements VPActionController {
 
 		try {
 			GitHubAccessController.lookupUpdates();
-			GitHubRelease selectedRelease = ViewUtils.updateDialog();
+			GitHubRelease selectedRelease = ViewManagerUtils.updateDialog();
 			GitHubReleaseAsset pluginAsset = selectedRelease != null ? selectedRelease.getInstallationFileAsset() : null;
 
 			if (selectedRelease == null || pluginAsset == null) {
@@ -49,9 +49,9 @@ public class UpdatePluginController implements VPActionController {
 			deleteFolderContents(pluginDir.getParentFile(),
 					content -> content.isDirectory() && content.getName().contains("ontouml-vp-plugin")
 					&& !content.getName().equals(destinationDirName));
-			ViewUtils.updateSuccessDialog();
+			ViewManagerUtils.updateSuccessDialog();
 		} catch (Exception e) {
-			ViewUtils.updateErrorDialog();
+			ViewManagerUtils.updateErrorDialog();
 			e.printStackTrace();
 		}
 	}

@@ -18,7 +18,7 @@ import com.vp.plugin.view.IDialogHandler;
 
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
-import it.unibz.inf.ontouml.vp.utils.ViewUtils;
+import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 
 /**
  * 
@@ -91,7 +91,7 @@ public class OntoUMLServerAccessController {
 				if (!request.getContentType().equals("text/html")) {
 					return responseReader;
 				} else {
-					if (ViewUtils.exportToGUFOIssueDialogWithOption("Server not found.",
+					if (ViewManagerUtils.exportToGUFOIssueDialogWithOption("Server not found.",
 							HttpURLConnection.HTTP_NOT_FOUND))
 						return transformToGUFO(model, baseIRI, format, uriFormatBy, inverse, object, analysis, packages,
 								elementMapping, packageMapping, loading);
@@ -101,7 +101,7 @@ public class OntoUMLServerAccessController {
 					return null;
 				}
 			case HttpURLConnection.HTTP_BAD_REQUEST:
-				ViewUtils.exportToGUFOIssueDialog("Unable to transform the model due to an unexpected error."
+				ViewManagerUtils.exportToGUFOIssueDialog("Unable to transform the model due to an unexpected error."
 						+ "\nPlease check the model for any syntactical errors."
 						+ "\n\nWarning: partially exporting models to gUFO may introduce syntactical errors.");
 				System.out.println(responseReader.lines().collect(Collectors.joining()));
@@ -110,7 +110,7 @@ public class OntoUMLServerAccessController {
 						+ "\n\nWarning: partially exporting models to gUFO may introduce syntactical errors.").printStackTrace();
 				return null;
 			case HttpURLConnection.HTTP_NOT_FOUND:
-				if (ViewUtils.exportToGUFOIssueDialogWithOption("Server not found.", HttpURLConnection.HTTP_NOT_FOUND))
+				if (ViewManagerUtils.exportToGUFOIssueDialogWithOption("Server not found.", HttpURLConnection.HTTP_NOT_FOUND))
 					return transformToGUFO(model, baseIRI, format, uriFormatBy, inverse, object, analysis, packages,
 							elementMapping, packageMapping, loading);
 
@@ -118,7 +118,7 @@ public class OntoUMLServerAccessController {
 				new Exception("Server not found.").printStackTrace();
 				return null;
 			case HttpURLConnection.HTTP_INTERNAL_ERROR:
-				if (ViewUtils.exportToGUFOIssueDialogWithOption("Server error.", HttpURLConnection.HTTP_INTERNAL_ERROR))
+				if (ViewManagerUtils.exportToGUFOIssueDialogWithOption("Server error.", HttpURLConnection.HTTP_INTERNAL_ERROR))
 					return transformToGUFO(model, baseIRI, format, uriFormatBy, inverse, object, analysis, packages,
 							elementMapping, packageMapping, loading);
 
@@ -126,11 +126,11 @@ public class OntoUMLServerAccessController {
 				new Exception("Server error.").printStackTrace();
 				return null;
 			default:
-				ViewUtils.exportToGUFOIssueDialog("Unexpected error.");
+				ViewManagerUtils.exportToGUFOIssueDialog("Unexpected error.");
 				throw new Exception("Unknown error");
 			}
 		} catch (MalformedURLException e) {
-			ViewUtils.exportToGUFOIssueDialog("Server error.");
+			ViewManagerUtils.exportToGUFOIssueDialog("Server error.");
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -174,41 +174,41 @@ public class OntoUMLServerAccessController {
 				if (!request.getContentType().equals("text/html")) {
 					return response.toString();
 				} else {
-					if (ViewUtils.verificationFailedDialogWithOption(USER_MESSAGE_NOT_FOUND,
+					if (ViewManagerUtils.verificationFailedDialogWithOption(USER_MESSAGE_NOT_FOUND,
 							HttpURLConnection.HTTP_NOT_FOUND))
 						return requestModelVerification(serializedModel, loading);
 				}
 			case HttpURLConnection.HTTP_BAD_REQUEST:
-				ViewUtils.verificationFailedDialog(USER_MESSAGE_BAD_REQUEST);
+				ViewManagerUtils.verificationFailedDialog(USER_MESSAGE_BAD_REQUEST);
 				return null;
 			case HttpURLConnection.HTTP_NOT_FOUND:
-				if (ViewUtils.verificationFailedDialogWithOption(USER_MESSAGE_NOT_FOUND,
+				if (ViewManagerUtils.verificationFailedDialogWithOption(USER_MESSAGE_NOT_FOUND,
 						HttpURLConnection.HTTP_NOT_FOUND))
 					return requestModelVerification(serializedModel, loading);
 
 				return null;
 			case HttpURLConnection.HTTP_INTERNAL_ERROR:
-				if (ViewUtils.verificationFailedDialogWithOption(USER_MESSAGE_INTERNAL_ERROR,
+				if (ViewManagerUtils.verificationFailedDialogWithOption(USER_MESSAGE_INTERNAL_ERROR,
 						HttpURLConnection.HTTP_INTERNAL_ERROR))
 					return requestModelVerification(serializedModel, loading);
 
 				return null;
 			default:
-				ViewUtils.verificationFailedDialog(USER_MESSAGE_UNKNOWN_ERROR_RESPONSE);
+				ViewManagerUtils.verificationFailedDialog(USER_MESSAGE_UNKNOWN_ERROR_RESPONSE);
 				return null;
 			}
 
 		} catch (SocketException e) {
 			loading.canClosed();
-			ViewUtils.verificationFailedDialog(USER_MESSAGE_NOT_FOUND);
+			ViewManagerUtils.verificationFailedDialog(USER_MESSAGE_NOT_FOUND);
 			e.printStackTrace();
 		} catch (IOException e) {
 			loading.canClosed();
-			ViewUtils.verificationFailedDialog(USER_MESSAGE_UNKNOWN_ERROR_RESPONSE);
+			ViewManagerUtils.verificationFailedDialog(USER_MESSAGE_UNKNOWN_ERROR_RESPONSE);
 			e.printStackTrace();
 		} catch (Exception e) {
 			loading.canClosed();
-			ViewUtils.verificationFailedDialog(USER_MESSAGE_UNKNOWN_ERROR_REQUEST);
+			ViewManagerUtils.verificationFailedDialog(USER_MESSAGE_UNKNOWN_ERROR_REQUEST);
 			e.printStackTrace();
 		}
 

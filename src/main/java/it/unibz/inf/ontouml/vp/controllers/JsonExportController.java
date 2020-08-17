@@ -9,7 +9,7 @@ import com.vp.plugin.view.IDialogHandler;
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
 import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
-import it.unibz.inf.ontouml.vp.utils.ViewUtils;
+import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 import it.unibz.inf.ontouml.vp.views.ProgressPanel;
 
 import java.awt.*;
@@ -74,9 +74,9 @@ public class JsonExportController implements VPActionController {
             projectConfigurations.setExportFolderPath(fileDirectory);
             projectConfigurations.setExportFilename(fileName);
             configs.save();
-            ViewUtils.cleanAndShowMessage("Model exported successfully.");
+            ViewManagerUtils.cleanAndShowMessage("Model exported successfully.");
          } catch (IOException e) {
-            ViewUtils.cleanAndShowMessage("Model export failed.");
+            ViewManagerUtils.cleanAndShowMessage("Model export failed.");
             e.printStackTrace();
          }
 

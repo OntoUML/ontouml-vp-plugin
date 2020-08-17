@@ -6,7 +6,7 @@ import java.net.URI;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 
-import it.unibz.inf.ontouml.vp.utils.ViewUtils;
+import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 
 public class ReportErrorController implements VPActionController {
 	
@@ -19,13 +19,13 @@ public class ReportErrorController implements VPActionController {
 			final URI uri = new URI(REPORT_URL);
 			desktop.browse(uri);
 		} catch (UnsupportedOperationException unsupportedException) {
-			ViewUtils.reportBugErrorDialog(true);
+			ViewManagerUtils.reportBugErrorDialog(true);
 			unsupportedException.printStackTrace();
 		} catch (SecurityException securityException) {
-			ViewUtils.reportBugErrorDialog(true);
+			ViewManagerUtils.reportBugErrorDialog(true);
 			securityException.printStackTrace();
 		} catch(Exception e) {
-			ViewUtils.reportBugErrorDialog(false);
+			ViewManagerUtils.reportBugErrorDialog(false);
 			e.printStackTrace();
 		}
 	}

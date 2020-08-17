@@ -12,7 +12,7 @@ import it.unibz.inf.ontouml.vp.controllers.GitHubAccessController;
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.GitHubRelease;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
-import it.unibz.inf.ontouml.vp.utils.ViewUtils;
+import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 
 public class ProjectListener implements IProjectListener {
 
@@ -66,10 +66,10 @@ public class ProjectListener implements IProjectListener {
 				
 				if(!upToDate) {
 					System.out.println("New updates are available.");
-					ViewUtils.simpleLog("New updates are available. Go to \"Update Plugin\" to get the latest version of the OntoUML Plugin for Visual Paradigm.");
+					ViewManagerUtils.simpleLog("New updates are available. Go to \"Update Plugin\" to get the latest version of the OntoUML Plugin for Visual Paradigm.");
 				} else {
 					System.out.println("No new updates available.");
-					ViewUtils.simpleLog("Your OntoUML Plugin for Visual Paradigm is up to date with our latest release.");					
+					ViewManagerUtils.simpleLog("Your OntoUML Plugin for Visual Paradigm is up to date with our latest release.");					
 				}
 			} else {
 				System.out.println("Last check for updates was already performed in the last 24 hours.");

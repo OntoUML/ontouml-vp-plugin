@@ -12,7 +12,7 @@ import com.vp.plugin.view.IDialogHandler;
 
 import it.unibz.inf.ontouml.vp.model.ServerRequest;
 import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
-import it.unibz.inf.ontouml.vp.utils.ViewUtils;
+import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 import it.unibz.inf.ontouml.vp.views.ProgressPanel;
 
 /**
@@ -38,7 +38,7 @@ public class DiagramVerificationController implements VPActionController {
 	public void performAction(VPAction action) {
 
 		if (!hasOpenedClassDiagram()) {
-			ViewUtils.simpleDialog("Diagram Verification", "Please open a diagram before running this command.");
+			ViewManagerUtils.simpleDialog("Diagram Verification", "Please open a diagram before running this command.");
 			return;
 		}
 
@@ -115,7 +115,7 @@ public class DiagramVerificationController implements VPActionController {
 						if (response != null) {
 							mainDialog.close();
 							request.doStop();
-							ViewUtils.logDiagramVerificationResponse(response);
+							ViewManagerUtils.logDiagramVerificationResponse(response);
 						} else {
 							loading.canClosed();
 							request.doStop();
@@ -123,7 +123,7 @@ public class DiagramVerificationController implements VPActionController {
 					} else {
 						loading.canClosed();
 						request.doStop();
-						ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
+						ViewManagerUtils.cleanAndShowMessage("Request cancelled by the user.");
 					}
 
 				} catch (Exception e) {
