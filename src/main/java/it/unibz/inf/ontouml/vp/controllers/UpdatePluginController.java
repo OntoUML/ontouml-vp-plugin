@@ -39,9 +39,9 @@ public class UpdatePluginController implements VPActionController {
 			String destinationDirName = pluginAsset.getName().replace(".zip", "");
 			File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();
 			// TODO: remove downloadsDir
-//			File downloadsDir = new File(pluginDir.getParentFile(), "downloads");
-//			File destinationDir = new File(downloadsDir, destinationDirName);
-			File destinationDir = new File(pluginDir.getParentFile(), destinationDirName);
+//			File destinationDir = new File(pluginDir.getParentFile(), destinationDirName);
+			File downloadsDir = new File(pluginDir.getParentFile(), "downloads");
+			File destinationDir = new File(downloadsDir, destinationDirName);
 
 			System.out.println("DESTINATION: " + destinationDir);
 

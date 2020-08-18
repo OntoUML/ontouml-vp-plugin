@@ -557,7 +557,7 @@ public class ViewManagerUtils {
 
 	public static void updateSuccessDialog() {
 		final ViewManager vm = ApplicationManager.instance().getViewManager();
-		final String msg = "Plugin successfully updated.\nPlease reopen the application for the changes to take effect.";
+		final String msg = "Plugin successfully updated.\nPlease restart the application for the changes to take effect.";
 
 		vm.showConfirmDialog(null, msg, "Plugin Update", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
 				new ImageIcon(getFilePath(SIMPLE_LOGO)));

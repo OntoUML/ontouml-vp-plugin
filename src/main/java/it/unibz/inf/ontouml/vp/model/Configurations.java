@@ -3,6 +3,7 @@ package it.unibz.inf.ontouml.vp.model;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -10,6 +11,10 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.Expose;
 import com.vp.plugin.ApplicationManager;
@@ -46,6 +51,7 @@ public class Configurations {
 	@Expose()
 	private GitHubRelease installedRelease;
 
+	// Since Gson shows problems with the default serialization of ZonedDateTime we rely on strings
 	@Expose()
 	private String lastUpdatesCheck;
 
@@ -77,17 +83,16 @@ public class Configurations {
 
 		this.releases = releases;
 
-		final GitHubRelease latestGitHubRelease = getLatestRelease();
-		final GitHubRelease latestAlphaGitHubRelease = getLatestAlphaRelease();
-
 		this.releases.forEach(release -> {
 			if (release.isPrerelease()) {
-				latestAlphaRelease = latestAlphaGitHubRelease == null
-						|| release.getCreatedAt().isAfter(latestAlphaGitHubRelease.getCreatedAt()) 
+				latestAlphaRelease = latestAlphaRelease == null
+						|| latestAlphaRelease.getCreatedAt() == null
+						|| release.getCreatedAt().isAfter(latestAlphaRelease.getCreatedAt()) 
 							? release : latestAlphaRelease;
 			} else {
-				latestRelease = latestGitHubRelease == null
-						|| release.getCreatedAt().isAfter(latestGitHubRelease.getCreatedAt())
+				latestRelease = latestRelease == null
+						|| latestRelease.getCreatedAt() == null
+						|| release.getCreatedAt().isAfter(latestRelease.getCreatedAt())
 							? release : latestRelease;
 			}
 
@@ -96,12 +101,12 @@ public class Configurations {
 		});
 	}
 	
-	public String getLastUpdatesCheck() {
-		return lastUpdatesCheck;
+	public ZonedDateTime getLastUpdatesCheck() {
+		return ZonedDateTime.parse(lastUpdatesCheck);
 	}
 	
-	public void setLastUpdatesCheck(String lastUpdatesCheck) {
-		this.lastUpdatesCheck = lastUpdatesCheck;
+	public void setLastUpdatesCheck(ZonedDateTime lastUpdatesCheck) {
+		this.lastUpdatesCheck = lastUpdatesCheck.toString();
 	}
 
 	public GitHubRelease getLatestRelease() {
@@ -167,7 +172,21 @@ public class Configurations {
 		final File workspace = application.getWorkspaceLocation();
 		final File configurationsFile = new File(workspace, CONFIG_FILE_NAME);
 		final FileWriter fw;
-		final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+		final GsonBuilder builder = new GsonBuilder();
+		
+		builder.registerTypeAdapter(ZonedDateTime.class, new JsonDeserializer<ZonedDateTime>() {
+
+			@Override
+			public ZonedDateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+					throws JsonParseException {
+				return ZonedDateTime.parse(json.getAsJsonPrimitive().getAsString());
+			}
+		});
+		
+		builder.setPrettyPrinting();
+//		builder.excludeFieldsWithoutExposeAnnotation();
+		
+		final Gson gson = builder.create();
 		final String json = gson.toJson(this);
 
 		try {

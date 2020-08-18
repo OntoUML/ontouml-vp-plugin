@@ -20,8 +20,9 @@ public class GitHubRelease {
 	@Expose()
 	private String tagName;
 	
+	// Since Gson shows problems with the default serialization of ZonedDateTime we rely on strings	
 	@Expose()
-	private ZonedDateTime createdAt;
+	private String createdAt;
 	
 	@Expose()
 	private boolean isPrerelease;
@@ -51,7 +52,7 @@ public class GitHubRelease {
 		}
 		
 		tagName = source.get(PROP_TAG_NAME).getAsString();
-		createdAt = ZonedDateTime.parse(source.get(PROP_CREATED_AT).getAsString());
+		createdAt = source.get(PROP_CREATED_AT).getAsString();
 		isPrerelease = source.get(PROP_PRERELEASE).getAsBoolean();
 		id = source.get(PROP_ID).getAsString();
 		
@@ -73,7 +74,7 @@ public class GitHubRelease {
 	}
 	
 	public ZonedDateTime getCreatedAt() {
-		return createdAt;
+		return ZonedDateTime.parse(createdAt);
 	}
 	
 	public boolean isPrerelease() {

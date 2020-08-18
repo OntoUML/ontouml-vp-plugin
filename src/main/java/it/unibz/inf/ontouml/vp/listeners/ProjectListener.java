@@ -45,8 +45,7 @@ public class ProjectListener implements IProjectListener {
 	private void checkUpdates() {
 		try {
 			Configurations config = Configurations.getInstance();
-			String lastUpdateCheck = config.getLastUpdatesCheck();
-			ZonedDateTime lastCheck = ZonedDateTime.parse(lastUpdateCheck);
+			ZonedDateTime lastCheck = config.getLastUpdatesCheck();
 			
 			// TODO: confirm plusDays() before PR
 			if(lastCheck != null && lastCheck.plusDays(1).isBefore(ZonedDateTime.now())) {
@@ -75,7 +74,7 @@ public class ProjectListener implements IProjectListener {
 				System.out.println("Last check for updates was already performed in the last 24 hours.");
 			}
 			
-			config.setLastUpdatesCheck(ZonedDateTime.now().toString());
+			config.setLastUpdatesCheck(ZonedDateTime.now());
 			
 		} catch (Exception e) {
 			System.out.println("Failed to get releases from GitHub");
