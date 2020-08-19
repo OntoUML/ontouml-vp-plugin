@@ -1,6 +1,5 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
-import java.util.List;
 import java.util.Set;
 
 import com.vp.plugin.ApplicationManager;
@@ -8,12 +7,9 @@ import com.vp.plugin.DiagramManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 import com.vp.plugin.diagram.IDiagramUIModel;
-import com.vp.plugin.model.IAssociation;
-import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IPackage;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
-import it.unibz.inf.ontouml.vp.features.constraints.AssociationConstraints;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 public class ReloadClassesController implements VPActionController {
@@ -46,32 +42,33 @@ public class ReloadClassesController implements VPActionController {
 			pkg.addChild(sourcePkg);
 			
 			for (String targetStereotype : stereotypes) {
-				final List<String> allowedAssociations = 
-						AssociationConstraints.getAllowedAssociations(sourceStereotype, targetStereotype);
+//				// Method getAllowedAssociations() was removed 
+//				final List<String> allowedAssociations = 
+//						OntoUMLConstraintsManager.getAllowedAssociations(sourceStereotype, targetStereotype);
 				
-				if(!allowedAssociations.isEmpty()) {
-					final IClass source = factory.createClass();
-					final IClass target = factory.createClass();
-					
-					source.setName(sourceStereotype + " as Source");
-					target.setName(targetStereotype + " as Target");
-					
-					source.addStereotype(sourceStereotype);
-					target.addStereotype(targetStereotype);
-					
-					sourcePkg.addChild(source);
-					sourcePkg.addChild(target);
-					
-					for (String associationStereotype : allowedAssociations) {
-						final IAssociation association = factory.createAssociation();
-						
-						association.addStereotype(associationStereotype);
-						association.setFrom(source);
-						association.setTo(target);
-						
-						sourcePkg.addChild(association);
-					}
-				}
+//				if(!allowedAssociations.isEmpty()) {
+//					final IClass source = factory.createClass();
+//					final IClass target = factory.createClass();
+//					
+//					source.setName(sourceStereotype + " as Source");
+//					target.setName(targetStereotype + " as Target");
+//					
+//					source.addStereotype(sourceStereotype);
+//					target.addStereotype(targetStereotype);
+//					
+//					sourcePkg.addChild(source);
+//					sourcePkg.addChild(target);
+//					
+//					for (String associationStereotype : allowedAssociations) {
+//						final IAssociation association = factory.createAssociation();
+//						
+//						association.addStereotype(associationStereotype);
+//						association.setFrom(source);
+//						association.setTo(target);
+//						
+//						sourcePkg.addChild(association);
+//					}
+//				}
 			}
 		}
 	}

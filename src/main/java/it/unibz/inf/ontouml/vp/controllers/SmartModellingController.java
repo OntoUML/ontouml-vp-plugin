@@ -12,8 +12,7 @@ import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.ISimpleRelationship;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
-import it.unibz.inf.ontouml.vp.features.constraints.AssociationConstraints;
-import it.unibz.inf.ontouml.vp.features.constraints.ClassConstraints;
+import it.unibz.inf.ontouml.vp.utils.OntoUMLConstraintsManager;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 
 public class SmartModellingController {
@@ -257,7 +256,7 @@ public class SmartModellingController {
 		final String sourceStereotype = sourceStereotypes.get(0);
 		final String targetStereotype = targetStereotypes.get(0);
 //		final ArrayList<String> allowedCombinations = AssociationConstraints.allowedCombinations.get(new SimpleEntry<String, String>(sourceStereotype, targetStereotype));
-		final List<String> allowedCombinations = AssociationConstraints.getAllowedActionIDs(sourceStereotype, targetStereotype);
+		final List<String> allowedCombinations = OntoUMLConstraintsManager.getAllowedStereotypeActionsOnAssociation(sourceStereotype, targetStereotype);
 
 		if (allowedCombinations == null || !allowedCombinations.contains(action.getActionId()))
 			action.setEnabled(false);
@@ -288,7 +287,7 @@ public class SmartModellingController {
 				action.setEnabled(false);
 			
 			final String superStereotype = superClassStereotypes.get(0);
-			final List<String> allowedCombinationsSub = ClassConstraints.getAllowedActionIDsOnGeneral(superStereotype);
+			final List<String> allowedCombinationsSub = OntoUMLConstraintsManager.getAllowedStereotypeActionsOnGeneral(superStereotype);
 
 			if (allowedCombinationsSub == null || !allowedCombinationsSub.contains(action.getActionId()))
 				action.setEnabled(false);
@@ -312,7 +311,7 @@ public class SmartModellingController {
 				action.setEnabled(false);
 
 			final String subStereotype = subClassStereotypes.get(0);
-			final List<String> allowedCombinationsSuper = ClassConstraints.getAllowedActionIDsOnSpecific(subStereotype);
+			final List<String> allowedCombinationsSuper = OntoUMLConstraintsManager.getAllowedStereotypeActionsSpecific(subStereotype);
 
 			if (allowedCombinationsSuper == null || !allowedCombinationsSuper.contains(action.getActionId()))
 				action.setEnabled(false);

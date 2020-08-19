@@ -16,10 +16,10 @@ import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
-import it.unibz.inf.ontouml.vp.features.constraints.ActionIds;
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
+import it.unibz.inf.ontouml.vp.utils.ActionIdManager;
 import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
 import it.unibz.inf.ontouml.vp.views.SelectRestrictionsView;
 import it.unibz.inf.ontouml.vp.views.SetOrderView;
@@ -44,30 +44,30 @@ public class ApplyPropertiesController implements VPContextActionController {
       final IClass clickedClass = (IClass) context.getModelElement();
 
       switch (action.getActionId()) {
-         case ActionIds.PROPERTY_SET_RESTRICTED_TO:
+         case ActionIdManager.PROPERTY_SET_RESTRICTED_TO:
             this.setRestrictedTo(context, clickedClass);
             break;
 
-         case ActionIds.PROPERTY_SET_IS_ABSTRACT:
+         case ActionIdManager.PROPERTY_SET_IS_ABSTRACT:
             final boolean isAbstract = clickedClass.isAbstract();
             forEachSelectedClass(context, cla -> cla.setAbstract(!isAbstract));
             break;
 
-         case ActionIds.PROPERTY_SET_IS_DERIVED:
+         case ActionIdManager.PROPERTY_SET_IS_DERIVED:
             final boolean isDerived = ModelElement.getIsDerived(clickedClass);
             forEachSelectedClass(context, selected ->  {
                ModelElement.setIsDerived(selected, !isDerived);
             });
             break;
-         case ActionIds.PROPERTY_SET_IS_EXTENSIONAL:
+         case ActionIdManager.PROPERTY_SET_IS_EXTENSIONAL:
             setBooleanTaggedValue(context, clickedClass, StereotypeUtils.PROPERTY_IS_EXTENSIONAL);
             break;
 
-         case ActionIds.PROPERTY_SET_IS_POWERTYPE:
+         case ActionIdManager.PROPERTY_SET_IS_POWERTYPE:
             setBooleanTaggedValue(context, clickedClass, StereotypeUtils.PROPERTY_IS_POWERTYPE);
             break;
 
-         case ActionIds.PROPERTY_SET_ORDER:
+         case ActionIdManager.PROPERTY_SET_ORDER:
             setOrderProperty(context, clickedClass);
             break;
       }
@@ -87,7 +87,7 @@ public class ApplyPropertiesController implements VPContextActionController {
       final Set<String> allClassStereotypes = StereotypeUtils.getOntoUMLClassStereotypeNames();
 
       switch (action.getActionId()) {
-         case ActionIds.PROPERTY_SET_RESTRICTED_TO:
+         case ActionIdManager.PROPERTY_SET_RESTRICTED_TO:
             if (allClassStereotypes.contains(stereotype)) {
                final boolean isSmartModelingEnabled = 
                   Configurations.getInstance()
@@ -106,23 +106,23 @@ public class ApplyPropertiesController implements VPContextActionController {
                action.setEnabled(false);
             }
             break;
-         case ActionIds.PROPERTY_SET_IS_ABSTRACT:
+         case ActionIdManager.PROPERTY_SET_IS_ABSTRACT:
             action.setEnabled(true);
             action.setSelected(_class.isAbstract());
             break;
-         case ActionIds.PROPERTY_SET_IS_DERIVED:
+         case ActionIdManager.PROPERTY_SET_IS_DERIVED:
             action.setEnabled(true);
             action.setSelected(ModelElement.getIsDerived(_class));
             break;
-         case ActionIds.PROPERTY_SET_IS_EXTENSIONAL:
+         case ActionIdManager.PROPERTY_SET_IS_EXTENSIONAL:
             action.setEnabled(StereotypeUtils.STR_COLLECTIVE.equals(stereotype));
             action.setSelected(Class.getIsExtensional(_class));
             break;
-         case ActionIds.PROPERTY_SET_IS_POWERTYPE:
+         case ActionIdManager.PROPERTY_SET_IS_POWERTYPE:
             action.setEnabled(StereotypeUtils.STR_TYPE.equals(stereotype));
             action.setSelected(Class.getIsPowertype(_class));
             break;
-         case ActionIds.PROPERTY_SET_ORDER:
+         case ActionIdManager.PROPERTY_SET_ORDER:
             action.setEnabled(_class.hasStereotype(StereotypeUtils.STR_TYPE));
             break;
       }

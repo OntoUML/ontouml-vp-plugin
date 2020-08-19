@@ -47,7 +47,6 @@ public class ProjectListener implements IProjectListener {
 			Configurations config = Configurations.getInstance();
 			ZonedDateTime lastCheck = config.getLastUpdatesCheck();
 			
-			// TODO: confirm plusDays() before PR
 			if(lastCheck != null && lastCheck.plusDays(1).isBefore(ZonedDateTime.now())) {
 				GitHubAccessController.lookupUpdates();
 				List<GitHubRelease> releases = config.getReleases();
@@ -117,6 +116,7 @@ public class ProjectListener implements IProjectListener {
 
 	@Override
 	public void projectSaved(IProject project) {
+		checkUpdates();
 	}
 
 }

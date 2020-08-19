@@ -1,8 +1,6 @@
-package it.unibz.inf.ontouml.vp.features.constraints;
+package it.unibz.inf.ontouml.vp.utils;
 
-import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
-
-public final class ActionIds {
+public final class ActionIdManager {
 
 	// Class stereotypes (ordered as in plugin.xml)
 	public static final String TYPE = "it.unibz.inf.ontouml.vp.addTypeStereotype";
