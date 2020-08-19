@@ -20,7 +20,7 @@ import com.vp.plugin.view.IDialog;
 import com.vp.plugin.view.IDialogHandler;
 
 import it.unibz.inf.ontouml.vp.model.Configurations;
-import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
+import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
 
 public class SelectRestrictionsView implements IDialogHandler {
 
@@ -116,7 +116,7 @@ public class SelectRestrictionsView implements IDialogHandler {
 
 	public void setSelectedValues(String selectedValuesString) {
 		final List<String> selectedList = Arrays.asList(selectedValuesString.split("\\s+"));
-		final List<String> restrictedNatures = StereotypeUtils.getRestrictionsList();
+		final List<String> restrictedNatures = StereotypesManager.getRestrictionsList();
 		Collections.sort(restrictedNatures);
 		final boolean isSmartModelingEnabled = Configurations.getInstance().getProjectConfigurations()
 				.isSmartModellingEnabled();
@@ -126,57 +126,57 @@ public class SelectRestrictionsView implements IDialogHandler {
 		JCheckBox checkBox;
 
 		// Line 1, Column 1
-		checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_COLLECTIVE);
+		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_COLLECTIVE);
 		this._selectionsPane.add(checkBox);
-		checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_COLLECTIVE));
+		checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_COLLECTIVE));
 		// Line 1, Column 2
-		checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_MODE);
+		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_MODE);
 		this._selectionsPane.add(checkBox);
-		checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_MODE));
+		checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_MODE));
 		// Line 1, Column 3
-		checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_ABSTRACT);
+		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_ABSTRACT);
 		this._selectionsPane.add(checkBox);
 		if (isSmartModelingEnabled) {
 			checkBox.setSelected(false);
 			checkBox.setEnabled(false);
 		} else {
-			checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_ABSTRACT));
+			checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_ABSTRACT));
 		}
 
 		// Line 2, Column 1
-		checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_FUNCTIONAL_COMPLEX);
+		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_FUNCTIONAL_COMPLEX);
 		this._selectionsPane.add(checkBox);
-		checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_FUNCTIONAL_COMPLEX));
+		checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_FUNCTIONAL_COMPLEX));
 		// Line 2, Column 2
-		checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_QUALITY);
+		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_QUALITY);
 		this._selectionsPane.add(checkBox);
-		checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_QUALITY));
+		checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_QUALITY));
 		// Line 2, Column 3
-		checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_EVENT);
+		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_EVENT);
 		this._selectionsPane.add(checkBox);
 		if (isSmartModelingEnabled) {
 			checkBox.setSelected(false);
 			checkBox.setEnabled(false);
 		} else {
-			checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_EVENT));
+			checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_EVENT));
 		}
 
 		// Line 3, Column 1
-		checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_QUANTITY);
+		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_QUANTITY);
 		this._selectionsPane.add(checkBox);
-		checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_QUANTITY));
+		checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_QUANTITY));
 		// Line 3, Column 2
-		checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_RELATOR);
+		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_RELATOR);
 		this._selectionsPane.add(checkBox);
-		checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_RELATOR));
+		checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_RELATOR));
 		// Line 3, Column 3
-		checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_SITUATION);
+		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_SITUATION);
 		this._selectionsPane.add(checkBox);
 		if (isSmartModelingEnabled) {
 			checkBox.setSelected(false);
 			checkBox.setEnabled(false);
 		} else {
-			checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_SITUATION));
+			checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_SITUATION));
 		}
 
 		// Line 4, Column 1 (empty)
@@ -184,13 +184,13 @@ public class SelectRestrictionsView implements IDialogHandler {
 		// Line 4, Column 2 (empty)
 		this._selectionsPane.add(new JLabel());
 		// Line 4, Column 3
-		checkBox = new JCheckBox(StereotypeUtils.RESTRICTED_TO_TYPE);
+		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_TYPE);
 		this._selectionsPane.add(checkBox);
 		if (isSmartModelingEnabled) {
 			checkBox.setSelected(false);
 			checkBox.setEnabled(false);
 		} else {
-			checkBox.setSelected(selectedList.contains(StereotypeUtils.RESTRICTED_TO_TYPE));
+			checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_TYPE));
 		}
 	}
 

@@ -20,7 +20,7 @@ import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.ActionIdManager;
-import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
+import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
 import it.unibz.inf.ontouml.vp.views.SelectRestrictionsView;
 import it.unibz.inf.ontouml.vp.views.SetOrderView;
 
@@ -60,11 +60,11 @@ public class ApplyPropertiesController implements VPContextActionController {
             });
             break;
          case ActionIdManager.PROPERTY_SET_IS_EXTENSIONAL:
-            setBooleanTaggedValue(context, clickedClass, StereotypeUtils.PROPERTY_IS_EXTENSIONAL);
+            setBooleanTaggedValue(context, clickedClass, StereotypesManager.PROPERTY_IS_EXTENSIONAL);
             break;
 
          case ActionIdManager.PROPERTY_SET_IS_POWERTYPE:
-            setBooleanTaggedValue(context, clickedClass, StereotypeUtils.PROPERTY_IS_POWERTYPE);
+            setBooleanTaggedValue(context, clickedClass, StereotypesManager.PROPERTY_IS_POWERTYPE);
             break;
 
          case ActionIdManager.PROPERTY_SET_ORDER:
@@ -83,8 +83,8 @@ public class ApplyPropertiesController implements VPContextActionController {
       }
 
       final IClass _class = (IClass) context.getModelElement();
-      final String stereotype = StereotypeUtils.getUniqueStereotypeName(_class);
-      final Set<String> allClassStereotypes = StereotypeUtils.getOntoUMLClassStereotypeNames();
+      final String stereotype = StereotypesManager.getUniqueStereotypeName(_class);
+      final Set<String> allClassStereotypes = StereotypesManager.getOntoUMLClassStereotypeNames();
 
       switch (action.getActionId()) {
          case ActionIdManager.PROPERTY_SET_RESTRICTED_TO:
@@ -94,11 +94,11 @@ public class ApplyPropertiesController implements VPContextActionController {
                      .getProjectConfigurations()
                      .isSmartModellingEnabled();
                final List<String> nonFixedRestrictedTo =
-                  Arrays.asList(StereotypeUtils.STR_CATEGORY,
-                     StereotypeUtils.STR_MIXIN,
-                     StereotypeUtils.STR_PHASE_MIXIN,
-                     StereotypeUtils.STR_ROLE_MIXIN,
-                     StereotypeUtils.STR_HISTORICAL_ROLE_MIXIN);
+                  Arrays.asList(StereotypesManager.STR_CATEGORY,
+                     StereotypesManager.STR_MIXIN,
+                     StereotypesManager.STR_PHASE_MIXIN,
+                     StereotypesManager.STR_ROLE_MIXIN,
+                     StereotypesManager.STR_HISTORICAL_ROLE_MIXIN);
                
                action.setEnabled(!isSmartModelingEnabled ||
                   nonFixedRestrictedTo.contains(stereotype));
@@ -115,15 +115,15 @@ public class ApplyPropertiesController implements VPContextActionController {
             action.setSelected(ModelElement.getIsDerived(_class));
             break;
          case ActionIdManager.PROPERTY_SET_IS_EXTENSIONAL:
-            action.setEnabled(StereotypeUtils.STR_COLLECTIVE.equals(stereotype));
+            action.setEnabled(StereotypesManager.STR_COLLECTIVE.equals(stereotype));
             action.setSelected(Class.getIsExtensional(_class));
             break;
          case ActionIdManager.PROPERTY_SET_IS_POWERTYPE:
-            action.setEnabled(StereotypeUtils.STR_TYPE.equals(stereotype));
+            action.setEnabled(StereotypesManager.STR_TYPE.equals(stereotype));
             action.setSelected(Class.getIsPowertype(_class));
             break;
          case ActionIdManager.PROPERTY_SET_ORDER:
-            action.setEnabled(_class.hasStereotype(StereotypeUtils.STR_TYPE));
+            action.setEnabled(_class.hasStereotype(StereotypesManager.STR_TYPE));
             break;
       }
    }
@@ -150,11 +150,11 @@ public class ApplyPropertiesController implements VPContextActionController {
    }
 
    private void setBooleanTaggedValue(VPContext context, IClass clickedClass, String metaProperty) {
-      final ITaggedValue booleanTaggedValue = StereotypeUtils.reapplyStereotypeAndGetTaggedValue(clickedClass, metaProperty);
+      final ITaggedValue booleanTaggedValue = StereotypesManager.reapplyStereotypeAndGetTaggedValue(clickedClass, metaProperty);
       final boolean value = booleanTaggedValue != null && Boolean.parseBoolean(booleanTaggedValue.getValueAsString());
 
       forEachSelectedClass(context, cla -> {
-         ITaggedValue taggedValue = StereotypeUtils.reapplyStereotypeAndGetTaggedValue(cla, metaProperty);
+         ITaggedValue taggedValue = StereotypesManager.reapplyStereotypeAndGetTaggedValue(cla, metaProperty);
 
          if (taggedValue == null)
             return;
@@ -165,7 +165,7 @@ public class ApplyPropertiesController implements VPContextActionController {
 
    private void setOrderProperty(VPContext context, IClass clickedClass) {
       final ITaggedValue baseTaggedValue =
-              StereotypeUtils.reapplyStereotypeAndGetTaggedValue(clickedClass, StereotypeUtils.PROPERTY_ORDER);
+              StereotypesManager.reapplyStereotypeAndGetTaggedValue(clickedClass, StereotypesManager.PROPERTY_ORDER);
 
       if (baseTaggedValue == null)
          return;
@@ -175,7 +175,7 @@ public class ApplyPropertiesController implements VPContextActionController {
       final String order = dialog.getOrder();
 
       forEachSelectedClass(context, cla -> {
-         ITaggedValue taggedValue = StereotypeUtils.reapplyStereotypeAndGetTaggedValue(cla, StereotypeUtils.PROPERTY_ORDER);
+         ITaggedValue taggedValue = StereotypesManager.reapplyStereotypeAndGetTaggedValue(cla, StereotypesManager.PROPERTY_ORDER);
 
          if (taggedValue == null)
             return;

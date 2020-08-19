@@ -11,7 +11,7 @@ import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 import it.unibz.inf.ontouml.vp.controllers.GitHubAccessController;
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.GitHubRelease;
-import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
+import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
 import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 
 public class ProjectListener implements IProjectListener {
@@ -23,7 +23,7 @@ public class ProjectListener implements IProjectListener {
 		projectModelListener = new ProjectModelListener();
 		projectDiagramListener = new ProjectDiagramListener();
 		addListeners();
-		StereotypeUtils.generate();
+		StereotypesManager.generate();
 	}
 
 	private void addListeners() {

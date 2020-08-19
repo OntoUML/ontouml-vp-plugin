@@ -10,7 +10,7 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IPackage;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
-import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
+import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
 
 public class ReloadClassesController implements VPActionController {
 
@@ -34,7 +34,7 @@ public class ReloadClassesController implements VPActionController {
 		
 		if(diagram == null || pkg == null) { return ; }		
 		
-		final Set<String> stereotypes = StereotypeUtils.getOntoUMLClassStereotypeNames();
+		final Set<String> stereotypes = StereotypesManager.getOntoUMLClassStereotypeNames();
 		
 		for (String sourceStereotype : stereotypes) {
 			final IPackage sourcePkg = factory.createPackage();

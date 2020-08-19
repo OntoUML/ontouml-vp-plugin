@@ -8,7 +8,7 @@ import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
-import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
+import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -172,10 +172,10 @@ public interface ModelElement {
       JsonObject obj = new JsonObject();
       ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
       List<String> ignoredClassValues =
-              Arrays.asList(new String[]{StereotypeUtils.PROPERTY_RESTRICTED_TO,
-                     StereotypeUtils.PROPERTY_IS_EXTENSIONAL,
-                     StereotypeUtils.PROPERTY_IS_POWERTYPE,
-                     StereotypeUtils.PROPERTY_ORDER});
+              Arrays.asList(new String[]{StereotypesManager.PROPERTY_RESTRICTED_TO,
+                     StereotypesManager.PROPERTY_IS_EXTENSIONAL,
+                     StereotypesManager.PROPERTY_IS_POWERTYPE,
+                     StereotypesManager.PROPERTY_ORDER});
 
       for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++) {
          if (ignoredClassValues.contains(lTaggedValues[i].getName())) {

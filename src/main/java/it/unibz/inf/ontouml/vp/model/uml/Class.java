@@ -29,7 +29,7 @@ import com.vp.plugin.model.ISimpleRelationship;
 import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
 
-import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
+import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
 
 /**
  * Implementation of ModelElement to handle IClass and IDataType objects to be
@@ -122,7 +122,7 @@ public class Class implements ModelElement {
          addStereotype(stereotypes[i]);
       }
 
-      if (this.stereotypes != null && this.stereotypes.contains(StereotypeUtils.STR_ENUMERATION)) {
+      if (this.stereotypes != null && this.stereotypes.contains(StereotypesManager.STR_ENUMERATION)) {
          IEnumerationLiteral[] literalArray = source.toEnumerationLiteralArray();
          for (int i = 0; literalArray != null && i < literalArray.length; i++)
             addLiteral(new Literal(literalArray[i]));
@@ -146,7 +146,7 @@ public class Class implements ModelElement {
    public Class(IDataType source) {
       this((IModelElement) source);
 
-      addStereotype(StereotypeUtils.STR_DATATYPE);
+      addStereotype(StereotypesManager.STR_DATATYPE);
       setAbstract(false);
       setDerived(false);
 
@@ -181,7 +181,7 @@ public class Class implements ModelElement {
          addStereotype(stereotypes[i]);
       }
 
-      if (this.stereotypes != null && this.stereotypes.contains(StereotypeUtils.STR_ENUMERATION)) {
+      if (this.stereotypes != null && this.stereotypes.contains(StereotypesManager.STR_ENUMERATION)) {
          IEnumerationLiteral[] literalArray = source.toEnumerationLiteralArray();
          for (int i = 0; literalArray != null && i < literalArray.length; i++)
             addLiteral(new Literal(literalArray[i]));
@@ -463,7 +463,7 @@ public class Class implements ModelElement {
 			final ITaggedValue value = (ITaggedValue) values.next();
 			
 			if(
-            value.getName().equals(StereotypeUtils.PROPERTY_RESTRICTED_TO)
+            value.getName().equals(StereotypesManager.PROPERTY_RESTRICTED_TO)
          ) {
             final String notNull = restrictions != null ? restrictions : "";
 				final List<String> sortList = Arrays.asList(notNull.split("\\s+"));
@@ -484,19 +484,19 @@ public class Class implements ModelElement {
 	}
 
 	private static void setDefaultRestrictedTo(IClass element, String stereotypeName) {
-		final String defaultNature = StereotypeUtils.getDefaultRestrictedTo(stereotypeName);
+		final String defaultNature = StereotypesManager.getDefaultRestrictedTo(stereotypeName);
 		setRestrictedTo(element, defaultNature);
 	}
 
 	public static void setDefaultRestrictedTo(IClass _class) {
       setDefaultRestrictedTo(_class, 
-         StereotypeUtils.getUniqueStereotypeName(_class));
+         StereotypesManager.getUniqueStereotypeName(_class));
 	}
 
 	public static String getRestrictedTo(IClass _class) {
       final ITaggedValueContainer container = _class.getTaggedValues();
       final ITaggedValue restrictedTo = container != null ? 
-            container.getTaggedValueByName(StereotypeUtils.PROPERTY_RESTRICTED_TO) :
+            container.getTaggedValueByName(StereotypesManager.PROPERTY_RESTRICTED_TO) :
             null;
       
       return restrictedTo != null ? restrictedTo.getValueAsString() : null;
@@ -521,7 +521,7 @@ public class Class implements ModelElement {
    public static boolean hasRestrictedTo(IClass _class) {
       final ITaggedValueContainer container = _class.getTaggedValues();
       final ITaggedValue restrictedTo = container != null ?
-            container.getTaggedValueByName(StereotypeUtils.PROPERTY_RESTRICTED_TO) :
+            container.getTaggedValueByName(StereotypesManager.PROPERTY_RESTRICTED_TO) :
             null;
       
       return restrictedTo != null;
@@ -530,7 +530,7 @@ public class Class implements ModelElement {
    public static String getOrder(IClass _class) {
       final ITaggedValueContainer container = _class.getTaggedValues();
       final ITaggedValue order = container != null ?
-            container.getTaggedValueByName(StereotypeUtils.PROPERTY_ORDER) :
+            container.getTaggedValueByName(StereotypesManager.PROPERTY_ORDER) :
             null;
       
       return order != null ? order.getValueAsString() : null ;
@@ -539,7 +539,7 @@ public class Class implements ModelElement {
    public static void setOrder(IClass _class, String newOrder) {
       final ITaggedValueContainer container = _class.getTaggedValues();
       final ITaggedValue order = container != null ?
-            container.getTaggedValueByName(StereotypeUtils.PROPERTY_ORDER) :
+            container.getTaggedValueByName(StereotypesManager.PROPERTY_ORDER) :
             null;
       
       if (order != null) {
@@ -550,7 +550,7 @@ public class Class implements ModelElement {
    public static boolean hasOrder(IClass _class) {
       final ITaggedValueContainer container = _class.getTaggedValues();
       final ITaggedValue order = container != null ?
-            container.getTaggedValueByName(StereotypeUtils.PROPERTY_ORDER) :
+            container.getTaggedValueByName(StereotypesManager.PROPERTY_ORDER) :
             null;
       
       return order != null;
@@ -559,7 +559,7 @@ public class Class implements ModelElement {
    public static boolean getIsPowertype(IClass _class) {
       final ITaggedValueContainer container = _class.getTaggedValues();
       final ITaggedValue isPowertype = container != null ?
-            container.getTaggedValueByName(StereotypeUtils.PROPERTY_IS_POWERTYPE) :
+            container.getTaggedValueByName(StereotypesManager.PROPERTY_IS_POWERTYPE) :
             null;
       final String isPowertypeValue = isPowertype != null ?
             isPowertype.getValueAsString() : "" ;
@@ -570,7 +570,7 @@ public class Class implements ModelElement {
    public static void setIsPowertype(IClass _class, boolean isPowertypeValue) {
       final ITaggedValueContainer container = _class.getTaggedValues();
       final ITaggedValue isPowertype = container != null ?
-            container.getTaggedValueByName(StereotypeUtils.PROPERTY_IS_POWERTYPE) :
+            container.getTaggedValueByName(StereotypesManager.PROPERTY_IS_POWERTYPE) :
             null;
       
       if (isPowertype != null) {
@@ -581,7 +581,7 @@ public class Class implements ModelElement {
    public static boolean hasIsPowertype(IClass _class) {
       final ITaggedValueContainer container = _class.getTaggedValues();
       final ITaggedValue isPowertype = container != null ?
-            container.getTaggedValueByName(StereotypeUtils.PROPERTY_IS_POWERTYPE) :
+            container.getTaggedValueByName(StereotypesManager.PROPERTY_IS_POWERTYPE) :
             null;
       
       return isPowertype != null;
@@ -590,7 +590,7 @@ public class Class implements ModelElement {
    public static boolean getIsExtensional(IClass _class) {
       final ITaggedValueContainer container = _class.getTaggedValues();
       final ITaggedValue isExtensional = container != null ?
-            container.getTaggedValueByName(StereotypeUtils.PROPERTY_IS_EXTENSIONAL) :
+            container.getTaggedValueByName(StereotypesManager.PROPERTY_IS_EXTENSIONAL) :
             null;
       final String isExtensionalValue = isExtensional != null ?
             isExtensional.getValueAsString() : "" ;
@@ -601,7 +601,7 @@ public class Class implements ModelElement {
    public static void setIsExtensional(IClass _class, boolean isExtensionalValue) {
       final ITaggedValueContainer container = _class.getTaggedValues();
       final ITaggedValue isExtensional = container != null ?
-            container.getTaggedValueByName(StereotypeUtils.PROPERTY_IS_EXTENSIONAL) :
+            container.getTaggedValueByName(StereotypesManager.PROPERTY_IS_EXTENSIONAL) :
             null;
       
       if (isExtensional != null) {
@@ -612,7 +612,7 @@ public class Class implements ModelElement {
    public static boolean hasIsExtensional(IClass _class) {
       final ITaggedValueContainer container = _class.getTaggedValues();
       final ITaggedValue isExtensional = container != null ?
-            container.getTaggedValueByName(StereotypeUtils.PROPERTY_IS_EXTENSIONAL) :
+            container.getTaggedValueByName(StereotypesManager.PROPERTY_IS_EXTENSIONAL) :
             null;
       
       return isExtensional != null;

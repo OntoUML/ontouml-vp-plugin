@@ -20,7 +20,7 @@ import com.vp.plugin.model.ITaggedValueDefinition;
 import com.vp.plugin.model.ITaggedValueDefinitionContainer;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
-public class StereotypeUtils {
+public class StereotypesManager {
 
    public static Map<String, IStereotype> STEREOTYPE_ELEMENTS = null;
 

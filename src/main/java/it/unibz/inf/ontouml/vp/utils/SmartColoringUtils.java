@@ -83,11 +83,11 @@ public class SmartColoringUtils {
 	 * @return the color of the class
 	 */
 	private static Color getColor(IClass _class) {
-		final String stereotype = StereotypeUtils.getUniqueStereotypeName(_class);
+		final String stereotype = StereotypesManager.getUniqueStereotypeName(_class);
 		String restrictedTo = Class.getRestrictedTo(_class);
 
 		if (restrictedTo == null || restrictedTo.isEmpty()) {
-			final Set<String> allStereotypes = StereotypeUtils.getOntoUMLClassStereotypeNames();
+			final Set<String> allStereotypes = StereotypesManager.getOntoUMLClassStereotypeNames();
 
 			if (!allStereotypes.contains(stereotype)) {
 				return null;
@@ -96,44 +96,44 @@ public class SmartColoringUtils {
 			}
 		}
 
-		final Set<String> ultimateSortalStereotypes = StereotypeUtils.getUltimateSortalStereotypeNames();
+		final Set<String> ultimateSortalStereotypes = StereotypesManager.getUltimateSortalStereotypeNames();
 
 		switch (restrictedTo) {
-		case StereotypeUtils.RESTRICTED_TO_ABSTRACT:
+		case StereotypesManager.RESTRICTED_TO_ABSTRACT:
 			return COLOR_FOR_ABSTRACT;
-		case StereotypeUtils.RESTRICTED_TO_COLLECTIVE:
+		case StereotypesManager.RESTRICTED_TO_COLLECTIVE:
 			return ultimateSortalStereotypes.contains(stereotype) ? COLOR_FOR_COLLECTIVE_DARK : COLOR_FOR_COLLECTIVE;
-		case StereotypeUtils.RESTRICTED_TO_EVENT:
+		case StereotypesManager.RESTRICTED_TO_EVENT:
 			return COLOR_FOR_EVENT;
-		case StereotypeUtils.RESTRICTED_TO_SITUATION:
+		case StereotypesManager.RESTRICTED_TO_SITUATION:
 			return COLOR_FOR_SITUATION;
-		case StereotypeUtils.RESTRICTED_TO_MODE:
+		case StereotypesManager.RESTRICTED_TO_MODE:
 			return ultimateSortalStereotypes.contains(stereotype) ? COLOR_FOR_MODE_DARK : COLOR_FOR_MODE;
-		case StereotypeUtils.RESTRICTED_TO_FUNCTIONAL_COMPLEX:
+		case StereotypesManager.RESTRICTED_TO_FUNCTIONAL_COMPLEX:
 			return ultimateSortalStereotypes.contains(stereotype) ? COLOR_FOR_FUNCTIONAL_COMPLEX_DARK
 					: COLOR_FOR_FUNCTIONAL_COMPLEX;
-		case StereotypeUtils.RESTRICTED_TO_QUALITY:
+		case StereotypesManager.RESTRICTED_TO_QUALITY:
 			return ultimateSortalStereotypes.contains(stereotype) ? COLOR_FOR_QUALITY_DARK : COLOR_FOR_QUALITY;
-		case StereotypeUtils.RESTRICTED_TO_QUANTITY:
+		case StereotypesManager.RESTRICTED_TO_QUANTITY:
 			return ultimateSortalStereotypes.contains(stereotype) ? COLOR_FOR_QUANTITY_DARK : COLOR_FOR_QUANTITY;
-		case StereotypeUtils.RESTRICTED_TO_RELATOR:
+		case StereotypesManager.RESTRICTED_TO_RELATOR:
 			return ultimateSortalStereotypes.contains(stereotype) ? COLOR_FOR_RELATOR_DARK : COLOR_FOR_RELATOR;
-		case StereotypeUtils.RESTRICTED_TO_TYPE:
+		case StereotypesManager.RESTRICTED_TO_TYPE:
 			return COLOR_FOR_TYPE;
 		}
 
 		final List<String> restrictedToList = Arrays.stream(restrictedTo.split("\\s+")).map(s -> s.trim())
 				.collect(Collectors.toList());
 
-		final List<String> objectNatures = Arrays.asList(StereotypeUtils.RESTRICTED_TO_FUNCTIONAL_COMPLEX,
-				StereotypeUtils.RESTRICTED_TO_COLLECTIVE, StereotypeUtils.RESTRICTED_TO_QUANTITY);
+		final List<String> objectNatures = Arrays.asList(StereotypesManager.RESTRICTED_TO_FUNCTIONAL_COMPLEX,
+				StereotypesManager.RESTRICTED_TO_COLLECTIVE, StereotypesManager.RESTRICTED_TO_QUANTITY);
 
 		if (objectNatures.containsAll(restrictedToList)) {
 			return COLOR_FOR_FUNCTIONAL_COMPLEX;
 		}
 
-		final List<String> intrinsicNature = Arrays.asList(StereotypeUtils.RESTRICTED_TO_MODE,
-				StereotypeUtils.RESTRICTED_TO_QUALITY);
+		final List<String> intrinsicNature = Arrays.asList(StereotypesManager.RESTRICTED_TO_MODE,
+				StereotypesManager.RESTRICTED_TO_QUALITY);
 
 		if (intrinsicNature.containsAll(restrictedToList)) {
 			return COLOR_FOR_MODE;

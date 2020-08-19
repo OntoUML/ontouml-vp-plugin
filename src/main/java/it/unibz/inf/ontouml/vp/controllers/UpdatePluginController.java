@@ -38,17 +38,10 @@ public class UpdatePluginController implements VPActionController {
 
 			String destinationDirName = pluginAsset.getName().replace(".zip", "");
 			File pluginDir = ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID).getPluginDir();
-			// TODO: remove downloadsDir
-//			File destinationDir = new File(pluginDir.getParentFile(), destinationDirName);
-			File downloadsDir = new File(pluginDir.getParentFile(), "downloads");
-			File destinationDir = new File(downloadsDir, destinationDirName);
-
-			System.out.println("DESTINATION: " + destinationDir);
+			File destinationDir = new File(pluginDir.getParentFile(), destinationDirName);
 
 			UpdatePluginController.unzip(downloadedFile, destinationDir);
-			// TODO: remove downloadsDir
-//			deleteFolderContents(pluginDir.getParentFile(),
-			deleteFolderContents(downloadsDir,
+			deleteFolderContents(pluginDir.getParentFile(),
 					content -> content.isDirectory() && content.getName().contains("ontouml-vp-plugin")
 					&& !content.getName().equals(destinationDirName));
 			ViewManagerUtils.updateSuccessDialog();
