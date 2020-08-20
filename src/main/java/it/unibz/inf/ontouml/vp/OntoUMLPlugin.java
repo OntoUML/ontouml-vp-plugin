@@ -9,7 +9,6 @@ import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.listeners.ProjectListener;
-import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 
 /**
  * Implementation of VPPlugin responsible for configuring OntoUML Plugin's
@@ -20,10 +19,12 @@ import it.unibz.inf.ontouml.vp.utils.ViewUtils;
  */
 public class OntoUMLPlugin implements VPPlugin {
 
-   public static final String PLUGIN_VERSION_RELEASE = "0.3.1";
+   public static final String PLUGIN_VERSION_RELEASE = "0.4.0alpha1";
    public static final String PLUGIN_ID = "it.unibz.inf.ontouml.vp";
    public static final String PLUGIN_NAME = "OntoUML Plugin";
    public static final String PLUGIN_REPO = "https://github.com/OntoUML/ontouml-vp-plugin/";
+   public static final String PLUGIN_REPO_OWNER = "OntoUML";
+   public static final String PLUGIN_REPO_NAME = "ontouml-vp-plugin";
 
    public static IModelElement[] allModelElements;
    public static boolean isPluginActive;
@@ -86,7 +87,7 @@ public class OntoUMLPlugin implements VPPlugin {
    }
 
    public static void reload() {
-      ViewUtils.log("Reloading plugin: "+PLUGIN_ID);
+//      ViewUtils.log("Reloading plugin: "+PLUGIN_ID);
       ApplicationManager.instance().reloadPluginClasses(PLUGIN_ID);
       // TODO: try to integrate listener to the reload process
 	}

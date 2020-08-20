@@ -1,7 +1,7 @@
 package it.unibz.inf.ontouml.vp.views;
 
-import it.unibz.inf.ontouml.vp.utils.ServerRequest;
-import it.unibz.inf.ontouml.vp.utils.ViewUtils;
+import it.unibz.inf.ontouml.vp.model.ServerRequest;
+import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -49,7 +49,7 @@ public class ProgressPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				request.doStop();
 				_dialog.close();
-				ViewUtils.cleanAndShowMessage("Request cancelled by the user.");
+				ViewManagerUtils.cleanAndShowMessage("Request cancelled by the user.");
 			}
 		});
 		

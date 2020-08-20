@@ -1,10 +1,18 @@
 package it.unibz.inf.ontouml.vp.listeners;
 
+import java.time.ZonedDateTime;
+import java.util.List;
+
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.IProjectListener;
 
-import it.unibz.inf.ontouml.vp.utils.StereotypeUtils;
+import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
+import it.unibz.inf.ontouml.vp.controllers.GitHubAccessController;
+import it.unibz.inf.ontouml.vp.model.Configurations;
+import it.unibz.inf.ontouml.vp.model.GitHubRelease;
+import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
+import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 
 public class ProjectListener implements IProjectListener {
 
@@ -15,7 +23,7 @@ public class ProjectListener implements IProjectListener {
 		projectModelListener = new ProjectModelListener();
 		projectDiagramListener = new ProjectDiagramListener();
 		addListeners();
-		StereotypeUtils.generate();
+		StereotypesManager.generate();
 	}
 
 	private void addListeners() {
@@ -30,6 +38,45 @@ public class ProjectListener implements IProjectListener {
 			projectDiagramListener.addListenersToDiagrams();
 		} catch (Exception e) {
 			System.err.println("An error ocurred while adding listeners to the project.");
+			e.printStackTrace();
+		}
+	}
+	
+	private void checkUpdates() {
+		try {
+			Configurations config = Configurations.getInstance();
+			ZonedDateTime lastCheck = config.getLastUpdatesCheck();
+			
+			if(lastCheck != null && lastCheck.plusDays(1).isBefore(ZonedDateTime.now())) {
+				GitHubAccessController.lookupUpdates();
+				List<GitHubRelease> releases = config.getReleases();
+				GitHubRelease latestRelease = config.getLatestRelease();
+				boolean upToDate = false;
+				
+				for (GitHubRelease release : releases) {
+					if(
+						release.getTagName().equals(OntoUMLPlugin.PLUGIN_VERSION_RELEASE)
+						&& release.getCreatedAt().isBefore(latestRelease.getCreatedAt())
+					) {
+						upToDate = true;
+					}
+				}
+				
+				if(!upToDate) {
+					System.out.println("New updates are available.");
+					ViewManagerUtils.simpleLog("New updates are available. Go to \"Update Plugin\" to get the latest version of the OntoUML Plugin for Visual Paradigm.");
+				} else {
+					System.out.println("No new updates available.");
+					ViewManagerUtils.simpleLog("Your OntoUML Plugin for Visual Paradigm is up to date with our latest release.");					
+				}
+			} else {
+				System.out.println("Last check for updates was already performed in the last 24 hours.");
+			}
+			
+			config.setLastUpdatesCheck(ZonedDateTime.now());
+			
+		} catch (Exception e) {
+			System.out.println("Failed to get releases from GitHub");
 			e.printStackTrace();
 		}
 	}
@@ -57,7 +104,9 @@ public class ProjectListener implements IProjectListener {
 	}
 
 	@Override
-	public void projectOpened(IProject project) {}
+	public void projectOpened(IProject project) {
+		checkUpdates();
+	}
 
 	@Override
 	public void projectPreSave(IProject project) {}
@@ -66,6 +115,8 @@ public class ProjectListener implements IProjectListener {
 	public void projectRenamed(IProject project) {}
 
 	@Override
-	public void projectSaved(IProject project) {}
+	public void projectSaved(IProject project) {
+		checkUpdates();
+	}
 
 }

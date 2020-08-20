@@ -35,13 +35,13 @@ Stereotypes and meta-properties that are essential to OntoUML modeling are easil
 
 Notice that beyond the full list of stereotypes, a dynamic list of stereotypes is also available. This dynamic list is usually preferred during modeling as it filters wrong stereotypes for your class or association based on, respectively, their super/sub classes and their associated classes. The full list, however, tends to provide a faster and more flexible option during model fixing and refactoring.
 
-![GIF showing a OntoUML model being edited](./resources/feature-modeling.gif)
+![GIF showing a OntoUML model being edited](./docs/feature-modeling.gif)
 
-![A screenshot of a suggested list of stereotypes in a context menu](./resources/feature-suggested-stereotypes.png)
+![A screenshot of a suggested list of stereotypes in a context menu](./docs/feature-suggested-stereotypes.png)
 
-![A screenshot of meta-properties editing in context menu](./resources/feature-meta-properties.png)
+![A screenshot of meta-properties editing in context menu](./docs/feature-meta-properties.png)
 
-![A screenshot of restricted instances menu selection](./resources/feature-restricte-to.png)
+![A screenshot of restricted instances menu selection](./docs/feature-restricte-to.png)
 
 Try selecting multiple elements to fast update your models!
 
@@ -49,7 +49,7 @@ Try selecting multiple elements to fast update your models!
 
 Automatic diagram painting based on the possible instances of classes with highlighted ultimate sortals (i.e., «kind», «collective», «quantity», «relator», «mode», and «quality») for improved model readability.
 
-![A screenshot of an automatically painted diagram](./resources/feature-smart-paint.png)
+![A screenshot of an automatically painted diagram](./docs/feature-smart-paint.png)
 
 #### Smart Modeling
 
@@ -63,7 +63,7 @@ Automatic verification of OntoUML syntactical rules which are reported to the us
 
 The Diagram Verification feature performs the verification of the whole model but only displays issues about elements present in the currently open diagram, facilitating the user's task of fixing models.
 
-![A gif exemplifying the model verification feature](./resources/feature-verification.gif)
+![A gif exemplifying the model verification feature](./docs/feature-verification.gif)
 
 #### Model Transformation to OWL with gUFO
 
@@ -73,7 +73,7 @@ Users must select the elements that shall be exported to gUFO either selecting f
 
 **WARNING**: the transformation feature require the presence of no verification errors among the exported entities. In addition, partial transformations of the model should be executed with care as they may introduce violations of some syntactical constraint.
 
-![A screenshot showing the "transformation to gUFO" window](./resources/feature-gufo.png)
+![A screenshot showing the "transformation to gUFO" window](./docs/feature-gufo.png)
 
 #### Continuous Updates
 
@@ -81,7 +81,7 @@ The cloud-based features offered in the plugin are periodically updated. Updates
 
 And last, but not least, this project is supported by the [OntoUML.org](https://ontouml.org/) community and its set of features will only grow, incorporating new and updated OntoUML technologies.
 
-![A screenshot showing the toolbar of the OntoUML plugin](./resources/feature-toolbar.png)
+![A screenshot showing the toolbar of the OntoUML plugin](./docs/feature-toolbar.png)
 
 In order to update to a new version of the plugin, please download the latest [release](https://github.com/OntoUML/ontouml-vp-plugin/releases) as a ZIP file and select it through the "Update Plugin" button in the plugin (available from version 0.3.0).
 
@@ -93,9 +93,9 @@ ___
 
 To **install** or **update** the **OntoUML Plugin for Visual Paradigm**, please go to our [releases page](https://github.com/OntoUML/ontouml-vp-plugin/releases) and download the ZIP file `ontouml-vp-plugin` in the latest release. Then go to `Help > Install Plugin` in the top of your window and, after clicking `Install from a zip of plugin` and `Next`, select the download release.
 
-![Install plugin window](./resources/toolbar-help-install.png)
+![Install plugin window](./docs/toolbar-help-install.png)
 
-![Install plugin window](./resources/install-plugin-dialog.png)
+![Install plugin window](./docs/install-plugin-dialog.png)
 
 For more details, check out this [guide](https://knowhow.visual-paradigm.com/openapi/how-to-deploy-plugins-to-vp-application/).
 
@@ -229,11 +229,11 @@ ___
 
 ### Why do I get the error message "The ID [...] is already in use"?
 
-![Error message: ID already in use](./resources/faq-id-in-use.png)
+![Error message: ID already in use](./docs/faq-id-in-use.png)
 
 Each Visual Paradigm plugin must (i) have an ID, and (ii) be installed in a specific folder. If you are updating to a new version of the plugin, it may occur that the name of the folder has changed. In this case, Visual Paradigm will think that you are trying to install a new plugin with an ID already in use instead of updating it.
 
-![Install plugin window](./resources/install-plugin-dialog-folder-path.png)
+![Install plugin window](./docs/install-plugin-dialog-folder-path.png)
 
 To solve this issue, go to the `plugins` folder listed in the "Install Plugin" window (see above) and delete your old plugin folder before installing the new version. You may be required to re-open the application for that to take effect.
 

@@ -3,8 +3,8 @@ package it.unibz.inf.ontouml.vp.views;
 import com.vp.plugin.view.IDialog;
 
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
-import it.unibz.inf.ontouml.vp.utils.Configurations;
-import it.unibz.inf.ontouml.vp.utils.ProjectConfigurations;
+import it.unibz.inf.ontouml.vp.model.Configurations;
+import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
