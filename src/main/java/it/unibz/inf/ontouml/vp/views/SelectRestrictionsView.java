@@ -6,7 +6,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -24,176 +23,143 @@ import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
 
 public class SelectRestrictionsView implements IDialogHandler {
 
-	private IDialog _dialog;
-	private JPanel _selectionsPane;
-	private boolean cancelledExit = true;
-	private String initialSelecteion;
+   private IDialog dialog;
+   private JPanel selectionPanel;
 
-	public SelectRestrictionsView(String selectedValues) {
-		super();
+   private boolean cancelledExit = true;
+   private String initialSelection;
+   private List<String> initialSelectionList;
+   private List<String> selectableRestrictedTo;
 
-		this.initialSelecteion = selectedValues;
-		this._selectionsPane = new JPanel();
-		this.setSelectedValues(selectedValues);
-		this._selectionsPane.setBorder(new EmptyBorder(7, 0, 0, 0));
-	}
+   public SelectRestrictionsView(String initialSelection, List<String> selectableRestrictedTo) {
+      super();
 
-	@Override
-	public Component getComponent() {
-		final JLabel line = new JLabel("Select the possible ontological natures of the type's instances.");
-		final JButton cancelButton = new JButton("Cancel");
-		final JButton applyButton = new JButton("Apply");
+      this.initialSelection = initialSelection;
+      this.initialSelectionList = Arrays.asList(initialSelection.split("\\s+"));
+      this.selectableRestrictedTo = selectableRestrictedTo;
 
-		applyButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cancelledExit = false;
-				_dialog.close();
-			}
-		});
+      this.selectionPanel = new JPanel();
+      this.selectionPanel.setBorder(new EmptyBorder(7, 0, 0, 0));
 
-		cancelButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cancelledExit = true;
-				_dialog.close();
-			}
-		});
+      this.createDialogContents();
+   }
 
-		JPanel panel = new JPanel();
+   @Override
+   public Component getComponent() {
+      final JLabel line = new JLabel("Select the possible ontological natures of the type's instances.");
+      final JButton cancelButton = new JButton("Cancel");
+      final JButton applyButton = new JButton("Apply");
 
-		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+      applyButton.addActionListener( e -> {
+         cancelledExit = false;
+         dialog.close();
+      });
 
-		panel.add(line);
-		panel.add(this._selectionsPane);
+      cancelButton.addActionListener( e -> {
+         cancelledExit = true;
+         dialog.close();
+      });
 
-		JPanel buttonsPanel = new JPanel();
-		buttonsPanel.setLayout(new FlowLayout());
-		buttonsPanel.add(applyButton);
-		buttonsPanel.add(cancelButton);
-		panel.add(buttonsPanel);
+      JPanel panel = new JPanel();
 
-		line.setAlignmentX(Component.LEFT_ALIGNMENT);
-		this._selectionsPane.setAlignmentX(Component.LEFT_ALIGNMENT);
-		buttonsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+      panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
-		return panel;
-	}
+      panel.add(line);
+      panel.add(this.selectionPanel);
 
-	@Override
-	public void prepare(IDialog dialog) {
-		this._dialog = dialog;
-		dialog.setTitle("Restrict allowed natures");
-		dialog.pack();
-	}
+      JPanel buttonsPanel = new JPanel();
+      buttonsPanel.setLayout(new FlowLayout());
+      buttonsPanel.add(applyButton);
+      buttonsPanel.add(cancelButton);
+      panel.add(buttonsPanel);
 
-	@Override
-	public boolean canClosed() {
-		return true;
-	}
+      line.setAlignmentX(Component.LEFT_ALIGNMENT);
+      this.selectionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+      buttonsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-	@Override
-	public void shown() {
-	}
+      return panel;
+   }
 
-	public String getSelectedValues() {
-		if (this.cancelledExit) {
-			return this.initialSelecteion;
-		}
+   @Override
+   public void prepare(IDialog dialog) {
+      this.dialog = dialog;
+      dialog.setTitle("Restrict allowed natures");
+      dialog.pack();
+   }
 
-		final StringBuilder selectedValues = new StringBuilder("");
-		final Component[] checkBoxes = this._selectionsPane.getComponents();
+   @Override
+   public boolean canClosed() {
+      return true;
+   }
 
-		for (int i = 0; checkBoxes != null && i < checkBoxes.length; i++) {
-			if (checkBoxes[i] instanceof JCheckBox) {
-				final JCheckBox checkBox = (JCheckBox) checkBoxes[i];
-				if (checkBox.isSelected()) {
-					selectedValues.append(selectedValues.length() == 0 ? checkBox.getText() : " " + checkBox.getText());
-				}
-			}
-		}
+   @Override
+   public void shown() {
+   }
 
-		return selectedValues.toString();
-	}
+   public String getSelectedValues() {
+      if (this.cancelledExit) {
+         return this.initialSelection;
+      }
 
-	public void setSelectedValues(String selectedValuesString) {
-		final List<String> selectedList = Arrays.asList(selectedValuesString.split("\\s+"));
-		final List<String> restrictedNatures = StereotypesManager.getRestrictionsList();
-		Collections.sort(restrictedNatures);
-		final boolean isSmartModelingEnabled = Configurations.getInstance().getProjectConfigurations()
-				.isSmartModellingEnabled();
+      final StringBuilder selectedValues = new StringBuilder();
+      final Component[] checkBoxes = this.selectionPanel.getComponents();
 
-		this._selectionsPane.setLayout(new GridLayout(4, 3));
+      for (int i = 0; checkBoxes != null && i < checkBoxes.length; i++) {
+         if (checkBoxes[i] instanceof JCheckBox) {
+            final JCheckBox checkBox = (JCheckBox) checkBoxes[i];
+            if (checkBox.isSelected()) {
+               selectedValues.append(selectedValues.length() == 0 ? checkBox.getText() : " " + checkBox.getText());
+            }
+         }
+      }
 
-		JCheckBox checkBox;
+      return selectedValues.toString();
+   }
 
-		// Line 1, Column 1
-		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_COLLECTIVE);
-		this._selectionsPane.add(checkBox);
-		checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_COLLECTIVE));
-		// Line 1, Column 2
-		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_INTRINSIC_MODE);
-		this._selectionsPane.add(checkBox);
-		checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_INTRINSIC_MODE));
-		// Line 1, Column 3
-		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_ABSTRACT);
-		this._selectionsPane.add(checkBox);
-		if (isSmartModelingEnabled) {
-			checkBox.setSelected(false);
-			checkBox.setEnabled(false);
-		} else {
-			checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_ABSTRACT));
-		}
+   private void addCheckbox(String restrictedTo) {
+      JCheckBox checkBox = new JCheckBox(restrictedTo);
+      selectionPanel.add(checkBox);
 
-		// Line 2, Column 1
-		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_FUNCTIONAL_COMPLEX);
-		this._selectionsPane.add(checkBox);
-		checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_FUNCTIONAL_COMPLEX));
-		// Line 2, Column 2
-		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_QUALITY);
-		this._selectionsPane.add(checkBox);
-		checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_QUALITY));
-		// Line 2, Column 3
-		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_EVENT);
-		this._selectionsPane.add(checkBox);
-		if (isSmartModelingEnabled) {
-			checkBox.setSelected(false);
-			checkBox.setEnabled(false);
-		} else {
-			checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_EVENT));
-		}
+      checkBox.setSelected(initialSelectionList.contains(restrictedTo));
 
-		// Line 3, Column 1
-		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_QUANTITY);
-		this._selectionsPane.add(checkBox);
-		checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_QUANTITY));
-		// Line 3, Column 2
-		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_RELATOR);
-		this._selectionsPane.add(checkBox);
-		checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_RELATOR));
-		// Line 3, Column 3
-		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_SITUATION);
-		this._selectionsPane.add(checkBox);
-		if (isSmartModelingEnabled) {
-			checkBox.setSelected(false);
-			checkBox.setEnabled(false);
-		} else {
-			checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_SITUATION));
-		}
+      final boolean isSmartModelingEnabled =
+              Configurations.getInstance().getProjectConfigurations().isSmartModellingEnabled();
 
-		// Line 4, Column 1 (empty)
-		this._selectionsPane.add(new JLabel());
-		// Line 4, Column 2
-		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_EXTRINSIC_MODE);
-		this._selectionsPane.add(checkBox);
-		checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_EXTRINSIC_MODE));
-		// Line 4, Column 3
-		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_TYPE);
-		this._selectionsPane.add(checkBox);
-		if (isSmartModelingEnabled) {
-			checkBox.setSelected(false);
-			checkBox.setEnabled(false);
-		} else {
-			checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_TYPE));
-		}
-	}
+      if(isSmartModelingEnabled)
+         checkBox.setEnabled(selectableRestrictedTo.contains(restrictedTo));
+   }
+
+   public void createDialogContents() {
+      this.selectionPanel.setLayout(new GridLayout(4, 3));
+
+      // Line 1, Column 1
+      addCheckbox(StereotypesManager.RESTRICTED_TO_COLLECTIVE);
+      // Line 1, Column 2
+      addCheckbox(StereotypesManager.RESTRICTED_TO_INTRINSIC_MODE);
+      // Line 1, Column 3
+      addCheckbox(StereotypesManager.RESTRICTED_TO_ABSTRACT);
+
+      // Line 2, Column 1
+      addCheckbox(StereotypesManager.RESTRICTED_TO_FUNCTIONAL_COMPLEX);
+      // Line 2, Column 2
+      addCheckbox(StereotypesManager.RESTRICTED_TO_EXTRINSIC_MODE);
+      // Line 2, Column 3
+      addCheckbox(StereotypesManager.RESTRICTED_TO_EVENT);
+
+      // Line 3, Column 1
+      addCheckbox(StereotypesManager.RESTRICTED_TO_QUANTITY);
+      // Line 3, Column 2
+      addCheckbox(StereotypesManager.RESTRICTED_TO_QUALITY);
+      // Line 3, Column 3
+      addCheckbox(StereotypesManager.RESTRICTED_TO_SITUATION);
+
+      // Line 4, Column 1 (empty)
+      this.selectionPanel.add(new JLabel());
+      // Line 4, Column 2
+      addCheckbox(StereotypesManager.RESTRICTED_TO_RELATOR);
+      // Line 4, Column 3
+      addCheckbox(StereotypesManager.RESTRICTED_TO_TYPE);
+   }
+
 
 }

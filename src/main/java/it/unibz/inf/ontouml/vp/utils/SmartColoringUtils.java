@@ -109,6 +109,7 @@ public class SmartColoringUtils {
 			return COLOR_FOR_SITUATION;
 		case StereotypesManager.RESTRICTED_TO_INTRINSIC_MODE:
 		case StereotypesManager.RESTRICTED_TO_EXTRINSIC_MODE:
+		case StereotypesManager.RESTRICTED_TO_EXTRINSIC_MODE + " " + StereotypesManager.RESTRICTED_TO_INTRINSIC_MODE:
 			return ultimateSortalStereotypes.contains(stereotype) ? COLOR_FOR_MODE_DARK : COLOR_FOR_MODE;
 		case StereotypesManager.RESTRICTED_TO_FUNCTIONAL_COMPLEX:
 			return ultimateSortalStereotypes.contains(stereotype) ? COLOR_FOR_FUNCTIONAL_COMPLEX_DARK

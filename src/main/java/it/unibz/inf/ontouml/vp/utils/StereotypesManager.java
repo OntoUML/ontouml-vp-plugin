@@ -1,12 +1,6 @@
 package it.unibz.inf.ontouml.vp.utils;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.vp.plugin.ApplicationManager;
@@ -197,7 +191,7 @@ public class StereotypesManager {
    }
 
    public static Set<String> getUltimateSortalStereotypeNames() {
-      final Set<String> str_names = new HashSet<String>();
+      final Set<String> str_names = new HashSet<>();
 
       str_names.add(STR_KIND);
       str_names.add(STR_COLLECTIVE);
@@ -210,7 +204,7 @@ public class StereotypesManager {
    }
 
    public static Set<String> getSortalStereotypeNames() {
-      final Set<String> str_names = new HashSet<String>();
+      final Set<String> str_names = new HashSet<>();
 
       str_names.add(STR_SUBKIND);
       str_names.add(STR_ROLE);
@@ -447,6 +441,49 @@ public class StereotypesManager {
          }
 
          System.out.println("Number of tagged values: " + count);
+      }
+   }
+
+   public static List<String> selectableRestrictedTo(String stereotype) {
+      if(stereotype==null)
+         return Collections.emptyList();
+
+      switch (stereotype) {
+         case STR_TYPE:
+            return Collections.singletonList(RESTRICTED_TO_TYPE);
+         case STR_EVENT:
+            return Collections.singletonList(RESTRICTED_TO_EVENT);
+         case STR_SITUATION:
+            return Collections.singletonList(RESTRICTED_TO_SITUATION);
+         case STR_KIND:
+            return Collections.singletonList(RESTRICTED_TO_FUNCTIONAL_COMPLEX);
+         case STR_COLLECTIVE:
+            return Collections.singletonList(RESTRICTED_TO_COLLECTIVE);
+         case STR_QUANTITY:
+            return Collections.singletonList(RESTRICTED_TO_QUANTITY);
+         case STR_RELATOR:
+            return Collections.singletonList(RESTRICTED_TO_RELATOR);
+         case STR_QUALITY:
+            return Collections.singletonList(RESTRICTED_TO_QUALITY);
+         case STR_MODE:
+            return Arrays.asList(RESTRICTED_TO_INTRINSIC_MODE, RESTRICTED_TO_EXTRINSIC_MODE);
+         case STR_ENUMERATION:
+         case STR_DATATYPE:
+         case STR_ABSTRACT:
+            return Collections.singletonList(RESTRICTED_TO_ABSTRACT);
+         case STR_CATEGORY:
+         case STR_MIXIN:
+         case STR_ROLE_MIXIN:
+         case STR_PHASE_MIXIN:
+         case STR_HISTORICAL_ROLE_MIXIN:
+         case STR_SUBKIND:
+         case STR_ROLE:
+         case STR_PHASE:
+         case STR_HISTORICAL_ROLE:
+            return Arrays.asList(RESTRICTED_TO_FUNCTIONAL_COMPLEX, RESTRICTED_TO_COLLECTIVE, RESTRICTED_TO_QUANTITY,
+                    RESTRICTED_TO_INTRINSIC_MODE, RESTRICTED_TO_EXTRINSIC_MODE, RESTRICTED_TO_QUALITY, RESTRICTED_TO_RELATOR);
+         default:
+            return Collections.emptyList();
       }
    }
 

@@ -131,7 +131,6 @@ public class ModelListener implements PropertyChangeListener {
 		case StereotypesManager.STR_COLLECTIVE:
 		case StereotypesManager.STR_QUANTITY:
 		case StereotypesManager.STR_RELATOR:
-		case StereotypesManager.STR_MODE:
 		case StereotypesManager.STR_QUALITY:
 		case StereotypesManager.STR_TYPE:
 			if (!newValue.equals(oldValue)) {
@@ -139,6 +138,7 @@ public class ModelListener implements PropertyChangeListener {
 				propagateRestrictionsToDescendants(_class);
 			}
 			break;
+		case StereotypesManager.STR_MODE:
 		case StereotypesManager.STR_CATEGORY:
 		case StereotypesManager.STR_ROLE_MIXIN:
 		case StereotypesManager.STR_PHASE_MIXIN:
