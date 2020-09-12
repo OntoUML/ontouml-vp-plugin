@@ -5,7 +5,7 @@
 
     <groupId>it.unibz.inf.ontouml</groupId>
     <artifactId>ontouml-vp-plugin</artifactId>
-    <version>0.4.0-alpha1</version>
+    <version>0.4.0-alpha2</version>
 
     <name>OntoUML 2 Plugin for Visual Paradigm</name>
 
@@ -36,8 +36,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <visualparadigm.app.dir>/Applications/Visual Paradigm.app/Contents/Resources/app/</visualparadigm.app.dir>
-        <visualparadigm.plugin.dir>/Users/tpsales/Library/Application Support/VisualParadigm/plugins/</visualparadigm.plugin.dir>
+        <visualparadigm.app.dir></visualparadigm.app.dir>
+        <visualparadigm.plugin.dir></visualparadigm.plugin.dir>
     </properties>
 
     <dependencies>
