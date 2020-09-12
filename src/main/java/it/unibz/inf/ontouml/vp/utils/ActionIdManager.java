@@ -8,11 +8,11 @@ public final class ActionIdManager {
 	public static final String HISTORICAL_ROLE = "it.unibz.inf.ontouml.vp.addHistoricalRoleStereotype";
 	public static final String HISTORICAL_ROLE_MIXIN = "it.unibz.inf.ontouml.vp.addHistoricalRoleMixinStereotype";
 	public static final String EVENT = "it.unibz.inf.ontouml.vp.addEventStereotype";
-	
 	public static final String SITUATION = "it.unibz.inf.ontouml.vp.addSituationStereotype";
 
 	public static final String ENUMERATION = "it.unibz.inf.ontouml.vp.addEnumerationStereotype";
 	public static final String DATATYPE = "it.unibz.inf.ontouml.vp.addDatatypeStereotype";
+	public static final String ABSTRACT = "it.unibz.inf.ontouml.vp.addAbstractStereotype";
 
 	public static final String SUBKIND = "it.unibz.inf.ontouml.vp.addSubkindStereotype";
 	public static final String ROLE_MIXIN = "it.unibz.inf.ontouml.vp.addRoleMixinStereotype";
@@ -61,11 +61,11 @@ public final class ActionIdManager {
 	public static final String HISTORICAL_ROLE_FIXED = "it.unibz.inf.ontouml.vp.addHistoricalRoleStereotype.fixedMenu";
 	public static final String HISTORICAL_ROLE_MIXIN_FIXED = "it.unibz.inf.ontouml.vp.addHistoricalRoleMixinStereotype.fixedMenu";
 	public static final String EVENT_FIXED = "it.unibz.inf.ontouml.vp.addEventStereotype.fixedMenu";
-	
 	public static final String SITUATION_FIXED = "it.unibz.inf.ontouml.vp.addSituationStereotype.fixedMenu";
 
 	public static final String ENUMERATION_FIXED = "it.unibz.inf.ontouml.vp.addEnumerationStereotype.fixedMenu";
 	public static final String DATATYPE_FIXED = "it.unibz.inf.ontouml.vp.addDatatypeStereotype.fixedMenu";
+	public static final String ABSTRACT_FIXED = "it.unibz.inf.ontouml.vp.addAbstractStereotype.fixedMenu";
 
 	public static final String SUBKIND_FIXED = "it.unibz.inf.ontouml.vp.addSubkindStereotype.fixedMenu";
 	public static final String ROLE_MIXIN_FIXED = "it.unibz.inf.ontouml.vp.addRoleMixinStereotype.fixedMenu";
@@ -158,6 +158,8 @@ public final class ActionIdManager {
 				return ENUMERATION;
 			case StereotypesManager.STR_DATATYPE:
 				return DATATYPE;
+			case StereotypesManager.STR_ABSTRACT:
+				return ABSTRACT;
 			default:
 				return  null;
 		}

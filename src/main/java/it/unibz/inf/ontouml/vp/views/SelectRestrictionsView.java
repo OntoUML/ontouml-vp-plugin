@@ -130,9 +130,9 @@ public class SelectRestrictionsView implements IDialogHandler {
 		this._selectionsPane.add(checkBox);
 		checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_COLLECTIVE));
 		// Line 1, Column 2
-		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_MODE);
+		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_INTRINSIC_MODE);
 		this._selectionsPane.add(checkBox);
-		checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_MODE));
+		checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_INTRINSIC_MODE));
 		// Line 1, Column 3
 		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_ABSTRACT);
 		this._selectionsPane.add(checkBox);
@@ -181,8 +181,10 @@ public class SelectRestrictionsView implements IDialogHandler {
 
 		// Line 4, Column 1 (empty)
 		this._selectionsPane.add(new JLabel());
-		// Line 4, Column 2 (empty)
-		this._selectionsPane.add(new JLabel());
+		// Line 4, Column 2
+		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_EXTRINSIC_MODE);
+		this._selectionsPane.add(checkBox);
+		checkBox.setSelected(selectedList.contains(StereotypesManager.RESTRICTED_TO_EXTRINSIC_MODE));
 		// Line 4, Column 3
 		checkBox = new JCheckBox(StereotypesManager.RESTRICTED_TO_TYPE);
 		this._selectionsPane.add(checkBox);

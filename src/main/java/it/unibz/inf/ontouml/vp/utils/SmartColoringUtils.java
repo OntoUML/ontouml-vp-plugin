@@ -26,7 +26,7 @@ public class SmartColoringUtils {
 	public static final Color COLOR_FOR_COLLECTIVE = new Color(255, 218, 221);
 	public static final Color COLOR_FOR_COLLECTIVE_DARK = new Color(255, 153, 163);
 	public static final Color COLOR_FOR_EVENT = new Color(252, 252, 212);
-	public static final Color COLOR_FOR_SITUATION = new Color(252, 252, 212);
+	public static final Color COLOR_FOR_SITUATION = new Color(252, 224, 192);
 	public static final Color COLOR_FOR_MODE = new Color(192, 237, 255);
 	public static final Color COLOR_FOR_MODE_DARK = new Color(112, 215, 255);
 	public static final Color COLOR_FOR_FUNCTIONAL_COMPLEX = new Color(255, 218, 221);
@@ -107,7 +107,8 @@ public class SmartColoringUtils {
 			return COLOR_FOR_EVENT;
 		case StereotypesManager.RESTRICTED_TO_SITUATION:
 			return COLOR_FOR_SITUATION;
-		case StereotypesManager.RESTRICTED_TO_MODE:
+		case StereotypesManager.RESTRICTED_TO_INTRINSIC_MODE:
+		case StereotypesManager.RESTRICTED_TO_EXTRINSIC_MODE:
 			return ultimateSortalStereotypes.contains(stereotype) ? COLOR_FOR_MODE_DARK : COLOR_FOR_MODE;
 		case StereotypesManager.RESTRICTED_TO_FUNCTIONAL_COMPLEX:
 			return ultimateSortalStereotypes.contains(stereotype) ? COLOR_FOR_FUNCTIONAL_COMPLEX_DARK
@@ -132,10 +133,10 @@ public class SmartColoringUtils {
 			return COLOR_FOR_FUNCTIONAL_COMPLEX;
 		}
 
-		final List<String> intrinsicNature = Arrays.asList(StereotypesManager.RESTRICTED_TO_MODE,
-				StereotypesManager.RESTRICTED_TO_QUALITY);
+		final List<String> modeQualityNatures = Arrays.asList(StereotypesManager.RESTRICTED_TO_INTRINSIC_MODE,
+				StereotypesManager.RESTRICTED_TO_EXTRINSIC_MODE, StereotypesManager.RESTRICTED_TO_QUALITY);
 
-		if (intrinsicNature.containsAll(restrictedToList)) {
+		if (modeQualityNatures.containsAll(restrictedToList)) {
 			return COLOR_FOR_MODE;
 		}
 

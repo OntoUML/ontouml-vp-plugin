@@ -30,27 +30,27 @@ public class StereotypesManager {
    public static final String STR_HISTORICAL_ROLE = "historicalRole";
    public static final String STR_HISTORICAL_ROLE_MIXIN = "historicalRoleMixin";
    public static final String STR_EVENT = "event";
-   
    public static final String STR_SITUATION = "situation";
 
    public static final String STR_CATEGORY = "category";
    public static final String STR_MIXIN = "mixin";
    public static final String STR_ROLE_MIXIN = "roleMixin";
    public static final String STR_PHASE_MIXIN = "phaseMixin";
-   
+
    public static final String STR_KIND = "kind";
    public static final String STR_COLLECTIVE = "collective";
    public static final String STR_QUANTITY = "quantity";
    public static final String STR_RELATOR = "relator";
    public static final String STR_QUALITY = "quality";
    public static final String STR_MODE = "mode";
-   
+
    public static final String STR_SUBKIND = "subkind";
    public static final String STR_ROLE = "role";
    public static final String STR_PHASE = "phase";
 
    public static final String STR_ENUMERATION = "enumeration";
    public static final String STR_DATATYPE = "datatype";
+   public static final String STR_ABSTRACT = "abstract";
 
    // Association stereotypes
    public static final String STR_MATERIAL = "material";
@@ -74,7 +74,7 @@ public class StereotypesManager {
    public static final String STR_HISTORICAL_DEPENDENCE = "historicalDependence";
    public static final String STR_CREATION = "creation";
    public static final String STR_MANIFESTATION = "manifestation";
-   
+
    public static final String STR_BRINGS_ABOUT = "bringsAbout";
    public static final String STR_TRIGGERS = "triggers";
 
@@ -87,7 +87,8 @@ public class StereotypesManager {
    public static final String RESTRICTED_TO_COLLECTIVE = "collective";
    public static final String RESTRICTED_TO_QUANTITY = "quantity";
    public static final String RESTRICTED_TO_RELATOR = "relator";
-   public static final String RESTRICTED_TO_MODE = "mode";
+   public static final String RESTRICTED_TO_INTRINSIC_MODE = "intrinsic-mode";
+   public static final String RESTRICTED_TO_EXTRINSIC_MODE = "extrinsic-mode";
    public static final String RESTRICTED_TO_QUALITY = "quality";
    public static final String RESTRICTED_TO_EVENT = "event";
    public static final String RESTRICTED_TO_SITUATION = "situation";
@@ -102,7 +103,7 @@ public class StereotypesManager {
 
    public static List<String> getOntoUMLTaggedValues() {
       return Arrays.asList(PROPERTY_RESTRICTED_TO, PROPERTY_IS_EXTENSIONAL,
-         PROPERTY_IS_POWERTYPE, PROPERTY_ORDER);
+              PROPERTY_IS_POWERTYPE, PROPERTY_ORDER);
    }
 
    public static Set<String> getOntoUMLClassStereotypeNames() {
@@ -113,11 +114,12 @@ public class StereotypesManager {
       str_names.add(STR_HISTORICAL_ROLE);
       str_names.add(STR_HISTORICAL_ROLE_MIXIN);
       str_names.add(STR_EVENT);
-      
+
       str_names.add(STR_SITUATION);
 
       str_names.add(STR_ENUMERATION);
       str_names.add(STR_DATATYPE);
+      str_names.add(STR_ABSTRACT);
 
       str_names.add(STR_CATEGORY);
       str_names.add(STR_MIXIN);
@@ -147,7 +149,7 @@ public class StereotypesManager {
       str_names.add(STR_HISTORICAL_DEPENDENCE);
       str_names.add(STR_CREATION);
       str_names.add(STR_MANIFESTATION);
-      
+
       str_names.add(STR_BRINGS_ABOUT);
       str_names.add(STR_TRIGGERS);
 
@@ -184,45 +186,45 @@ public class StereotypesManager {
    }
 
    public static Set<String> getNonSortalStereotypeNames() {
-		final Set<String> str_names = new HashSet<String>();
+      final Set<String> str_names = new HashSet<String>();
 
-		str_names.add(STR_CATEGORY);
-		str_names.add(STR_MIXIN);
-		str_names.add(STR_ROLE_MIXIN);
-		str_names.add(STR_PHASE_MIXIN);
+      str_names.add(STR_CATEGORY);
+      str_names.add(STR_MIXIN);
+      str_names.add(STR_ROLE_MIXIN);
+      str_names.add(STR_PHASE_MIXIN);
 
-		return str_names;
-	}
+      return str_names;
+   }
 
-	public static Set<String> getUltimateSortalStereotypeNames() {
-		final Set<String> str_names = new HashSet<String>();
+   public static Set<String> getUltimateSortalStereotypeNames() {
+      final Set<String> str_names = new HashSet<String>();
 
-		str_names.add(STR_KIND);
-		str_names.add(STR_COLLECTIVE);
-		str_names.add(STR_QUANTITY);
-		str_names.add(STR_RELATOR);
-		str_names.add(STR_QUALITY);
-		str_names.add(STR_MODE);
+      str_names.add(STR_KIND);
+      str_names.add(STR_COLLECTIVE);
+      str_names.add(STR_QUANTITY);
+      str_names.add(STR_RELATOR);
+      str_names.add(STR_QUALITY);
+      str_names.add(STR_MODE);
 
-		return str_names;
-	}
+      return str_names;
+   }
 
-	public static Set<String> getSortalStereotypeNames() {
-		final Set<String> str_names = new HashSet<String>();
+   public static Set<String> getSortalStereotypeNames() {
+      final Set<String> str_names = new HashSet<String>();
 
-		str_names.add(STR_SUBKIND);
-		str_names.add(STR_ROLE);
-		str_names.add(STR_PHASE);
-		str_names.add(STR_HISTORICAL_ROLE);
+      str_names.add(STR_SUBKIND);
+      str_names.add(STR_ROLE);
+      str_names.add(STR_PHASE);
+      str_names.add(STR_HISTORICAL_ROLE);
 
-		return str_names;
-	}
+      return str_names;
+   }
 
    /**
     * Method to be called whenever a project is opened to properly install all
     * stereotypes.
     */
-    public static void generate() {
+   public static void generate() {
       final IProject project = ApplicationManager.instance().getProjectManager().getProject();
       final IModelElement[] installedStereotypes = project.toAllLevelModelElementArray(IModelElementFactory.MODEL_TYPE_STEREOTYPE);
       final Map<String, IStereotype> stereotypesMap = new HashMap<>();
@@ -232,7 +234,7 @@ public class StereotypesManager {
       allStereotypeNames.addAll(getOntoUMLClassStereotypeNames());
 
       // Retrieves IStereotype objects for OntoUML elements
-      for (IModelElement stereotype : installedStereotypes){
+      for (IModelElement stereotype : installedStereotypes) {
          if (allStereotypeNames.contains(stereotype.getName())) {
             stereotypesMap.put(stereotype.getName(), (IStereotype) stereotype);
          }
@@ -275,7 +277,7 @@ public class StereotypesManager {
 
          if (definitionsContainer == null) {
             definitionsContainer = IModelElementFactory
-               .instance().createTaggedValueDefinitionContainer();
+                    .instance().createTaggedValueDefinitionContainer();
          }
 
          final ITaggedValueDefinition[] definitionsArray = definitionsContainer.toTaggedValueDefinitionArray();
@@ -303,8 +305,8 @@ public class StereotypesManager {
 
          // Adds "isExtensional" to all STR_COLLECTIVE IStereotype
          if (
-            stereotype.getName().equals(STR_COLLECTIVE) && 
-            !definitions.containsKey(PROPERTY_IS_EXTENSIONAL)
+                 stereotype.getName().equals(STR_COLLECTIVE) &&
+                         !definitions.containsKey(PROPERTY_IS_EXTENSIONAL)
          ) {
             final ITaggedValueDefinition isExtensional = IModelElementFactory.instance()
                     .createTaggedValueDefinition();
@@ -317,8 +319,8 @@ public class StereotypesManager {
 
          // Adds "isPowertype" to all STR_TYPE IStereotype
          if (
-            stereotype.getName().equals(STR_TYPE) && 
-            !definitions.containsKey(PROPERTY_IS_POWERTYPE)
+                 stereotype.getName().equals(STR_TYPE) &&
+                         !definitions.containsKey(PROPERTY_IS_POWERTYPE)
          ) {
             final ITaggedValueDefinition isPowertype = IModelElementFactory.instance()
                     .createTaggedValueDefinition();
@@ -331,8 +333,8 @@ public class StereotypesManager {
 
          // Adds "order" to all STR_TYPE IStereotype
          if (
-            stereotype.getName().equals(STR_TYPE) && 
-            !definitions.containsKey(PROPERTY_ORDER)
+                 stereotype.getName().equals(STR_TYPE) &&
+                         !definitions.containsKey(PROPERTY_ORDER)
          ) {
             final ITaggedValueDefinition order = IModelElementFactory.instance().createTaggedValueDefinition();
             order.setName(PROPERTY_ORDER);
@@ -353,21 +355,21 @@ public class StereotypesManager {
 
    public static String getRestrictions() {
       return getRestrictionsList()
-         .stream()
-         .sorted()
-         .collect(Collectors.joining(" "));
+              .stream()
+              .sorted()
+              .collect(Collectors.joining(" "));
    }
 
-	public static List<String> getRestrictionsList() {
-		return Arrays.asList(RESTRICTED_TO_COLLECTIVE, RESTRICTED_TO_EVENT, RESTRICTED_TO_SITUATION, RESTRICTED_TO_MODE,
-				RESTRICTED_TO_FUNCTIONAL_COMPLEX, RESTRICTED_TO_QUALITY, RESTRICTED_TO_QUANTITY, RESTRICTED_TO_RELATOR,
-				RESTRICTED_TO_TYPE, RESTRICTED_TO_ABSTRACT);
-	}
+   public static List<String> getRestrictionsList() {
+      return Arrays.asList(RESTRICTED_TO_COLLECTIVE, RESTRICTED_TO_EVENT, RESTRICTED_TO_SITUATION, RESTRICTED_TO_INTRINSIC_MODE,
+              RESTRICTED_TO_EXTRINSIC_MODE, RESTRICTED_TO_FUNCTIONAL_COMPLEX, RESTRICTED_TO_QUALITY, RESTRICTED_TO_QUANTITY,
+              RESTRICTED_TO_RELATOR, RESTRICTED_TO_TYPE, RESTRICTED_TO_ABSTRACT);
+   }
 
    public static void applyStereotype(IModelElement element, String stereotypeName) {
       final IStereotype stereotype = getStereotype(stereotypeName);
 
-      if (stereotype == null || !element.getModelType().equals(stereotype.getBaseType())){
+      if (stereotype == null || !element.getModelType().equals(stereotype.getBaseType())) {
          return;
       }
 
@@ -410,7 +412,7 @@ public class StereotypesManager {
                // It does not remove non-OntoUML tags
                System.out.println(tv.getName() + ": has tag definition");
 
-               if (isAssociatedToStereotype){
+               if (isAssociatedToStereotype) {
                   taggedValueMap.put(tv.getName(), tv.getValue());
                }
 
@@ -448,20 +450,50 @@ public class StereotypesManager {
       }
    }
 
-   public static String getDefaultRestrictedTo(String stereotype) {
+   public static boolean shouldOverrideRestrictedTo(String stereotype, String restrictedTo) {
       switch (stereotype) {
          case STR_TYPE:
-            return RESTRICTED_TO_TYPE;
          case STR_EVENT:
-             return RESTRICTED_TO_EVENT;
          case STR_SITUATION:
-             return RESTRICTED_TO_SITUATION;
+         case STR_KIND:
+         case STR_COLLECTIVE:
+         case STR_QUANTITY:
+         case STR_RELATOR:
+         case STR_QUALITY:
+         case STR_MODE:
+         case STR_ENUMERATION:
+         case STR_DATATYPE:
+         case STR_ABSTRACT:
+            return true;
          case STR_CATEGORY:
          case STR_MIXIN:
          case STR_ROLE_MIXIN:
          case STR_PHASE_MIXIN:
          case STR_HISTORICAL_ROLE_MIXIN:
-            return RESTRICTED_TO_FUNCTIONAL_COMPLEX;
+            return (restrictedTo.contains(RESTRICTED_TO_ABSTRACT) || restrictedTo.contains(RESTRICTED_TO_EVENT)
+                    || restrictedTo.contains(RESTRICTED_TO_TYPE) || restrictedTo.contains(RESTRICTED_TO_SITUATION));
+         case STR_SUBKIND:
+         case STR_ROLE:
+         case STR_PHASE:
+         case STR_HISTORICAL_ROLE:
+         default:
+            return false;
+      }
+   }
+
+   public static String getDefaultRestrictedTo(String stereotype) {
+      switch (stereotype) {
+         case STR_TYPE:
+            return RESTRICTED_TO_TYPE;
+         case STR_EVENT:
+            return RESTRICTED_TO_EVENT;
+         case STR_SITUATION:
+            return RESTRICTED_TO_SITUATION;
+         case STR_CATEGORY:
+         case STR_MIXIN:
+         case STR_ROLE_MIXIN:
+         case STR_PHASE_MIXIN:
+         case STR_HISTORICAL_ROLE_MIXIN:
          case STR_KIND:
             return RESTRICTED_TO_FUNCTIONAL_COMPLEX;
          case STR_COLLECTIVE:
@@ -473,9 +505,10 @@ public class StereotypesManager {
          case STR_QUALITY:
             return RESTRICTED_TO_QUALITY;
          case STR_MODE:
-            return RESTRICTED_TO_MODE;
+            return RESTRICTED_TO_INTRINSIC_MODE;
          case STR_ENUMERATION:
          case STR_DATATYPE:
+         case STR_ABSTRACT:
             return RESTRICTED_TO_ABSTRACT;
          case STR_SUBKIND:
          case STR_ROLE:
@@ -538,23 +571,23 @@ public class StereotypesManager {
    }
 
    public static String getUniqueStereotypeName(IModelElement element) {
-		return element.stereotypeCount() == 1 ?
-			element.toStereotypeModelArray()[0].getName() :
-			null;
+      return element.stereotypeCount() == 1 ?
+              element.toStereotypeModelArray()[0].getName() :
+              null;
    }
-   
+
    public static IStereotype getUniqueStereotype(IModelElement element) {
-		return element.stereotypeCount() == 1 ?
-			element.toStereotypeModelArray()[0] :
-			null;
+      return element.stereotypeCount() == 1 ?
+              element.toStereotypeModelArray()[0] :
+              null;
    }
-   
+
    public static IStereotype getStereotype(String stereotypeName) {
       IStereotype stereotype = STEREOTYPE_ELEMENTS.get(stereotypeName);
 
-      if(
-         stereotype == null && 
-         getOntoUMLStereotypeNames().contains(stereotypeName)
+      if (
+              stereotype == null &&
+                      getOntoUMLStereotypeNames().contains(stereotypeName)
       ) {
          generate();
          stereotype = STEREOTYPE_ELEMENTS.get(stereotypeName);

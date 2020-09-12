@@ -96,10 +96,11 @@ public class ApplyPropertiesController implements VPContextActionController {
                final List<String> nonFixedRestrictedTo =
                   Arrays.asList(StereotypesManager.STR_CATEGORY,
                      StereotypesManager.STR_MIXIN,
+                     StereotypesManager.STR_MODE,
                      StereotypesManager.STR_PHASE_MIXIN,
                      StereotypesManager.STR_ROLE_MIXIN,
                      StereotypesManager.STR_HISTORICAL_ROLE_MIXIN);
-               
+
                action.setEnabled(!isSmartModelingEnabled ||
                   nonFixedRestrictedTo.contains(stereotype));
             } else {
@@ -185,7 +186,6 @@ public class ApplyPropertiesController implements VPContextActionController {
    }
 
    private void setRestrictedTo(VPContext context, IClass clickedClass) {
-      System.out.println("\nClicked class: " + clickedClass.getName());
       String currentRestrictions = Class.getRestrictedTo(clickedClass);
       currentRestrictions = currentRestrictions == null ? "" : currentRestrictions;
 
@@ -194,7 +194,6 @@ public class ApplyPropertiesController implements VPContextActionController {
       final String newRestrictions = dialog.getSelectedValues();
 
       forEachSelectedClass(context, cla -> {
-         System.out.println("setRestrictedTo on class: " + cla.getName());
          Class.setRestrictedTo(cla, newRestrictions);
       });
    }

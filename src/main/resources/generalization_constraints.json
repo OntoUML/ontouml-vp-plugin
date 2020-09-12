@@ -17,9 +17,10 @@
 		"historicalRoleMixin": ["role","roleMixin","historicalRole","historicalRoleMixin"],
 		"event": ["event"],
 		"situation": ["situation"],
-		"type": ["role","phase","historicalRole","type"],
+		"type": ["type"],
 		"enumeration": ["enumeration"],
-		"datatype": ["datatype"]
+		"datatype": ["datatype"],
+		"abstract": ["abstract","datatype","enumeration"]
 	},
 	"allowedSuperClassesFor": {
 		"kind": ["category","mixin"],
@@ -29,18 +30,19 @@
 		"mode": ["category","mixin"],
 		"quality": ["category","mixin"],
 		"subkind": ["kind","quantity","collective","relator","mode","quality","subkind","category","mixin"],
-		"role": ["kind","quantity","collective","relator","mode","quality","subkind","role","phase","category","mixin","roleMixin","phaseMixin","historicalRole","historicalRoleMixin","type"],
-		"phase": ["kind","quantity","collective","relator","mode","quality","subkind","phase","category","mixin","phaseMixin","type"],
+		"role": ["kind","quantity","collective","relator","mode","quality","subkind","role","phase","category","mixin","roleMixin","phaseMixin","historicalRole","historicalRoleMixin"],
+		"phase": ["kind","quantity","collective","relator","mode","quality","subkind","phase","category","mixin","phaseMixin"],
 		"category": ["category","mixin"],
 		"mixin": ["category","mixin"],
 		"roleMixin": ["category","mixin","roleMixin","phaseMixin","historicalRoleMixin"],
 		"phaseMixin": ["category","mixin","phaseMixin"],
-		"historicalRole": ["kind","quantity","collective","relator","mode","quality","subkind","category","mixin","historicalRole","historicalRoleMixin","type"],
+		"historicalRole": ["kind","quantity","collective","relator","mode","quality","subkind","category","mixin","historicalRole","historicalRoleMixin"],
 		"historicalRoleMixin": ["category","mixin","historicalRoleMixin"],
 		"event": ["event"],
 		"situation": ["situation"],
 		"type": ["type"],
-		"enumeration": ["enumeration"],
-		"datatype": ["datatype"]
+		"enumeration": ["abstract","enumeration"],
+		"datatype": ["abstract","datatype"],
+		"abstract": ["abstract"]
 	}
 }

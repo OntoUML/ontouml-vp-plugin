@@ -97,6 +97,7 @@ public class ApplyStereotypeController implements VPContextActionController {
          case ActionIdManager.HISTORICAL_ROLE_MIXIN:
          case ActionIdManager.HISTORICAL_ROLE_MIXIN_FIXED:
             StereotypesManager.applyStereotype(element, StereotypesManager.STR_HISTORICAL_ROLE_MIXIN);
+            Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIdManager.EVENT:
          case ActionIdManager.EVENT_FIXED:
@@ -118,6 +119,11 @@ public class ApplyStereotypeController implements VPContextActionController {
             StereotypesManager.applyStereotype(element, StereotypesManager.STR_DATATYPE);
             Class.setDefaultRestrictedTo((IClass) element);
             break;
+         case ActionIdManager.ABSTRACT:
+         case ActionIdManager.ABSTRACT_FIXED:
+            StereotypesManager.applyStereotype(element, StereotypesManager.STR_ABSTRACT);
+            Class.setDefaultRestrictedTo((IClass) element);
+            break;
          case ActionIdManager.SUBKIND:
          case ActionIdManager.SUBKIND_FIXED:
             StereotypesManager.applyStereotype(element, StereotypesManager.STR_SUBKIND);
@@ -125,6 +131,7 @@ public class ApplyStereotypeController implements VPContextActionController {
          case ActionIdManager.ROLE_MIXIN:
          case ActionIdManager.ROLE_MIXIN_FIXED:
             StereotypesManager.applyStereotype(element, StereotypesManager.STR_ROLE_MIXIN);
+            Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIdManager.ROLE:
          case ActionIdManager.ROLE_FIXED:
@@ -148,6 +155,7 @@ public class ApplyStereotypeController implements VPContextActionController {
          case ActionIdManager.PHASE_MIXIN:
          case ActionIdManager.PHASE_MIXIN_FIXED:
             StereotypesManager.applyStereotype(element, StereotypesManager.STR_PHASE_MIXIN);
+            Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIdManager.PHASE:
          case ActionIdManager.PHASE_FIXED:
@@ -161,6 +169,7 @@ public class ApplyStereotypeController implements VPContextActionController {
          case ActionIdManager.MIXIN:
          case ActionIdManager.MIXIN_FIXED:
             StereotypesManager.applyStereotype(element, StereotypesManager.STR_MIXIN);
+            Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIdManager.KIND:
          case ActionIdManager.KIND_FIXED:
@@ -175,6 +184,7 @@ public class ApplyStereotypeController implements VPContextActionController {
          case ActionIdManager.CATEGORY:
          case ActionIdManager.CATEGORY_FIXED:
             StereotypesManager.applyStereotype(element, StereotypesManager.STR_CATEGORY);
+            Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIdManager.INSTANTIATION:
          case ActionIdManager.INSTANTIATION_FIXED:

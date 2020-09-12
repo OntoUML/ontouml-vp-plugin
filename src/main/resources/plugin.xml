@@ -153,6 +153,10 @@
             <action id="it.unibz.inf.ontouml.vp.addDatatypeStereotype" label="Datatype" style="normal" menuPath="ontoUMLMenu1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotypeController"/>
             </action>
+
+            <action id="it.unibz.inf.ontouml.vp.addAbstractStereotype" label="Abstract" style="normal" menuPath="ontoUMLMenu1/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotypeController"/>
+            </action>
             
             <separator id="it.unibz.inf.ontouml.vp.separator0" menuPath="ontoUMLMenu1/#" />
 
@@ -336,6 +340,10 @@
             </action>
 
             <action id="it.unibz.inf.ontouml.vp.addDatatypeStereotype.fixedMenu" label="Datatype" style="normal" menuPath="ontoUMLMenu1.fixedMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotypeController"/>
+            </action>
+
+            <action id="it.unibz.inf.ontouml.vp.addAbstractStereotype.fixedMenu" label="Abstract" style="normal" menuPath="ontoUMLMenu1.fixedMenu/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotypeController"/>
             </action>
 
