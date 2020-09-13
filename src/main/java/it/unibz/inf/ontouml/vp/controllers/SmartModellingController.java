@@ -13,7 +13,7 @@ import com.vp.plugin.model.ISimpleRelationship;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.utils.OntoUMLConstraintsManager;
-import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
+import it.unibz.inf.ontouml.vp.utils.Stereotype;
 
 public class SmartModellingController {
 
@@ -84,7 +84,7 @@ public class SmartModellingController {
          return;
 
       switch (stereotypes[0]) {
-         case StereotypesManager.STR_CHARACTERIZATION:
+         case Stereotype.CHARACTERIZATION:
             // Source: Characterized end
             setCardinalityIfEmpty(source, "1");
             // Target: Mode/Quality end
@@ -92,24 +92,24 @@ public class SmartModellingController {
             target.setReadOnly(true);
             removeAggregationKind(association);
             return;
-         case StereotypesManager.STR_COMPARATIVE:
+         case Stereotype.COMPARATIVE:
             setCardinalityIfEmpty(source, "0..*");
             setCardinalityIfEmpty(target, "0..*");
             association.setDerived(true);
             removeAggregationKind(association);
             return;
-         case StereotypesManager.STR_COMPONENT_OF:
+         case Stereotype.COMPONENT_OF:
             setCardinalityIfEmpty(source, "1..*");
             setCardinalityIfEmpty(target, "1");
             setAggregationKind(association);
             return;
-         case StereotypesManager.STR_MATERIAL:
-            if (targetStereotype.equals(StereotypesManager.STR_ROLE) || targetStereotype.equals(StereotypesManager.STR_ROLE_MIXIN))
+         case Stereotype.MATERIAL:
+            if (targetStereotype.equals(Stereotype.ROLE) || targetStereotype.equals(Stereotype.ROLE_MIXIN))
                setCardinalityIfEmpty(source, "1..*");
             else
                setCardinalityIfEmpty(source, "0..*");
 
-            if (sourceStereotype.equals(StereotypesManager.STR_ROLE) || sourceStereotype.equals(StereotypesManager.STR_ROLE_MIXIN))
+            if (sourceStereotype.equals(Stereotype.ROLE) || sourceStereotype.equals(Stereotype.ROLE_MIXIN))
                setCardinalityIfEmpty(target, "1..*");
             else
                setCardinalityIfEmpty(target, "0..*");
@@ -117,7 +117,7 @@ public class SmartModellingController {
             association.setDerived(true);
             removeAggregationKind(association);
             return;
-         case StereotypesManager.STR_EXTERNAL_DEPENDENCE:
+         case Stereotype.EXTERNAL_DEPENDENCE:
             // Source: Mode/Quality end
             setCardinalityIfEmpty(source, "0..*");
             // Target: Dependee end
@@ -125,8 +125,8 @@ public class SmartModellingController {
             target.setReadOnly(true);
             removeAggregationKind(association);
             return;
-         case StereotypesManager.STR_MEDIATION:
-            if (targetStereotype.equals(StereotypesManager.STR_ROLE) || targetStereotype.equals(StereotypesManager.STR_ROLE_MIXIN))
+         case Stereotype.MEDIATION:
+            if (targetStereotype.equals(Stereotype.ROLE) || targetStereotype.equals(Stereotype.ROLE_MIXIN))
                setCardinalityIfEmpty(source, "1..*");
             else
                setCardinalityIfEmpty(source, "0..*");
@@ -135,24 +135,24 @@ public class SmartModellingController {
             target.setReadOnly(true);
             removeAggregationKind(association);
             return;
-         case StereotypesManager.STR_MEMBER_OF:
+         case Stereotype.MEMBER_OF:
             setCardinalityIfEmpty(source, "1..*");
             setCardinalityIfEmpty(target, "1..*");
             setAggregationKind(association);
             return;
-         case StereotypesManager.STR_SUB_COLLECTION_OF:
+         case Stereotype.SUB_COLLECTION_OF:
             setCardinalityIfEmpty(source, "1");
             setCardinalityIfEmpty(target, "1");
             setAggregationKind(association);
             return;
-         case StereotypesManager.STR_SUB_QUANTITY_OF:
+         case Stereotype.SUB_QUANTITY_OF:
             setCardinalityIfEmpty(source, "1");
             setCardinalityIfEmpty(target, "1");
             source.setReadOnly(true);
             setAggregationKind(association);
             return;
-         case StereotypesManager.STR_CREATION:
-         case StereotypesManager.STR_TERMINATION:
+         case Stereotype.CREATION:
+         case Stereotype.TERMINATION:
             // Source: Endurant end
             setCardinalityIfEmpty(source, "1");
             source.setReadOnly(true);
@@ -161,7 +161,7 @@ public class SmartModellingController {
             target.setReadOnly(true);
             removeAggregationKind(association);
             return;
-         case StereotypesManager.STR_HISTORICAL_DEPENDENCE:
+         case Stereotype.HISTORICAL_DEPENDENCE:
             // Source: Depender end
             setCardinalityIfEmpty(source, "0..*");
             // Target: Dependee end
@@ -169,7 +169,7 @@ public class SmartModellingController {
             target.setReadOnly(true);
             removeAggregationKind(association);
             return;
-         case StereotypesManager.STR_MANIFESTATION:
+         case Stereotype.MANIFESTATION:
             // Source: Mode/Quality/Relator end
             setCardinalityIfEmpty(source, "1..*");
             source.setReadOnly(true);
@@ -177,26 +177,26 @@ public class SmartModellingController {
             setCardinalityIfEmpty(target, "0..*");
             removeAggregationKind(association);
             return;
-         case StereotypesManager.STR_PARTICIPATION:
+         case Stereotype.PARTICIPATION:
             // Source: Endurant end (participant)
             setCardinalityIfEmpty(source, "1..*");
             source.setReadOnly(true);
             // Target: Event end
-            if (sourceStereotype.equals(StereotypesManager.STR_HISTORICAL_ROLE) || sourceStereotype.equals(StereotypesManager.STR_HISTORICAL_ROLE_MIXIN))
+            if (sourceStereotype.equals(Stereotype.HISTORICAL_ROLE) || sourceStereotype.equals(Stereotype.HISTORICAL_ROLE_MIXIN))
                setCardinalityIfEmpty(target, "1..*");
             else
                setCardinalityIfEmpty(target, "0..*");
 
             removeAggregationKind(association);
             return;
-         case StereotypesManager.STR_PARTICIPATIONAL:
+         case Stereotype.PARTICIPATIONAL:
             setCardinalityIfEmpty(source, "1..*");
             setCardinalityIfEmpty(target, "1");
             source.setReadOnly(true);
             target.setReadOnly(true);
             setAggregationKind(association);
             return;
-         case StereotypesManager.STR_INSTANTIATION:
+         case Stereotype.INSTANTIATION:
             // Source: lower order type
             setCardinalityIfEmpty(source, "0..*");
             source.setReadOnly(false);
@@ -205,7 +205,7 @@ public class SmartModellingController {
             target.setReadOnly(false);
             removeAggregationKind(association);
             return;
-         case StereotypesManager.STR_BRINGS_ABOUT:
+         case Stereotype.BRINGS_ABOUT:
             // Source: event
             setCardinalityIfEmpty(source, "1");
             source.setReadOnly(true);
@@ -214,7 +214,7 @@ public class SmartModellingController {
             target.setReadOnly(true);
             removeAggregationKind(association);
             return;
-         case StereotypesManager.STR_TRIGGERS:
+         case Stereotype.TRIGGERS:
             // Source: situation
             setCardinalityIfEmpty(source, "1");
             source.setReadOnly(true);
@@ -236,16 +236,16 @@ public class SmartModellingController {
          return;
 
       switch (stereotypes[0]) {
-         case StereotypesManager.STR_CATEGORY:
+         case Stereotype.CATEGORY:
             _class.setAbstract(true);
             break;
-         case StereotypesManager.STR_ROLE_MIXIN:
+         case Stereotype.ROLE_MIXIN:
             _class.setAbstract(true);
             break;
-         case StereotypesManager.STR_PHASE_MIXIN:
+         case Stereotype.PHASE_MIXIN:
             _class.setAbstract(true);
             break;
-         case StereotypesManager.STR_MIXIN:
+         case Stereotype.MIXIN:
             _class.setAbstract(true);
             break;
       }

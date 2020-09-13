@@ -3,9 +3,6 @@ package it.unibz.inf.ontouml.vp.views;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -19,7 +16,8 @@ import com.vp.plugin.view.IDialog;
 import com.vp.plugin.view.IDialogHandler;
 
 import it.unibz.inf.ontouml.vp.model.Configurations;
-import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
+import it.unibz.inf.ontouml.vp.model.uml.Class;
+import it.unibz.inf.ontouml.vp.utils.RestrictedTo;
 
 public class SelectRestrictionsView implements IDialogHandler {
 
@@ -27,15 +25,15 @@ public class SelectRestrictionsView implements IDialogHandler {
    private JPanel selectionPanel;
 
    private boolean cancelledExit = true;
-   private String initialSelection;
-   private List<String> initialSelectionList;
+   private String restrictedTo;
+   private List<String> restrictedToList;
    private List<String> selectableRestrictedTo;
 
-   public SelectRestrictionsView(String initialSelection, List<String> selectableRestrictedTo) {
+   public SelectRestrictionsView(String restrictedTo, List<String> selectableRestrictedTo) {
       super();
 
-      this.initialSelection = initialSelection;
-      this.initialSelectionList = Arrays.asList(initialSelection.split("\\s+"));
+      this.restrictedTo = restrictedTo;
+      this.restrictedToList = Class.getRestrictedToList(restrictedTo);
       this.selectableRestrictedTo = selectableRestrictedTo;
 
       this.selectionPanel = new JPanel();
@@ -98,7 +96,7 @@ public class SelectRestrictionsView implements IDialogHandler {
 
    public String getSelectedValues() {
       if (this.cancelledExit) {
-         return this.initialSelection;
+         return this.restrictedTo;
       }
 
       final StringBuilder selectedValues = new StringBuilder();
@@ -120,7 +118,7 @@ public class SelectRestrictionsView implements IDialogHandler {
       JCheckBox checkBox = new JCheckBox(restrictedTo);
       selectionPanel.add(checkBox);
 
-      checkBox.setSelected(initialSelectionList.contains(restrictedTo));
+      checkBox.setSelected(restrictedToList.contains(restrictedTo));
 
       final boolean isSmartModelingEnabled =
               Configurations.getInstance().getProjectConfigurations().isSmartModellingEnabled();
@@ -133,32 +131,32 @@ public class SelectRestrictionsView implements IDialogHandler {
       this.selectionPanel.setLayout(new GridLayout(4, 3));
 
       // Line 1, Column 1
-      addCheckbox(StereotypesManager.RESTRICTED_TO_COLLECTIVE);
+      addCheckbox(RestrictedTo.COLLECTIVE);
       // Line 1, Column 2
-      addCheckbox(StereotypesManager.RESTRICTED_TO_INTRINSIC_MODE);
+      addCheckbox(RestrictedTo.INTRINSIC_MODE);
       // Line 1, Column 3
-      addCheckbox(StereotypesManager.RESTRICTED_TO_ABSTRACT);
+      addCheckbox(RestrictedTo.ABSTRACT);
 
       // Line 2, Column 1
-      addCheckbox(StereotypesManager.RESTRICTED_TO_FUNCTIONAL_COMPLEX);
+      addCheckbox(RestrictedTo.FUNCTIONAL_COMPLEX);
       // Line 2, Column 2
-      addCheckbox(StereotypesManager.RESTRICTED_TO_EXTRINSIC_MODE);
+      addCheckbox(RestrictedTo.EXTRINSIC_MODE);
       // Line 2, Column 3
-      addCheckbox(StereotypesManager.RESTRICTED_TO_EVENT);
+      addCheckbox(RestrictedTo.EVENT);
 
       // Line 3, Column 1
-      addCheckbox(StereotypesManager.RESTRICTED_TO_QUANTITY);
+      addCheckbox(RestrictedTo.QUANTITY);
       // Line 3, Column 2
-      addCheckbox(StereotypesManager.RESTRICTED_TO_QUALITY);
+      addCheckbox(RestrictedTo.QUALITY);
       // Line 3, Column 3
-      addCheckbox(StereotypesManager.RESTRICTED_TO_SITUATION);
+      addCheckbox(RestrictedTo.SITUATION);
 
       // Line 4, Column 1 (empty)
       this.selectionPanel.add(new JLabel());
       // Line 4, Column 2
-      addCheckbox(StereotypesManager.RESTRICTED_TO_RELATOR);
+      addCheckbox(RestrictedTo.RELATOR);
       // Line 4, Column 3
-      addCheckbox(StereotypesManager.RESTRICTED_TO_TYPE);
+      addCheckbox(RestrictedTo.TYPE);
    }
 
 

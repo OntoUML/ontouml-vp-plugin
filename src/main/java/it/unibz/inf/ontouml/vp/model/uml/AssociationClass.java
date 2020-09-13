@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IAssociationClass;
-import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
+import it.unibz.inf.ontouml.vp.utils.Stereotype;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +70,7 @@ public class AssociationClass implements ModelElement {
 		Property sourceEnd = new Property(source, source.getFrom());
 		Property targetEnd = new Property(source, source.getTo());
 
-		addStereotype(StereotypesManager.STR_DERIVATION);
+		addStereotype(Stereotype.DERIVATION);
 
 		addProperty(sourceEnd);
 		addProperty(targetEnd);

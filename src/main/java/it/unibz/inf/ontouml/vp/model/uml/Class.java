@@ -19,16 +19,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.vp.plugin.model.IAttribute;
-import com.vp.plugin.model.IClass;
-import com.vp.plugin.model.IDataType;
-import com.vp.plugin.model.IEnumerationLiteral;
-import com.vp.plugin.model.IGeneralization;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.ISimpleRelationship;
-import com.vp.plugin.model.ITaggedValue;
-import com.vp.plugin.model.ITaggedValueContainer;
+import com.vp.plugin.model.*;
 
+import it.unibz.inf.ontouml.vp.utils.RestrictedTo;
+import it.unibz.inf.ontouml.vp.utils.Stereotype;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
 
 /**
@@ -122,7 +116,7 @@ public class Class implements ModelElement {
          addStereotype(stereotypes[i]);
       }
 
-      if (this.stereotypes != null && this.stereotypes.contains(StereotypesManager.STR_ENUMERATION)) {
+      if (this.stereotypes != null && this.stereotypes.contains(Stereotype.ENUMERATION)) {
          IEnumerationLiteral[] literalArray = source.toEnumerationLiteralArray();
          for (int i = 0; literalArray != null && i < literalArray.length; i++)
             addLiteral(new Literal(literalArray[i]));
@@ -146,7 +140,7 @@ public class Class implements ModelElement {
    public Class(IDataType source) {
       this((IModelElement) source);
 
-      addStereotype(StereotypesManager.STR_DATATYPE);
+      addStereotype(Stereotype.DATATYPE);
       setAbstract(false);
       setDerived(false);
 
@@ -181,7 +175,7 @@ public class Class implements ModelElement {
          addStereotype(stereotypes[i]);
       }
 
-      if (this.stereotypes != null && this.stereotypes.contains(StereotypesManager.STR_ENUMERATION)) {
+      if (this.stereotypes != null && this.stereotypes.contains(Stereotype.ENUMERATION)) {
          IEnumerationLiteral[] literalArray = source.toEnumerationLiteralArray();
          for (int i = 0; literalArray != null && i < literalArray.length; i++)
             addLiteral(new Literal(literalArray[i]));
@@ -200,6 +194,18 @@ public class Class implements ModelElement {
       setDescription(source.getDescription());
 
       loadTags(source);
+   }
+
+   public static String getUniqueStereotypeName(IModelElement element) {
+      return element.stereotypeCount() == 1 ?
+              element.toStereotypeModelArray()[0].getName() :
+              null;
+   }
+
+   public static IStereotype getUniqueStereotype(IModelElement element) {
+      return element.stereotypeCount() == 1 ?
+              element.toStereotypeModelArray()[0] :
+              null;
    }
 
    private void loadTags(IClass source) {
@@ -488,15 +494,15 @@ public class Class implements ModelElement {
    private static void setDefaultRestrictedTo(IClass element, String stereotypeName) {
       String currentRestrictedTo = getRestrictedTo(element);
 
-      if (StereotypesManager.shouldOverrideRestrictedTo(stereotypeName, currentRestrictedTo)) {
-         final String defaultNature = StereotypesManager.getDefaultRestrictedTo(stereotypeName);
+      if (RestrictedTo.shouldOverrideRestrictedTo(stereotypeName, currentRestrictedTo)) {
+         final String defaultNature = RestrictedTo.getDefaultRestrictedTo(stereotypeName);
          setRestrictedTo(element, defaultNature);
       }
    }
 
    public static void setDefaultRestrictedTo(IClass _class) {
       setDefaultRestrictedTo(_class,
-              StereotypesManager.getUniqueStereotypeName(_class));
+              getUniqueStereotypeName(_class));
    }
 
    public static String getRestrictedTo(IClass _class) {
@@ -523,6 +529,18 @@ public class Class implements ModelElement {
 
       return !classesRestrictions.equals("") ? classesRestrictions : null;
    }
+
+   public static List<String> getRestrictedToList(String restrictedTo) {
+      if(restrictedTo==null)
+         return Collections.emptyList();
+
+      return Arrays.asList(restrictedTo.split("\\s+"));
+   }
+
+   public static List<String> getRestrictedToList(IClass _class) {
+      return getRestrictedToList(getRestrictedTo(_class));
+   }
+
 
    public static boolean hasRestrictedTo(IClass _class) {
       final ITaggedValueContainer container = _class.getTaggedValues();

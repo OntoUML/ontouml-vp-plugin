@@ -118,47 +118,47 @@ public final class ActionIdManager {
 
 	public static String classStereotypeToActionID(String stereotype) {
 		switch(stereotype) {
-			case StereotypesManager.STR_TYPE:
+			case Stereotype.TYPE:
 				return TYPE;
-			case StereotypesManager.STR_HISTORICAL_ROLE:
+			case Stereotype.HISTORICAL_ROLE:
 				return HISTORICAL_ROLE;
-			case StereotypesManager.STR_HISTORICAL_ROLE_MIXIN:
+			case Stereotype.HISTORICAL_ROLE_MIXIN:
 				return HISTORICAL_ROLE_MIXIN;
-			case StereotypesManager.STR_EVENT:
+			case Stereotype.EVENT:
 				return EVENT;
-			case StereotypesManager.STR_SITUATION:
+			case Stereotype.SITUATION:
 				return SITUATION;
-			case StereotypesManager.STR_CATEGORY:
+			case Stereotype.CATEGORY:
 				return CATEGORY;
-			case StereotypesManager.STR_MIXIN:
+			case Stereotype.MIXIN:
 				return MIXIN;
-			case StereotypesManager.STR_ROLE_MIXIN:
+			case Stereotype.ROLE_MIXIN:
 				return ROLE_MIXIN;
-			case StereotypesManager.STR_PHASE_MIXIN:
+			case Stereotype.PHASE_MIXIN:
 				return PHASE_MIXIN;
-			case StereotypesManager.STR_KIND:
+			case Stereotype.KIND:
 				return KIND;
-			case StereotypesManager.STR_COLLECTIVE:
+			case Stereotype.COLLECTIVE:
 				return COLLECTIVE;
-			case StereotypesManager.STR_QUANTITY:
+			case Stereotype.QUANTITY:
 				return QUANTITY;
-			case StereotypesManager.STR_RELATOR:
+			case Stereotype.RELATOR:
 				return RELATOR;
-			case StereotypesManager.STR_QUALITY:
+			case Stereotype.QUALITY:
 				return QUALITY;
-			case StereotypesManager.STR_MODE:
+			case Stereotype.MODE:
 				return MODE;
-			case StereotypesManager.STR_SUBKIND:
+			case Stereotype.SUBKIND:
 				return SUBKIND;
-			case StereotypesManager.STR_ROLE:
+			case Stereotype.ROLE:
 				return ROLE;
-			case StereotypesManager.STR_PHASE:
+			case Stereotype.PHASE:
 				return PHASE;
-			case StereotypesManager.STR_ENUMERATION:
+			case Stereotype.ENUMERATION:
 				return ENUMERATION;
-			case StereotypesManager.STR_DATATYPE:
+			case Stereotype.DATATYPE:
 				return DATATYPE;
-			case StereotypesManager.STR_ABSTRACT:
+			case Stereotype.ABSTRACT:
 				return ABSTRACT;
 			default:
 				return  null;
@@ -167,41 +167,41 @@ public final class ActionIdManager {
 	
 	public static String associationStereotypeToActionID(String stereotype) {
 		switch(stereotype) {
-			case StereotypesManager.STR_INSTANTIATION:
+			case Stereotype.INSTANTIATION:
 			    return INSTANTIATION;
-			case StereotypesManager.STR_TERMINATION:
+			case Stereotype.TERMINATION:
 			    return TERMINATION;
-			case StereotypesManager.STR_PARTICIPATIONAL:
+			case Stereotype.PARTICIPATIONAL:
 			    return PARTICIPATIONAL;
-			case StereotypesManager.STR_PARTICIPATION:
+			case Stereotype.PARTICIPATION:
 			    return PARTICIPATION;
-			case StereotypesManager.STR_HISTORICAL_DEPENDENCE:
+			case Stereotype.HISTORICAL_DEPENDENCE:
 			    return HISTORICAL_DEPENDENCE;
-			case StereotypesManager.STR_CREATION:
+			case Stereotype.CREATION:
 			    return CREATION;
-			case StereotypesManager.STR_MANIFESTATION:
+			case Stereotype.MANIFESTATION:
 			    return MANIFESTATION;
-			case StereotypesManager.STR_BRINGS_ABOUT:
+			case Stereotype.BRINGS_ABOUT:
 			    return BRINGS_ABOUT;
-			case StereotypesManager.STR_TRIGGERS:
+			case Stereotype.TRIGGERS:
 			    return TRIGGERS;
-			case StereotypesManager.STR_SUB_QUANTITY_OF:
+			case Stereotype.SUB_QUANTITY_OF:
 			    return SUB_QUANTITY_OF;
-			case StereotypesManager.STR_SUB_COLLECTION_OF:
+			case Stereotype.SUB_COLLECTION_OF:
 			    return SUB_COLLECTION_OF;
-			case StereotypesManager.STR_MEMBER_OF:
+			case Stereotype.MEMBER_OF:
 			    return MEMBER_OF;
-			case StereotypesManager.STR_MEDIATION:
+			case Stereotype.MEDIATION:
 			    return MEDIATION;
-			case StereotypesManager.STR_MATERIAL:
+			case Stereotype.MATERIAL:
 			    return MATERIAL;
-			case StereotypesManager.STR_EXTERNAL_DEPENDENCE:
+			case Stereotype.EXTERNAL_DEPENDENCE:
 			    return EXTERNAL_DEPENDENCE;
-			case StereotypesManager.STR_COMPONENT_OF:
+			case Stereotype.COMPONENT_OF:
 			    return COMPONENT_OF;
-			case StereotypesManager.STR_COMPARATIVE:
+			case Stereotype.COMPARATIVE:
 			    return COMPARATIVE;
-			case StereotypesManager.STR_CHARACTERIZATION:
+			case Stereotype.CHARACTERIZATION:
 			    return CHARACTERIZATION;
 		    default:
 		    	return null;

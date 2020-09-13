@@ -1,5 +1,6 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
+import java.util.List;
 import java.util.Set;
 
 import com.vp.plugin.ApplicationManager;
@@ -10,7 +11,7 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IPackage;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
-import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
+import it.unibz.inf.ontouml.vp.utils.Stereotype;
 
 public class ReloadClassesController implements VPActionController {
 
@@ -34,7 +35,7 @@ public class ReloadClassesController implements VPActionController {
 		
 		if(diagram == null || pkg == null) { return ; }		
 		
-		final Set<String> stereotypes = StereotypesManager.getOntoUMLClassStereotypeNames();
+		final List<String> stereotypes = Stereotype.getOntoUMLClassStereotypeNames();
 		
 		for (String sourceStereotype : stereotypes) {
 			final IPackage sourcePkg = factory.createPackage();

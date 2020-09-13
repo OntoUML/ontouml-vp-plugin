@@ -3,7 +3,6 @@ package it.unibz.inf.ontouml.vp.controllers;
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import com.vp.plugin.ApplicationManager;
@@ -20,6 +19,8 @@ import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.ActionIdManager;
+import it.unibz.inf.ontouml.vp.utils.RestrictedTo;
+import it.unibz.inf.ontouml.vp.utils.Stereotype;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
 import it.unibz.inf.ontouml.vp.views.SelectRestrictionsView;
 import it.unibz.inf.ontouml.vp.views.SetOrderView;
@@ -83,8 +84,8 @@ public class ApplyPropertiesController implements VPContextActionController {
       }
 
       final IClass _class = (IClass) context.getModelElement();
-      final String stereotype = StereotypesManager.getUniqueStereotypeName(_class);
-      final Set<String> allClassStereotypes = StereotypesManager.getOntoUMLClassStereotypeNames();
+      final String stereotype = Class.getUniqueStereotypeName(_class);
+      final List<String> allClassStereotypes = Stereotype.getOntoUMLClassStereotypeNames();
 
       switch (action.getActionId()) {
          case ActionIdManager.PROPERTY_SET_RESTRICTED_TO:
@@ -94,12 +95,12 @@ public class ApplyPropertiesController implements VPContextActionController {
                      .getProjectConfigurations()
                      .isSmartModellingEnabled();
                final List<String> nonFixedRestrictedTo =
-                  Arrays.asList(StereotypesManager.STR_CATEGORY,
-                     StereotypesManager.STR_MIXIN,
-                     StereotypesManager.STR_MODE,
-                     StereotypesManager.STR_PHASE_MIXIN,
-                     StereotypesManager.STR_ROLE_MIXIN,
-                     StereotypesManager.STR_HISTORICAL_ROLE_MIXIN);
+                  Arrays.asList(Stereotype.CATEGORY,
+                     Stereotype.MIXIN,
+                     Stereotype.MODE,
+                     Stereotype.PHASE_MIXIN,
+                     Stereotype.ROLE_MIXIN,
+                     Stereotype.HISTORICAL_ROLE_MIXIN);
 
                action.setEnabled(!isSmartModelingEnabled ||
                   nonFixedRestrictedTo.contains(stereotype));
@@ -116,15 +117,15 @@ public class ApplyPropertiesController implements VPContextActionController {
             action.setSelected(ModelElement.getIsDerived(_class));
             break;
          case ActionIdManager.PROPERTY_SET_IS_EXTENSIONAL:
-            action.setEnabled(StereotypesManager.STR_COLLECTIVE.equals(stereotype));
+            action.setEnabled(Stereotype.COLLECTIVE.equals(stereotype));
             action.setSelected(Class.getIsExtensional(_class));
             break;
          case ActionIdManager.PROPERTY_SET_IS_POWERTYPE:
-            action.setEnabled(StereotypesManager.STR_TYPE.equals(stereotype));
+            action.setEnabled(Stereotype.TYPE.equals(stereotype));
             action.setSelected(Class.getIsPowertype(_class));
             break;
          case ActionIdManager.PROPERTY_SET_ORDER:
-            action.setEnabled(_class.hasStereotype(StereotypesManager.STR_TYPE));
+            action.setEnabled(_class.hasStereotype(Stereotype.TYPE));
             break;
       }
    }
@@ -189,8 +190,8 @@ public class ApplyPropertiesController implements VPContextActionController {
       String currentRestrictions = Class.getRestrictedTo(clickedClass);
       currentRestrictions = currentRestrictions == null ? "" : currentRestrictions;
 
-      String stereotype = StereotypesManager.getUniqueStereotypeName(clickedClass);
-      List<String> selectableRestrictedTo = StereotypesManager.selectableRestrictedTo(stereotype);
+      String stereotype = Class.getUniqueStereotypeName(clickedClass);
+      List<String> selectableRestrictedTo = RestrictedTo.selectableRestrictedTo(stereotype);
 
       final SelectRestrictionsView dialog = new SelectRestrictionsView(currentRestrictions, selectableRestrictedTo);
       ApplicationManager.instance().getViewManager().showDialog(dialog);

@@ -2,6 +2,7 @@ package it.unibz.inf.ontouml.vp.listeners;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 import java.util.Set;
 
 import com.vp.plugin.model.IClass;
@@ -11,6 +12,7 @@ import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.model.uml.Generalization;
 import it.unibz.inf.ontouml.vp.utils.SmartColoringUtils;
+import it.unibz.inf.ontouml.vp.utils.Stereotype;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
 
 public class ModelListener implements PropertyChangeListener {
@@ -28,12 +30,12 @@ public class ModelListener implements PropertyChangeListener {
 	final public static String PCN_FROM_MODEL = "fromModel";
 	final public static String PCN_TO_MODEL = "toModel";
 
-	final private Set<String> interestStereotypes;
+	final private List<String> interestStereotypes;
 
 	public ModelListener() {
-		interestStereotypes = StereotypesManager.getSortalStereotypeNames();
-		interestStereotypes.addAll(StereotypesManager.getUltimateSortalStereotypeNames());
-		interestStereotypes.add(StereotypesManager.STR_TYPE);
+		interestStereotypes = Stereotype.getSortalStereotypeNames();
+		interestStereotypes.addAll(Stereotype.getUltimateSortalStereotypeNames());
+		interestStereotypes.add(Stereotype.TYPE);
 	}
 
 	@Override
@@ -115,7 +117,7 @@ public class ModelListener implements PropertyChangeListener {
 
 	private void enforceAndPropagateRestrictedTo(PropertyChangeEvent event) {
 		final IClass _class = event.getSource() instanceof IClass ? (IClass) event.getSource() : null;
-		final String stereotype = StereotypesManager.getUniqueStereotypeName(_class);
+		final String stereotype = Class.getUniqueStereotypeName(_class);
 		final Object newValue = event.getNewValue();
 		final Object oldValue = event.getOldValue();
 
@@ -124,34 +126,34 @@ public class ModelListener implements PropertyChangeListener {
 		}
 
 		switch (stereotype) {
-		case StereotypesManager.STR_EVENT:
-		case StereotypesManager.STR_DATATYPE:
-		case StereotypesManager.STR_ENUMERATION:
-		case StereotypesManager.STR_KIND:
-		case StereotypesManager.STR_COLLECTIVE:
-		case StereotypesManager.STR_QUANTITY:
-		case StereotypesManager.STR_RELATOR:
-		case StereotypesManager.STR_QUALITY:
-		case StereotypesManager.STR_TYPE:
+		case Stereotype.EVENT:
+		case Stereotype.DATATYPE:
+		case Stereotype.ENUMERATION:
+		case Stereotype.KIND:
+		case Stereotype.COLLECTIVE:
+		case Stereotype.QUANTITY:
+		case Stereotype.RELATOR:
+		case Stereotype.QUALITY:
+		case Stereotype.TYPE:
 			if (!newValue.equals(oldValue)) {
 				Class.setDefaultRestrictedTo(_class);
 				propagateRestrictionsToDescendants(_class);
 			}
 			break;
-		case StereotypesManager.STR_MODE:
-		case StereotypesManager.STR_CATEGORY:
-		case StereotypesManager.STR_ROLE_MIXIN:
-		case StereotypesManager.STR_PHASE_MIXIN:
-		case StereotypesManager.STR_MIXIN:
-		case StereotypesManager.STR_HISTORICAL_ROLE_MIXIN:
+		case Stereotype.MODE:
+		case Stereotype.CATEGORY:
+		case Stereotype.ROLE_MIXIN:
+		case Stereotype.PHASE_MIXIN:
+		case Stereotype.MIXIN:
+		case Stereotype.HISTORICAL_ROLE_MIXIN:
 			if (!newValue.equals(oldValue)) {
 				propagateRestrictionsToDescendants(_class);
 			}
 			break;
-		case StereotypesManager.STR_SUBKIND:
-		case StereotypesManager.STR_ROLE:
-		case StereotypesManager.STR_PHASE:
-		case StereotypesManager.STR_HISTORICAL_ROLE:
+		case Stereotype.SUBKIND:
+		case Stereotype.ROLE:
+		case Stereotype.PHASE:
+		case Stereotype.HISTORICAL_ROLE:
 			final Set<IClass> sortalParents = getSortalParents(_class);
 			final String parentsRestrictions = Class.getRestrictedTo(sortalParents);
 			String currentRestrictions = Class.getRestrictedTo(_class);
@@ -168,17 +170,17 @@ public class ModelListener implements PropertyChangeListener {
 
 	private void lookupAndPropagateRestrictedTo(Object classObject) {
 		final IClass _class = classObject instanceof IClass ? (IClass) classObject : null;
-		final String stereotype = _class != null ? StereotypesManager.getUniqueStereotypeName(_class) : null;
+		final String stereotype = _class != null ? Class.getUniqueStereotypeName(_class) : null;
 
 		if (_class == null || stereotype == null) {
 			return;
 		}
 
 		switch (stereotype) {
-		case StereotypesManager.STR_SUBKIND:
-		case StereotypesManager.STR_ROLE:
-		case StereotypesManager.STR_PHASE:
-		case StereotypesManager.STR_HISTORICAL_ROLE:
+		case Stereotype.SUBKIND:
+		case Stereotype.ROLE:
+		case Stereotype.PHASE:
+		case Stereotype.HISTORICAL_ROLE:
 			final Set<IClass> interestParents = getSortalParents(_class);
 			final String parentsRestrictions = Class.getRestrictedTo(interestParents);
 
@@ -195,7 +197,7 @@ public class ModelListener implements PropertyChangeListener {
 
 	private void propagateRestrictionsToDescendants(IClass _class) {
 		Class.applyOnDescendants(_class, descendent -> {
-			String descendentStereotype = StereotypesManager.getUniqueStereotypeName(descendent);
+			String descendentStereotype = Class.getUniqueStereotypeName(descendent);
 
 			if (!interestStereotypes.contains(descendentStereotype)) {
 				return false;
@@ -219,7 +221,7 @@ public class ModelListener implements PropertyChangeListener {
 	private Set<IClass> getSortalParents(IClass _class) {
 		final Set<IClass> sortalParents = Class.getParents(_class);
 		sortalParents.removeIf(parent -> {
-			final String parentStereotype = StereotypesManager.getUniqueStereotypeName(parent);
+			final String parentStereotype = Class.getUniqueStereotypeName(parent);
 			return !interestStereotypes.contains(parentStereotype);
 		});
 

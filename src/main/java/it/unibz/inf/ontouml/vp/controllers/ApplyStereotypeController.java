@@ -18,6 +18,7 @@ import com.vp.plugin.model.factory.IModelElementFactory;
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.utils.ActionIdManager;
+import it.unibz.inf.ontouml.vp.utils.Stereotype;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
 
 /**
@@ -87,184 +88,184 @@ public class ApplyStereotypeController implements VPContextActionController {
       switch (action.getActionId()) {
          case ActionIdManager.TYPE:
          case ActionIdManager.TYPE_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_TYPE);
+            StereotypesManager.applyStereotype(element, Stereotype.TYPE);
             Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIdManager.HISTORICAL_ROLE:
          case ActionIdManager.HISTORICAL_ROLE_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_HISTORICAL_ROLE);
+            StereotypesManager.applyStereotype(element, Stereotype.HISTORICAL_ROLE);
             break;
          case ActionIdManager.HISTORICAL_ROLE_MIXIN:
          case ActionIdManager.HISTORICAL_ROLE_MIXIN_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_HISTORICAL_ROLE_MIXIN);
+            StereotypesManager.applyStereotype(element, Stereotype.HISTORICAL_ROLE_MIXIN);
             Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIdManager.EVENT:
          case ActionIdManager.EVENT_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_EVENT);
+            StereotypesManager.applyStereotype(element, Stereotype.EVENT);
             Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIdManager.SITUATION:
          case ActionIdManager.SITUATION_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_SITUATION);
+            StereotypesManager.applyStereotype(element, Stereotype.SITUATION);
             Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIdManager.ENUMERATION:
          case ActionIdManager.ENUMERATION_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_ENUMERATION);
+            StereotypesManager.applyStereotype(element, Stereotype.ENUMERATION);
             Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIdManager.DATATYPE:
          case ActionIdManager.DATATYPE_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_DATATYPE);
+            StereotypesManager.applyStereotype(element, Stereotype.DATATYPE);
             Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIdManager.ABSTRACT:
          case ActionIdManager.ABSTRACT_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_ABSTRACT);
+            StereotypesManager.applyStereotype(element, Stereotype.ABSTRACT);
             Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIdManager.SUBKIND:
          case ActionIdManager.SUBKIND_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_SUBKIND);
+            StereotypesManager.applyStereotype(element, Stereotype.SUBKIND);
             break;
          case ActionIdManager.ROLE_MIXIN:
          case ActionIdManager.ROLE_MIXIN_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_ROLE_MIXIN);
+            StereotypesManager.applyStereotype(element, Stereotype.ROLE_MIXIN);
             Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIdManager.ROLE:
          case ActionIdManager.ROLE_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_ROLE);
+            StereotypesManager.applyStereotype(element, Stereotype.ROLE);
             break;
          case ActionIdManager.RELATOR:
          case ActionIdManager.RELATOR_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_RELATOR);
+            StereotypesManager.applyStereotype(element, Stereotype.RELATOR);
             Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIdManager.QUANTITY:
          case ActionIdManager.QUANTITY_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_QUANTITY);
+            StereotypesManager.applyStereotype(element, Stereotype.QUANTITY);
             Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIdManager.QUALITY:
          case ActionIdManager.QUALITY_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_QUALITY);
+            StereotypesManager.applyStereotype(element, Stereotype.QUALITY);
             Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIdManager.PHASE_MIXIN:
          case ActionIdManager.PHASE_MIXIN_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_PHASE_MIXIN);
+            StereotypesManager.applyStereotype(element, Stereotype.PHASE_MIXIN);
             Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIdManager.PHASE:
          case ActionIdManager.PHASE_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_PHASE);
+            StereotypesManager.applyStereotype(element, Stereotype.PHASE);
             break;
          case ActionIdManager.MODE:
          case ActionIdManager.MODE_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_MODE);
+            StereotypesManager.applyStereotype(element, Stereotype.MODE);
             Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIdManager.MIXIN:
          case ActionIdManager.MIXIN_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_MIXIN);
+            StereotypesManager.applyStereotype(element, Stereotype.MIXIN);
             Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIdManager.KIND:
          case ActionIdManager.KIND_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_KIND);
+            StereotypesManager.applyStereotype(element, Stereotype.KIND);
             Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIdManager.COLLECTIVE:
          case ActionIdManager.COLLECTIVE_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_COLLECTIVE);
+            StereotypesManager.applyStereotype(element, Stereotype.COLLECTIVE);
             Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIdManager.CATEGORY:
          case ActionIdManager.CATEGORY_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_CATEGORY);
+            StereotypesManager.applyStereotype(element, Stereotype.CATEGORY);
             Class.setDefaultRestrictedTo((IClass) element);
             break;
          case ActionIdManager.INSTANTIATION:
          case ActionIdManager.INSTANTIATION_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_INSTANTIATION);
+            StereotypesManager.applyStereotype(element, Stereotype.INSTANTIATION);
             break;
          case ActionIdManager.TERMINATION:
          case ActionIdManager.TERMINATION_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_TERMINATION);
+            StereotypesManager.applyStereotype(element, Stereotype.TERMINATION);
             break;
          case ActionIdManager.PARTICIPATIONAL:
          case ActionIdManager.PARTICIPATIONAL_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_PARTICIPATIONAL);
+            StereotypesManager.applyStereotype(element, Stereotype.PARTICIPATIONAL);
             break;
          case ActionIdManager.PARTICIPATION:
          case ActionIdManager.PARTICIPATION_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_PARTICIPATION);
+            StereotypesManager.applyStereotype(element, Stereotype.PARTICIPATION);
             break;
          case ActionIdManager.HISTORICAL_DEPENDENCE:
          case ActionIdManager.HISTORICAL_DEPENDENCE_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_HISTORICAL_DEPENDENCE);
+            StereotypesManager.applyStereotype(element, Stereotype.HISTORICAL_DEPENDENCE);
             break;
          case ActionIdManager.CREATION:
          case ActionIdManager.CREATION_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_CREATION);
+            StereotypesManager.applyStereotype(element, Stereotype.CREATION);
             break;
          case ActionIdManager.MANIFESTATION:
          case ActionIdManager.MANIFESTATION_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_MANIFESTATION);
+            StereotypesManager.applyStereotype(element, Stereotype.MANIFESTATION);
             break;
          case ActionIdManager.BRINGS_ABOUT:
          case ActionIdManager.BRINGS_ABOUT_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_BRINGS_ABOUT);
+            StereotypesManager.applyStereotype(element, Stereotype.BRINGS_ABOUT);
             break;
          case ActionIdManager.TRIGGERS:
          case ActionIdManager.TRIGGERS_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_TRIGGERS);
+            StereotypesManager.applyStereotype(element, Stereotype.TRIGGERS);
             break;
          case ActionIdManager.MATERIAL:
          case ActionIdManager.MATERIAL_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_MATERIAL);
+            StereotypesManager.applyStereotype(element, Stereotype.MATERIAL);
             break;
          case ActionIdManager.COMPARATIVE:
          case ActionIdManager.COMPARATIVE_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_COMPARATIVE);
+            StereotypesManager.applyStereotype(element, Stereotype.COMPARATIVE);
             break;
          case ActionIdManager.MEDIATION:
          case ActionIdManager.MEDIATION_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_MEDIATION);
+            StereotypesManager.applyStereotype(element, Stereotype.MEDIATION);
             break;
          case ActionIdManager.CHARACTERIZATION:
          case ActionIdManager.CHARACTERIZATION_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_CHARACTERIZATION);
+            StereotypesManager.applyStereotype(element, Stereotype.CHARACTERIZATION);
             break;
          case ActionIdManager.EXTERNAL_DEPENDENCE:
          case ActionIdManager.EXTERNAL_DEPENDENCE_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_EXTERNAL_DEPENDENCE);
+            StereotypesManager.applyStereotype(element, Stereotype.EXTERNAL_DEPENDENCE);
             break;
          case ActionIdManager.COMPONENT_OF:
          case ActionIdManager.COMPONENT_OF_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_COMPONENT_OF);
+            StereotypesManager.applyStereotype(element, Stereotype.COMPONENT_OF);
             break;
          case ActionIdManager.MEMBER_OF:
          case ActionIdManager.MEMBER_OF_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_MEMBER_OF);
+            StereotypesManager.applyStereotype(element, Stereotype.MEMBER_OF);
             break;
          case ActionIdManager.SUB_COLLECTION_OF:
          case ActionIdManager.SUB_COLLECTION_OF_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_SUB_COLLECTION_OF);
+            StereotypesManager.applyStereotype(element, Stereotype.SUB_COLLECTION_OF);
             break;
          case ActionIdManager.SUB_QUANTITY_OF:
          case ActionIdManager.SUB_QUANTITY_OF_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_SUB_QUANTITY_OF);
+            StereotypesManager.applyStereotype(element, Stereotype.SUB_QUANTITY_OF);
             break;
          case ActionIdManager.BEGIN:
          case ActionIdManager.BEGIN_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_BEGIN);
+            StereotypesManager.applyStereotype(element, Stereotype.BEGIN);
             break;
          case ActionIdManager.END:
          case ActionIdManager.END_FIXED:
-            StereotypesManager.applyStereotype(element, StereotypesManager.STR_END);
+            StereotypesManager.applyStereotype(element, Stereotype.END);
             break;
       }
 
