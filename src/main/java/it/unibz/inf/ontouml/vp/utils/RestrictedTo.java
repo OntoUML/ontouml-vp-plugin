@@ -25,7 +25,7 @@ public class RestrictedTo {
               RELATOR, TYPE, ABSTRACT);
    }
 
-   public static List<String> selectableRestrictedTo(String stereotype) {
+   public static List<String> possibleRestrictedToValues(String stereotype) {
       if(stereotype==null)
          return Collections.emptyList();
 
