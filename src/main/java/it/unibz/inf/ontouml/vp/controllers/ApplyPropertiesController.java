@@ -76,10 +76,7 @@ public class ApplyPropertiesController implements VPContextActionController {
 
    @Override
    public void update(VPAction action, VPContext context) {
-      if (
-         context.getModelElement() == null || 
-         !(context.getModelElement() instanceof IClass)
-      ) {
+      if ( context.getModelElement() == null || !(context.getModelElement() instanceof IClass) ) {
          return ;
       }
 
@@ -102,8 +99,7 @@ public class ApplyPropertiesController implements VPContextActionController {
                      Stereotype.ROLE_MIXIN,
                      Stereotype.HISTORICAL_ROLE_MIXIN);
 
-               action.setEnabled(!isSmartModelingEnabled ||
-                  nonFixedRestrictedTo.contains(stereotype));
+               action.setEnabled(!isSmartModelingEnabled || nonFixedRestrictedTo.contains(stereotype));
             } else {
                action.setEnabled(false);
             }
@@ -117,7 +113,7 @@ public class ApplyPropertiesController implements VPContextActionController {
             action.setSelected(ModelElement.getIsDerived(_class));
             break;
          case ActionIdManager.PROPERTY_SET_IS_EXTENSIONAL:
-            action.setEnabled(Stereotype.COLLECTIVE.equals(stereotype));
+            action.setEnabled(Stereotype.COLLECTIVE.equals(stereotype) || Class.getRestrictedToList(_class).contains(RestrictedTo.COLLECTIVE));
             action.setSelected(Class.getIsExtensional(_class));
             break;
          case ActionIdManager.PROPERTY_SET_IS_POWERTYPE:
