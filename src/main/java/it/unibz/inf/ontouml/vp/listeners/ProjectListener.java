@@ -23,7 +23,6 @@ public class ProjectListener implements IProjectListener {
 		projectModelListener = new ProjectModelListener();
 		projectDiagramListener = new ProjectDiagramListener();
 		addListeners();
-		StereotypesManager.generate();
 	}
 
 	private void addListeners() {
@@ -38,6 +37,15 @@ public class ProjectListener implements IProjectListener {
 			projectDiagramListener.addListenersToDiagrams();
 		} catch (Exception e) {
 			System.err.println("An error ocurred while adding listeners to the project.");
+			e.printStackTrace();
+		}
+	}
+	
+	private void generateStereotypes() {
+		try {
+			StereotypesManager.generate();
+		} catch (Exception e) {
+			System.err.println("An error ocurred while generating stereotypes to the project.");
 			e.printStackTrace();
 		}
 	}
@@ -83,10 +91,12 @@ public class ProjectListener implements IProjectListener {
 
 	@Override
 	public void projectAfterOpened(IProject project) {
+		System.out.println("Project Listenner - After Opened");
 		try {
 			if(project == null) { return ; }
 			
 			addListeners();
+			generateStereotypes();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -94,10 +104,12 @@ public class ProjectListener implements IProjectListener {
 
 	@Override
 	public void projectNewed(IProject project) {
+		System.out.println("Project Listenner - Newed");
 		try {
 			if(project == null) { return ; }
 			
 			addListeners();
+			generateStereotypes();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -105,7 +117,9 @@ public class ProjectListener implements IProjectListener {
 
 	@Override
 	public void projectOpened(IProject project) {
+		System.out.println("Project Listenner - Opened");
 		checkUpdates();
+		generateStereotypes();
 	}
 
 	@Override

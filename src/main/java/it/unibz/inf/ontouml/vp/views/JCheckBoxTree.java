@@ -251,7 +251,6 @@ public class JCheckBoxTree extends JTree {
 		this.setSelectionModel(dtsm);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void visitAllNodesAndCheckSimilar(ElementNode root, ElementNode nodeToCompare) {
 
 		// if same Object
@@ -288,7 +287,6 @@ public class JCheckBoxTree extends JTree {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void visitAllAndCheckSameId(ElementNode root, String id, boolean checkMode) {
 
 		if (root.getUserObject() instanceof IModelElement) {
@@ -329,7 +327,6 @@ public class JCheckBoxTree extends JTree {
 		visitAllNodesAndCheckSimilar(root, node);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void visitAllNodesAndCheckType(ElementNode root, ElementNode nodeToCompare) {
 		String typeOriginal = "";
 		String typeCurrentNode = "";
@@ -737,7 +734,6 @@ public class JCheckBoxTree extends JTree {
 		return newRoot;
 	}
 
-	@SuppressWarnings("unchecked")
 	private void visitAllNodesAndCheckSameId(ElementNode root, String id) {
 		TreeNode[] treeNode = root.getPath();
 		TreePath tp = new TreePath(treeNode);

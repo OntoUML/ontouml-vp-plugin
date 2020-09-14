@@ -112,9 +112,12 @@ public class StereotypesManager {
             definitionsContainer.addTaggedValueDefinition(restrictedTo);
          }
 
-         // Adds "isExtensional" to all STR_COLLECTIVE IStereotype
+         // Adds "isExtensional" to all IStereotype where
+         // RestrictedTo.COLLECTIVE is a possible value
+         List<String> possibleRestrictedToValues = 
+        		 RestrictedTo.possibleRestrictedToValues(stereotypeName);
          if (
-                 stereotype.getName().equals(Stereotype.COLLECTIVE) &&
+        		 possibleRestrictedToValues.contains(RestrictedTo.COLLECTIVE) &&
                          !definitions.containsKey(PROPERTY_IS_EXTENSIONAL)
          ) {
             final ITaggedValueDefinition isExtensional = IModelElementFactory.instance()

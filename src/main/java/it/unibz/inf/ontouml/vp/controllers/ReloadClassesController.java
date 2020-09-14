@@ -1,7 +1,6 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
 import java.util.List;
-import java.util.Set;
 
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.DiagramManager;
@@ -26,7 +25,7 @@ public class ReloadClassesController implements VPActionController {
 	}
 	
 	@SuppressWarnings("unused")
-	private void generateModel() {		
+	private void generateModel() {
 		final ApplicationManager app = ApplicationManager.instance();
 		final DiagramManager dm = app.getDiagramManager();
 		final IDiagramUIModel diagram = dm.getActiveDiagram();

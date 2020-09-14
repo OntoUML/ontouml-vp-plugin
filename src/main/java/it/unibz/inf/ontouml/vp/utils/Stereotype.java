@@ -1,8 +1,8 @@
 package it.unibz.inf.ontouml.vp.utils;
 
-import com.vp.plugin.model.IStereotype;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Stereotype {
 
