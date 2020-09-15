@@ -11,6 +11,7 @@ import com.vp.plugin.model.IGeneralization;
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.model.uml.Generalization;
+import it.unibz.inf.ontouml.vp.utils.RestrictedTo;
 import it.unibz.inf.ontouml.vp.utils.SmartColoringUtils;
 import it.unibz.inf.ontouml.vp.utils.Stereotype;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
@@ -22,6 +23,7 @@ public class ModelListener implements PropertyChangeListener {
 	// Events on classes
 	final public static String PCN_STEREOTYPES = "stereotypes";
 	final public static String PCN_RESTRICTED_TO = StereotypesManager.PROPERTY_RESTRICTED_TO;
+	final public static String PCN_IS_EXTENSIONAL = StereotypesManager.PROPERTY_IS_EXTENSIONAL;
 	final public static String PCN_FROM_RELATIONSHIP_ADDED = "fromRelationshipAdded";
 	final public static String PCN_FROM_RELATIONSHIP_REMOVED = "fromRelationshipRemoved";
 	final public static String PCN_TO_RELATIONSHIP_ADDED = "toRelationshipAdded";
@@ -67,8 +69,14 @@ public class ModelListener implements PropertyChangeListener {
 		case PCN_RESTRICTED_TO:
 			if (isSmartModelingEnabled) {
 				enforceAndPropagateRestrictedTo(event);
+				tryToResetIsExtensionalValue(event);
 			}
 			smartPaint(event);
+			break;
+		case PCN_IS_EXTENSIONAL:
+			if (isSmartModelingEnabled) {
+				preventManualChangeToIsExtensional(event);
+			}
 			break;
 		case PCN_MODEL_VIEW_ADDED:
 			smartPaint(event);
@@ -165,6 +173,30 @@ public class ModelListener implements PropertyChangeListener {
 				propagateRestrictionsToDescendants(_class);
 			}
 			break;
+		}
+	}
+
+	private void tryToResetIsExtensionalValue(PropertyChangeEvent event) {
+		final IClass _class = event.getSource() instanceof IClass ? (IClass) event.getSource() : null;
+		final Object newRestrictionValue = event.getNewValue();
+		final Object oldRestrictionValue = event.getOldValue();
+
+		if (newRestrictionValue != null && !newRestrictionValue.equals(oldRestrictionValue)
+				&& !newRestrictionValue.equals(RestrictedTo.COLLECTIVE)) {
+			Class.setIsExtensional(_class, false);
+		}
+	}
+
+	private void preventManualChangeToIsExtensional(PropertyChangeEvent event) {
+		final IClass _class = event.getSource() instanceof IClass ?
+				(IClass) event.getSource() : null;
+		final String restritedToValue = Class.getRestrictedTo(_class);
+		final Object newIsExtensionalValue = event.getNewValue();
+		final Object oldIsExtensionalValue = event.getOldValue();
+
+		if (newIsExtensionalValue != null && !newIsExtensionalValue.equals(oldIsExtensionalValue)
+				&& !restritedToValue.equals(RestrictedTo.COLLECTIVE)) {
+			Class.setIsExtensional(_class, false);
 		}
 	}
 
