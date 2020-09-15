@@ -531,7 +531,7 @@ public class Class implements ModelElement {
    }
 
    public static List<String> getRestrictedToList(String restrictedTo) {
-      if(restrictedTo==null)
+      if(restrictedTo==null || restrictedTo.equals(""))
          return Collections.emptyList();
 
       return Arrays.asList(restrictedTo.split("\\s+"));
