@@ -136,4 +136,11 @@ public class RestrictedTo {
             return "";
       }
    }
+
+   public static boolean isRestrictedToEditable(String stereotype) {
+      final List<String> customizableRestrictedToStereotypes = Arrays.asList(Stereotype.CATEGORY, Stereotype.MIXIN,
+              Stereotype.MODE, Stereotype.PHASE_MIXIN, Stereotype.ROLE_MIXIN, Stereotype.HISTORICAL_ROLE_MIXIN);
+
+      return customizableRestrictedToStereotypes.contains(stereotype);
+   }
 }

@@ -1,14 +1,6 @@
 package it.unibz.inf.ontouml.vp.model.uml;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -208,6 +200,10 @@ public class Class implements ModelElement {
               null;
    }
 
+   public static boolean hasUniqueStereotype(IModelElement element) {
+      return getUniqueStereotype(element) != null;
+   }
+
    private void loadTags(IClass source) {
       if (source.getTaggedValues() != null) {
          final JsonParser parser = new JsonParser();
@@ -231,13 +227,13 @@ public class Class implements ModelElement {
          }
 
          if (hasIsExtensional(source)) {
-            this.isExtensional = parser.parse("" + getIsExtensional(source));
+            this.isExtensional = parser.parse("" + isExtensional(source));
          } else {
             this.isExtensional = parser.parse("null");
          }
 
          if (hasIsPowertype(source)) {
-            this.isPowertype = parser.parse("" + getIsPowertype(source));
+            this.isPowertype = parser.parse("" + isPowertype(source));
          } else {
             this.isPowertype = parser.parse("null");
          }
@@ -463,7 +459,7 @@ public class Class implements ModelElement {
          return;
       }
 
-      System.out.println("WILL TRY TO SET VALUE: "+restrictions);
+      System.out.println("WILL TRY TO SET VALUE: " + restrictions);
 
       Iterator<?> values = _class.getTaggedValues().taggedValueIterator();
 
@@ -484,7 +480,7 @@ public class Class implements ModelElement {
                value.setValue(newRestrictions);
             }
 
-            System.out.println("NEW VALUE: "+value.getValueAsText());
+            System.out.println("NEW VALUE: " + value.getValueAsText());
 
             return;
          }
@@ -531,7 +527,7 @@ public class Class implements ModelElement {
    }
 
    public static List<String> getRestrictedToList(String restrictedTo) {
-      if(restrictedTo==null || restrictedTo.equals(""))
+      if (restrictedTo == null || restrictedTo.equals(""))
          return Collections.emptyList();
 
       return Arrays.asList(restrictedTo.split("\\s+"));
@@ -560,6 +556,11 @@ public class Class implements ModelElement {
       return order != null ? order.getValueAsString() : null;
    }
 
+   public static Optional<String> getOrderOr(IClass _class) {
+      return Optional.ofNullable(getOrder(_class));
+   }
+
+
    public static void setOrder(IClass _class, String newOrder) {
       final ITaggedValueContainer container = _class.getTaggedValues();
       final ITaggedValue order = container != null ?
@@ -580,7 +581,7 @@ public class Class implements ModelElement {
       return order != null;
    }
 
-   public static boolean getIsPowertype(IClass _class) {
+   public static boolean isPowertype(IClass _class) {
       final ITaggedValueContainer container = _class.getTaggedValues();
       final ITaggedValue isPowertype = container != null ?
               container.getTaggedValueByName(StereotypesManager.PROPERTY_IS_POWERTYPE) :
@@ -611,7 +612,7 @@ public class Class implements ModelElement {
       return isPowertype != null;
    }
 
-   public static boolean getIsExtensional(IClass _class) {
+   public static boolean isExtensional(IClass _class) {
       final ITaggedValueContainer container = _class.getTaggedValues();
       final ITaggedValue isExtensional = container != null ?
               container.getTaggedValueByName(StereotypesManager.PROPERTY_IS_EXTENSIONAL) :
@@ -641,5 +642,35 @@ public class Class implements ModelElement {
 
       return isExtensional != null;
    }
+
+   public static boolean hasValidStereotype(IClass _class) {
+      final String stereotype = getUniqueStereotypeName(_class);
+      return Stereotype.isValid(stereotype);
+   }
+
+   public static boolean isRestrictedToEditable(IClass _class) {
+      final String stereotype = getUniqueStereotypeName(_class);
+      return RestrictedTo.isRestrictedToEditable(stereotype);
+   }
+
+   public static boolean isAbstractEditable(IClass _class) {
+      final String stereotype = getUniqueStereotypeName(_class);
+      return stereotype == null || !Stereotype.isNonSortal(stereotype);
+   }
+
+   public static boolean isCollective(IClass _class) {
+      final String stereotype = getUniqueStereotypeName(_class);
+      return Stereotype.COLLECTIVE.equals(stereotype);
+   }
+
+   public static boolean isType(IClass _class) {
+      final String stereotype = getUniqueStereotypeName(_class);
+      return Stereotype.TYPE.equals(stereotype);
+   }
+
+   public static boolean hasCollectiveNature(IClass _class) {
+      return RestrictedTo.COLLECTIVE.equals(getRestrictedTo(_class));
+   }
+
 
 }
