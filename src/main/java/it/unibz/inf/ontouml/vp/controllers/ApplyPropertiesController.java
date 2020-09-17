@@ -183,7 +183,7 @@ public class ApplyPropertiesController implements VPContextActionController {
       String currentRestrictions = Class.getRestrictedTo(clickedClass);
       currentRestrictions = currentRestrictions == null ? "" : currentRestrictions;
 
-      String stereotype = Class.getUniqueStereotypeName(clickedClass);
+      String stereotype = ModelElement.getUniqueStereotypeName(clickedClass);
       List<String> selectableRestrictedTo = RestrictedTo.possibleRestrictedToValues(stereotype);
 
       final SelectRestrictionsView dialog = new SelectRestrictionsView(currentRestrictions, selectableRestrictedTo);

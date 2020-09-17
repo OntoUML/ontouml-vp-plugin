@@ -188,22 +188,6 @@ public class Class implements ModelElement {
       loadTags(source);
    }
 
-   public static String getUniqueStereotypeName(IModelElement element) {
-      return element.stereotypeCount() == 1 ?
-              element.toStereotypeModelArray()[0].getName() :
-              null;
-   }
-
-   public static IStereotype getUniqueStereotype(IModelElement element) {
-      return element.stereotypeCount() == 1 ?
-              element.toStereotypeModelArray()[0] :
-              null;
-   }
-
-   public static boolean hasUniqueStereotype(IModelElement element) {
-      return getUniqueStereotype(element) != null;
-   }
-
    private void loadTags(IClass source) {
       if (source.getTaggedValues() != null) {
          final JsonParser parser = new JsonParser();
@@ -498,7 +482,7 @@ public class Class implements ModelElement {
 
    public static void setDefaultRestrictedTo(IClass _class) {
       setDefaultRestrictedTo(_class,
-              getUniqueStereotypeName(_class));
+              ModelElement.getUniqueStereotypeName(_class));
    }
 
    public static String getRestrictedTo(IClass _class) {
@@ -644,27 +628,27 @@ public class Class implements ModelElement {
    }
 
    public static boolean hasValidStereotype(IClass _class) {
-      final String stereotype = getUniqueStereotypeName(_class);
+      final String stereotype = ModelElement.getUniqueStereotypeName(_class);
       return Stereotype.isValid(stereotype);
    }
 
    public static boolean isRestrictedToEditable(IClass _class) {
-      final String stereotype = getUniqueStereotypeName(_class);
+      final String stereotype = ModelElement.getUniqueStereotypeName(_class);
       return RestrictedTo.isRestrictedToEditable(stereotype);
    }
 
    public static boolean isAbstractEditable(IClass _class) {
-      final String stereotype = getUniqueStereotypeName(_class);
+      final String stereotype = ModelElement.getUniqueStereotypeName(_class);
       return stereotype == null || !Stereotype.isNonSortal(stereotype);
    }
 
    public static boolean isCollective(IClass _class) {
-      final String stereotype = getUniqueStereotypeName(_class);
+      final String stereotype = ModelElement.getUniqueStereotypeName(_class);
       return Stereotype.COLLECTIVE.equals(stereotype);
    }
 
    public static boolean isType(IClass _class) {
-      final String stereotype = getUniqueStereotypeName(_class);
+      final String stereotype = ModelElement.getUniqueStereotypeName(_class);
       return Stereotype.TYPE.equals(stereotype);
    }
 

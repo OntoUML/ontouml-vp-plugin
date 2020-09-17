@@ -10,6 +10,7 @@ import com.vp.plugin.model.IClass;
 
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
+import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
 
 /**
  * Implementation of the coloring feature
@@ -91,7 +92,7 @@ public class SmartColoringUtils {
     * @return the color of the class
     */
    private static Color getColor(IClass _class) {
-      final String stereotype = Class.getUniqueStereotypeName(_class);
+      final String stereotype = ModelElement.getUniqueStereotypeName(_class);
       final List<String> restrictedTo = Class.getRestrictedToList(_class);
 
       final List<String> allStereotypes = Stereotype.getOntoUMLClassStereotypeNames();

@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.IStereotype;
 import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
 import com.vp.plugin.model.factory.IModelElementFactory;
@@ -28,6 +29,22 @@ public interface ModelElement {
    public static final String TYPE_GENERALIZATION_SET = "GeneralizationSet";
    public static final String TYPE_PROPERTY = "Property";
    public static final String TYPE_LITERAL = "Literal";
+
+   static String getUniqueStereotypeName(IModelElement element) {
+      return element.stereotypeCount() == 1 ?
+              element.toStereotypeModelArray()[0].getName() :
+              null;
+   }
+
+   static IStereotype getUniqueStereotype(IModelElement element) {
+      return element.stereotypeCount() == 1 ?
+              element.toStereotypeModelArray()[0] :
+              null;
+   }
+
+   static boolean hasUniqueStereotype(IModelElement element) {
+      return getUniqueStereotype(element) != null;
+   }
 
    /**
     * @return <code>IModelElement</code> on which the object is based.

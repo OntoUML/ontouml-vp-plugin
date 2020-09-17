@@ -11,6 +11,7 @@ import com.vp.plugin.model.IGeneralization;
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.model.uml.Generalization;
+import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.RestrictedTo;
 import it.unibz.inf.ontouml.vp.utils.SmartColoringUtils;
 import it.unibz.inf.ontouml.vp.utils.Stereotype;
@@ -125,7 +126,7 @@ public class ModelListener implements PropertyChangeListener {
 
 	private void enforceAndPropagateRestrictedTo(PropertyChangeEvent event) {
 		final IClass _class = event.getSource() instanceof IClass ? (IClass) event.getSource() : null;
-		final String stereotype = Class.getUniqueStereotypeName(_class);
+		final String stereotype = ModelElement.getUniqueStereotypeName(_class);
 		final Object newValue = event.getNewValue();
 		final Object oldValue = event.getOldValue();
 
@@ -202,7 +203,7 @@ public class ModelListener implements PropertyChangeListener {
 
 	private void lookupAndPropagateRestrictedTo(Object classObject) {
 		final IClass _class = classObject instanceof IClass ? (IClass) classObject : null;
-		final String stereotype = _class != null ? Class.getUniqueStereotypeName(_class) : null;
+		final String stereotype = _class != null ? ModelElement.getUniqueStereotypeName(_class) : null;
 
 		if (_class == null || stereotype == null) {
 			return;
@@ -229,7 +230,7 @@ public class ModelListener implements PropertyChangeListener {
 
 	private void propagateRestrictionsToDescendants(IClass _class) {
 		Class.applyOnDescendants(_class, descendent -> {
-			String descendentStereotype = Class.getUniqueStereotypeName(descendent);
+			String descendentStereotype = ModelElement.getUniqueStereotypeName(descendent);
 
 			if (!interestStereotypes.contains(descendentStereotype)) {
 				return false;
@@ -253,7 +254,7 @@ public class ModelListener implements PropertyChangeListener {
 	private Set<IClass> getSortalParents(IClass _class) {
 		final Set<IClass> sortalParents = Class.getParents(_class);
 		sortalParents.removeIf(parent -> {
-			final String parentStereotype = Class.getUniqueStereotypeName(parent);
+			final String parentStereotype = ModelElement.getUniqueStereotypeName(parent);
 			return !interestStereotypes.contains(parentStereotype);
 		});
 

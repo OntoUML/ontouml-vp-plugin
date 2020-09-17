@@ -12,6 +12,8 @@ import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.ISimpleRelationship;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
+import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
+import it.unibz.inf.ontouml.vp.model.uml.Property;
 import it.unibz.inf.ontouml.vp.utils.OntoUMLConstraintsManager;
 import it.unibz.inf.ontouml.vp.utils.Stereotype;
 
@@ -47,26 +49,6 @@ public class SmartModellingController {
       }
    }
 
-   private static String getTypeStereotype(IAssociationEnd associationEnd) {
-      String noStereotype = "";
-
-      try {
-         final IModelElement type = associationEnd.getTypeAsElement();
-
-         if (!type.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS))
-            return noStereotype;
-
-         final String[] stereotypes = ((IClass) type).toStereotypeArray();
-
-         if (stereotypes != null && stereotypes.length == 1)
-            return stereotypes[0];
-
-         return noStereotype;
-      } catch (Exception e) {
-         return noStereotype;
-      }
-   }
-
    public static void setAssociationMetaProperties(IAssociation association) {
 
       IAssociationEnd source = (IAssociationEnd) association.getFromEnd();
@@ -75,27 +57,29 @@ public class SmartModellingController {
       if (source == null || target == null)
          return;
 
-      String sourceStereotype = getTypeStereotype(source);
-      String targetStereotype = getTypeStereotype(target);
+      String sourceStereotype = Property.getTypeStereotype(source);
+      String targetStereotype = Property.getTypeStereotype(target);
 
-      String[] stereotypes = association.toStereotypeArray();
+      String stereotype = ModelElement.getUniqueStereotypeName(association);
 
-      if (stereotypes == null || stereotypes.length != 1)
+      if (stereotype == null)
          return;
 
-      switch (stereotypes[0]) {
+      switch (stereotype) {
          case Stereotype.CHARACTERIZATION:
             // Source: Characterized end
             setCardinalityIfEmpty(source, "1");
             // Target: Mode/Quality end
             setCardinalityIfEmpty(target, "1");
             target.setReadOnly(true);
+            target.setNavigable(0);
             removeAggregationKind(association);
             return;
          case Stereotype.COMPARATIVE:
             setCardinalityIfEmpty(source, "0..*");
             setCardinalityIfEmpty(target, "0..*");
             association.setDerived(true);
+            target.setNavigable(0);
             removeAggregationKind(association);
             return;
          case Stereotype.COMPONENT_OF:
@@ -115,6 +99,7 @@ public class SmartModellingController {
                setCardinalityIfEmpty(target, "0..*");
 
             association.setDerived(true);
+            target.setNavigable(0);
             removeAggregationKind(association);
             return;
          case Stereotype.EXTERNAL_DEPENDENCE:
@@ -123,6 +108,7 @@ public class SmartModellingController {
             // Target: Dependee end
             setCardinalityIfEmpty(target, "1..*");
             target.setReadOnly(true);
+            target.setNavigable(0);
             removeAggregationKind(association);
             return;
          case Stereotype.MEDIATION:
@@ -133,6 +119,7 @@ public class SmartModellingController {
 
             setCardinalityIfEmpty(target, "1");
             target.setReadOnly(true);
+            target.setNavigable(0);
             removeAggregationKind(association);
             return;
          case Stereotype.MEMBER_OF:
@@ -159,6 +146,7 @@ public class SmartModellingController {
             // Target: Event end
             setCardinalityIfEmpty(target, "1");
             target.setReadOnly(true);
+            target.setNavigable(0);
             removeAggregationKind(association);
             return;
          case Stereotype.HISTORICAL_DEPENDENCE:
@@ -167,6 +155,7 @@ public class SmartModellingController {
             // Target: Dependee end
             setCardinalityIfEmpty(target, "1");
             target.setReadOnly(true);
+            target.setNavigable(0);
             removeAggregationKind(association);
             return;
          case Stereotype.MANIFESTATION:
@@ -175,18 +164,21 @@ public class SmartModellingController {
             source.setReadOnly(true);
             // Target: Event end
             setCardinalityIfEmpty(target, "0..*");
+            target.setNavigable(0);
             removeAggregationKind(association);
             return;
          case Stereotype.PARTICIPATION:
             // Source: Endurant end (participant)
             setCardinalityIfEmpty(source, "1..*");
             source.setReadOnly(true);
+
             // Target: Event end
             if (sourceStereotype.equals(Stereotype.HISTORICAL_ROLE) || sourceStereotype.equals(Stereotype.HISTORICAL_ROLE_MIXIN))
                setCardinalityIfEmpty(target, "1..*");
             else
                setCardinalityIfEmpty(target, "0..*");
 
+            target.setNavigable(0);
             removeAggregationKind(association);
             return;
          case Stereotype.PARTICIPATIONAL:
@@ -203,6 +195,7 @@ public class SmartModellingController {
             // Target: higher order type
             setCardinalityIfEmpty(target, "1..*");
             target.setReadOnly(false);
+            target.setNavigable(0);
             removeAggregationKind(association);
             return;
          case Stereotype.BRINGS_ABOUT:
@@ -212,6 +205,7 @@ public class SmartModellingController {
             // Target: situation
             setCardinalityIfEmpty(target, "1");
             target.setReadOnly(true);
+            target.setNavigable(0);
             removeAggregationKind(association);
             return;
          case Stereotype.TRIGGERS:
@@ -221,6 +215,7 @@ public class SmartModellingController {
             // Target: event
             setCardinalityIfEmpty(target, "0..1");
             target.setReadOnly(false);
+            target.setNavigable(0);
             removeAggregationKind(association);
             return;
       }

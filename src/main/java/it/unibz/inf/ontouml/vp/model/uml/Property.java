@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.*;
+import com.vp.plugin.model.factory.IModelElementFactory;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -190,7 +191,27 @@ public class Property implements ModelElement {
 		setCardinality("0..*");
 	}
 
-	@Override
+   public static String getTypeStereotype(IAssociationEnd associationEnd) {
+      String noStereotype = "";
+
+      try {
+         final IModelElement type = associationEnd.getTypeAsElement();
+
+         if (!type.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS))
+            return noStereotype;
+
+         final String[] stereotypes = ((IClass) type).toStereotypeArray();
+
+         if (stereotypes != null && stereotypes.length == 1)
+            return stereotypes[0];
+
+         return noStereotype;
+      } catch (Exception e) {
+         return noStereotype;
+      }
+   }
+
+   @Override
 	public String getId() {
 		return getSourceModelElement().getId();
 	}
