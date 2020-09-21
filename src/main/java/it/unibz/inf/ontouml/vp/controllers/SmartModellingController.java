@@ -72,14 +72,16 @@ public class SmartModellingController {
             // Target: Mode/Quality end
             setCardinalityIfEmpty(target, "1");
             target.setReadOnly(true);
-            target.setNavigable(0);
+            target.setNavigable(IAssociationEnd.NAVIGABLE_NAV_NAVIGABLE);
+            source.setNavigable(IAssociationEnd.NAVIGABLE_NAV_UNSPECIFIED);
             removeAggregationKind(association);
             return;
          case Stereotype.COMPARATIVE:
             setCardinalityIfEmpty(source, "0..*");
             setCardinalityIfEmpty(target, "0..*");
             association.setDerived(true);
-            target.setNavigable(0);
+            target.setNavigable(IAssociationEnd.NAVIGABLE_NAV_NAVIGABLE);
+            source.setNavigable(IAssociationEnd.NAVIGABLE_NAV_UNSPECIFIED);
             removeAggregationKind(association);
             return;
          case Stereotype.COMPONENT_OF:
@@ -99,7 +101,8 @@ public class SmartModellingController {
                setCardinalityIfEmpty(target, "0..*");
 
             association.setDerived(true);
-            target.setNavigable(0);
+            target.setNavigable(IAssociationEnd.NAVIGABLE_NAV_NAVIGABLE);
+            source.setNavigable(IAssociationEnd.NAVIGABLE_NAV_UNSPECIFIED);
             removeAggregationKind(association);
             return;
          case Stereotype.EXTERNAL_DEPENDENCE:
@@ -108,7 +111,8 @@ public class SmartModellingController {
             // Target: Dependee end
             setCardinalityIfEmpty(target, "1..*");
             target.setReadOnly(true);
-            target.setNavigable(0);
+            target.setNavigable(IAssociationEnd.NAVIGABLE_NAV_NAVIGABLE);
+            source.setNavigable(IAssociationEnd.NAVIGABLE_NAV_UNSPECIFIED);
             removeAggregationKind(association);
             return;
          case Stereotype.MEDIATION:
@@ -119,7 +123,8 @@ public class SmartModellingController {
 
             setCardinalityIfEmpty(target, "1");
             target.setReadOnly(true);
-            target.setNavigable(0);
+            target.setNavigable(IAssociationEnd.NAVIGABLE_NAV_NAVIGABLE);
+            source.setNavigable(IAssociationEnd.NAVIGABLE_NAV_UNSPECIFIED);
             removeAggregationKind(association);
             return;
          case Stereotype.MEMBER_OF:
@@ -146,7 +151,8 @@ public class SmartModellingController {
             // Target: Event end
             setCardinalityIfEmpty(target, "1");
             target.setReadOnly(true);
-            target.setNavigable(0);
+            target.setNavigable(IAssociationEnd.NAVIGABLE_NAV_NAVIGABLE);
+            source.setNavigable(IAssociationEnd.NAVIGABLE_NAV_UNSPECIFIED);
             removeAggregationKind(association);
             return;
          case Stereotype.HISTORICAL_DEPENDENCE:
@@ -155,7 +161,8 @@ public class SmartModellingController {
             // Target: Dependee end
             setCardinalityIfEmpty(target, "1");
             target.setReadOnly(true);
-            target.setNavigable(0);
+            target.setNavigable(IAssociationEnd.NAVIGABLE_NAV_NAVIGABLE);
+            source.setNavigable(IAssociationEnd.NAVIGABLE_NAV_UNSPECIFIED);
             removeAggregationKind(association);
             return;
          case Stereotype.MANIFESTATION:
@@ -164,7 +171,8 @@ public class SmartModellingController {
             source.setReadOnly(true);
             // Target: Event end
             setCardinalityIfEmpty(target, "0..*");
-            target.setNavigable(0);
+            target.setNavigable(IAssociationEnd.NAVIGABLE_NAV_NAVIGABLE);
+            source.setNavigable(IAssociationEnd.NAVIGABLE_NAV_UNSPECIFIED);
             removeAggregationKind(association);
             return;
          case Stereotype.PARTICIPATION:
@@ -178,7 +186,8 @@ public class SmartModellingController {
             else
                setCardinalityIfEmpty(target, "0..*");
 
-            target.setNavigable(0);
+            target.setNavigable(IAssociationEnd.NAVIGABLE_NAV_NAVIGABLE);
+            source.setNavigable(IAssociationEnd.NAVIGABLE_NAV_UNSPECIFIED);
             removeAggregationKind(association);
             return;
          case Stereotype.PARTICIPATIONAL:
@@ -195,7 +204,8 @@ public class SmartModellingController {
             // Target: higher order type
             setCardinalityIfEmpty(target, "1..*");
             target.setReadOnly(false);
-            target.setNavigable(0);
+            target.setNavigable(IAssociationEnd.NAVIGABLE_NAV_NAVIGABLE);
+            source.setNavigable(IAssociationEnd.NAVIGABLE_NAV_UNSPECIFIED);
             removeAggregationKind(association);
             return;
          case Stereotype.BRINGS_ABOUT:
@@ -205,7 +215,8 @@ public class SmartModellingController {
             // Target: situation
             setCardinalityIfEmpty(target, "1");
             target.setReadOnly(true);
-            target.setNavigable(0);
+            target.setNavigable(IAssociationEnd.NAVIGABLE_NAV_NAVIGABLE);
+            source.setNavigable(IAssociationEnd.NAVIGABLE_NAV_UNSPECIFIED);
             removeAggregationKind(association);
             return;
          case Stereotype.TRIGGERS:
@@ -215,7 +226,8 @@ public class SmartModellingController {
             // Target: event
             setCardinalityIfEmpty(target, "0..1");
             target.setReadOnly(false);
-            target.setNavigable(0);
+            target.setNavigable(IAssociationEnd.NAVIGABLE_NAV_NAVIGABLE);
+            source.setNavigable(IAssociationEnd.NAVIGABLE_NAV_UNSPECIFIED);
             removeAggregationKind(association);
             return;
       }
