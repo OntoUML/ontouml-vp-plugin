@@ -147,7 +147,7 @@
             
             <menu id="associationPropertiesMenu" label="Meta-Properties" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
             
-            <action id="it.unibz.inf.ontouml.vp.AssociationProperties.reverseAssociation" label="Reverse Association" style="toggle" menuPath="associationPropertiesMenu/#">
+            <action id="it.unibz.inf.ontouml.vp.AssociationProperties.reverseAssociation" label="Reverse Association" style="normal" menuPath="associationPropertiesMenu/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyPropertiesController"/>
             </action>
             
@@ -157,7 +157,7 @@
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyPropertiesController"/>
             </action>
 
-            <action id="it.unibz.inf.ontouml.vp.AssociationProperties.isAbstract" label="Is Abstract" style="normal" menuPath="associationPropertiesMenu/#">
+            <action id="it.unibz.inf.ontouml.vp.AssociationProperties.isAbstract" label="Is Abstract" style="toggle" menuPath="associationPropertiesMenu/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyPropertiesController"/>
             </action>
             

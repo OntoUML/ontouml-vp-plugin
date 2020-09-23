@@ -39,40 +39,37 @@ public class ApplyPropertiesController implements VPContextActionController {
 
 	@Override
 	public void performAction(VPAction action, VPContext context, ActionEvent event) {
-		if (context.getModelElement() == null) {
+		final IModelElement clickedElement = context.getModelElement();
+		final String clickedElementType = clickedElement.getModelType();
+		final IClass clickedClass = IModelElementFactory.MODEL_TYPE_CLASS.equals(clickedElementType)
+				? (IClass) context.getModelElement() : null;
+		final IAssociation clickedAssociation = IModelElementFactory.MODEL_TYPE_ASSOCIATION.equals(clickedElementType)
+				? (IAssociation) context.getModelElement() : null;
+		final boolean isSmartModelingEnabled = Configurations.getInstance().getProjectConfigurations()
+				.isSmartModellingEnabled();
+		
+		if (clickedClass == null && clickedAssociation == null) {
 			return;
 		}
-
-		final IModelElement clickedElement = context.getModelElement();
-
+		
 		switch (action.getActionId()) {
 		case ActionIdManager.CLASS_PROPERTY_SET_RESTRICTED_TO:
-			this.setRestrictedTo(context, (IClass) clickedElement);
+			this.setRestrictedTo(context, clickedClass);
 			break;
 
 		case ActionIdManager.ASSOCIATION_PROPERTY_SET_IS_ABSTRACT:
-		case ActionIdManager.CLASS_PROPERTY_SET_IS_ABSTRACT:
-			if (!IModelElementFactory.MODEL_TYPE_CLASS.equals(clickedElement.getModelType())) {
-				throw new UnsupportedOperationException("Unimplemented behavior");
-			} else {
-				final IClass clickedClass = (IClass) clickedElement;
-				final boolean isAbstract = clickedClass.isAbstract();
-				forEachSelectedClass(context, cla -> cla.setAbstract(!isAbstract));
-			}
+		case ActionIdManager.CLASS_PROPERTY_SET_IS_ABSTRACT: {
+			final boolean isAbstract = ModelElement.isAbstract(clickedElement);
+			forEachSelectedElement(clickedElement, selectedElement -> ModelElement.setAbstract(selectedElement,!isAbstract));
 			break;
+		}
 
 		case ActionIdManager.ASSOCIATION_PROPERTY_SET_IS_DERIVED:
-		case ActionIdManager.CLASS_PROPERTY_SET_IS_DERIVED:
-			if (!IModelElementFactory.MODEL_TYPE_CLASS.equals(clickedElement.getModelType())) {
-				throw new UnsupportedOperationException("Unimplemented behavior");
-			} else {
-				final IClass clickedClass = (IClass) clickedElement;
-				final boolean isDerived = ModelElement.isDerived(clickedClass);
-				forEachSelectedClass(context, selected -> {
-					ModelElement.setIsDerived(selected, !isDerived);
-				});
-			}
+		case ActionIdManager.CLASS_PROPERTY_SET_IS_DERIVED: {
+			final boolean isDerived = ModelElement.isDerived(clickedElement);
+			forEachSelectedElement(clickedElement, selectedElement -> ModelElement.setDerived(selectedElement,!isDerived));
 			break;
+		}
 
 		case ActionIdManager.CLASS_PROPERTY_SET_IS_EXTENSIONAL:
 			setBooleanTaggedValue(context, (IClass) clickedElement, StereotypesManager.PROPERTY_IS_EXTENSIONAL);
@@ -85,23 +82,19 @@ public class ApplyPropertiesController implements VPContextActionController {
 		case ActionIdManager.CLASS_PROPERTY_SET_ORDER:
 			setOrderProperty(context, (IClass) clickedElement);
 			break;
+			
 		case ActionIdManager.ASSOCIATION_PROPERTY_REVERSE_ASSOCIATION:
-			if (IModelElementFactory.MODEL_TYPE_ASSOCIATION.equals(clickedElement.getModelType())) {
-				IAssociation clickedAssociation = (IAssociation) clickedElement;
-				forEachSelectedElement(clickedAssociation, clicked -> Association.invertAssociation(clicked));
-			}
+			forEachSelectedElement(clickedAssociation, clicked -> Association.invertAssociation(clicked));
 			break;
 		}
 		
 	}
 
 
-   @Override
-   public void update(VPAction action, VPContext context) {
-	   final IModelElement clickedElement = context.getModelElement();
-	   final String clickedElementType = clickedElement.getModelType();
-//      boolean clickedOnModelElement = context.getModelElement() != null;
-//      boolean clickedOnClass = clickedOnModelElement && context.getModelElement() instanceof IClass;
+	@Override
+	public void update(VPAction action, VPContext context) {
+		final IModelElement clickedElement = context.getModelElement();
+		final String clickedElementType = clickedElement.getModelType();
 
 		IModelElementFactory.instance();
 		if (!IModelElementFactory.MODEL_TYPE_ASSOCIATION.equals(clickedElementType)
@@ -110,50 +103,59 @@ public class ApplyPropertiesController implements VPContextActionController {
 			return;
 		}
 
-      final IClass _class = clickedElement instanceof IClass ? (IClass) context.getModelElement() : null;
+		final IClass clickedClass = IModelElementFactory.MODEL_TYPE_CLASS.equals(clickedElementType)
+				? (IClass) context.getModelElement()
+				: null;
+		final IAssociation clickedAssociation = IModelElementFactory.MODEL_TYPE_ASSOCIATION.equals(clickedElementType)
+				? (IAssociation) context.getModelElement()
+				: null;
+		final boolean isSmartModelingEnabled = Configurations.getInstance().getProjectConfigurations()
+				.isSmartModellingEnabled();
+		boolean enabled = true;
 
-      final boolean isSmartModelingEnabled =
-              Configurations.getInstance().getProjectConfigurations().isSmartModellingEnabled();
+		switch (action.getActionId()) {
+		case ActionIdManager.CLASS_PROPERTY_SET_IS_ABSTRACT:
+			action.setSelected(clickedClass.isAbstract());
+			enabled = Class.isAbstractEditable(clickedClass) || !isSmartModelingEnabled;
+			break;
+		case ActionIdManager.CLASS_PROPERTY_SET_IS_DERIVED:
+			action.setSelected(ModelElement.isDerived(clickedClass));
+			enabled = true;
+			break;
+		case ActionIdManager.CLASS_PROPERTY_SET_RESTRICTED_TO:
+			enabled = Class.isRestrictedToEditable(clickedClass)
+					|| (!isSmartModelingEnabled && Class.hasValidStereotype(clickedClass));
+			break;
+		case ActionIdManager.CLASS_PROPERTY_SET_IS_EXTENSIONAL:
+			action.setSelected(Class.isExtensional(clickedClass));
+			enabled = Class.isCollective(clickedClass) || Class.hasCollectiveNature(clickedClass)
+					|| (!isSmartModelingEnabled && Class.hasValidStereotype(clickedClass));
+			break;
+		case ActionIdManager.CLASS_PROPERTY_SET_IS_POWERTYPE:
+			action.setSelected(Class.isPowertype(clickedClass));
+			enabled = Class.isType(clickedClass);
+			break;
+		case ActionIdManager.CLASS_PROPERTY_SET_ORDER:
+			enabled = Class.isType(clickedClass);
+			if (Class.hasValidStereotype(clickedClass)) {
+				String order = Class.getOrderOr(clickedClass).orElse("1");
+				action.setLabel("Set order" + " (" + order + ")");
+			}
+			break;
+//         case ActionIdManager.ASSOCIATION_PROPERTY_REVERSE_ASSOCIATION:
+//        	 enabled = true;
+//        	 break;
+		case ActionIdManager.ASSOCIATION_PROPERTY_SET_IS_ABSTRACT:
+			action.setEnabled(clickedAssociation.isAbstract());
+			break;
+		case ActionIdManager.ASSOCIATION_PROPERTY_SET_IS_DERIVED:
+			action.setEnabled(clickedAssociation.isDerived());
+			break;
+		}
 
-      boolean enabled = true;
+		action.setEnabled(enabled);
 
-      switch (action.getActionId()) {
-         case ActionIdManager.CLASS_PROPERTY_SET_IS_ABSTRACT:
-            action.setSelected(_class.isAbstract());
-            enabled = Class.isAbstractEditable(_class) || !isSmartModelingEnabled;
-            break;
-         case ActionIdManager.CLASS_PROPERTY_SET_IS_DERIVED:
-            action.setSelected(ModelElement.isDerived(_class));
-            enabled = true;
-            break;
-         case ActionIdManager.CLASS_PROPERTY_SET_RESTRICTED_TO:
-            enabled = Class.isRestrictedToEditable(_class)
-                    || (!isSmartModelingEnabled && Class.hasValidStereotype(_class));
-            break;
-         case ActionIdManager.CLASS_PROPERTY_SET_IS_EXTENSIONAL:
-            action.setSelected(Class.isExtensional(_class));
-            enabled = Class.isCollective(_class) || Class.hasCollectiveNature(_class)
-                    || (!isSmartModelingEnabled && Class.hasValidStereotype(_class));
-            break;
-         case ActionIdManager.CLASS_PROPERTY_SET_IS_POWERTYPE:
-            action.setSelected(Class.isPowertype(_class));
-            enabled = Class.isType(_class);
-            break;
-         case ActionIdManager.CLASS_PROPERTY_SET_ORDER:
-            enabled = Class.isType(_class);
-            if(Class.hasValidStereotype(_class)){
-               String order = Class.getOrderOr(_class).orElse("1");
-               action.setLabel("Set order"+" ("+order+")");}
-            break;
-         case ActionIdManager.ASSOCIATION_PROPERTY_REVERSE_ASSOCIATION:
-         case ActionIdManager.ASSOCIATION_PROPERTY_SET_IS_ABSTRACT:
-         case ActionIdManager.ASSOCIATION_PROPERTY_SET_IS_DERIVED:
-        	 enabled = true;
-      }
-
-      action.setEnabled(enabled);
-
-   }
+	}
 
    private void forEachSelectedClass(VPContext context, Consumer<IClass> consumer) {
       if (!(context.getModelElement() instanceof IClass))
@@ -202,8 +204,8 @@ public class ApplyPropertiesController implements VPContextActionController {
               metaProperty);
       final boolean value = booleanTaggedValue != null && Boolean.parseBoolean(booleanTaggedValue.getValueAsString());
 
-      forEachSelectedClass(context, cla -> {
-         ITaggedValue taggedValue = StereotypesManager.reapplyStereotypeAndGetTaggedValue(cla, metaProperty);
+      forEachSelectedElement(clickedClass, selectedElement -> {
+         ITaggedValue taggedValue = StereotypesManager.reapplyStereotypeAndGetTaggedValue(selectedElement, metaProperty);
 
          if (taggedValue == null)
             return;
