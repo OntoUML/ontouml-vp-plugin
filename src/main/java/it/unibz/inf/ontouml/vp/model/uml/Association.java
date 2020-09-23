@@ -1,14 +1,23 @@
 package it.unibz.inf.ontouml.vp.model.uml;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.vp.plugin.ApplicationManager;
+import com.vp.plugin.DiagramManager;
+import com.vp.plugin.diagram.IDiagramElement;
+import com.vp.plugin.diagram.IDiagramUIModel;
+import com.vp.plugin.diagram.IShapeUIModel;
+import com.vp.plugin.diagram.connector.IAssociationUIModel;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
+import com.vp.plugin.model.IClass;
 
 /**
  * 
@@ -81,7 +90,7 @@ public class Association implements ModelElement {
 		setAbstract(source.isAbstract());
 		setDerived(source.isDerived());
 	}
-	
+
 	public Association(IAssociation source, HashSet<String> modelElements) {
 		this.sourceModelElement = source;
 
@@ -90,10 +99,10 @@ public class Association implements ModelElement {
 		setName(source.getName());
 		setDescription(source.getDescription());
 
-		if(modelElements.contains(source.getFromEnd().getId()))
+		if (modelElements.contains(source.getFromEnd().getId()))
 			addProperty(new Property((IAssociationEnd) source.getFromEnd()));
-		
-		if(modelElements.contains(source.getToEnd().getId()))
+
+		if (modelElements.contains(source.getToEnd().getId()))
 			addProperty(new Property((IAssociationEnd) source.getToEnd()));
 
 		String[] stereotypes = source.toStereotypeArray();
@@ -209,6 +218,69 @@ public class Association implements ModelElement {
 
 	public void setDerived(boolean isDerived) {
 		this.isDerived = isDerived;
+	}
+
+	public static IClass getSource(IAssociation association) {
+		return (IClass) association.getFrom();
+	}
+
+	public static IClass getTarget(IAssociation association) {
+		return (IClass) association.getTo();
+	}
+
+	public static void setSource(IAssociation association, IClass newSource) {
+		association.setFrom(newSource);
+	}
+
+	public static void setTarget(IAssociation association, IClass newTarget) {
+		association.setTo(newTarget);
+	}
+	
+	public static IAssociationEnd getSourceEnd(IAssociation association) {
+		return (IAssociationEnd) association.getFromEnd();
+	}
+
+	public static IAssociationEnd getTargetEnd(IAssociation association) {
+		return (IAssociationEnd) association.getToEnd();
+	}
+
+	public static void invertAssociation(IAssociation association) {
+		final IClass originalSource = getSource(association);
+		final IClass originalTarget = getTarget(association);
+		final IAssociationEnd originalSourceEnd = getSourceEnd(association);
+		final IAssociationEnd originalTargetEnd = getTargetEnd(association);
+
+		setSource(association, originalTarget);
+		setTarget(association, originalSource);
+		originalSourceEnd.setType(originalTarget);
+		originalTargetEnd.setType(originalSource);
+
+		final IDiagramElement[] associationViews = association.getDiagramElements();
+		final DiagramManager dm = ApplicationManager.instance().getDiagramManager();
+		
+		for (int i = 0; associationViews != null && i < associationViews.length; i++) {
+			final IAssociationUIModel originalView = (IAssociationUIModel) associationViews[i];
+			final Point[] points = originalView.getPoints();
+			final IDiagramUIModel diagram = originalView.getDiagramUIModel();
+			final IDiagramElement originalViewSource = originalView.getFromShape();
+			final IDiagramElement originalViewTarget = originalView.getToShape();
+			
+			if(diagram == null || originalViewSource == null || originalViewTarget == null) {
+				continue;
+			}
+			
+			final IAssociationUIModel invertedView = (IAssociationUIModel) dm.createConnector(diagram, association,
+					originalViewTarget, originalViewSource, null);
+			
+			if (points != null) {
+				for (int j = points.length - 1; j >= 0; j--) {
+					invertedView.addPoint(points[j]);
+				}
+			}
+			
+			invertedView.resetCaption();
+			originalView.deleteViewOnly();
+		}
 	}
 
 }

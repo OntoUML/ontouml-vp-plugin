@@ -109,12 +109,16 @@ public final class ActionIdManager {
 	public static final String BEGIN_FIXED = "it.unibz.inf.ontouml.vp.addBeginStereotype.fixedMenu";
 
 	// Properties menu options IDs
-	public static final String PROPERTY_SET_RESTRICTED_TO = "it.unibz.inf.ontouml.vp.ClassProperties.restrictedTo";
-	public static final String PROPERTY_SET_IS_EXTENSIONAL = "it.unibz.inf.ontouml.vp.ClassProperties.isExtensional";
-	public static final String PROPERTY_SET_IS_DERIVED = "it.unibz.inf.ontouml.vp.ClassProperties.isDerived";
-	public static final String PROPERTY_SET_IS_ABSTRACT = "it.unibz.inf.ontouml.vp.ClassProperties.isAbstract";
-	public static final String PROPERTY_SET_IS_POWERTYPE = "it.unibz.inf.ontouml.vp.ClassProperties.isPowertype";
-	public static final String PROPERTY_SET_ORDER = "it.unibz.inf.ontouml.vp.ClassProperties.order";
+	public static final String CLASS_PROPERTY_SET_RESTRICTED_TO = "it.unibz.inf.ontouml.vp.ClassProperties.restrictedTo";
+	public static final String CLASS_PROPERTY_SET_IS_EXTENSIONAL = "it.unibz.inf.ontouml.vp.ClassProperties.isExtensional";
+	public static final String CLASS_PROPERTY_SET_IS_DERIVED = "it.unibz.inf.ontouml.vp.ClassProperties.isDerived";
+	public static final String CLASS_PROPERTY_SET_IS_ABSTRACT = "it.unibz.inf.ontouml.vp.ClassProperties.isAbstract";
+	public static final String CLASS_PROPERTY_SET_IS_POWERTYPE = "it.unibz.inf.ontouml.vp.ClassProperties.isPowertype";
+	public static final String CLASS_PROPERTY_SET_ORDER = "it.unibz.inf.ontouml.vp.ClassProperties.order";
+	
+	public static final String ASSOCIATION_PROPERTY_REVERSE_ASSOCIATION = "it.unibz.inf.ontouml.vp.AssociationProperties.reverseAssociation";
+	public static final String ASSOCIATION_PROPERTY_SET_IS_DERIVED = "it.unibz.inf.ontouml.vp.AssociationProperties.isDerived";
+	public static final String ASSOCIATION_PROPERTY_SET_IS_ABSTRACT = "it.unibz.inf.ontouml.vp.AssociationProperties.isAbstract";
 
 	public static String classStereotypeToActionID(String stereotype) {
 		switch(stereotype) {

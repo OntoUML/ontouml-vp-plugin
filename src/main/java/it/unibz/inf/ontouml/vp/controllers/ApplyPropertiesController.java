@@ -6,16 +6,20 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import com.vp.plugin.ApplicationManager;
+import com.vp.plugin.DiagramManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPContext;
 import com.vp.plugin.action.VPContextActionController;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
+import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IClass;
+import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.model.Configurations;
+import it.unibz.inf.ontouml.vp.model.uml.Association;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.ActionIdManager;
@@ -33,56 +37,80 @@ import it.unibz.inf.ontouml.vp.views.SetOrderView;
  */
 public class ApplyPropertiesController implements VPContextActionController {
 
-   @Override
-   public void performAction(VPAction action, VPContext context, ActionEvent event) {
-      if (context.getModelElement() == null || !(context.getModelElement() instanceof IClass)) {
-         return;
-      }
+	@Override
+	public void performAction(VPAction action, VPContext context, ActionEvent event) {
+		if (context.getModelElement() == null) {
+			return;
+		}
 
-      final IClass clickedClass = (IClass) context.getModelElement();
+		final IModelElement clickedElement = context.getModelElement();
 
-      switch (action.getActionId()) {
-         case ActionIdManager.PROPERTY_SET_RESTRICTED_TO:
-            this.setRestrictedTo(context, clickedClass);
-            break;
+		switch (action.getActionId()) {
+		case ActionIdManager.CLASS_PROPERTY_SET_RESTRICTED_TO:
+			this.setRestrictedTo(context, (IClass) clickedElement);
+			break;
 
-         case ActionIdManager.PROPERTY_SET_IS_ABSTRACT:
-            final boolean isAbstract = clickedClass.isAbstract();
-            forEachSelectedClass(context, cla -> cla.setAbstract(!isAbstract));
-            break;
+		case ActionIdManager.ASSOCIATION_PROPERTY_SET_IS_ABSTRACT:
+		case ActionIdManager.CLASS_PROPERTY_SET_IS_ABSTRACT:
+			if (!IModelElementFactory.MODEL_TYPE_CLASS.equals(clickedElement.getModelType())) {
+				throw new UnsupportedOperationException("Unimplemented behavior");
+			} else {
+				final IClass clickedClass = (IClass) clickedElement;
+				final boolean isAbstract = clickedClass.isAbstract();
+				forEachSelectedClass(context, cla -> cla.setAbstract(!isAbstract));
+			}
+			break;
 
-         case ActionIdManager.PROPERTY_SET_IS_DERIVED:
-            final boolean isDerived = ModelElement.isDerived(clickedClass);
-            forEachSelectedClass(context, selected -> {
-               ModelElement.setIsDerived(selected, !isDerived);
-            });
-            break;
-         case ActionIdManager.PROPERTY_SET_IS_EXTENSIONAL:
-            setBooleanTaggedValue(context, clickedClass, StereotypesManager.PROPERTY_IS_EXTENSIONAL);
-            break;
+		case ActionIdManager.ASSOCIATION_PROPERTY_SET_IS_DERIVED:
+		case ActionIdManager.CLASS_PROPERTY_SET_IS_DERIVED:
+			if (!IModelElementFactory.MODEL_TYPE_CLASS.equals(clickedElement.getModelType())) {
+				throw new UnsupportedOperationException("Unimplemented behavior");
+			} else {
+				final IClass clickedClass = (IClass) clickedElement;
+				final boolean isDerived = ModelElement.isDerived(clickedClass);
+				forEachSelectedClass(context, selected -> {
+					ModelElement.setIsDerived(selected, !isDerived);
+				});
+			}
+			break;
 
-         case ActionIdManager.PROPERTY_SET_IS_POWERTYPE:
-            setBooleanTaggedValue(context, clickedClass, StereotypesManager.PROPERTY_IS_POWERTYPE);
-            break;
+		case ActionIdManager.CLASS_PROPERTY_SET_IS_EXTENSIONAL:
+			setBooleanTaggedValue(context, (IClass) clickedElement, StereotypesManager.PROPERTY_IS_EXTENSIONAL);
+			break;
 
-         case ActionIdManager.PROPERTY_SET_ORDER:
-            setOrderProperty(context, clickedClass);
-            break;
-      }
-   }
+		case ActionIdManager.CLASS_PROPERTY_SET_IS_POWERTYPE:
+			setBooleanTaggedValue(context, (IClass) clickedElement, StereotypesManager.PROPERTY_IS_POWERTYPE);
+			break;
+
+		case ActionIdManager.CLASS_PROPERTY_SET_ORDER:
+			setOrderProperty(context, (IClass) clickedElement);
+			break;
+		case ActionIdManager.ASSOCIATION_PROPERTY_REVERSE_ASSOCIATION:
+			if (IModelElementFactory.MODEL_TYPE_ASSOCIATION.equals(clickedElement.getModelType())) {
+				IAssociation clickedAssociation = (IAssociation) clickedElement;
+				forEachSelectedElement(clickedAssociation, clicked -> Association.invertAssociation(clicked));
+			}
+			break;
+		}
+		
+	}
 
 
    @Override
    public void update(VPAction action, VPContext context) {
-      boolean clickedOnModelElement = context.getModelElement() != null;
-      boolean clickedOnClass = clickedOnModelElement && context.getModelElement() instanceof IClass;
+	   final IModelElement clickedElement = context.getModelElement();
+	   final String clickedElementType = clickedElement.getModelType();
+//      boolean clickedOnModelElement = context.getModelElement() != null;
+//      boolean clickedOnClass = clickedOnModelElement && context.getModelElement() instanceof IClass;
 
-      if (!clickedOnClass) {
-         action.setEnabled(false);
-         return;
-      }
+		IModelElementFactory.instance();
+		if (!IModelElementFactory.MODEL_TYPE_ASSOCIATION.equals(clickedElementType)
+				&& !IModelElementFactory.MODEL_TYPE_CLASS.equals(clickedElementType)) {
+			action.setEnabled(false);
+			return;
+		}
 
-      final IClass _class = (IClass) context.getModelElement();
+      final IClass _class = clickedElement instanceof IClass ? (IClass) context.getModelElement() : null;
 
       final boolean isSmartModelingEnabled =
               Configurations.getInstance().getProjectConfigurations().isSmartModellingEnabled();
@@ -90,33 +118,37 @@ public class ApplyPropertiesController implements VPContextActionController {
       boolean enabled = true;
 
       switch (action.getActionId()) {
-         case ActionIdManager.PROPERTY_SET_IS_ABSTRACT:
+         case ActionIdManager.CLASS_PROPERTY_SET_IS_ABSTRACT:
             action.setSelected(_class.isAbstract());
             enabled = Class.isAbstractEditable(_class) || !isSmartModelingEnabled;
             break;
-         case ActionIdManager.PROPERTY_SET_IS_DERIVED:
+         case ActionIdManager.CLASS_PROPERTY_SET_IS_DERIVED:
             action.setSelected(ModelElement.isDerived(_class));
             enabled = true;
             break;
-         case ActionIdManager.PROPERTY_SET_RESTRICTED_TO:
+         case ActionIdManager.CLASS_PROPERTY_SET_RESTRICTED_TO:
             enabled = Class.isRestrictedToEditable(_class)
                     || (!isSmartModelingEnabled && Class.hasValidStereotype(_class));
             break;
-         case ActionIdManager.PROPERTY_SET_IS_EXTENSIONAL:
+         case ActionIdManager.CLASS_PROPERTY_SET_IS_EXTENSIONAL:
             action.setSelected(Class.isExtensional(_class));
             enabled = Class.isCollective(_class) || Class.hasCollectiveNature(_class)
                     || (!isSmartModelingEnabled && Class.hasValidStereotype(_class));
             break;
-         case ActionIdManager.PROPERTY_SET_IS_POWERTYPE:
+         case ActionIdManager.CLASS_PROPERTY_SET_IS_POWERTYPE:
             action.setSelected(Class.isPowertype(_class));
             enabled = Class.isType(_class);
             break;
-         case ActionIdManager.PROPERTY_SET_ORDER:
+         case ActionIdManager.CLASS_PROPERTY_SET_ORDER:
             enabled = Class.isType(_class);
             if(Class.hasValidStereotype(_class)){
                String order = Class.getOrderOr(_class).orElse("1");
                action.setLabel("Set order"+" ("+order+")");}
             break;
+         case ActionIdManager.ASSOCIATION_PROPERTY_REVERSE_ASSOCIATION:
+         case ActionIdManager.ASSOCIATION_PROPERTY_SET_IS_ABSTRACT:
+         case ActionIdManager.ASSOCIATION_PROPERTY_SET_IS_DERIVED:
+        	 enabled = true;
       }
 
       action.setEnabled(enabled);
@@ -141,6 +173,29 @@ public class ApplyPropertiesController implements VPContextActionController {
               .filter(e -> e.getModelElement().getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS))
               .map(e -> (IClass) e.getModelElement()).forEach(consumer);
    }
+
+	@SuppressWarnings("unchecked")
+	private <T extends IModelElement> void forEachSelectedElement(T element, Consumer<T> consumer) {
+		if (element == null) {
+			return;
+		}
+
+		final DiagramManager dm = ApplicationManager.instance().getDiagramManager();
+		final IDiagramUIModel diagram = dm.getActiveDiagram();
+
+		if (diagram == null) {
+			consumer.accept(element);
+			return;
+		}
+
+		final String selectedElementType = element.getModelType();
+		final IDiagramElement[] selectedDiagramElements = diagram.getSelectedDiagramElement();
+
+		Arrays.stream(selectedDiagramElements).map(selectedDiagramElement -> selectedDiagramElement.getModelElement())
+				.filter(selectedElement -> selectedElement != null
+						&& selectedElementType.equals(selectedElement.getModelType()))
+				.forEach((Consumer<? super IModelElement>) consumer);;
+	}
 
    private void setBooleanTaggedValue(VPContext context, IClass clickedClass, String metaProperty) {
       final ITaggedValue booleanTaggedValue = StereotypesManager.reapplyStereotypeAndGetTaggedValue(clickedClass,
