@@ -107,7 +107,7 @@ public class Property implements ModelElement {
 		if (!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED)))
 			setCardinality(source.getMultiplicity());
 
-		setOrdered(source.getMultiplicityDetail());
+		setOrdered(ModelElement.isOrdered(source));
 		setDerived(source.isDerived());
 		setReadOnly(source.isReadOnly());
 
@@ -151,8 +151,8 @@ public class Property implements ModelElement {
 		if (!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED)))
 			setCardinality(source.getMultiplicity());
 
+		setOrdered(ModelElement.isOrdered(source));
 		setDerived(source.isDerived());
-		setOrdered(source.getMultiplicityDetail());
 		setReadOnly(source.isReadOnly());
 
 		final String[] stereotypes = source.toStereotypeArray();

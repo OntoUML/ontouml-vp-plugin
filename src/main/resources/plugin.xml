@@ -163,6 +163,46 @@
             
         </contextSensitiveActionSet>
         
+        <contextSensitiveActionSet id="it.unibz.inf.ontouml.vp.AssociationEndProperties">
+            <contextTypes all="false"/>
+            <include type="AssociationEnd"/>
+            
+            <menu id="associationEndPropertiesMenu" label="Meta-Properties" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
+            
+            <action id="it.unibz.inf.ontouml.vp.AssociationEndProperties.isDerived" label="Is Derived" style="toggle" menuPath="associationEndPropertiesMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyPropertiesController"/>
+            </action>
+            
+            <action id="it.unibz.inf.ontouml.vp.AssociationEndProperties.isOrdered" label="Is Ordered" style="toggle" menuPath="associationEndPropertiesMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyPropertiesController"/>
+            </action>
+            
+            <action id="it.unibz.inf.ontouml.vp.AssociationEndProperties.isReadOnly" label="Is ReadOnly" style="toggle" menuPath="associationEndPropertiesMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyPropertiesController"/>
+            </action>
+            
+        </contextSensitiveActionSet>
+        
+        <contextSensitiveActionSet id="it.unibz.inf.ontouml.vp.AttributesProperties">
+            <contextTypes all="false"/>
+            <include type="Attribute"/>
+            
+            <menu id="attributesPropertiesMenu" label="Meta-Properties" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
+            
+            <action id="it.unibz.inf.ontouml.vp.AttributeProperties.isDerived" label="Is Derived" style="toggle" menuPath="attributesPropertiesMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyPropertiesController"/>
+            </action>
+            
+            <action id="it.unibz.inf.ontouml.vp.AttributeProperties.isOrdered" label="Is Ordered" style="toggle" menuPath="attributesPropertiesMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyPropertiesController"/>
+            </action>
+            
+            <action id="it.unibz.inf.ontouml.vp.AttributeProperties.isReadOnly" label="Is ReadOnly" style="toggle" menuPath="attributesPropertiesMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyPropertiesController"/>
+            </action>
+            
+        </contextSensitiveActionSet>
+        
         <contextSensitiveActionSet id="it.unibz.inf.ontouml.vp.ClassStereotypes">
             <contextTypes all="false"/>
             <include type="Class"/>

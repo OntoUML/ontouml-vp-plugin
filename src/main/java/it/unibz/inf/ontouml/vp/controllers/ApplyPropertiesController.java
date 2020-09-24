@@ -41,20 +41,24 @@ public class ApplyPropertiesController implements VPContextActionController {
 	public void performAction(VPAction action, VPContext context, ActionEvent event) {
 		final IModelElement clickedElement = context.getModelElement();
 		final String clickedElementType = clickedElement.getModelType();
-		final IClass clickedClass = IModelElementFactory.MODEL_TYPE_CLASS.equals(clickedElementType)
-				? (IClass) context.getModelElement() : null;
-		final IAssociation clickedAssociation = IModelElementFactory.MODEL_TYPE_ASSOCIATION.equals(clickedElementType)
-				? (IAssociation) context.getModelElement() : null;
-		final boolean isSmartModelingEnabled = Configurations.getInstance().getProjectConfigurations()
-				.isSmartModellingEnabled();
 		
-		if (clickedClass == null && clickedAssociation == null) {
+		if (
+			!IModelElementFactory.MODEL_TYPE_ASSOCIATION.equals(clickedElementType)
+			&& !IModelElementFactory.MODEL_TYPE_ASSOCIATION_END.equals(clickedElementType)
+			&& !IModelElementFactory.MODEL_TYPE_ATTRIBUTE.equals(clickedElementType)
+			&& !IModelElementFactory.MODEL_TYPE_CLASS.equals(clickedElementType)
+		) {
 			return;
 		}
 		
+		final IAssociation clickedAssociation = IModelElementFactory.MODEL_TYPE_ASSOCIATION.equals(clickedElementType)
+				? (IAssociation) context.getModelElement() : null;
+		final IClass clickedClass = IModelElementFactory.MODEL_TYPE_CLASS.equals(clickedElementType)
+				? (IClass) context.getModelElement() : null;
+		
 		switch (action.getActionId()) {
 		case ActionIdManager.CLASS_PROPERTY_SET_RESTRICTED_TO:
-			this.setRestrictedTo(context, clickedClass);
+			this.setRestrictedTo(clickedClass);
 			break;
 
 		case ActionIdManager.ASSOCIATION_PROPERTY_SET_IS_ABSTRACT:
@@ -70,17 +74,38 @@ public class ApplyPropertiesController implements VPContextActionController {
 			forEachSelectedElement(clickedElement, selectedElement -> ModelElement.setDerived(selectedElement,!isDerived));
 			break;
 		}
+		
+		case ActionIdManager.ASSOCIATION_END_PROPERTY_SET_IS_DERIVED:
+		case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_DERIVED: {
+			final boolean isDerived = ModelElement.isDerived(clickedElement);
+			ModelElement.setDerived(clickedElement,!isDerived);
+			break;
+		}
+		
+		case ActionIdManager.ASSOCIATION_END_PROPERTY_SET_IS_ORDERED:
+		case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_ORDERED: {
+			final boolean isOrdered = ModelElement.isOrdered(clickedElement);
+			ModelElement.setOrdered(clickedElement,!isOrdered);
+			break;
+		}
+		
+		case ActionIdManager.ASSOCIATION_END_PROPERTY_SET_IS_READ_ONLY:
+		case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_READ_ONLY: {
+			final boolean isReadOnly = ModelElement.isReadOnly(clickedElement);
+			ModelElement.setReadOnly(clickedElement,!isReadOnly);
+			break;
+		}
 
 		case ActionIdManager.CLASS_PROPERTY_SET_IS_EXTENSIONAL:
-			setBooleanTaggedValue(context, (IClass) clickedElement, StereotypesManager.PROPERTY_IS_EXTENSIONAL);
+			setBooleanTaggedValue(clickedClass, StereotypesManager.PROPERTY_IS_EXTENSIONAL);
 			break;
 
 		case ActionIdManager.CLASS_PROPERTY_SET_IS_POWERTYPE:
-			setBooleanTaggedValue(context, (IClass) clickedElement, StereotypesManager.PROPERTY_IS_POWERTYPE);
+			setBooleanTaggedValue(clickedClass, StereotypesManager.PROPERTY_IS_POWERTYPE);
 			break;
 
 		case ActionIdManager.CLASS_PROPERTY_SET_ORDER:
-			setOrderProperty(context, (IClass) clickedElement);
+			setOrderProperty(clickedClass);
 			break;
 			
 		case ActionIdManager.ASSOCIATION_PROPERTY_REVERSE_ASSOCIATION:
@@ -96,9 +121,12 @@ public class ApplyPropertiesController implements VPContextActionController {
 		final IModelElement clickedElement = context.getModelElement();
 		final String clickedElementType = clickedElement.getModelType();
 
-		IModelElementFactory.instance();
-		if (!IModelElementFactory.MODEL_TYPE_ASSOCIATION.equals(clickedElementType)
-				&& !IModelElementFactory.MODEL_TYPE_CLASS.equals(clickedElementType)) {
+		if (
+			!IModelElementFactory.MODEL_TYPE_ASSOCIATION.equals(clickedElementType)
+			&& !IModelElementFactory.MODEL_TYPE_ASSOCIATION_END.equals(clickedElementType)
+			&& !IModelElementFactory.MODEL_TYPE_ATTRIBUTE.equals(clickedElementType)
+			&& !IModelElementFactory.MODEL_TYPE_CLASS.equals(clickedElementType)
+		) {
 			action.setEnabled(false);
 			return;
 		}
@@ -106,31 +134,51 @@ public class ApplyPropertiesController implements VPContextActionController {
 		final IClass clickedClass = IModelElementFactory.MODEL_TYPE_CLASS.equals(clickedElementType)
 				? (IClass) context.getModelElement()
 				: null;
-		final IAssociation clickedAssociation = IModelElementFactory.MODEL_TYPE_ASSOCIATION.equals(clickedElementType)
-				? (IAssociation) context.getModelElement()
-				: null;
 		final boolean isSmartModelingEnabled = Configurations.getInstance().getProjectConfigurations()
 				.isSmartModellingEnabled();
 		boolean enabled = true;
 
 		switch (action.getActionId()) {
+		case ActionIdManager.ASSOCIATION_PROPERTY_SET_IS_ABSTRACT:
+			action.setSelected(ModelElement.isAbstract(clickedElement));
+			break;
+			
 		case ActionIdManager.CLASS_PROPERTY_SET_IS_ABSTRACT:
 			action.setSelected(clickedClass.isAbstract());
 			enabled = Class.isAbstractEditable(clickedClass) || !isSmartModelingEnabled;
 			break;
+			
+		case ActionIdManager.ASSOCIATION_PROPERTY_SET_IS_DERIVED:
+		case ActionIdManager.ASSOCIATION_END_PROPERTY_SET_IS_DERIVED:
+		case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_DERIVED:
 		case ActionIdManager.CLASS_PROPERTY_SET_IS_DERIVED:
-			action.setSelected(ModelElement.isDerived(clickedClass));
+			action.setSelected(ModelElement.isDerived(clickedElement));
 			enabled = true;
 			break;
+			
+		case ActionIdManager.ASSOCIATION_END_PROPERTY_SET_IS_ORDERED:
+		case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_ORDERED:
+			action.setSelected(ModelElement.isOrdered(clickedElement));
+			enabled = true;
+			break;
+		
+		case ActionIdManager.ASSOCIATION_END_PROPERTY_SET_IS_READ_ONLY:
+		case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_READ_ONLY:
+			action.setSelected(ModelElement.isReadOnly(clickedElement));
+			enabled = true;
+			break;
+			
 		case ActionIdManager.CLASS_PROPERTY_SET_RESTRICTED_TO:
 			enabled = Class.isRestrictedToEditable(clickedClass)
 					|| (!isSmartModelingEnabled && Class.hasValidStereotype(clickedClass));
 			break;
+			
 		case ActionIdManager.CLASS_PROPERTY_SET_IS_EXTENSIONAL:
 			action.setSelected(Class.isExtensional(clickedClass));
 			enabled = Class.isCollective(clickedClass) || Class.hasCollectiveNature(clickedClass)
 					|| (!isSmartModelingEnabled && Class.hasValidStereotype(clickedClass));
 			break;
+			
 		case ActionIdManager.CLASS_PROPERTY_SET_IS_POWERTYPE:
 			action.setSelected(Class.isPowertype(clickedClass));
 			enabled = Class.isType(clickedClass);
@@ -142,39 +190,11 @@ public class ApplyPropertiesController implements VPContextActionController {
 				action.setLabel("Set order" + " (" + order + ")");
 			}
 			break;
-//         case ActionIdManager.ASSOCIATION_PROPERTY_REVERSE_ASSOCIATION:
-//        	 enabled = true;
-//        	 break;
-		case ActionIdManager.ASSOCIATION_PROPERTY_SET_IS_ABSTRACT:
-			action.setEnabled(clickedAssociation.isAbstract());
-			break;
-		case ActionIdManager.ASSOCIATION_PROPERTY_SET_IS_DERIVED:
-			action.setEnabled(clickedAssociation.isDerived());
-			break;
 		}
 
 		action.setEnabled(enabled);
 
 	}
-
-   private void forEachSelectedClass(VPContext context, Consumer<IClass> consumer) {
-      if (!(context.getModelElement() instanceof IClass))
-         return;
-
-      final IDiagramUIModel diagram = context.getDiagram();
-      final IClass _class = (IClass) context.getModelElement();
-
-      if (diagram == null) {
-         consumer.accept(_class);
-         return;
-      }
-
-      final IDiagramElement[] diagramElements = context.getDiagram().getSelectedDiagramElement();
-
-      Arrays.stream(diagramElements)
-              .filter(e -> e.getModelElement().getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS))
-              .map(e -> (IClass) e.getModelElement()).forEach(consumer);
-   }
 
 	@SuppressWarnings("unchecked")
 	private <T extends IModelElement> void forEachSelectedElement(T element, Consumer<T> consumer) {
@@ -182,24 +202,24 @@ public class ApplyPropertiesController implements VPContextActionController {
 			return;
 		}
 
+		final String selectedElementType = element.getModelType();
 		final DiagramManager dm = ApplicationManager.instance().getDiagramManager();
 		final IDiagramUIModel diagram = dm.getActiveDiagram();
+		final IDiagramElement[] selectedDiagramElements = diagram != null ? diagram.getSelectedDiagramElement() : null;
 
-		if (diagram == null) {
+		if (diagram == null || selectedDiagramElements == null) {
 			consumer.accept(element);
 			return;
 		}
 
-		final String selectedElementType = element.getModelType();
-		final IDiagramElement[] selectedDiagramElements = diagram.getSelectedDiagramElement();
-
-		Arrays.stream(selectedDiagramElements).map(selectedDiagramElement -> selectedDiagramElement.getModelElement())
-				.filter(selectedElement -> selectedElement != null
-						&& selectedElementType.equals(selectedElement.getModelType()))
+		Arrays.stream(selectedDiagramElements)
+				.map(selectedDiagramElement -> selectedDiagramElement.getModelElement())
+				.filter(selectedElement -> selectedElement != null && 
+						selectedElementType.equals(selectedElement.getModelType()))
 				.forEach((Consumer<? super IModelElement>) consumer);;
 	}
 
-   private void setBooleanTaggedValue(VPContext context, IClass clickedClass, String metaProperty) {
+   private void setBooleanTaggedValue(IClass clickedClass, String metaProperty) {
       final ITaggedValue booleanTaggedValue = StereotypesManager.reapplyStereotypeAndGetTaggedValue(clickedClass,
               metaProperty);
       final boolean value = booleanTaggedValue != null && Boolean.parseBoolean(booleanTaggedValue.getValueAsString());
@@ -214,7 +234,7 @@ public class ApplyPropertiesController implements VPContextActionController {
       });
    }
 
-   private void setOrderProperty(VPContext context, IClass clickedClass) {
+   private void setOrderProperty(IClass clickedClass) {
       final ITaggedValue baseTaggedValue = StereotypesManager.reapplyStereotypeAndGetTaggedValue(clickedClass,
               StereotypesManager.PROPERTY_ORDER);
 
@@ -225,8 +245,8 @@ public class ApplyPropertiesController implements VPContextActionController {
       ApplicationManager.instance().getViewManager().showDialog(dialog);
       final String order = dialog.getOrder();
 
-      forEachSelectedClass(context, cla -> {
-         ITaggedValue taggedValue = StereotypesManager.reapplyStereotypeAndGetTaggedValue(cla,
+      forEachSelectedElement(clickedClass, selectedClass -> {
+         ITaggedValue taggedValue = StereotypesManager.reapplyStereotypeAndGetTaggedValue(selectedClass,
                  StereotypesManager.PROPERTY_ORDER);
 
          if (taggedValue == null)
@@ -236,7 +256,7 @@ public class ApplyPropertiesController implements VPContextActionController {
       });
    }
 
-   private void setRestrictedTo(VPContext context, IClass clickedClass) {
+   private void setRestrictedTo(IClass clickedClass) {
       String currentRestrictions = Class.getRestrictedTo(clickedClass);
       currentRestrictions = currentRestrictions == null ? "" : currentRestrictions;
 
@@ -247,8 +267,8 @@ public class ApplyPropertiesController implements VPContextActionController {
       ApplicationManager.instance().getViewManager().showDialog(dialog);
       final String newRestrictions = dialog.getSelectedValues();
 
-      forEachSelectedClass(context, cla -> {
-         Class.setRestrictedTo(cla, newRestrictions);
+      forEachSelectedElement(clickedClass, selectedClass -> {
+         Class.setRestrictedTo(selectedClass, newRestrictions);
       });
    }
 

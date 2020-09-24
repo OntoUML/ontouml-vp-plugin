@@ -247,13 +247,9 @@ public class Association implements ModelElement {
 	public static void invertAssociation(IAssociation association) {
 		final IClass originalSource = getSource(association);
 		final IClass originalTarget = getTarget(association);
-		final IAssociationEnd originalSourceEnd = getSourceEnd(association);
-		final IAssociationEnd originalTargetEnd = getTargetEnd(association);
 
 		setSource(association, originalTarget);
 		setTarget(association, originalSource);
-		originalSourceEnd.setType(originalTarget);
-		originalTargetEnd.setType(originalSource);
 
 		final IDiagramElement[] associationViews = association.getDiagramElements();
 		final DiagramManager dm = ApplicationManager.instance().getDiagramManager();
@@ -271,6 +267,10 @@ public class Association implements ModelElement {
 			
 			final IAssociationUIModel invertedView = (IAssociationUIModel) dm.createConnector(diagram, association,
 					originalViewTarget, originalViewSource, null);
+			
+			if(originalView.isMasterView()) {
+				invertedView.toBeMasterView();
+			}
 			
 			if (points != null) {
 				for (int j = points.length - 1; j >= 0; j--) {

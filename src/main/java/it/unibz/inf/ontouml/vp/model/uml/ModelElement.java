@@ -1,5 +1,9 @@
 package it.unibz.inf.ontouml.vp.model.uml;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.vp.plugin.ApplicationManager;
@@ -8,17 +12,13 @@ import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IAttribute;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.IMultiplicity;
 import com.vp.plugin.model.IStereotype;
 import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
-import v.chq.t;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 
 /**
  * @author Victor Viola
@@ -236,46 +236,41 @@ public interface ModelElement {
       return obj;
    }
    
-   public static <T extends IModelElement> boolean isAbstract(T element) {
-	   final String elementType = element.getModelType();
-	   
-	   switch(elementType) {
-	   case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
-		   return ((IAssociation) element).isAbstract();
-		   
-	   case IModelElementFactory.MODEL_TYPE_ATTRIBUTE:
-		   return ((IAttribute) element).isAbstract();
-		   
-	   case IModelElementFactory.MODEL_TYPE_CLASS:
-		   return ((IClass) element).isAbstract();
-		   
-	   default:
-		   throw new UnsupportedOperationException("This operation is not supported for elements of type " + elementType);
-	   }      
-   }
+	public static boolean isAbstract(IModelElement element) {
+		final String elementType = element.getModelType();
 
-   public static <T extends IModelElement> void setAbstract(T element, boolean isAbstract) {
-	   final String elementType = element.getModelType();
-	   
-	   switch(elementType) {
-	   case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
-		   ((IAssociation) element).setAbstract(isAbstract);
-		   break ;
-		   
-	   case IModelElementFactory.MODEL_TYPE_ATTRIBUTE:
-		   ((IAttribute) element).setAbstract(isAbstract);
-		   break ;
-		   
-	   case IModelElementFactory.MODEL_TYPE_CLASS: 
-		   ((IClass) element).setAbstract(isAbstract);
-		   break ;
-		   
-	   default:		   
-		   throw new UnsupportedOperationException("This operation is not supported for elements of type " + elementType);
-	   }
-   }
+		switch (elementType) {
+		case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
+			return ((IAssociation) element).isAbstract();
 
-	public static <T extends IModelElement> boolean isDerived(T element) {
+		case IModelElementFactory.MODEL_TYPE_CLASS:
+			return ((IClass) element).isAbstract();
+
+		default:
+			throw new UnsupportedOperationException(
+					"This operation is not supported for elements of type " + elementType);
+		}
+	}
+
+	public static void setAbstract(IModelElement element, boolean isAbstract) {
+		final String elementType = element.getModelType();
+
+		switch (elementType) {
+		case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
+			((IAssociation) element).setAbstract(isAbstract);
+			break;
+
+		case IModelElementFactory.MODEL_TYPE_CLASS:
+			((IClass) element).setAbstract(isAbstract);
+			break;
+
+		default:
+			throw new UnsupportedOperationException(
+					"This operation is not supported for elements of type " + elementType);
+		}
+	}
+
+	public static boolean isDerived(IModelElement element) {
 		final String elementType = element.getModelType();
 
 		switch (elementType) {
@@ -297,37 +292,132 @@ public interface ModelElement {
 		}
 	}
 
-   public static <T extends IModelElement> void setDerived(T element, boolean isDerived) {
-	   final String elementType = element.getModelType();
-	   
-	   switch(elementType) {
-	   case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
-		   ((IAssociation) element).setDerived(isDerived);
-		   break ;
-		   
-	   case IModelElementFactory.MODEL_TYPE_ASSOCIATION_END:
-		   ((IAssociationEnd) element).setDerived(isDerived);
-		   break ;
-		   
-	   case IModelElementFactory.MODEL_TYPE_ATTRIBUTE:
-		   ((IAttribute) element).setDerived(isDerived);
-		   break ;
-		   
-	   case IModelElementFactory.MODEL_TYPE_CLASS: {
-		  final String currentName = element.getName() != null ?
-		            element.getName().trim() : "";
+	public static void setDerived(IModelElement element, boolean isDerived) {
+		final String elementType = element.getModelType();
 
-	      if (isDerived(element)) {
-	         element.setName(currentName.substring(1));
-	      } else {
-	         element.setName("/" + currentName);
-	      }
-	      break ;
-	   }
-	   
-	   default:		   
-		   throw new UnsupportedOperationException("This operation is not supported for elements of type " + elementType);
-	   }
-   }
+		switch (elementType) {
+		case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
+			((IAssociation) element).setDerived(isDerived);
+			break;
+
+		case IModelElementFactory.MODEL_TYPE_ASSOCIATION_END:
+			((IAssociationEnd) element).setDerived(isDerived);
+			break;
+
+		case IModelElementFactory.MODEL_TYPE_ATTRIBUTE:
+			((IAttribute) element).setDerived(isDerived);
+			break;
+
+		case IModelElementFactory.MODEL_TYPE_CLASS: {
+			final String currentName = element.getName() != null ? element.getName().trim() : "";
+
+			if (isDerived(element)) {
+				element.setName(currentName.substring(1));
+			} else {
+				element.setName("/" + currentName);
+			}
+			break;
+		}
+
+		default:
+			throw new UnsupportedOperationException(
+					"This operation is not supported for elements of type " + elementType);
+		}
+	}
+
+	public static boolean isOrdered(IModelElement element) {
+		final String elementType = element.getModelType();
+
+		switch (elementType) {
+		case IModelElementFactory.MODEL_TYPE_ASSOCIATION_END: {
+			final IAssociationEnd associationEnd = (IAssociationEnd) element;
+			final IMultiplicity multiplicity = associationEnd.getMultiplicityDetail();
+			return multiplicity != null ? multiplicity.isOrdered() : false;
+		}
+
+		case IModelElementFactory.MODEL_TYPE_ATTRIBUTE: {
+			final IAttribute attribute = (IAttribute) element;
+			final IMultiplicity multiplicity = attribute.getMultiplicityDetail();
+			return multiplicity != null ? multiplicity.isOrdered() : false;
+		}
+
+		default:
+			throw new UnsupportedOperationException(
+					"This operation is not supported for elements of type " + elementType);
+		}
+	}
+
+	public static void setOrdered(IModelElement element, boolean isOrdered) {
+		final String elementType = element.getModelType();
+		IMultiplicity multiplicity = null;
+
+		switch (elementType) {
+		case IModelElementFactory.MODEL_TYPE_ASSOCIATION_END: {
+			final IAssociationEnd associationEnd = (IAssociationEnd) element;
+			multiplicity = associationEnd.getMultiplicityDetail();
+
+			if (multiplicity == null) {
+				multiplicity = IModelElementFactory.instance().createMultiplicity();
+				associationEnd.setMultiplicityDetail(multiplicity);
+			}
+			break;
+		}
+
+		case IModelElementFactory.MODEL_TYPE_ATTRIBUTE: {
+			final IAttribute attribute = (IAttribute) element;
+			multiplicity = attribute.getMultiplicityDetail();
+
+			if (multiplicity == null) {
+				multiplicity = IModelElementFactory.instance().createMultiplicity();
+				attribute.setMultiplicityDetail(multiplicity);
+			}
+			break;
+		}
+
+		default:
+			throw new UnsupportedOperationException(
+					"This operation is not supported for elements of type " + elementType);
+		}
+
+		multiplicity.setOrdered(isOrdered);
+	}
+
+	public static boolean isReadOnly(IModelElement element) {
+		final String elementType = element.getModelType();
+
+		switch (elementType) {
+		case IModelElementFactory.MODEL_TYPE_ASSOCIATION_END: {
+			return ((IAssociationEnd) element).isReadOnly();
+		}
+
+		case IModelElementFactory.MODEL_TYPE_ATTRIBUTE: {
+			return ((IAttribute) element).isReadOnly();
+		}
+
+		default:
+			throw new UnsupportedOperationException(
+					"This operation is not supported for elements of type " + elementType);
+		}
+	}
+
+	public static void setReadOnly(IModelElement element, boolean isReadOnly) {
+		final String elementType = element.getModelType();
+
+		switch (elementType) {
+		case IModelElementFactory.MODEL_TYPE_ASSOCIATION_END: {
+			((IAssociationEnd) element).setReadOnly(isReadOnly);
+			break;
+		}
+
+		case IModelElementFactory.MODEL_TYPE_ATTRIBUTE: {
+			((IAttribute) element).setReadOnly(isReadOnly);
+			break;
+		}
+
+		default:
+			throw new UnsupportedOperationException(
+					"This operation is not supported for elements of type " + elementType);
+		}
+	}
 
 }
