@@ -117,12 +117,14 @@ public final class ActionIdManager {
 	public static final String CLASS_PROPERTY_SET_ORDER = "it.unibz.inf.ontouml.vp.ClassProperties.order";
 	
 	public static final String ASSOCIATION_PROPERTY_REVERSE_ASSOCIATION = "it.unibz.inf.ontouml.vp.AssociationProperties.reverseAssociation";
-	public static final String ASSOCIATION_PROPERTY_SET_IS_DERIVED = "it.unibz.inf.ontouml.vp.AssociationProperties.isDerived";
 	public static final String ASSOCIATION_PROPERTY_SET_IS_ABSTRACT = "it.unibz.inf.ontouml.vp.AssociationProperties.isAbstract";
-	
-	public static final String ASSOCIATION_END_PROPERTY_SET_IS_DERIVED = "it.unibz.inf.ontouml.vp.AssociationEndProperties.isDerived";
-	public static final String ASSOCIATION_END_PROPERTY_SET_IS_ORDERED = "it.unibz.inf.ontouml.vp.AssociationEndProperties.isOrdered";
-	public static final String ASSOCIATION_END_PROPERTY_SET_IS_READ_ONLY = "it.unibz.inf.ontouml.vp.AssociationEndProperties.isReadOnly";
+	public static final String ASSOCIATION_PROPERTY_SET_IS_DERIVED = "it.unibz.inf.ontouml.vp.AssociationProperties.isDerived";
+	public static final String ASSOCIATION_PROPERTY_SOURCE_SET_IS_DERIVED = "it.unibz.inf.ontouml.vp.AssociationProperties.Source.isDerived";
+	public static final String ASSOCIATION_PROPERTY_SOURCE_SET_IS_ORDERED = "it.unibz.inf.ontouml.vp.AssociationProperties.Source.isOrdered";
+	public static final String ASSOCIATION_PROPERTY_SOURCE_SET_IS_READ_ONLY = "it.unibz.inf.ontouml.vp.AssociationProperties.Source.isReadOnly";
+	public static final String ASSOCIATION_PROPERTY_TARGET_SET_IS_DERIVED = "it.unibz.inf.ontouml.vp.AssociationProperties.Target.isDerived";
+	public static final String ASSOCIATION_PROPERTY_TARGET_SET_IS_ORDERED = "it.unibz.inf.ontouml.vp.AssociationProperties.Target.isOrdered";
+	public static final String ASSOCIATION_PROPERTY_TARGET_SET_IS_READ_ONLY = "it.unibz.inf.ontouml.vp.AssociationProperties.Target.isReadOnly";
 	
 	public static final String ATTRIBUTE_PROPERTY_SET_IS_DERIVED = "it.unibz.inf.ontouml.vp.AttributeProperties.isDerived";
 	public static final String ATTRIBUTE_PROPERTY_SET_IS_ORDERED = "it.unibz.inf.ontouml.vp.AttributeProperties.isOrdered";

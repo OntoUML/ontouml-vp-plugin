@@ -2,9 +2,10 @@ package it.unibz.inf.ontouml.vp.model.uml;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
@@ -13,7 +14,6 @@ import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.DiagramManager;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
-import com.vp.plugin.diagram.IShapeUIModel;
 import com.vp.plugin.diagram.connector.IAssociationUIModel;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
@@ -256,7 +256,6 @@ public class Association implements ModelElement {
 		
 		for (int i = 0; associationViews != null && i < associationViews.length; i++) {
 			final IAssociationUIModel originalView = (IAssociationUIModel) associationViews[i];
-			final Point[] points = originalView.getPoints();
 			final IDiagramUIModel diagram = originalView.getDiagramUIModel();
 			final IDiagramElement originalViewSource = originalView.getFromShape();
 			final IDiagramElement originalViewTarget = originalView.getToShape();
@@ -265,21 +264,27 @@ public class Association implements ModelElement {
 				continue;
 			}
 			
-			final IAssociationUIModel invertedView = (IAssociationUIModel) dm.createConnector(diagram, association,
-					originalViewTarget, originalViewSource, null);
+			final boolean isMasterView = originalView.isMasterView();
+			final boolean isShowDirection = originalView.isShowDirection();
+			Point[] points = originalView.getPoints();
+			originalView.deleteViewOnly();
 			
-			if(originalView.isMasterView()) {
+			if(points != null) {
+				final List<Point> pointsListToReverse = Arrays.asList(points);
+				Collections.reverse(pointsListToReverse);
+				points = pointsListToReverse.toArray(points); 
+			}
+			
+			final IAssociationUIModel invertedView = (IAssociationUIModel) dm.createConnector(diagram, association,
+					originalViewTarget, originalViewSource, points);
+			
+			if(isMasterView) {
 				invertedView.toBeMasterView();
 			}
 			
-			if (points != null) {
-				for (int j = points.length - 1; j >= 0; j--) {
-					invertedView.addPoint(points[j]);
-				}
-			}
-			
+			invertedView.setShowDirection(isShowDirection);
 			invertedView.resetCaption();
-			originalView.deleteViewOnly();
+			
 		}
 	}
 

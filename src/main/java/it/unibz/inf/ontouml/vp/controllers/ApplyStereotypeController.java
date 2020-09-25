@@ -10,14 +10,12 @@ import com.vp.plugin.action.VPContext;
 import com.vp.plugin.action.VPContextActionController;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.model.IAssociation;
-import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.ISimpleRelationship;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.model.Configurations;
-import it.unibz.inf.ontouml.vp.model.uml.Association;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.utils.ActionIdManager;
 import it.unibz.inf.ontouml.vp.utils.Stereotype;
@@ -53,7 +51,6 @@ public class ApplyStereotypeController implements VPContextActionController {
       }
    }
 
-   // TODO: change this method to be independent of diagram elements
    @Override
    public void update(VPAction action, VPContext context) {
       action.setEnabled(true);

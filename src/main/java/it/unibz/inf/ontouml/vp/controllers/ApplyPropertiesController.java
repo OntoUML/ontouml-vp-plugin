@@ -13,6 +13,7 @@ import com.vp.plugin.action.VPContextActionController;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IAssociation;
+import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.ITaggedValue;
@@ -75,21 +76,54 @@ public class ApplyPropertiesController implements VPContextActionController {
 			break;
 		}
 		
-		case ActionIdManager.ASSOCIATION_END_PROPERTY_SET_IS_DERIVED:
+		case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_DERIVED: {
+			final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
+			sourceEnd.setDerived(!sourceEnd.isDerived());
+			break;
+		}
+		
+		case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_DERIVED: {
+			final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
+			targetEnd.setDerived(!targetEnd.isDerived());
+			break;
+		}
+		
 		case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_DERIVED: {
 			final boolean isDerived = ModelElement.isDerived(clickedElement);
 			ModelElement.setDerived(clickedElement,!isDerived);
 			break;
 		}
 		
-		case ActionIdManager.ASSOCIATION_END_PROPERTY_SET_IS_ORDERED:
+		case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_ORDERED: {
+			final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
+			ModelElement.setOrdered(sourceEnd, !ModelElement.isOrdered(sourceEnd));
+			break;
+		}
+		
+		case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_ORDERED: {
+			final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
+			ModelElement.setOrdered(targetEnd, !ModelElement.isOrdered(targetEnd));
+			break;
+		}
+		
 		case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_ORDERED: {
 			final boolean isOrdered = ModelElement.isOrdered(clickedElement);
 			ModelElement.setOrdered(clickedElement,!isOrdered);
 			break;
 		}
 		
-		case ActionIdManager.ASSOCIATION_END_PROPERTY_SET_IS_READ_ONLY:
+		case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_READ_ONLY: {
+			final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
+			ModelElement.setReadOnly(sourceEnd, !ModelElement.isReadOnly(sourceEnd));
+			break;
+		}
+		
+		case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_READ_ONLY: {
+			final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
+			ModelElement.setReadOnly(targetEnd, !ModelElement.isReadOnly(targetEnd));
+			break;
+		}
+		
 		case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_READ_ONLY: {
 			final boolean isReadOnly = ModelElement.isReadOnly(clickedElement);
 			ModelElement.setReadOnly(clickedElement,!isReadOnly);
@@ -134,6 +168,9 @@ public class ApplyPropertiesController implements VPContextActionController {
 		final IClass clickedClass = IModelElementFactory.MODEL_TYPE_CLASS.equals(clickedElementType)
 				? (IClass) context.getModelElement()
 				: null;
+		final IAssociation clickedAssociation = IModelElementFactory.MODEL_TYPE_ASSOCIATION.equals(clickedElementType)
+				? (IAssociation) context.getModelElement()
+				: null;
 		final boolean isSmartModelingEnabled = Configurations.getInstance().getProjectConfigurations()
 				.isSmartModellingEnabled();
 		boolean enabled = true;
@@ -148,21 +185,61 @@ public class ApplyPropertiesController implements VPContextActionController {
 			enabled = Class.isAbstractEditable(clickedClass) || !isSmartModelingEnabled;
 			break;
 			
+		case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_DERIVED: {
+			final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
+			action.setSelected(sourceEnd.isDerived());
+			enabled = true;
+			break;
+		}
+		
+		case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_DERIVED: {
+			final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
+			action.setSelected(targetEnd.isDerived());
+			enabled = true;
+			break;
+		}
+			
 		case ActionIdManager.ASSOCIATION_PROPERTY_SET_IS_DERIVED:
-		case ActionIdManager.ASSOCIATION_END_PROPERTY_SET_IS_DERIVED:
 		case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_DERIVED:
 		case ActionIdManager.CLASS_PROPERTY_SET_IS_DERIVED:
 			action.setSelected(ModelElement.isDerived(clickedElement));
 			enabled = true;
 			break;
+		
 			
-		case ActionIdManager.ASSOCIATION_END_PROPERTY_SET_IS_ORDERED:
+		case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_ORDERED: {
+			final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
+			action.setSelected(ModelElement.isOrdered(sourceEnd));
+			enabled = true;
+			break;
+		}
+		
+		case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_ORDERED: {
+			final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
+			action.setSelected(ModelElement.isOrdered(targetEnd));
+			enabled = true;
+			break;
+		}
+			
 		case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_ORDERED:
 			action.setSelected(ModelElement.isOrdered(clickedElement));
 			enabled = true;
 			break;
+			
+		case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_READ_ONLY: {
+			final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
+			action.setSelected(ModelElement.isReadOnly(sourceEnd));
+			enabled = true;
+			break;
+		}
 		
-		case ActionIdManager.ASSOCIATION_END_PROPERTY_SET_IS_READ_ONLY:
+		case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_READ_ONLY: {
+			final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
+			action.setSelected(ModelElement.isReadOnly(targetEnd));
+			enabled = true;
+			break;
+		}
+		
 		case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_READ_ONLY:
 			action.setSelected(ModelElement.isReadOnly(clickedElement));
 			enabled = true;
@@ -183,6 +260,7 @@ public class ApplyPropertiesController implements VPContextActionController {
 			action.setSelected(Class.isPowertype(clickedClass));
 			enabled = Class.isType(clickedClass);
 			break;
+			
 		case ActionIdManager.CLASS_PROPERTY_SET_ORDER:
 			enabled = Class.isType(clickedClass);
 			if (Class.hasValidStereotype(clickedClass)) {

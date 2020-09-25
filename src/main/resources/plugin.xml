@@ -151,6 +151,36 @@
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyPropertiesController"/>
             </action>
             
+            <separator id="it.unibz.inf.ontouml.vp.AssociationProperties.separator2" menuPath="associationPropertiesMenu/#"/>
+            
+            <menu id="associationSourcePropertiesMenu" label="Source Properties" menuPath="associationPropertiesMenu/#"/>
+
+            <action id="it.unibz.inf.ontouml.vp.AssociationProperties.Source.isDerived" label="Is Derived" style="toggle" menuPath="associationPropertiesMenu/associationSourcePropertiesMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyPropertiesController"/>
+            </action>
+            
+            <action id="it.unibz.inf.ontouml.vp.AssociationProperties.Source.isOrdered" label="Is Ordered" style="toggle" menuPath="associationPropertiesMenu/associationSourcePropertiesMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyPropertiesController"/>
+            </action>
+
+            <action id="it.unibz.inf.ontouml.vp.AssociationProperties.Source.isReadOnly" label="Is ReadOnly" style="toggle" menuPath="associationPropertiesMenu/associationSourcePropertiesMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyPropertiesController"/>
+            </action>
+            
+            <menu id="associationTargetPropertiesMenu" label="Target Properties" menuPath="associationPropertiesMenu/#"/>
+            
+            <action id="it.unibz.inf.ontouml.vp.AssociationProperties.Target.isDerived" label="Is Derived" style="toggle" menuPath="associationPropertiesMenu/associationTargetPropertiesMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyPropertiesController"/>
+            </action>
+            
+            <action id="it.unibz.inf.ontouml.vp.AssociationProperties.Target.isOrdered" label="Is Ordered" style="toggle" menuPath="associationPropertiesMenu/associationTargetPropertiesMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyPropertiesController"/>
+            </action>
+            
+            <action id="it.unibz.inf.ontouml.vp.AssociationProperties.Target.isReadOnly" label="Is ReadOnly" style="toggle" menuPath="associationPropertiesMenu/associationTargetPropertiesMenu/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyPropertiesController"/>
+            </action>
+            
             <separator id="it.unibz.inf.ontouml.vp.AssociationProperties.separator" menuPath="associationPropertiesMenu/#"/>
             
             <action id="it.unibz.inf.ontouml.vp.AssociationProperties.isDerived" label="Is Derived" style="toggle" menuPath="associationPropertiesMenu/#">
@@ -158,26 +188,6 @@
             </action>
 
             <action id="it.unibz.inf.ontouml.vp.AssociationProperties.isAbstract" label="Is Abstract" style="toggle" menuPath="associationPropertiesMenu/#">
-                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyPropertiesController"/>
-            </action>
-            
-        </contextSensitiveActionSet>
-        
-        <contextSensitiveActionSet id="it.unibz.inf.ontouml.vp.AssociationEndProperties">
-            <contextTypes all="false"/>
-            <include type="AssociationEnd"/>
-            
-            <menu id="associationEndPropertiesMenu" label="Meta-Properties" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
-            
-            <action id="it.unibz.inf.ontouml.vp.AssociationEndProperties.isDerived" label="Is Derived" style="toggle" menuPath="associationEndPropertiesMenu/#">
-                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyPropertiesController"/>
-            </action>
-            
-            <action id="it.unibz.inf.ontouml.vp.AssociationEndProperties.isOrdered" label="Is Ordered" style="toggle" menuPath="associationEndPropertiesMenu/#">
-                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyPropertiesController"/>
-            </action>
-            
-            <action id="it.unibz.inf.ontouml.vp.AssociationEndProperties.isReadOnly" label="Is ReadOnly" style="toggle" menuPath="associationEndPropertiesMenu/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyPropertiesController"/>
             </action>
             
