@@ -55,12 +55,12 @@ public class OntoUMLConstraintsManager {
 		}
 	}
 
-	public static List<String> getAllowedStereotypeActionsOnGeneral(String stereotype) {
+	public static List<String> getAllowedActionsBasedOnParentStereotype(String parentClassStereotype) {
 		if(allowedSuperClassesFor == null || allowedSubClassesFor == null) {
 			loadConstraints();
 		}
 		
-		List<String> allowedStereotypes = allowedSubClassesFor.get(stereotype);
+		List<String> allowedStereotypes = allowedSubClassesFor.get(parentClassStereotype);
 		
 		if(allowedStereotypes == null) {
 			allowedStereotypes = new ArrayList<String>();
@@ -68,16 +68,16 @@ public class OntoUMLConstraintsManager {
 		
 		return allowedStereotypes
 				.stream()
-				.map(allowed -> ActionIdManager.classStereotypeToActionID(allowed))
+				.map(allowedStereotype -> ActionIdManager.classStereotypeToActionID(allowedStereotype))
 				.collect(Collectors.toList());
 	}
 	
-	public static List<String> getAllowedStereotypeActionsSpecific(String stereotype) {
+	public static List<String> getAllowedActionsBasedOnChildStereotype(String childClassStereotype) {
 		if(allowedSuperClassesFor == null || allowedSubClassesFor == null) {
 			loadConstraints();
 		}
 		
-		List<String> allowedStereotypes = allowedSuperClassesFor.get(stereotype);
+		List<String> allowedStereotypes = allowedSuperClassesFor.get(childClassStereotype);
 		
 		if(allowedStereotypes == null) {
 			allowedStereotypes = new ArrayList<String>();
@@ -85,12 +85,12 @@ public class OntoUMLConstraintsManager {
 		
 		return allowedStereotypes
 				.stream()
-				.map(allowed -> ActionIdManager.classStereotypeToActionID(allowed))
+				.map(allowedStereotype -> ActionIdManager.classStereotypeToActionID(allowedStereotype))
 				.collect(Collectors.toList());
 	}
 	
 
-	public static List<String> getAllowedStereotypeActionsOnAssociation(String sourceStereotype, String targetStereotype) {
+	public static List<String> getAllowedActionsBasedOnSourceTargetStereotypes(String sourceStereotype, String targetStereotype) {
 		if(associationConstraints == null) {
 			loadConstraints();
 		}

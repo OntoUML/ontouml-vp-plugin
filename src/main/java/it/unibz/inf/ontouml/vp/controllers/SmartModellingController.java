@@ -282,7 +282,7 @@ public class SmartModellingController {
       final String sourceStereotype = sourceStereotypes.get(0);
       final String targetStereotype = targetStereotypes.get(0);
 //		final ArrayList<String> allowedCombinations = AssociationConstraints.allowedCombinations.get(new SimpleEntry<String, String>(sourceStereotype, targetStereotype));
-      final List<String> allowedCombinations = OntoUMLConstraintsManager.getAllowedStereotypeActionsOnAssociation(sourceStereotype, targetStereotype);
+      final List<String> allowedCombinations = OntoUMLConstraintsManager.getAllowedActionsBasedOnSourceTargetStereotypes(sourceStereotype, targetStereotype);
 
       if (allowedCombinations == null || !allowedCombinations.contains(action.getActionId()))
          action.setEnabled(false);
@@ -313,7 +313,7 @@ public class SmartModellingController {
             action.setEnabled(false);
 
          final String superStereotype = superClassStereotypes.get(0);
-         final List<String> allowedCombinationsSub = OntoUMLConstraintsManager.getAllowedStereotypeActionsOnGeneral(superStereotype);
+         final List<String> allowedCombinationsSub = OntoUMLConstraintsManager.getAllowedActionsBasedOnParentStereotype(superStereotype);
 
          if (allowedCombinationsSub == null || !allowedCombinationsSub.contains(action.getActionId()))
             action.setEnabled(false);
@@ -337,7 +337,7 @@ public class SmartModellingController {
             action.setEnabled(false);
 
          final String subStereotype = subClassStereotypes.get(0);
-         final List<String> allowedCombinationsSuper = OntoUMLConstraintsManager.getAllowedStereotypeActionsSpecific(subStereotype);
+         final List<String> allowedCombinationsSuper = OntoUMLConstraintsManager.getAllowedActionsBasedOnChildStereotype(subStereotype);
 
          if (allowedCombinationsSuper == null || !allowedCombinationsSuper.contains(action.getActionId()))
             action.setEnabled(false);

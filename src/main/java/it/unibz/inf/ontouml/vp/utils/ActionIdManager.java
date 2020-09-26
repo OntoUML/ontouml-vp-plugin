@@ -221,4 +221,47 @@ public final class ActionIdManager {
 		    	return null;
 		}
 	}
+	
+	public static String getActionLabelById(String actionId) {
+		switch(actionId) {
+		case INSTANTIATION:
+		    return "Instantiation";
+		case TERMINATION:
+		    return "Termination";
+		case PARTICIPATIONAL:
+		    return "Participational";
+		case PARTICIPATION:
+		    return "Participation";
+		case HISTORICAL_DEPENDENCE:
+		    return "HistoricalDependence";
+		case CREATION:
+		    return "Creation";
+		case MANIFESTATION:
+		    return "Manifestation";
+		case BRINGS_ABOUT:
+		    return "BringsAbout";
+		case TRIGGERS:
+		    return "Triggers";
+		case SUB_QUANTITY_OF:
+		    return "SubQuantityOf";
+		case SUB_COLLECTION_OF:
+		    return "SubCollectionOf";
+		case MEMBER_OF:
+		    return "MemberOf";
+		case MEDIATION:
+		    return "Mediation";
+		case MATERIAL:
+		    return "Material";
+		case EXTERNAL_DEPENDENCE:
+		    return "ExternalDependence";
+		case COMPONENT_OF:
+		    return "ComponentOf";
+		case COMPARATIVE:
+		    return "Comparative";
+		case CHARACTERIZATION:
+		    return "Characterization";
+	    default:
+	    	throw new UnsupportedOperationException("Unexpected action id value: " + actionId);
+	}
+	}
 }
