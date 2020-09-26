@@ -1,214 +1,205 @@
 package it.unibz.inf.ontouml.vp.model;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 /**
- * 
- * Implementation of ModelElement to handle IAssociation objects to be
- * serialized as ontouml-schema/Association
- * 
+ * Implementation of ModelElement to handle IAssociation objects to be serialized as
+ * ontouml-schema/Association
+ *
  * @author Claudenir Fonseca
  * @author Tiago Prince Sales
  * @author Victor Viola
- *
  */
-
 public class Association implements ModelElement {
 
-	private final IAssociation sourceModelElement;
+  private final IAssociation sourceModelElement;
 
-	@SerializedName("type")
-	@Expose
-	private final String type;
+  @SerializedName("type")
+  @Expose
+  private final String type;
 
-	@SerializedName("id")
-	@Expose
-	private final String id;
+  @SerializedName("id")
+  @Expose
+  private final String id;
 
-	@SerializedName("name")
-	@Expose
-	private String name;
+  @SerializedName("name")
+  @Expose
+  private String name;
 
-	@SerializedName("description")
-	@Expose
-	private String description;
+  @SerializedName("description")
+  @Expose
+  private String description;
 
-	@SerializedName("properties")
-	@Expose
-	private List<Property> properties;
+  @SerializedName("properties")
+  @Expose
+  private List<Property> properties;
 
-	@SerializedName("propertyAssignments")
-	@Expose
-	private JsonObject propertyAssignments;
+  @SerializedName("propertyAssignments")
+  @Expose
+  private JsonObject propertyAssignments;
 
-	@SerializedName("stereotypes")
-	@Expose
-	private List<String> stereotypes;
+  @SerializedName("stereotypes")
+  @Expose
+  private List<String> stereotypes;
 
-	@SerializedName("isAbstract")
-	@Expose
-	private boolean isAbstract;
+  @SerializedName("isAbstract")
+  @Expose
+  private boolean isAbstract;
 
-	@SerializedName("isDerived")
-	@Expose
-	private boolean isDerived;
+  @SerializedName("isDerived")
+  @Expose
+  private boolean isDerived;
 
-	public Association(IAssociation source) {
-		this.sourceModelElement = source;
+  public Association(IAssociation source) {
+    this.sourceModelElement = source;
 
-		this.type = ModelElement.TYPE_RELATION;
-		this.id = source.getId();
-		setName(source.getName());
-		setDescription(source.getDescription());
+    this.type = ModelElement.TYPE_RELATION;
+    this.id = source.getId();
+    setName(source.getName());
+    setDescription(source.getDescription());
 
-		addProperty(new Property((IAssociationEnd) source.getFromEnd()));
-		addProperty(new Property((IAssociationEnd) source.getToEnd()));
+    addProperty(new Property((IAssociationEnd) source.getFromEnd()));
+    addProperty(new Property((IAssociationEnd) source.getToEnd()));
 
-		String[] stereotypes = source.toStereotypeArray();
-		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
-			addStereotype(stereotypes[i]);
-		}
+    String[] stereotypes = source.toStereotypeArray();
+    for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
+      addStereotype(stereotypes[i]);
+    }
 
-		setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
-		setAbstract(source.isAbstract());
-		setDerived(source.isDerived());
-	}
-	
-	public Association(IAssociation source, HashSet<String> modelElements) {
-		this.sourceModelElement = source;
+    setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
+    setAbstract(source.isAbstract());
+    setDerived(source.isDerived());
+  }
 
-		this.type = ModelElement.TYPE_RELATION;
-		this.id = source.getId();
-		setName(source.getName());
-		setDescription(source.getDescription());
+  public Association(IAssociation source, HashSet<String> modelElements) {
+    this.sourceModelElement = source;
 
-		if(modelElements.contains(source.getFromEnd().getId()))
-			addProperty(new Property((IAssociationEnd) source.getFromEnd()));
-		
-		if(modelElements.contains(source.getToEnd().getId()))
-			addProperty(new Property((IAssociationEnd) source.getToEnd()));
+    this.type = ModelElement.TYPE_RELATION;
+    this.id = source.getId();
+    setName(source.getName());
+    setDescription(source.getDescription());
 
-		String[] stereotypes = source.toStereotypeArray();
-		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
-			addStereotype(stereotypes[i]);
-		}
+    if (modelElements.contains(source.getFromEnd().getId()))
+      addProperty(new Property((IAssociationEnd) source.getFromEnd()));
 
-		setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
-		setAbstract(source.isAbstract());
-		setDerived(source.isDerived());
-	}
+    if (modelElements.contains(source.getToEnd().getId()))
+      addProperty(new Property((IAssociationEnd) source.getToEnd()));
 
-	@Override
-	public String getId() {
-		return getSourceModelElement().getId();
-	}
+    String[] stereotypes = source.toStereotypeArray();
+    for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
+      addStereotype(stereotypes[i]);
+    }
 
-	@Override
-	public IAssociation getSourceModelElement() {
-		return this.sourceModelElement;
-	}
+    setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
+    setAbstract(source.isAbstract());
+    setDerived(source.isDerived());
+  }
 
-	@Override
-	public String getOntoUMLType() {
-		return this.type;
-	}
+  @Override
+  public String getId() {
+    return getSourceModelElement().getId();
+  }
 
-	public String getName() {
-		return name;
-	}
+  @Override
+  public IAssociation getSourceModelElement() {
+    return this.sourceModelElement;
+  }
 
-	public void setName(String name) {
-		this.name = ModelElement.safeGetString(name);
-	}
+  @Override
+  public String getOntoUMLType() {
+    return this.type;
+  }
 
-	public String getDescription() {
-		return description;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public void setDescription(String description) {
-		this.description = ModelElement.safeGetString(description);
-	}
+  public void setName(String name) {
+    this.name = ModelElement.safeGetString(name);
+  }
 
-	public JsonObject getPropertyAssignments() {
-		return propertyAssignments;
-	}
+  public String getDescription() {
+    return description;
+  }
 
-	public void setPropertyAssignments(JsonObject propertyAssignments) {
-		this.propertyAssignments = propertyAssignments;
-	}
+  public void setDescription(String description) {
+    this.description = ModelElement.safeGetString(description);
+  }
 
-	public List<String> getStereotypes() {
-		return this.stereotypes;
-	}
+  public JsonObject getPropertyAssignments() {
+    return propertyAssignments;
+  }
 
-	public void setStereotypes(List<String> stereotypes) {
-		this.stereotypes = stereotypes;
-	}
+  public void setPropertyAssignments(JsonObject propertyAssignments) {
+    this.propertyAssignments = propertyAssignments;
+  }
 
-	public String getStereotype(int position) {
-		return this.stereotypes.get(position);
-	}
+  public List<String> getStereotypes() {
+    return this.stereotypes;
+  }
 
-	public void addStereotype(String name) {
-		if (this.stereotypes == null)
-			this.stereotypes = new ArrayList<String>();
+  public void setStereotypes(List<String> stereotypes) {
+    this.stereotypes = stereotypes;
+  }
 
-		this.stereotypes.add(name);
-	}
+  public String getStereotype(int position) {
+    return this.stereotypes.get(position);
+  }
 
-	public void removeStereotype(String name) {
+  public void addStereotype(String name) {
+    if (this.stereotypes == null) this.stereotypes = new ArrayList<String>();
 
-		if (this.stereotypes.contains(name))
-			this.stereotypes.remove(name);
-	}
+    this.stereotypes.add(name);
+  }
 
-	public List<Property> getProperties() {
-		return properties;
-	}
+  public void removeStereotype(String name) {
 
-	public void setProperties(List<Property> properties) {
-		this.properties = properties;
-	}
+    if (this.stereotypes.contains(name)) this.stereotypes.remove(name);
+  }
 
-	public Property getProperty(int position) {
-		return this.properties.get(position);
-	}
+  public List<Property> getProperties() {
+    return properties;
+  }
 
-	public void addProperty(Property property) {
-		if (this.properties == null)
-			this.properties = new ArrayList<Property>();
+  public void setProperties(List<Property> properties) {
+    this.properties = properties;
+  }
 
-		this.properties.add(property);
-	}
+  public Property getProperty(int position) {
+    return this.properties.get(position);
+  }
 
-	public void removeProperty(Property property) {
+  public void addProperty(Property property) {
+    if (this.properties == null) this.properties = new ArrayList<Property>();
 
-		if (this.properties.contains(property))
-			this.properties.remove(property);
-	}
+    this.properties.add(property);
+  }
 
-	public boolean isAbstract() {
-		return this.isAbstract;
-	}
+  public void removeProperty(Property property) {
 
-	public void setAbstract(boolean isAbstract) {
-		this.isAbstract = isAbstract;
-	}
+    if (this.properties.contains(property)) this.properties.remove(property);
+  }
 
-	public boolean isDerived() {
-		return this.isDerived;
-	}
+  public boolean isAbstract() {
+    return this.isAbstract;
+  }
 
-	public void setDerived(boolean isDerived) {
-		this.isDerived = isDerived;
-	}
+  public void setAbstract(boolean isAbstract) {
+    this.isAbstract = isAbstract;
+  }
 
+  public boolean isDerived() {
+    return this.isDerived;
+  }
+
+  public void setDerived(boolean isDerived) {
+    this.isDerived = isDerived;
+  }
 }

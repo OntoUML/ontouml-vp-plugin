@@ -1,4 +1,4 @@
- package it.unibz.inf.ontouml.vp.model;
+package it.unibz.inf.ontouml.vp.model;
 
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
@@ -7,74 +7,74 @@ import com.vp.plugin.model.IEnumerationLiteral;
 
 public class Literal implements ModelElement {
 
-	private final IEnumerationLiteral sourceModelElement;
+  private final IEnumerationLiteral sourceModelElement;
 
-	@SerializedName("type")
-	@Expose
-	private final String type;
+  @SerializedName("type")
+  @Expose
+  private final String type;
 
-	@SerializedName("id")
-	@Expose
-	private final String id;
+  @SerializedName("id")
+  @Expose
+  private final String id;
 
-	@SerializedName("name")
-	@Expose
-	private String name;
+  @SerializedName("name")
+  @Expose
+  private String name;
 
-	@SerializedName("description")
-	@Expose
-	private String description;
+  @SerializedName("description")
+  @Expose
+  private String description;
 
-	@SerializedName("propertyAssignments")
-	@Expose
-	private JsonObject propertyAssignments;
-	
-	public Literal(IEnumerationLiteral source) {
-		this.sourceModelElement = source;
-		this.type = ModelElement.TYPE_LITERAL;
-		this.id = source.getId();
-		setName(source.getName());
-		setDescription(source.getDescription());
-		setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
-	}
+  @SerializedName("propertyAssignments")
+  @Expose
+  private JsonObject propertyAssignments;
 
-	@Override
-	public IEnumerationLiteral getSourceModelElement() {
-		return this.sourceModelElement;
-	}
+  public Literal(IEnumerationLiteral source) {
+    this.sourceModelElement = source;
+    this.type = ModelElement.TYPE_LITERAL;
+    this.id = source.getId();
+    setName(source.getName());
+    setDescription(source.getDescription());
+    setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
+  }
 
-	@Override
-	public String getId() {
-		return getSourceModelElement().getId();
-	}
+  @Override
+  public IEnumerationLiteral getSourceModelElement() {
+    return this.sourceModelElement;
+  }
 
-	@Override
-	public String getOntoUMLType() {
-		return this.type;
-	}
-	
-	public String getName() {
-		return name;
-	}
+  @Override
+  public String getId() {
+    return getSourceModelElement().getId();
+  }
 
-	public void setName(String name) {
-		this.name = ModelElement.safeGetString(name);
-	}
+  @Override
+  public String getOntoUMLType() {
+    return this.type;
+  }
 
-	public String getDescription() {
-		return description;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public void setDescription(String description) {
-		this.description = ModelElement.safeGetString(description);;
-	}
-	
-	public JsonObject getPropertyAssignments() {
-		return propertyAssignments;
-	}
+  public void setName(String name) {
+    this.name = ModelElement.safeGetString(name);
+  }
 
-	public void setPropertyAssignments(JsonObject propertyAssignments) {
-		this.propertyAssignments = propertyAssignments;
-	}
+  public String getDescription() {
+    return description;
+  }
 
+  public void setDescription(String description) {
+    this.description = ModelElement.safeGetString(description);
+    ;
+  }
+
+  public JsonObject getPropertyAssignments() {
+    return propertyAssignments;
+  }
+
+  public void setPropertyAssignments(JsonObject propertyAssignments) {
+    this.propertyAssignments = propertyAssignments;
+  }
 }
