@@ -23,6 +23,7 @@ import it.unibz.inf.ontouml.vp.utils.ActionIdManager;
 import it.unibz.inf.ontouml.vp.utils.OntoUMLConstraintsManager;
 import it.unibz.inf.ontouml.vp.utils.Stereotype;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
+import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 
 /**
  * Implementation of context sensitive action of change OntoUML stereotypes in model elements.
@@ -52,8 +53,12 @@ public class ApplyStereotypeController implements VPContextActionController {
         if (isStereotypeActionAllowed(action.getActionId(), associationSource, associationTarget)) {
           applyStereotype(action, clickedAssociation);
         } else {
-          Association.invertAssociation(clickedAssociation);
-          applyStereotype(action, clickedAssociation);
+          final boolean shouldProceed = ViewManagerUtils.associationInvertionWarningDialog();
+
+          if (shouldProceed) {
+            Association.invertAssociation(clickedAssociation);
+            applyStereotype(action, clickedAssociation);
+          }
         }
         return;
       case IModelElementFactory.MODEL_TYPE_ATTRIBUTE:
