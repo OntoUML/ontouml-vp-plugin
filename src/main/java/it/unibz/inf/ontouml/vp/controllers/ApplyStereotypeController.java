@@ -115,9 +115,8 @@ public class ApplyStereotypeController implements VPContextActionController {
     final Set<IClass> children = Class.getChildren(_class);
 
     for (IClass child : children) {
-      final String childStereotype = ModelElement.getUniqueStereotypeName(child);
       final List<String> allowedActions =
-          OntoUMLConstraintsManager.getAllowedActionsBasedOnChildStereotype(childStereotype);
+          OntoUMLConstraintsManager.getAllowedActionsBasedOnChild(child);
       if (!allowedActions.contains(actionId)) {
         return false;
       }
@@ -126,9 +125,8 @@ public class ApplyStereotypeController implements VPContextActionController {
     final Set<IClass> parents = Class.getParents(_class);
 
     for (IClass parent : parents) {
-      final String parentStereotype = ModelElement.getUniqueStereotypeName(parent);
       final List<String> allowedActions =
-          OntoUMLConstraintsManager.getAllowedActionsBasedOnParentStereotype(parentStereotype);
+          OntoUMLConstraintsManager.getAllowedActionsBasedOnParent(parent);
       if (!allowedActions.contains(actionId)) {
         return false;
       }
@@ -139,10 +137,8 @@ public class ApplyStereotypeController implements VPContextActionController {
 
   private boolean isStereotypeActionAllowed(String actionId, IClass associationSource,
       IClass associationTarget) {
-    final String sourceStereotype = ModelElement.getUniqueStereotypeName(associationSource);
-    final String targetStereotype = ModelElement.getUniqueStereotypeName(associationTarget);
     final List<String> allowedActions = OntoUMLConstraintsManager
-        .getAllowedActionsBasedOnSourceTargetStereotypes(sourceStereotype, targetStereotype);
+        .getAllowedActionsBasedOnSourceAndTarget(associationSource, associationTarget);
 
     return allowedActions.contains(actionId);
   }
@@ -345,20 +341,20 @@ public class ApplyStereotypeController implements VPContextActionController {
       SmartModellingController.setAssociationMetaProperties((IAssociation) element);
   }
 
-  private void defineActionBehavior(VPAction action, IModelElement element) {
-
-    if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION)) {
-      final IAssociation association = (IAssociation) element;
-      SmartModellingController.manageAssociationStereotypes(association, action);
-      return;
-    }
-
-    if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
-      final IClass _class = (IClass) element;
-      SmartModellingController.manageClassStereotypes(_class, action);
-      return;
-    }
-  }
+  // private void defineActionBehavior(VPAction action, IModelElement element) {
+  //
+  // if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION)) {
+  // final IAssociation association = (IAssociation) element;
+  // SmartModellingController.manageAssociationStereotypes(association, action);
+  // return;
+  // }
+  //
+  // if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
+  // final IClass _class = (IClass) element;
+  // SmartModellingController.manageClassStereotypes(_class, action);
+  // return;
+  // }
+  // }
 
   private boolean isClassSelectionAllowed() {
 
