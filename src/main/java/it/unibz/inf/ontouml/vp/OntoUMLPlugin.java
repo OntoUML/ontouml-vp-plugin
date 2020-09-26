@@ -5,12 +5,12 @@ import com.vp.plugin.ProjectManager;
 import com.vp.plugin.VPPlugin;
 import com.vp.plugin.VPPluginInfo;
 import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
 import it.unibz.inf.ontouml.vp.listeners.ProjectListener;
 import it.unibz.inf.ontouml.vp.utils.ViewUtils;
 
+import com.vp.plugin.model.IProject;
 /**
  * Implementation of VPPlugin responsible for configuring OntoUML Plugin's
  * behaviour when loading and unload.
@@ -55,8 +55,7 @@ public class OntoUMLPlugin implements VPPlugin {
       projectListener = new ProjectListener();
       p.addProjectListener(projectListener);
 
-      OntoUMLPlugin.allModelElements =
-              pm.getSelectableStereotypesForModelType(IModelElementFactory.MODEL_TYPE_CLASS, p, true);
+      OntoUMLPlugin.allModelElements = pm.getSelectableStereotypesForModelType(IModelElementFactory.MODEL_TYPE_CLASS, p, true);
    }
 
    /**
