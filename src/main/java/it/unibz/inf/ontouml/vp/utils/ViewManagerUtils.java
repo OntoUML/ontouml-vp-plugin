@@ -1,12 +1,7 @@
 package it.unibz.inf.ontouml.vp.utils;
 
-import java.awt.FileDialog;
-import java.awt.Frame;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -14,8 +9,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -244,13 +237,13 @@ public class ViewManagerUtils {
     }
   }
 
-  public static void verificationServerErrorDialog(String userMessage) {
+  private static void verificationServerErrorDialog(String userMessage) {
     ApplicationManager.instance().getViewManager().showConfirmDialog(null, userMessage,
         "Verification Service", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE,
         new ImageIcon(getFilePath(SIMPLE_LOGO)));
   }
 
-  public static void verificationConcludedDialog(int nIssues) {
+  private static void verificationConcludedDialog(int nIssues) {
     if (nIssues > 0) {
       ApplicationManager.instance().getViewManager().showConfirmDialog(null,
           "Issues found in your project: " + nIssues + ".\n"
@@ -265,7 +258,7 @@ public class ViewManagerUtils {
     }
   }
 
-  public static void verificationDiagramConcludedDialog(int nIssues, String diagramName) {
+  private static void verificationDiagramConcludedDialog(int nIssues, String diagramName) {
     if (nIssues > 0) {
       ApplicationManager.instance().getViewManager().showConfirmDialog(null,
           "Issues found in diagram \"" + diagramName + "\": " + nIssues + ".\n"
@@ -343,40 +336,7 @@ public class ViewManagerUtils {
     }
   }
 
-  public static void saveFile(BufferedReader buffer) throws IOException {
-    final Configurations configs = Configurations.getInstance();
-    final ProjectConfigurations projectConfigurations = configs.getProjectConfigurations();
-    final FileDialog fd =
-        new FileDialog((Frame) ApplicationManager.instance().getViewManager().getRootFrame(),
-            "Choose destination", FileDialog.SAVE);
-
-    String suggestedFolderPath = projectConfigurations.getExportGUFOFolderPath();
-    String suggestedFileName = projectConfigurations.getExportGUFOFilename();
-
-    if (suggestedFileName.isEmpty()) {
-      String projectName = ApplicationManager.instance().getProjectManager().getProject().getName();
-      suggestedFileName = projectName + ".ttl";
-    }
-
-    fd.setDirectory(suggestedFolderPath);
-    fd.setFile(suggestedFileName);
-    fd.setVisible(true);
-
-    if (fd.getDirectory() != null && fd.getFile() != null) {
-      final String fileDirectory = fd.getDirectory();
-      final String fileName = !fd.getFile().endsWith(".ttl") ? fd.getFile() + ".ttl" : fd.getFile();
-      final String output = buffer.lines().collect(Collectors.joining("\n"));
-
-      Files.write(Paths.get(fileDirectory, fileName), output.getBytes());
-      projectConfigurations.setExportGUFOFolderPath(fileDirectory);
-      projectConfigurations.setExportGUFOFilename(fileName);
-      configs.save();
-    }
-
-    ViewManagerUtils.cleanAndShowMessage("File saved successfuly.");
-  }
-
-  public static String getCurrentClassDiagramName() {
+  private static String getCurrentClassDiagramName() {
     final IDiagramUIModel[] diagramArray =
         ApplicationManager.instance().getProjectManager().getProject().toDiagramArray();
 
@@ -391,7 +351,7 @@ public class ViewManagerUtils {
     return null;
   }
 
-  public static String getCurrentClassDiagramId() {
+  private static String getCurrentClassDiagramId() {
     final IDiagramUIModel[] diagramArray =
         ApplicationManager.instance().getProjectManager().getProject().toDiagramArray();
 
@@ -406,13 +366,13 @@ public class ViewManagerUtils {
     return null;
   }
 
-  public static IDiagramUIModel getCurrentClassDiagram() {
+  private static IDiagramUIModel getCurrentClassDiagram() {
 
     return ApplicationManager.instance().getProjectManager().getProject()
         .getDiagramById(getCurrentClassDiagramId());
   }
 
-  public static boolean isElementInCurrentDiagram(String id) {
+  private static boolean isElementInCurrentDiagram(String id) {
 
     if (getCurrentClassDiagram() == null)
       return false;
@@ -425,7 +385,7 @@ public class ViewManagerUtils {
     return false;
   }
 
-  public static int errorCountInCurrentDiagram(String responseMessage) {
+  private static int errorCountInCurrentDiagram(String responseMessage) {
     int errorCount = 0;
 
     try {
@@ -498,17 +458,6 @@ public class ViewManagerUtils {
     } else if (firstView != null) {
       diagramManager.highlight(firstView);
     }
-  }
-
-  public static String setOrderDialog(String currentOrder) {
-    final ViewManager vm = ApplicationManager.instance().getViewManager();
-    final String msg =
-        "Please enter a value for the type order,\n" + "where '*' represents an orderless type:";
-    final String title = "Set type order";
-    final Icon icon = new ImageIcon(getFilePath(SIMPLE_LOGO));
-
-    return (String) vm.showInputDialog(vm.getRootFrame(), msg, title, JOptionPane.PLAIN_MESSAGE,
-        icon, null, currentOrder);
   }
 
   public static void reportBugErrorDialog(boolean isOperationNotAllowed) {
@@ -603,7 +552,7 @@ public class ViewManagerUtils {
         new ImageIcon(getFilePath(SIMPLE_LOGO)));
   }
 
-  public static GitHubRelease selectReleaseToInstall() {
+  private static GitHubRelease selectReleaseToInstall() {
     final Map<String, GitHubRelease> map = new HashMap<>();
     final Configurations config = Configurations.getInstance();
     final GitHubRelease installedRelease = config.getInstalledRelease();

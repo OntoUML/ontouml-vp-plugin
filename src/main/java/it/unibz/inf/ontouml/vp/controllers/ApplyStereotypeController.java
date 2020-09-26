@@ -1,19 +1,14 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
 import java.awt.event.ActionEvent;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import com.vp.plugin.ApplicationManager;
-import com.vp.plugin.DiagramManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPContext;
 import com.vp.plugin.action.VPContextActionController;
-import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.ISimpleRelationship;
 import com.vp.plugin.model.factory.IModelElementFactory;
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.uml.Association;
@@ -339,96 +334,6 @@ public class ApplyStereotypeController implements VPContextActionController {
 
     if (isSmartModelingEnabled && isAssociation)
       SmartModellingController.setAssociationMetaProperties((IAssociation) element);
-  }
-
-  // private void defineActionBehavior(VPAction action, IModelElement element) {
-  //
-  // if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION)) {
-  // final IAssociation association = (IAssociation) element;
-  // SmartModellingController.manageAssociationStereotypes(association, action);
-  // return;
-  // }
-  //
-  // if (element.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
-  // final IClass _class = (IClass) element;
-  // SmartModellingController.manageClassStereotypes(_class, action);
-  // return;
-  // }
-  // }
-
-  private boolean isClassSelectionAllowed() {
-
-    final DiagramManager dm = ApplicationManager.instance().getDiagramManager();
-    IDiagramElement[] diagramElements =
-        dm.getActiveDiagram() != null ? dm.getActiveDiagram().getSelectedDiagramElement() : null;
-    LinkedList<String> superClasses = new LinkedList<>();
-
-    if (diagramElements == null)
-      return true;
-
-    if (diagramElements.length == 1)
-      return true;
-
-    // build list of Ids of all classes selected
-    for (IDiagramElement diagramElement : diagramElements) {
-
-      ISimpleRelationship[] relationshipsTo =
-          diagramElement.getModelElement().toToRelationshipArray();
-
-      for (int i = 0; relationshipsTo != null && i < relationshipsTo.length; i++) {
-        ISimpleRelationship relationshipTo = relationshipsTo[i];
-        String superClassType =
-            relationshipTo.getFrom() != null ? relationshipTo.getFrom().getModelType() : "";
-
-        if (!(superClassType.equals(IModelElementFactory.MODEL_TYPE_CLASS)))
-          continue;
-
-        IClass superClass = (IClass) relationshipTo.getFrom();
-
-        superClasses.add(superClass.getId());
-      }
-    }
-
-    // Iterates over the list of the superclasses Id
-    // then iterate over the list again to count if the id
-    // was inserted the same amount as the amount of selected classes
-    int counter = 0;
-
-    for (int i = 0; i < superClasses.size(); i++) {
-      String id = superClasses.get(i);
-
-      for (int j = 0; j < superClasses.size(); j++) {
-        String idAux = superClasses.get(j);
-
-        if (id.equals(idAux))
-          counter++;
-      }
-
-      if (counter == countClassesSelected())
-        return true;
-      else
-        counter = 0;
-    }
-
-    return false;
-  }
-
-  private int countClassesSelected() {
-
-    IDiagramElement[] diagramElements = ApplicationManager.instance().getDiagramManager()
-        .getActiveDiagram().getSelectedDiagramElement();
-    int count = 0;
-
-    if (diagramElements == null)
-      return count;
-
-    for (IDiagramElement diagramElement : diagramElements) {
-      if (diagramElement.getModelElement().getModelType()
-          .equals(IModelElementFactory.MODEL_TYPE_CLASS))
-        count++;
-    }
-
-    return count++;
   }
 
 }

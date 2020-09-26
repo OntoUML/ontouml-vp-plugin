@@ -68,21 +68,6 @@ public interface ModelElement {
    * Returns Visual Paradigm's link to the related model element. This method removes the project's
    * name which originally start the link returned.
    *
-   * @param modelElement - Instance of <code>ModelElement</code> based on a
-   *        <code>IModelElement</code>.
-   * @return a link identify a <code>IModelElement</code> in Visual Paradigm following the pattern
-   *         <code>"vpp://modelelement/Cd.WKPaAUB22rwx4"</code>.
-   */
-  public static String getLink(ModelElement modelElement) {
-    return modelElement.getSourceModelElement() != null
-        ? ModelElement.getModelElementURI(modelElement.getSourceModelElement())
-        : null;
-  }
-
-  /**
-   * Returns Visual Paradigm's link to the related model element. This method removes the project's
-   * name which originally start the link returned.
-   *
    * @param modelElement
    * @return a link identify a <code>IModelElement</code> in Visual Paradigm following the pattern
    *         <code>"vpp://modelelement/Cd.WKPaAUB22rwx4"</code>.
@@ -95,23 +80,6 @@ public interface ModelElement {
         ApplicationManager.instance().getProjectManager().getLink(modelElement, false);
 
     return link.substring(link.indexOf(".vpp:") + 1);
-  }
-
-  /**
-   * Returns serialized JSON string of a <code>ModelElement</code> in OntoUML Schema.
-   *
-   * @param modelElement
-   * @param pretty - <code>true</code> if return string should be indented.
-   * @return serialized version JSON of a <code>ModelElement</code>.
-   */
-  public static String serialize(ModelElement modelElement, boolean pretty) {
-    if (pretty) {
-      return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().serializeNulls()
-          .setPrettyPrinting().create().toJson(modelElement);
-    } else {
-      return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().serializeNulls().create()
-          .toJson(modelElement);
-    }
   }
 
   /**
