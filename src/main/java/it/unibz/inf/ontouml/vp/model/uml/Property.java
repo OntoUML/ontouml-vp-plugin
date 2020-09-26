@@ -5,402 +5,398 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.*;
 import com.vp.plugin.model.factory.IModelElementFactory;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 /**
- * 
- * Implementation of ModelElement to handle IAtrribute and IAssociationEnd
- * objects to be serialized as ontouml-schema/Property
- * 
+ * Implementation of ModelElement to handle IAtrribute and IAssociationEnd objects to be serialized
+ * as ontouml-schema/Property
+ *
  * @author Claudenir Fonseca
  * @author Tiago Prince Sales
  * @author Victor Viola
- *
  */
-
 public class Property implements ModelElement {
 
-	private final IModelElement sourceModelElement;
+  private final IModelElement sourceModelElement;
 
-	@SerializedName("type")
-	@Expose
-	private final String type;
+  @SerializedName("type")
+  @Expose
+  private final String type;
 
-	@SerializedName("id")
-	@Expose
-	private final String id;
+  @SerializedName("id")
+  @Expose
+  private final String id;
 
-	@SerializedName("name")
-	@Expose
-	private String name;
+  @SerializedName("name")
+  @Expose
+  private String name;
 
-	@SerializedName("description")
-	@Expose
-	private String description;
+  @SerializedName("description")
+  @Expose
+  private String description;
 
-	@SerializedName("propertyType")
-	@Expose
-	private Reference propertyType;
+  @SerializedName("propertyType")
+  @Expose
+  private Reference propertyType;
 
-	@SerializedName("cardinality")
-	@Expose
-	private String cardinality;
+  @SerializedName("cardinality")
+  @Expose
+  private String cardinality;
 
-	@SerializedName("isDerived")
-	@Expose
-	private boolean isDerived;
+  @SerializedName("isDerived")
+  @Expose
+  private boolean isDerived;
 
-	@SerializedName("isOrdered")
-	@Expose
-	private boolean isOrdered;
+  @SerializedName("isOrdered")
+  @Expose
+  private boolean isOrdered;
 
-	@SerializedName("isReadOnly")
-	@Expose
-	private boolean isReadOnly;
+  @SerializedName("isReadOnly")
+  @Expose
+  private boolean isReadOnly;
 
-	@SerializedName("stereotypes")
-	@Expose
-	private List<String> stereotypes;
+  @SerializedName("stereotypes")
+  @Expose
+  private List<String> stereotypes;
 
-	@SerializedName("propertyAssignments")
-	@Expose
-	private JsonObject propertyAssignments;
+  @SerializedName("propertyAssignments")
+  @Expose
+  private JsonObject propertyAssignments;
 
-	@SerializedName("subsettedProperties")
-	@Expose
-	private List<Reference> subsettedProperties;
+  @SerializedName("subsettedProperties")
+  @Expose
+  private List<Reference> subsettedProperties;
 
-	@SerializedName("redefinedProperties")
-	@Expose
-	private List<Reference> redefinedProperties;
+  @SerializedName("redefinedProperties")
+  @Expose
+  private List<Reference> redefinedProperties;
 
-	@SerializedName("aggregationKind")
-	@Expose
-	private String aggregationKind;
+  @SerializedName("aggregationKind")
+  @Expose
+  private String aggregationKind;
 
-	private Property(IModelElement source) {
-		this.sourceModelElement = source;
+  private Property(IModelElement source) {
+    this.sourceModelElement = source;
 
-		this.type = ModelElement.TYPE_PROPERTY;
-		this.id = source.getId();
-		setName(source.getName());
-		setDescription(source.getDescription());
+    this.type = ModelElement.TYPE_PROPERTY;
+    this.id = source.getId();
+    setName(source.getName());
+    setDescription(source.getDescription());
 
-		setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
+    setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
+  }
 
-	}
+  public Property(IAttribute source) {
+    this((IModelElement) source);
 
-	public Property(IAttribute source) {
-		this((IModelElement) source);
+    IModelElement reference = source.getTypeAsElement();
+    if (reference != null) {
+      setPropertyType(new Reference(reference));
+    } else {
+      System.out.println(
+          "Attribute "
+              + source.getParent().getName()
+              + "::"
+              + source.getName()
+              + " type is a non-standard string: "
+              + source.getTypeAsString());
+    }
 
-		IModelElement reference = source.getTypeAsElement();
-		if (reference != null) {
-			setPropertyType(new Reference(reference));
-		} else {
-			System.out.println("Attribute " + source.getParent().getName() + "::" + source.getName()
-					+ " type is a non-standard string: " + source.getTypeAsString());
-		}
+    if (!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED)))
+      setCardinality(source.getMultiplicity());
 
-		if (!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED)))
-			setCardinality(source.getMultiplicity());
+    setOrdered(ModelElement.isOrdered(source));
+    setDerived(source.isDerived());
+    setReadOnly(source.isReadOnly());
 
-		setOrdered(ModelElement.isOrdered(source));
-		setDerived(source.isDerived());
-		setReadOnly(source.isReadOnly());
+    final String[] stereotypes = source.toStereotypeArray();
+    for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
+      addStereotype(stereotypes[i]);
+    }
 
-		final String[] stereotypes = source.toStereotypeArray();
-		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
-			addStereotype(stereotypes[i]);
-		}
+    Iterator<?> subsettedIterator = source.subsettedPropertyIterator();
+    while (subsettedIterator.hasNext()) {
+      IAttribute atr = (IAttribute) subsettedIterator.next();
+      addSubsettedProperty(new Reference(atr));
+    }
 
-		Iterator<?> subsettedIterator = source.subsettedPropertyIterator();
-		while (subsettedIterator.hasNext()) {
-			IAttribute atr = (IAttribute) subsettedIterator.next();
-			addSubsettedProperty(new Reference(atr));
-		}
+    Iterator<?> redefinedProperties = source.redefinedPropertyIterator();
+    while (redefinedProperties.hasNext()) {
+      IAttribute rdp = (IAttribute) redefinedProperties.next();
+      addRedefinedProperty(new Reference(rdp));
+    }
 
-		Iterator<?> redefinedProperties = source.redefinedPropertyIterator();
-		while (redefinedProperties.hasNext()) {
-			IAttribute rdp = (IAttribute) redefinedProperties.next();
-			addRedefinedProperty(new Reference(rdp));
-		}
+    setAggregationKind(source.getAggregation());
+    setDerived(source.isDerived());
+  }
 
-		setAggregationKind(source.getAggregation());
-		setDerived(source.isDerived());
-	}
+  public Property(IAssociationEnd source) {
+    this((IModelElement) source);
 
-	public Property(IAssociationEnd source) {
-		this((IModelElement) source);
-
-		IModelElement reference = source.getTypeAsElement();
-		if (reference != null) {
-			setPropertyType(new Reference(reference));
-		} else {
-			if (source != null && source.getParent() != null) {
-				System.out.println("Association End " + source.getParent().getName() + "::" + source.getName()
-						+ " type is a non-standard string: " + source.getTypeAsString());
-			}
-			else {
-				System.out.println("Strange...");
-			}
-		}
-
-		if (!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED)))
-			setCardinality(source.getMultiplicity());
-
-		setOrdered(ModelElement.isOrdered(source));
-		setDerived(source.isDerived());
-		setReadOnly(source.isReadOnly());
-
-		final String[] stereotypes = source.toStereotypeArray();
-		for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
-			addStereotype(stereotypes[i]);
-		}
-
-		Iterator<?> subsettedIterator = source.subsettedPropertyIterator();
-
-		while (subsettedIterator.hasNext()) {
-			IAssociationEnd sub = (IAssociationEnd) subsettedIterator.next();
-			addSubsettedProperty(new Reference(sub));
-		}
-
-		Iterator<?> redefinedProperties = source.redefinedPropertyIterator();
-
-		while (redefinedProperties.hasNext()) {
-			IAssociationEnd rdp = (IAssociationEnd) redefinedProperties.next();
-			addRedefinedProperty(new Reference(rdp));
-		}
-
-		setAggregationKind(source.getAggregationKind());
-	}
-
-	public Property(IAssociationClass associationClass, IModelElement type) {
-		this.sourceModelElement = null;
-
-		this.type = ModelElement.TYPE_PROPERTY;
-		this.id = associationClass.getId() + type.getId();
-		setName(null);
-		setDescription(null);
-
-		if (type != null)
-			setPropertyType(new Reference(type));
-
-		setCardinality("0..*");
-	}
-
-   public static String getTypeStereotype(IAssociationEnd associationEnd) {
-      String noStereotype = "";
-
-      try {
-         final IModelElement type = associationEnd.getTypeAsElement();
-
-         if (!type.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS))
-            return noStereotype;
-
-         final String[] stereotypes = ((IClass) type).toStereotypeArray();
-
-         if (stereotypes != null && stereotypes.length == 1)
-            return stereotypes[0];
-
-         return noStereotype;
-      } catch (Exception e) {
-         return noStereotype;
+    IModelElement reference = source.getTypeAsElement();
+    if (reference != null) {
+      setPropertyType(new Reference(reference));
+    } else {
+      if (source != null && source.getParent() != null) {
+        System.out.println(
+            "Association End "
+                + source.getParent().getName()
+                + "::"
+                + source.getName()
+                + " type is a non-standard string: "
+                + source.getTypeAsString());
+      } else {
+        System.out.println("Strange...");
       }
-   }
+    }
 
-   @Override
-	public String getId() {
-		return getSourceModelElement().getId();
-	}
+    if (!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED)))
+      setCardinality(source.getMultiplicity());
 
-	@Override
-	public IModelElement getSourceModelElement() {
-		return this.sourceModelElement;
-	}
+    setOrdered(ModelElement.isOrdered(source));
+    setDerived(source.isDerived());
+    setReadOnly(source.isReadOnly());
 
-	@Override
-	public String getOntoUMLType() {
-		return this.type;
-	}
+    final String[] stereotypes = source.toStereotypeArray();
+    for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
+      addStereotype(stereotypes[i]);
+    }
 
-	public String getName() {
-		return name;
-	}
+    Iterator<?> subsettedIterator = source.subsettedPropertyIterator();
 
-	public void setName(String name) {
-		this.name = ModelElement.safeGetString(name);
-	}
+    while (subsettedIterator.hasNext()) {
+      IAssociationEnd sub = (IAssociationEnd) subsettedIterator.next();
+      addSubsettedProperty(new Reference(sub));
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    Iterator<?> redefinedProperties = source.redefinedPropertyIterator();
 
-	public void setDescription(String description) {
-		this.description = ModelElement.safeGetString(description);
-		;
-	}
+    while (redefinedProperties.hasNext()) {
+      IAssociationEnd rdp = (IAssociationEnd) redefinedProperties.next();
+      addRedefinedProperty(new Reference(rdp));
+    }
 
-	public Reference getPropertyType() {
-		return propertyType;
-	}
+    setAggregationKind(source.getAggregationKind());
+  }
 
-	public void setPropertyType(Reference propertyType) {
-		this.propertyType = propertyType;
-	}
+  public Property(IAssociationClass associationClass, IModelElement type) {
+    this.sourceModelElement = null;
 
-	public String getCardinality() {
-		return cardinality;
-	}
+    this.type = ModelElement.TYPE_PROPERTY;
+    this.id = associationClass.getId() + type.getId();
+    setName(null);
+    setDescription(null);
 
-	public void setCardinality(String cardinality) {
-		this.cardinality = cardinality;
-	}
+    if (type != null) setPropertyType(new Reference(type));
 
-	public boolean isDerived() {
-		return isDerived;
-	}
+    setCardinality("0..*");
+  }
 
-	public void setDerived(boolean isDerived) {
-		this.isDerived = isDerived;
-	}
+  public static String getTypeStereotype(IAssociationEnd associationEnd) {
+    String noStereotype = "";
 
-	public boolean isOrdered() {
-		return isOrdered;
-	}
+    try {
+      final IModelElement type = associationEnd.getTypeAsElement();
 
-	public void setOrdered(boolean isOrdered) {
-		this.isOrdered = isOrdered;
-	}
+      if (!type.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) return noStereotype;
 
-	public void setOrdered(IMultiplicity multiplicity) {
-		this.isOrdered = (multiplicity != null) ? multiplicity.isOrdered() : false;
-	}
+      final String[] stereotypes = ((IClass) type).toStereotypeArray();
 
-	public boolean isReadOnly() {
-		return isReadOnly;
-	}
+      if (stereotypes != null && stereotypes.length == 1) return stereotypes[0];
 
-	public void setReadOnly(boolean isReadOnly) {
-		this.isReadOnly = isReadOnly;
-	}
+      return noStereotype;
+    } catch (Exception e) {
+      return noStereotype;
+    }
+  }
 
-	public List<String> getStereotypes() {
-		return this.stereotypes;
-	}
+  @Override
+  public String getId() {
+    return getSourceModelElement().getId();
+  }
 
-	public void setStereotypes(List<String> stereotypes) {
-		this.stereotypes = stereotypes;
-	}
+  @Override
+  public IModelElement getSourceModelElement() {
+    return this.sourceModelElement;
+  }
 
-	public String getStereotype(int position) {
-		return this.stereotypes.get(position);
-	}
+  @Override
+  public String getOntoUMLType() {
+    return this.type;
+  }
 
-	public void addStereotype(String name) {
-		if (this.stereotypes == null)
-			this.stereotypes = new ArrayList<String>();
+  public String getName() {
+    return name;
+  }
 
-		this.stereotypes.add(name);
-	}
+  public void setName(String name) {
+    this.name = ModelElement.safeGetString(name);
+  }
 
-	public void removeStereotype(String name) {
-		if (this.stereotypes != null && this.stereotypes.contains(name))
-			this.stereotypes.remove(name);
-	}
+  public String getDescription() {
+    return description;
+  }
 
-	public JsonObject getPropertyAssignments() {
-		return propertyAssignments;
-	}
+  public void setDescription(String description) {
+    this.description = ModelElement.safeGetString(description);
+    ;
+  }
 
-	public void setPropertyAssignments(JsonObject propertyAssignments) {
-		this.propertyAssignments = propertyAssignments;
-	}
+  public Reference getPropertyType() {
+    return propertyType;
+  }
 
-	public List<Reference> getSubsettedProperties() {
-		return subsettedProperties;
-	}
+  public void setPropertyType(Reference propertyType) {
+    this.propertyType = propertyType;
+  }
 
-	public void setSubsettedProperties(List<Reference> subsettedProperties) {
-		this.subsettedProperties = subsettedProperties;
-	}
+  public String getCardinality() {
+    return cardinality;
+  }
 
-	public void addSubsettedProperty(Reference ref) {
-		if (this.subsettedProperties == null)
-			this.subsettedProperties = new ArrayList<Reference>();
+  public void setCardinality(String cardinality) {
+    this.cardinality = cardinality;
+  }
 
-		this.subsettedProperties.add(ref);
-	}
+  public boolean isDerived() {
+    return isDerived;
+  }
 
-	public void removeSubsettedProperty(Reference ref) {
-		if (this.subsettedProperties != null && this.subsettedProperties.contains(ref))
-			this.subsettedProperties.remove(ref);
-	}
+  public void setDerived(boolean isDerived) {
+    this.isDerived = isDerived;
+  }
 
-	public List<Reference> getRedefinedProperties() {
-		return redefinedProperties;
-	}
+  public boolean isOrdered() {
+    return isOrdered;
+  }
 
-	public void setRedefinedProperties(List<Reference> redefinedPropeties) {
-		this.redefinedProperties = redefinedPropeties;
-	}
+  public void setOrdered(boolean isOrdered) {
+    this.isOrdered = isOrdered;
+  }
 
-	public void addRedefinedProperty(Reference ref) {
-		if (this.redefinedProperties == null)
-			this.redefinedProperties = new ArrayList<Reference>();
+  public void setOrdered(IMultiplicity multiplicity) {
+    this.isOrdered = (multiplicity != null) ? multiplicity.isOrdered() : false;
+  }
 
-		this.redefinedProperties.add(ref);
-	}
+  public boolean isReadOnly() {
+    return isReadOnly;
+  }
 
-	public void removeRedefinedProperty(Reference ref) {
-		if (this.redefinedProperties != null && this.redefinedProperties.contains(ref))
-			this.redefinedProperties.remove(ref);
-	}
+  public void setReadOnly(boolean isReadOnly) {
+    this.isReadOnly = isReadOnly;
+  }
 
-	public String getAggregationKind() {
-		return aggregationKind;
-	}
+  public List<String> getStereotypes() {
+    return this.stereotypes;
+  }
 
-	public void setAggregationKind(int aggregation) {
-		switch (aggregation) {
-		case 0:
-			this.aggregationKind = "NONE";
-			break;
-		case 1:
-			this.aggregationKind = "SHARED";
-			break;
-		case 2:
-			this.aggregationKind = "COMPOSITE";
-			break;
-		default:
-		}
-	}
+  public void setStereotypes(List<String> stereotypes) {
+    this.stereotypes = stereotypes;
+  }
 
-	public void setAggregationKind(String aggregationKind) {
-		if (aggregationKind == null) {
-			this.aggregationKind = null;
-			return;
-		}
+  public String getStereotype(int position) {
+    return this.stereotypes.get(position);
+  }
 
-		switch (aggregationKind.toUpperCase()) {
-		case "NONE":
-			this.aggregationKind = "NONE";
-			return;
-		case "COMPOSITED":
-			this.aggregationKind = "COMPOSITE";
-			return;
-		case "SHARED":
-			this.aggregationKind = "SHARED";
-			return;
-		default:
-			this.aggregationKind = null;
-		}
-	}
+  public void addStereotype(String name) {
+    if (this.stereotypes == null) this.stereotypes = new ArrayList<String>();
 
-	public String getType() {
-		return type;
-	}
+    this.stereotypes.add(name);
+  }
 
+  public void removeStereotype(String name) {
+    if (this.stereotypes != null && this.stereotypes.contains(name)) this.stereotypes.remove(name);
+  }
+
+  public JsonObject getPropertyAssignments() {
+    return propertyAssignments;
+  }
+
+  public void setPropertyAssignments(JsonObject propertyAssignments) {
+    this.propertyAssignments = propertyAssignments;
+  }
+
+  public List<Reference> getSubsettedProperties() {
+    return subsettedProperties;
+  }
+
+  public void setSubsettedProperties(List<Reference> subsettedProperties) {
+    this.subsettedProperties = subsettedProperties;
+  }
+
+  public void addSubsettedProperty(Reference ref) {
+    if (this.subsettedProperties == null) this.subsettedProperties = new ArrayList<Reference>();
+
+    this.subsettedProperties.add(ref);
+  }
+
+  public void removeSubsettedProperty(Reference ref) {
+    if (this.subsettedProperties != null && this.subsettedProperties.contains(ref))
+      this.subsettedProperties.remove(ref);
+  }
+
+  public List<Reference> getRedefinedProperties() {
+    return redefinedProperties;
+  }
+
+  public void setRedefinedProperties(List<Reference> redefinedPropeties) {
+    this.redefinedProperties = redefinedPropeties;
+  }
+
+  public void addRedefinedProperty(Reference ref) {
+    if (this.redefinedProperties == null) this.redefinedProperties = new ArrayList<Reference>();
+
+    this.redefinedProperties.add(ref);
+  }
+
+  public void removeRedefinedProperty(Reference ref) {
+    if (this.redefinedProperties != null && this.redefinedProperties.contains(ref))
+      this.redefinedProperties.remove(ref);
+  }
+
+  public String getAggregationKind() {
+    return aggregationKind;
+  }
+
+  public void setAggregationKind(int aggregation) {
+    switch (aggregation) {
+      case 0:
+        this.aggregationKind = "NONE";
+        break;
+      case 1:
+        this.aggregationKind = "SHARED";
+        break;
+      case 2:
+        this.aggregationKind = "COMPOSITE";
+        break;
+      default:
+    }
+  }
+
+  public void setAggregationKind(String aggregationKind) {
+    if (aggregationKind == null) {
+      this.aggregationKind = null;
+      return;
+    }
+
+    switch (aggregationKind.toUpperCase()) {
+      case "NONE":
+        this.aggregationKind = "NONE";
+        return;
+      case "COMPOSITED":
+        this.aggregationKind = "COMPOSITE";
+        return;
+      case "SHARED":
+        this.aggregationKind = "SHARED";
+        return;
+      default:
+        this.aggregationKind = null;
+    }
+  }
+
+  public String getType() {
+    return type;
+  }
 }

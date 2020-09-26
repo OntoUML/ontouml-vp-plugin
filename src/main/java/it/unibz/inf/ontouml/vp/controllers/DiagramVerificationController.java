@@ -1,6 +1,5 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
-import java.awt.Component;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
@@ -12,11 +11,9 @@ import it.unibz.inf.ontouml.vp.model.ServerRequest;
 import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 import it.unibz.inf.ontouml.vp.views.ProgressPanel;
+import java.awt.Component;
 
-/**
- * Implementation of toolbar button action responsible for performing diagram verification.
- *
- */
+/** Implementation of toolbar button action responsible for performing diagram verification. */
 public class DiagramVerificationController implements VPActionController {
 
   private ProgressPanel progressPanel;
@@ -26,18 +23,16 @@ public class DiagramVerificationController implements VPActionController {
   Thread thread;
 
   /**
-   * 
    * Performs OntoUML diagram verification.
-   * 
+   *
    * @param action
-   * 
    */
   @Override
   public void performAction(VPAction action) {
 
     if (!hasOpenedClassDiagram()) {
-      ViewManagerUtils.simpleDialog("Diagram Verification",
-          "Please open a diagram before running this command.");
+      ViewManagerUtils.simpleDialog(
+          "Diagram Verification", "Please open a diagram before running this command.");
       return;
     }
 
@@ -53,8 +48,8 @@ public class DiagramVerificationController implements VPActionController {
   /**
    * Called when the menu containing the button is accessed allowing for action manipulation, such
    * as enable/disable or selecting the button.
-   * 
-   * OBS: DOES NOT apply to this class.
+   *
+   * <p>OBS: DOES NOT apply to this class.
    */
   @Override
   public void update(VPAction action) {}
@@ -63,12 +58,10 @@ public class DiagramVerificationController implements VPActionController {
     final IDiagramUIModel[] diagramArray =
         ApplicationManager.instance().getProjectManager().getProject().toDiagramArray();
 
-    if (diagramArray == null)
-      return false;
+    if (diagramArray == null) return false;
 
     for (IDiagramUIModel diagram : diagramArray)
-      if (diagram instanceof IClassDiagramUIModel && diagram.isOpened())
-        return true;
+      if (diagram instanceof IClassDiagramUIModel && diagram.isOpened()) return true;
 
     return false;
   }
@@ -99,7 +92,6 @@ public class DiagramVerificationController implements VPActionController {
       mainDialog.close();
       return true;
     }
-
   }
 
   protected class DiagramVerificationRequest extends ServerRequest {
@@ -108,8 +100,9 @@ public class DiagramVerificationController implements VPActionController {
     public void run() {
       while (keepRunning()) {
         try {
-          final String response = OntoUMLServerAccessController
-              .requestModelVerification(ModelElement.generateModel(true), loading);
+          final String response =
+              OntoUMLServerAccessController.requestModelVerification(
+                  ModelElement.generateModel(true), loading);
 
           if (keepRunning()) {
             if (response != null) {

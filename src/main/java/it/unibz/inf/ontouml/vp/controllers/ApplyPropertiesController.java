@@ -1,7 +1,5 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
-import java.awt.event.ActionEvent;
-import java.util.List;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPContext;
@@ -21,6 +19,8 @@ import it.unibz.inf.ontouml.vp.utils.RestrictedTo;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
 import it.unibz.inf.ontouml.vp.views.SelectRestrictionsView;
 import it.unibz.inf.ontouml.vp.views.SetOrderView;
+import java.awt.event.ActionEvent;
+import java.util.List;
 
 /**
  * Implementation of context sensitive action of change OntoUML stereotypes in model elements.
@@ -46,9 +46,10 @@ public class ApplyPropertiesController implements VPContextActionController {
         IModelElementFactory.MODEL_TYPE_ASSOCIATION.equals(clickedElementType)
             ? (IAssociation) context.getModelElement()
             : null;
-    final IClass clickedClass = IModelElementFactory.MODEL_TYPE_CLASS.equals(clickedElementType)
-        ? (IClass) context.getModelElement()
-        : null;
+    final IClass clickedClass =
+        IModelElementFactory.MODEL_TYPE_CLASS.equals(clickedElementType)
+            ? (IClass) context.getModelElement()
+            : null;
 
     switch (action.getActionId()) {
       case ActionIdManager.CLASS_PROPERTY_SET_RESTRICTED_TO:
@@ -56,74 +57,87 @@ public class ApplyPropertiesController implements VPContextActionController {
         break;
 
       case ActionIdManager.ASSOCIATION_PROPERTY_SET_IS_ABSTRACT:
-      case ActionIdManager.CLASS_PROPERTY_SET_IS_ABSTRACT: {
-        final boolean isAbstract = ModelElement.isAbstract(clickedElement);
-        ModelElement.forEachSelectedElement(clickedElement,
-            selectedElement -> ModelElement.setAbstract(selectedElement, !isAbstract));
-        break;
-      }
+      case ActionIdManager.CLASS_PROPERTY_SET_IS_ABSTRACT:
+        {
+          final boolean isAbstract = ModelElement.isAbstract(clickedElement);
+          ModelElement.forEachSelectedElement(
+              clickedElement,
+              selectedElement -> ModelElement.setAbstract(selectedElement, !isAbstract));
+          break;
+        }
 
       case ActionIdManager.ASSOCIATION_PROPERTY_SET_IS_DERIVED:
-      case ActionIdManager.CLASS_PROPERTY_SET_IS_DERIVED: {
-        final boolean isDerived = ModelElement.isDerived(clickedElement);
-        ModelElement.forEachSelectedElement(clickedElement,
-            selectedElement -> ModelElement.setDerived(selectedElement, !isDerived));
-        break;
-      }
+      case ActionIdManager.CLASS_PROPERTY_SET_IS_DERIVED:
+        {
+          final boolean isDerived = ModelElement.isDerived(clickedElement);
+          ModelElement.forEachSelectedElement(
+              clickedElement,
+              selectedElement -> ModelElement.setDerived(selectedElement, !isDerived));
+          break;
+        }
 
-      case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_DERIVED: {
-        final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
-        sourceEnd.setDerived(!sourceEnd.isDerived());
-        break;
-      }
+      case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_DERIVED:
+        {
+          final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
+          sourceEnd.setDerived(!sourceEnd.isDerived());
+          break;
+        }
 
-      case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_DERIVED: {
-        final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
-        targetEnd.setDerived(!targetEnd.isDerived());
-        break;
-      }
+      case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_DERIVED:
+        {
+          final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
+          targetEnd.setDerived(!targetEnd.isDerived());
+          break;
+        }
 
-      case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_DERIVED: {
-        final boolean isDerived = ModelElement.isDerived(clickedElement);
-        ModelElement.setDerived(clickedElement, !isDerived);
-        break;
-      }
+      case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_DERIVED:
+        {
+          final boolean isDerived = ModelElement.isDerived(clickedElement);
+          ModelElement.setDerived(clickedElement, !isDerived);
+          break;
+        }
 
-      case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_ORDERED: {
-        final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
-        ModelElement.setOrdered(sourceEnd, !ModelElement.isOrdered(sourceEnd));
-        break;
-      }
+      case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_ORDERED:
+        {
+          final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
+          ModelElement.setOrdered(sourceEnd, !ModelElement.isOrdered(sourceEnd));
+          break;
+        }
 
-      case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_ORDERED: {
-        final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
-        ModelElement.setOrdered(targetEnd, !ModelElement.isOrdered(targetEnd));
-        break;
-      }
+      case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_ORDERED:
+        {
+          final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
+          ModelElement.setOrdered(targetEnd, !ModelElement.isOrdered(targetEnd));
+          break;
+        }
 
-      case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_ORDERED: {
-        final boolean isOrdered = ModelElement.isOrdered(clickedElement);
-        ModelElement.setOrdered(clickedElement, !isOrdered);
-        break;
-      }
+      case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_ORDERED:
+        {
+          final boolean isOrdered = ModelElement.isOrdered(clickedElement);
+          ModelElement.setOrdered(clickedElement, !isOrdered);
+          break;
+        }
 
-      case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_READ_ONLY: {
-        final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
-        ModelElement.setReadOnly(sourceEnd, !ModelElement.isReadOnly(sourceEnd));
-        break;
-      }
+      case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_READ_ONLY:
+        {
+          final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
+          ModelElement.setReadOnly(sourceEnd, !ModelElement.isReadOnly(sourceEnd));
+          break;
+        }
 
-      case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_READ_ONLY: {
-        final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
-        ModelElement.setReadOnly(targetEnd, !ModelElement.isReadOnly(targetEnd));
-        break;
-      }
+      case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_READ_ONLY:
+        {
+          final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
+          ModelElement.setReadOnly(targetEnd, !ModelElement.isReadOnly(targetEnd));
+          break;
+        }
 
-      case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_READ_ONLY: {
-        final boolean isReadOnly = ModelElement.isReadOnly(clickedElement);
-        ModelElement.setReadOnly(clickedElement, !isReadOnly);
-        break;
-      }
+      case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_READ_ONLY:
+        {
+          final boolean isReadOnly = ModelElement.isReadOnly(clickedElement);
+          ModelElement.setReadOnly(clickedElement, !isReadOnly);
+          break;
+        }
 
       case ActionIdManager.CLASS_PROPERTY_SET_IS_EXTENSIONAL:
         setBooleanTaggedValue(clickedClass, StereotypesManager.PROPERTY_IS_EXTENSIONAL);
@@ -138,13 +152,11 @@ public class ApplyPropertiesController implements VPContextActionController {
         break;
 
       case ActionIdManager.ASSOCIATION_PROPERTY_REVERSE_ASSOCIATION:
-        ModelElement.forEachSelectedElement(clickedAssociation,
-            clicked -> Association.invertAssociation(clicked));
+        ModelElement.forEachSelectedElement(
+            clickedAssociation, clicked -> Association.invertAssociation(clicked));
         break;
     }
-
   }
-
 
   @Override
   public void update(VPAction action, VPContext context) {
@@ -159,9 +171,10 @@ public class ApplyPropertiesController implements VPContextActionController {
       return;
     }
 
-    final IClass clickedClass = IModelElementFactory.MODEL_TYPE_CLASS.equals(clickedElementType)
-        ? (IClass) context.getModelElement()
-        : null;
+    final IClass clickedClass =
+        IModelElementFactory.MODEL_TYPE_CLASS.equals(clickedElementType)
+            ? (IClass) context.getModelElement()
+            : null;
     final IAssociation clickedAssociation =
         IModelElementFactory.MODEL_TYPE_ASSOCIATION.equals(clickedElementType)
             ? (IAssociation) context.getModelElement()
@@ -180,19 +193,21 @@ public class ApplyPropertiesController implements VPContextActionController {
         enabled = Class.isAbstractEditable(clickedClass) || !isSmartModelingEnabled;
         break;
 
-      case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_DERIVED: {
-        final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
-        action.setSelected(sourceEnd.isDerived());
-        enabled = true;
-        break;
-      }
+      case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_DERIVED:
+        {
+          final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
+          action.setSelected(sourceEnd.isDerived());
+          enabled = true;
+          break;
+        }
 
-      case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_DERIVED: {
-        final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
-        action.setSelected(targetEnd.isDerived());
-        enabled = true;
-        break;
-      }
+      case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_DERIVED:
+        {
+          final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
+          action.setSelected(targetEnd.isDerived());
+          enabled = true;
+          break;
+        }
 
       case ActionIdManager.ASSOCIATION_PROPERTY_SET_IS_DERIVED:
       case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_DERIVED:
@@ -201,39 +216,42 @@ public class ApplyPropertiesController implements VPContextActionController {
         enabled = true;
         break;
 
+      case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_ORDERED:
+        {
+          final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
+          action.setSelected(ModelElement.isOrdered(sourceEnd));
+          enabled = true;
+          break;
+        }
 
-      case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_ORDERED: {
-        final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
-        action.setSelected(ModelElement.isOrdered(sourceEnd));
-        enabled = true;
-        break;
-      }
-
-      case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_ORDERED: {
-        final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
-        action.setSelected(ModelElement.isOrdered(targetEnd));
-        enabled = true;
-        break;
-      }
+      case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_ORDERED:
+        {
+          final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
+          action.setSelected(ModelElement.isOrdered(targetEnd));
+          enabled = true;
+          break;
+        }
 
       case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_ORDERED:
         action.setSelected(ModelElement.isOrdered(clickedElement));
         enabled = true;
         break;
 
-      case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_READ_ONLY: {
-        final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
-        action.setSelected(ModelElement.isReadOnly(sourceEnd));
-        enabled = true;
-        break;
-      }
+      case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_READ_ONLY:
+        {
+          final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
+          action.setSelected(ModelElement.isReadOnly(sourceEnd));
+          enabled = true;
+          break;
+        }
 
-      case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_READ_ONLY: {
-        final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
-        action.setSelected(ModelElement.isReadOnly(targetEnd));
-        enabled = true;
-        break;
-      }
+      case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_READ_ONLY:
+        {
+          final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
+          action.setSelected(ModelElement.isReadOnly(targetEnd));
+          enabled = true;
+          break;
+        }
 
       case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_READ_ONLY:
         action.setSelected(ModelElement.isReadOnly(clickedElement));
@@ -241,14 +259,17 @@ public class ApplyPropertiesController implements VPContextActionController {
         break;
 
       case ActionIdManager.CLASS_PROPERTY_SET_RESTRICTED_TO:
-        enabled = Class.isRestrictedToEditable(clickedClass)
-            || (!isSmartModelingEnabled && Class.hasValidStereotype(clickedClass));
+        enabled =
+            Class.isRestrictedToEditable(clickedClass)
+                || (!isSmartModelingEnabled && Class.hasValidStereotype(clickedClass));
         break;
 
       case ActionIdManager.CLASS_PROPERTY_SET_IS_EXTENSIONAL:
         action.setSelected(Class.isExtensional(clickedClass));
-        enabled = Class.isCollective(clickedClass) || Class.hasCollectiveNature(clickedClass)
-            || (!isSmartModelingEnabled && Class.hasValidStereotype(clickedClass));
+        enabled =
+            Class.isCollective(clickedClass)
+                || Class.hasCollectiveNature(clickedClass)
+                || (!isSmartModelingEnabled && Class.hasValidStereotype(clickedClass));
         break;
 
       case ActionIdManager.CLASS_PROPERTY_SET_IS_POWERTYPE:
@@ -266,7 +287,6 @@ public class ApplyPropertiesController implements VPContextActionController {
     }
 
     action.setEnabled(enabled);
-
   }
 
   private void setBooleanTaggedValue(IClass clickedClass, String metaProperty) {
@@ -275,37 +295,40 @@ public class ApplyPropertiesController implements VPContextActionController {
     final boolean value =
         booleanTaggedValue != null && Boolean.parseBoolean(booleanTaggedValue.getValueAsString());
 
-    ModelElement.forEachSelectedElement(clickedClass, selectedElement -> {
-      ITaggedValue taggedValue =
-          StereotypesManager.reapplyStereotypeAndGetTaggedValue(selectedElement, metaProperty);
+    ModelElement.forEachSelectedElement(
+        clickedClass,
+        selectedElement -> {
+          ITaggedValue taggedValue =
+              StereotypesManager.reapplyStereotypeAndGetTaggedValue(selectedElement, metaProperty);
 
-      if (taggedValue == null)
-        return;
+          if (taggedValue == null) return;
 
-      taggedValue.setValue(!value);
-    });
+          taggedValue.setValue(!value);
+        });
   }
 
   private void setOrderProperty(IClass clickedClass) {
-    final ITaggedValue baseTaggedValue = StereotypesManager
-        .reapplyStereotypeAndGetTaggedValue(clickedClass, StereotypesManager.PROPERTY_ORDER);
+    final ITaggedValue baseTaggedValue =
+        StereotypesManager.reapplyStereotypeAndGetTaggedValue(
+            clickedClass, StereotypesManager.PROPERTY_ORDER);
 
-    if (baseTaggedValue == null)
-      return;
+    if (baseTaggedValue == null) return;
 
     final SetOrderView dialog = new SetOrderView(baseTaggedValue.getValueAsString());
     ApplicationManager.instance().getViewManager().showDialog(dialog);
     final String order = dialog.getOrder();
 
-    ModelElement.forEachSelectedElement(clickedClass, selectedClass -> {
-      ITaggedValue taggedValue = StereotypesManager
-          .reapplyStereotypeAndGetTaggedValue(selectedClass, StereotypesManager.PROPERTY_ORDER);
+    ModelElement.forEachSelectedElement(
+        clickedClass,
+        selectedClass -> {
+          ITaggedValue taggedValue =
+              StereotypesManager.reapplyStereotypeAndGetTaggedValue(
+                  selectedClass, StereotypesManager.PROPERTY_ORDER);
 
-      if (taggedValue == null)
-        return;
+          if (taggedValue == null) return;
 
-      taggedValue.setValue(order);
-    });
+          taggedValue.setValue(order);
+        });
   }
 
   private void setRestrictedTo(IClass clickedClass) {
@@ -320,9 +343,10 @@ public class ApplyPropertiesController implements VPContextActionController {
     ApplicationManager.instance().getViewManager().showDialog(dialog);
     final String newRestrictions = dialog.getSelectedValues();
 
-    ModelElement.forEachSelectedElement(clickedClass, selectedClass -> {
-      Class.setRestrictedTo(selectedClass, newRestrictions);
-    });
+    ModelElement.forEachSelectedElement(
+        clickedClass,
+        selectedClass -> {
+          Class.setRestrictedTo(selectedClass, newRestrictions);
+        });
   }
-
 }

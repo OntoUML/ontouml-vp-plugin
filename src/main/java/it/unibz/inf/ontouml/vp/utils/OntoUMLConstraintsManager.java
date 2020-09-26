@@ -1,13 +1,5 @@
 package it.unibz.inf.ontouml.vp.utils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -18,10 +10,18 @@ import com.vp.plugin.model.IClass;
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class OntoUMLConstraintsManager {
 
-  final private static Type mapOfListsType =
+  private static final Type mapOfListsType =
       new TypeToken<Map<String, List<String>>>() {}.getType();
 
   private static String GENERALIZATION_CONSTRAINTS_FILENAME = "generalization_constraints.json";
@@ -33,7 +33,6 @@ public class OntoUMLConstraintsManager {
   private static Map<String, List<String>> allowedSuperClassesFor, allowedSubClassesFor;
 
   private static Map<String, List<String>> associationConstraints;
-
 
   private static void loadConstraints() {
     try {
@@ -97,9 +96,8 @@ public class OntoUMLConstraintsManager {
         .collect(Collectors.toList());
   }
 
-
-  public static List<String> getAllowedActionsBasedOnSourceAndTarget(IClass sourceClass,
-      IClass targetClass) {
+  public static List<String> getAllowedActionsBasedOnSourceAndTarget(
+      IClass sourceClass, IClass targetClass) {
     if (associationConstraints == null) {
       loadConstraints();
     }
@@ -129,8 +127,11 @@ public class OntoUMLConstraintsManager {
       if (intersectingAllowedStereotypes.isEmpty()) {
         intersectingAllowedStereotypes.addAll(allowedStereotypes);
       } else {
-        intersectingAllowedStereotypes = intersectingAllowedStereotypes.stream()
-            .filter(allowedStereotypes::contains).distinct().collect(Collectors.toList());
+        intersectingAllowedStereotypes =
+            intersectingAllowedStereotypes.stream()
+                .filter(allowedStereotypes::contains)
+                .distinct()
+                .collect(Collectors.toList());
       }
     }
 
@@ -139,5 +140,4 @@ public class OntoUMLConstraintsManager {
             allowedStereotype -> ActionIdManager.associationStereotypeToActionID(allowedStereotype))
         .collect(Collectors.toList());
   }
-
 }

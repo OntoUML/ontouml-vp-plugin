@@ -1,18 +1,17 @@
 package it.unibz.inf.ontouml.vp.model;
 
 public class ServerRequest implements Runnable {
-	
-	private boolean doStop = false;
 
-	public synchronized void doStop() {
-		this.doStop = true;
-	}
+  private boolean doStop = false;
 
-	protected synchronized boolean keepRunning() {
-		return this.doStop == false;
-	}
+  public synchronized void doStop() {
+    this.doStop = true;
+  }
 
-	@Override
-	public void run() {}
+  protected synchronized boolean keepRunning() {
+    return this.doStop == false;
+  }
 
+  @Override
+  public void run() {}
 }

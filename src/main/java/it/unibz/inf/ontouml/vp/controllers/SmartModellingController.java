@@ -45,16 +45,14 @@ public class SmartModellingController {
     IAssociationEnd source = (IAssociationEnd) association.getFromEnd();
     IAssociationEnd target = (IAssociationEnd) association.getToEnd();
 
-    if (source == null || target == null)
-      return;
+    if (source == null || target == null) return;
 
     String sourceStereotype = Property.getTypeStereotype(source);
     String targetStereotype = Property.getTypeStereotype(target);
 
     String stereotype = ModelElement.getUniqueStereotypeName(association);
 
-    if (stereotype == null)
-      return;
+    if (stereotype == null) return;
 
     switch (stereotype) {
       case Stereotype.CHARACTERIZATION:
@@ -84,14 +82,12 @@ public class SmartModellingController {
         if (targetStereotype.equals(Stereotype.ROLE)
             || targetStereotype.equals(Stereotype.ROLE_MIXIN))
           setCardinalityIfEmpty(source, "1..*");
-        else
-          setCardinalityIfEmpty(source, "0..*");
+        else setCardinalityIfEmpty(source, "0..*");
 
         if (sourceStereotype.equals(Stereotype.ROLE)
             || sourceStereotype.equals(Stereotype.ROLE_MIXIN))
           setCardinalityIfEmpty(target, "1..*");
-        else
-          setCardinalityIfEmpty(target, "0..*");
+        else setCardinalityIfEmpty(target, "0..*");
 
         association.setDerived(true);
         target.setNavigable(IAssociationEnd.NAVIGABLE_NAV_NAVIGABLE);
@@ -112,8 +108,7 @@ public class SmartModellingController {
         if (targetStereotype.equals(Stereotype.ROLE)
             || targetStereotype.equals(Stereotype.ROLE_MIXIN))
           setCardinalityIfEmpty(source, "1..*");
-        else
-          setCardinalityIfEmpty(source, "0..*");
+        else setCardinalityIfEmpty(source, "0..*");
 
         setCardinalityIfEmpty(target, "1");
         target.setReadOnly(true);
@@ -178,8 +173,7 @@ public class SmartModellingController {
         if (sourceStereotype.equals(Stereotype.HISTORICAL_ROLE)
             || sourceStereotype.equals(Stereotype.HISTORICAL_ROLE_MIXIN))
           setCardinalityIfEmpty(target, "1..*");
-        else
-          setCardinalityIfEmpty(target, "0..*");
+        else setCardinalityIfEmpty(target, "0..*");
 
         target.setNavigable(IAssociationEnd.NAVIGABLE_NAV_NAVIGABLE);
         source.setNavigable(IAssociationEnd.NAVIGABLE_NAV_UNSPECIFIED);
@@ -229,13 +223,11 @@ public class SmartModellingController {
   }
 
   public static void setClassMetaProperties(IClass _class) {
-    if (_class == null)
-      return;
+    if (_class == null) return;
 
     String[] stereotypes = _class.toStereotypeArray();
 
-    if (stereotypes == null || stereotypes.length != 1)
-      return;
+    if (stereotypes == null || stereotypes.length != 1) return;
 
     switch (stereotypes[0]) {
       case Stereotype.CATEGORY:
@@ -252,5 +244,4 @@ public class SmartModellingController {
         break;
     }
   }
-
 }

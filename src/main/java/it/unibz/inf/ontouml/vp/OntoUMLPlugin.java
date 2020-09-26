@@ -27,9 +27,7 @@ public class OntoUMLPlugin implements VPPlugin {
   private static boolean isConfigWindowOpen;
   private static ProjectListener projectListener;
 
-  /**
-   * OntoUMLPlugin constructor. Declared to make explicit Open API requirements.
-   */
+  /** OntoUMLPlugin constructor. Declared to make explicit Open API requirements. */
   public OntoUMLPlugin() {
     // The constructor of a VPPlugin MUST NOT have parameters.
     isExportToGUFOWindowOpen = false;
@@ -73,5 +71,4 @@ public class OntoUMLPlugin implements VPPlugin {
   public static boolean getConfigWindowOpen() {
     return isConfigWindowOpen;
   }
-
 }

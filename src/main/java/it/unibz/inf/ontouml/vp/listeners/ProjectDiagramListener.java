@@ -1,10 +1,10 @@
 package it.unibz.inf.ontouml.vp.listeners;
 
-import java.util.Iterator;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.IProjectDiagramListener;
+import java.util.Iterator;
 
 public class ProjectDiagramListener implements IProjectDiagramListener {
 
@@ -55,5 +55,4 @@ public class ProjectDiagramListener implements IProjectDiagramListener {
       diagram.addDiagramListener(diagramListener);
     }
   }
-
 }

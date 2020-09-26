@@ -1,10 +1,5 @@
 package it.unibz.inf.ontouml.vp.utils;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IModelElement;
@@ -15,6 +10,11 @@ import com.vp.plugin.model.ITaggedValueContainer;
 import com.vp.plugin.model.ITaggedValueDefinition;
 import com.vp.plugin.model.ITaggedValueDefinitionContainer;
 import com.vp.plugin.model.factory.IModelElementFactory;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class StereotypesManager {
 
@@ -27,13 +27,11 @@ public class StereotypesManager {
   public static final String PROPERTY_ORDER = "order";
 
   public static List<String> getOntoUMLTaggedValues() {
-    return Arrays.asList(PROPERTY_RESTRICTED_TO, PROPERTY_IS_EXTENSIONAL, PROPERTY_IS_POWERTYPE,
-        PROPERTY_ORDER);
+    return Arrays.asList(
+        PROPERTY_RESTRICTED_TO, PROPERTY_IS_EXTENSIONAL, PROPERTY_IS_POWERTYPE, PROPERTY_ORDER);
   }
 
-  /**
-   * Method to be called whenever a project is opened to properly install all stereotypes.
-   */
+  /** Method to be called whenever a project is opened to properly install all stereotypes. */
   public static void generate() {
     final IProject project = ApplicationManager.instance().getProjectManager().getProject();
     final IModelElement[] installedStereotypes =
@@ -220,7 +218,6 @@ public class StereotypesManager {
           tv.delete();
         }
       }
-
     }
 
     // 2. Removes old stereotypes
@@ -251,22 +248,22 @@ public class StereotypesManager {
     }
   }
 
-  public static ITaggedValue reapplyStereotypeAndGetTaggedValue(IClass _class,
-      String taggedValueName) {
+  public static ITaggedValue reapplyStereotypeAndGetTaggedValue(
+      IClass _class, String taggedValueName) {
     reapplyCurrentStereotype(_class);
 
     ITaggedValue taggedValue = getTaggedValue(_class, taggedValueName);
-    if (taggedValue == null)
-      return null;
+    if (taggedValue == null) return null;
 
     // Retrieves desired tagged value
     return getTaggedValue(_class, taggedValueName);
   }
 
   private static boolean reapplyCurrentStereotype(IClass _class) {
-    String stereotype = _class.toStereotypeArray() != null && _class.toStereotypeArray().length > 0
-        ? _class.toStereotypeArray()[0]
-        : null;
+    String stereotype =
+        _class.toStereotypeArray() != null && _class.toStereotypeArray().length > 0
+            ? _class.toStereotypeArray()[0]
+            : null;
 
     // Escape in case the stereotype is missing or incorrect
     if (stereotype == null || !Stereotype.getOntoUMLClassStereotypeNames().contains(stereotype))
@@ -282,8 +279,7 @@ public class StereotypesManager {
   private static ITaggedValue getTaggedValue(IModelElement element, String name) {
     ITaggedValueContainer container = element.getTaggedValues();
 
-    if (container == null)
-      return null;
+    if (container == null) return null;
 
     try {
       return container.getTaggedValueByName(name);
@@ -303,5 +299,4 @@ public class StereotypesManager {
 
     return stereotype;
   }
-
 }

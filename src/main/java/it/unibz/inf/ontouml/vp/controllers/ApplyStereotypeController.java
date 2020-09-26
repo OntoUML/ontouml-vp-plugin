@@ -1,8 +1,5 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
-import java.awt.event.ActionEvent;
-import java.util.List;
-import java.util.Set;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPContext;
 import com.vp.plugin.action.VPContextActionController;
@@ -19,6 +16,9 @@ import it.unibz.inf.ontouml.vp.utils.OntoUMLConstraintsManager;
 import it.unibz.inf.ontouml.vp.utils.Stereotype;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
 import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
+import java.awt.event.ActionEvent;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Implementation of context sensitive action of change OntoUML stereotypes in model elements.
@@ -34,8 +34,8 @@ public class ApplyStereotypeController implements VPContextActionController {
     final String clickedElementType = clickedElement.getModelType();
 
     if (action.getActionId().contains("fixedMenu")) {
-      ModelElement.forEachSelectedElement(clickedElement,
-          selectedElement -> applyStereotype(action, selectedElement));
+      ModelElement.forEachSelectedElement(
+          clickedElement, selectedElement -> applyStereotype(action, selectedElement));
       return;
     }
 
@@ -105,7 +105,6 @@ public class ApplyStereotypeController implements VPContextActionController {
     }
   }
 
-
   private boolean isStereotypeActionAllowed(String actionId, IClass _class) {
     final Set<IClass> children = Class.getChildren(_class);
 
@@ -130,10 +129,11 @@ public class ApplyStereotypeController implements VPContextActionController {
     return true;
   }
 
-  private boolean isStereotypeActionAllowed(String actionId, IClass associationSource,
-      IClass associationTarget) {
-    final List<String> allowedActions = OntoUMLConstraintsManager
-        .getAllowedActionsBasedOnSourceAndTarget(associationSource, associationTarget);
+  private boolean isStereotypeActionAllowed(
+      String actionId, IClass associationSource, IClass associationTarget) {
+    final List<String> allowedActions =
+        OntoUMLConstraintsManager.getAllowedActionsBasedOnSourceAndTarget(
+            associationSource, associationTarget);
 
     return allowedActions.contains(actionId);
   }
@@ -335,5 +335,4 @@ public class ApplyStereotypeController implements VPContextActionController {
     if (isSmartModelingEnabled && isAssociation)
       SmartModellingController.setAssociationMetaProperties((IAssociation) element);
   }
-
 }

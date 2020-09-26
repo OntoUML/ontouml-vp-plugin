@@ -1,21 +1,16 @@
 package it.unibz.inf.ontouml.vp.model;
 
-import java.util.HashSet;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import java.util.HashSet;
 
 /**
- * 
  * Class that captures user preferences for a given project and enables JSON serialization.
- * 
+ *
  * @author Claudenir Fonseca
  * @author Victor Viola
- *
  */
-/**
- * @author Victor Viola
- *
- */
+/** @author Victor Viola */
 public class ProjectConfigurations {
 
   public static final boolean DEFAULT_IS_PLUGIN_ENABLED = true;
@@ -122,23 +117,17 @@ public class ProjectConfigurations {
   @Expose()
   private boolean ignoreAssociationInversionWarning;
 
-  /**
-   *
-   * Constructor without args to be called when deserializing project settings.
-   *
-   */
+  /** Constructor without args to be called when deserializing project settings. */
   public ProjectConfigurations() {
     this.id = "";
     this.setDefaultValues();
   }
 
   /**
-   * 
    * Initializes an instance of ProjectConfigurations with default settings.
-   * 
+   *
    * @param projectId - String containing the ID of the project related to initialized
-   *        configuration.
-   * 
+   *     configuration.
    */
   public ProjectConfigurations(String projectId) {
     this.id = projectId;
@@ -146,10 +135,8 @@ public class ProjectConfigurations {
   }
 
   /**
-   * 
    * Resets default project configurations. By default, none of the options are enabled and the
    * server's URL is the plugin's defaults.
-   * 
    */
   public void setDefaultValues() {
     this.isOntoUMLPluginEnabled = ProjectConfigurations.DEFAULT_IS_PLUGIN_ENABLED;
@@ -170,125 +157,100 @@ public class ProjectConfigurations {
   }
 
   /**
-   * 
    * Returns the related project's ID.
-   * 
+   *
    * @return project's ID.
-   * 
    */
   public String getId() {
     return id;
   }
 
   /**
-   * 
    * Checks if OntoUMLPlugin is enabled for the related project.
-   * 
+   *
    * @return <code>true</code> if plugin is enabled.
-   * 
    */
   public boolean isOntoUMLPluginEnabled() {
     return isOntoUMLPluginEnabled;
   }
 
   /**
-   * 
    * Sets if OntoUMLPlugin is enabled for the related project.
-   * 
+   *
    * @param isOntoUMLPluginEnabled
-   * 
    */
   public void setOntoUMLPluginEnabled(boolean isOntoUMLPluginEnabled) {
     this.isOntoUMLPluginEnabled = isOntoUMLPluginEnabled;
   }
 
   /**
-   * 
    * Returns OntoUML Server URL.
-   * 
+   *
    * @return serverURL
-   * 
    */
   public String getServerURL() {
     return serverURL;
   }
 
   /**
-   * 
    * Sets OntoUML Server URL.
-   * 
+   *
    * @param serverURL
-   * 
    */
   public void setServerURL(String serverURL) {
     this.serverURL = serverURL;
   }
 
   /**
-   * 
    * Checks if a custom server URL must be used.
-   * 
+   *
    * @return <code>true</code> if plugin is enabled <b>and</b> a custom server is enabled.
-   * 
    * @see <code>{@link #isOntoUMLPluginEnabled()}</code>
-   * 
    */
   public boolean isCustomServerEnabled() {
     return isOntoUMLPluginEnabled() && isCustomServerEnabled;
   }
 
   /**
-   * 
    * Sets if a custom server URL must be used.
-   * 
+   *
    * @param isCustomServerEnabled
-   * 
    */
   public void setCustomServerEnabled(boolean isCustomServerEnabled) {
     this.isCustomServerEnabled = isCustomServerEnabled;
   }
 
   /**
-   * 
    * Returns automatic export folders path as a String.
-   * 
+   *
    * @return exportFolderPath
-   * 
    */
   public String getExportFolderPath() {
     return exportFolderPath;
   }
 
-
   /**
-   * 
    * Sets automatic export folders path from a String.
-   * 
+   *
    * @param exportFolderPath
-   * 
    */
   public void setExportFolderPath(String exportFolderPath) {
     this.exportFolderPath = exportFolderPath;
   }
 
-
   /**
-   * 
    * Returns automatic export filename as a String.
-   * 
+   *
    * @return exportFileName
-   * 
    */
   public String getExportFilename() {
     return exportFileName;
   }
 
   /**
-   * 
    * Sets automatic export filename from a String.
-   * 
+   *
    * @param exportFileName
-   * 
    */
   public void setExportFilename(String exportFileName) {
     this.exportFileName = exportFileName;
@@ -399,73 +361,58 @@ public class ProjectConfigurations {
   }
 
   /**
-   * 
    * Checks if an export folder is set for automatic model export.
-   * 
+   *
    * @return <code>true</code> if plugin is enabled <b>and</b> automatic model export is enabled.
-   * 
    * @see <code>{@link #isOntoUMLPluginEnabled()}</code>
-   * 
    */
   public boolean isModelExportEnabled() {
     return isOntoUMLPluginEnabled() && isModelExportEnabled;
   }
 
   /**
-   * 
    * Sets if automatic model export is enabled.
-   * 
-   * param isModelExportEnabled
-   * 
+   *
+   * <p>param isModelExportEnabled
    */
   public void setModelExportEnabled(boolean isModelExportEnabled) {
     this.isModelExportEnabled = isModelExportEnabled;
   }
 
   /**
-   * 
    * Checks if model elements should be automatically painted with the default color profile.
-   * 
+   *
    * @return <code>true</code> if plugin is enabled <b>and</b> automatic model element coloring is
-   *         enabled.
-   * 
+   *     enabled.
    * @see <code>{@link #isOntoUMLPluginEnabled()}</code>
-   * 
    */
   public boolean isAutomaticColoringEnabled() {
     return isOntoUMLPluginEnabled() && isAutomaticColoringEnabled;
   }
 
   /**
-   * 
    * Sets if model elements should be automatically painted with the default color profile.
-   * 
+   *
    * @param isAutomaticColoringEnabled
-   * 
    */
   public void setAutomaticColoringEnabled(boolean isAutomaticColoringEnabled) {
     this.isAutomaticColoringEnabled = isAutomaticColoringEnabled;
   }
 
   /**
-   * 
    * Checks if class stereotypes should be automatically disabled..
-   * 
+   *
    * @return <code>true</code> if plugin is enabled <b>and</b> smart modelling is enabled.
-   * 
    * @see <code>{@link #isOntoUMLPluginEnabled()}</code>
-   * 
    */
   public boolean isSmartModellingEnabled() {
     return isOntoUMLPluginEnabled() && isSmartModellingEnabled;
   }
 
   /**
-   * 
    * Sets if class stereotypes should be automatically disabled.
-   * 
+   *
    * @param isSmartModellingEnabled
-   * 
    */
   public void setSmartModellingEnabled(boolean isSmartModellingEnabled) {
     this.isSmartModellingEnabled = isSmartModellingEnabled;
@@ -478,5 +425,4 @@ public class ProjectConfigurations {
   public void setIgnoreAssociationInversionWarning(boolean ignoreAssociationInversionWarning) {
     this.ignoreAssociationInversionWarning = ignoreAssociationInversionWarning;
   }
-
 }

@@ -1,9 +1,5 @@
 package it.unibz.inf.ontouml.vp.listeners;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.List;
-import java.util.Set;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IGeneralization;
 import it.unibz.inf.ontouml.vp.model.Configurations;
@@ -14,20 +10,24 @@ import it.unibz.inf.ontouml.vp.utils.RestrictedTo;
 import it.unibz.inf.ontouml.vp.utils.SmartColoringUtils;
 import it.unibz.inf.ontouml.vp.utils.Stereotype;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.List;
+import java.util.Set;
 
 public class ModelListener implements PropertyChangeListener {
 
   // Property change names of interest events
-  final private static String PCN_MODEL_VIEW_ADDED = "modelViewAdded";
+  private static final String PCN_MODEL_VIEW_ADDED = "modelViewAdded";
   // Events on classes
-  final private static String PCN_STEREOTYPES = "stereotypes";
-  final private static String PCN_RESTRICTED_TO = StereotypesManager.PROPERTY_RESTRICTED_TO;
-  final private static String PCN_IS_EXTENSIONAL = StereotypesManager.PROPERTY_IS_EXTENSIONAL;
+  private static final String PCN_STEREOTYPES = "stereotypes";
+  private static final String PCN_RESTRICTED_TO = StereotypesManager.PROPERTY_RESTRICTED_TO;
+  private static final String PCN_IS_EXTENSIONAL = StereotypesManager.PROPERTY_IS_EXTENSIONAL;
   // Events on generalizations
-  final private static String PCN_FROM_MODEL = "fromModel";
-  final private static String PCN_TO_MODEL = "toModel";
+  private static final String PCN_FROM_MODEL = "fromModel";
+  private static final String PCN_TO_MODEL = "toModel";
 
-  final private List<String> interestStereotypes;
+  private final List<String> interestStereotypes;
 
   public ModelListener() {
     interestStereotypes = Stereotype.getSortalStereotypeNames();
@@ -175,7 +175,8 @@ public class ModelListener implements PropertyChangeListener {
     final Object newRestrictionValue = event.getNewValue();
     final Object oldRestrictionValue = event.getOldValue();
 
-    if (newRestrictionValue != null && !newRestrictionValue.equals(oldRestrictionValue)
+    if (newRestrictionValue != null
+        && !newRestrictionValue.equals(oldRestrictionValue)
         && !newRestrictionValue.equals(RestrictedTo.COLLECTIVE)) {
       Class.setIsExtensional(_class, false);
     }
@@ -187,7 +188,8 @@ public class ModelListener implements PropertyChangeListener {
     final Object newIsExtensionalValue = event.getNewValue();
     final Object oldIsExtensionalValue = event.getOldValue();
 
-    if (newIsExtensionalValue != null && !newIsExtensionalValue.equals(oldIsExtensionalValue)
+    if (newIsExtensionalValue != null
+        && !newIsExtensionalValue.equals(oldIsExtensionalValue)
         && !restritedToValue.equals(RestrictedTo.COLLECTIVE)) {
       Class.setIsExtensional(_class, false);
     }
@@ -221,36 +223,38 @@ public class ModelListener implements PropertyChangeListener {
   }
 
   private void propagateRestrictionsToDescendants(IClass _class) {
-    Class.applyOnDescendants(_class, descendent -> {
-      String descendentStereotype = ModelElement.getUniqueStereotypeName(descendent);
+    Class.applyOnDescendants(
+        _class,
+        descendent -> {
+          String descendentStereotype = ModelElement.getUniqueStereotypeName(descendent);
 
-      if (!interestStereotypes.contains(descendentStereotype)) {
-        return false;
-      }
+          if (!interestStereotypes.contains(descendentStereotype)) {
+            return false;
+          }
 
-      final Set<IClass> descendentParents = getSortalParents(descendent);
+          final Set<IClass> descendentParents = getSortalParents(descendent);
 
-      final String newRestriction = Class.getRestrictedTo(descendentParents);
-      String currentRestriction = Class.getRestrictedTo(descendent);
-      currentRestriction = currentRestriction == null ? "" : currentRestriction;
+          final String newRestriction = Class.getRestrictedTo(descendentParents);
+          String currentRestriction = Class.getRestrictedTo(descendent);
+          currentRestriction = currentRestriction == null ? "" : currentRestriction;
 
-      if (!currentRestriction.equals(newRestriction)) {
-        Class.setRestrictedTo(descendent, newRestriction);
-        return true;
-      }
+          if (!currentRestriction.equals(newRestriction)) {
+            Class.setRestrictedTo(descendent, newRestriction);
+            return true;
+          }
 
-      return false;
-    });
+          return false;
+        });
   }
 
   private Set<IClass> getSortalParents(IClass _class) {
     final Set<IClass> sortalParents = Class.getParents(_class);
-    sortalParents.removeIf(parent -> {
-      final String parentStereotype = ModelElement.getUniqueStereotypeName(parent);
-      return !interestStereotypes.contains(parentStereotype);
-    });
+    sortalParents.removeIf(
+        parent -> {
+          final String parentStereotype = ModelElement.getUniqueStereotypeName(parent);
+          return !interestStereotypes.contains(parentStereotype);
+        });
 
     return sortalParents;
   }
-
 }

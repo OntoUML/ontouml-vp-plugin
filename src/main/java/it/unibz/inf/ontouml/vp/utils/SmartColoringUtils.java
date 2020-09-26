@@ -1,16 +1,16 @@
 package it.unibz.inf.ontouml.vp.utils;
 
-import java.awt.Color;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.shape.IClassUIModel;
 import com.vp.plugin.model.IClass;
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
+import java.awt.Color;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of the coloring feature
@@ -84,7 +84,6 @@ public class SmartColoringUtils {
     alternativeColorMap.put(RestrictedTo.TYPE, COLOR_TYPE);
   }
 
-
   /**
    * Returns the color of a class based on its nature
    *
@@ -107,18 +106,19 @@ public class SmartColoringUtils {
       return isUltimateSortal ? mainColorMap.get(nature) : alternativeColorMap.get(nature);
     }
 
-    final List<Color> differentColors = restrictedTo.stream()
-        .map(s -> isUltimateSortal ? mainColorMap.get(s) : alternativeColorMap.get(s)).distinct()
-        .collect(Collectors.toList());
+    final List<Color> differentColors =
+        restrictedTo.stream()
+            .map(s -> isUltimateSortal ? mainColorMap.get(s) : alternativeColorMap.get(s))
+            .distinct()
+            .collect(Collectors.toList());
 
     return differentColors.size() == 1 ? differentColors.get(0) : COLOR_NON_SPECIFIC;
   }
 
-
   /**
    * Paints occurrences of a class based on the "restrictTo" meta-property. Affects class
-   * occurrences in all diagrams. No effect whenever auto-coloring is disabled or color is
-   * <code>null</code>.
+   * occurrences in all diagrams. No effect whenever auto-coloring is disabled or color is <code>
+   * null</code>.
    *
    * @param _class
    */
@@ -141,15 +141,14 @@ public class SmartColoringUtils {
   }
 
   public static void paint(IClassUIModel classDiagramElement) {
-    final IClass _class = classDiagramElement.getModelElement() instanceof IClass
-        ? (IClass) classDiagramElement.getModelElement()
-        : null;
+    final IClass _class =
+        classDiagramElement.getModelElement() instanceof IClass
+            ? (IClass) classDiagramElement.getModelElement()
+            : null;
     final Color defaultColor = getColor(_class);
 
     if (defaultColor != null) {
       classDiagramElement.getFillColor().setColor1(defaultColor);
     }
   }
-
-
 }

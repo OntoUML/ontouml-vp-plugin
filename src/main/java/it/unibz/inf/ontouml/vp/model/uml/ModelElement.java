@@ -1,9 +1,5 @@
 package it.unibz.inf.ontouml.vp.model.uml;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.function.Consumer;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.vp.plugin.ApplicationManager;
@@ -21,6 +17,10 @@ import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
 import com.vp.plugin.model.factory.IModelElementFactory;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author Victor Viola
@@ -49,19 +49,13 @@ public interface ModelElement {
     return getUniqueStereotype(element) != null;
   }
 
-  /**
-   * @return <code>IModelElement</code> on which the object is based.
-   */
+  /** @return <code>IModelElement</code> on which the object is based. */
   public IModelElement getSourceModelElement();
 
-  /**
-   * @return object's type in OntoUML Schema.
-   */
+  /** @return object's type in OntoUML Schema. */
   public String getOntoUMLType();
 
-  /**
-   * @return object's ID (based on a <code>IModelElement</code>).
-   */
+  /** @return object's ID (based on a <code>IModelElement</code>). */
   public String getId();
 
   /**
@@ -70,11 +64,10 @@ public interface ModelElement {
    *
    * @param modelElement
    * @return a link identify a <code>IModelElement</code> in Visual Paradigm following the pattern
-   *         <code>"vpp://modelelement/Cd.WKPaAUB22rwx4"</code>.
+   *     <code>"vpp://modelelement/Cd.WKPaAUB22rwx4"</code>.
    */
   public static String getModelElementURI(IModelElement modelElement) {
-    if (modelElement == null)
-      return null;
+    if (modelElement == null) return null;
 
     final String link =
         ApplicationManager.instance().getProjectManager().getLink(modelElement, false);
@@ -92,10 +85,17 @@ public interface ModelElement {
     final Model model = new Model();
 
     if (pretty) {
-      return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().serializeNulls()
-          .setPrettyPrinting().create().toJson(model);
+      return new GsonBuilder()
+          .excludeFieldsWithoutExposeAnnotation()
+          .serializeNulls()
+          .setPrettyPrinting()
+          .create()
+          .toJson(model);
     } else {
-      return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().serializeNulls().create()
+      return new GsonBuilder()
+          .excludeFieldsWithoutExposeAnnotation()
+          .serializeNulls()
+          .create()
           .toJson(model);
     }
   }
@@ -104,17 +104,23 @@ public interface ModelElement {
 
     final Model model = new Model(elements);
     if (pretty) {
-      return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().serializeNulls()
-          .setPrettyPrinting().create().toJson(model);
+      return new GsonBuilder()
+          .excludeFieldsWithoutExposeAnnotation()
+          .serializeNulls()
+          .setPrettyPrinting()
+          .create()
+          .toJson(model);
     } else {
-      return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().serializeNulls().create()
+      return new GsonBuilder()
+          .excludeFieldsWithoutExposeAnnotation()
+          .serializeNulls()
+          .create()
           .toJson(model);
     }
   }
 
   public static String safeGetString(String s) {
-    if (s != null && s.length() != 0)
-      return s;
+    if (s != null && s.length() != 0) return s;
     return null;
   }
 
@@ -145,14 +151,16 @@ public interface ModelElement {
 
   public static JsonObject transformPropertyAssignments(IModelElement sourceElement) {
     ITaggedValueContainer lContainer = sourceElement.getTaggedValues();
-    if (lContainer == null)
-      return null;
+    if (lContainer == null) return null;
 
     JsonObject obj = new JsonObject();
     ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
-    List<String> ignoredClassValues = Arrays.asList(new String[] {
-        StereotypesManager.PROPERTY_RESTRICTED_TO, StereotypesManager.PROPERTY_IS_EXTENSIONAL,
-        StereotypesManager.PROPERTY_IS_POWERTYPE, StereotypesManager.PROPERTY_ORDER});
+    List<String> ignoredClassValues =
+        Arrays.asList(
+            new String[] {
+              StereotypesManager.PROPERTY_RESTRICTED_TO, StereotypesManager.PROPERTY_IS_EXTENSIONAL,
+              StereotypesManager.PROPERTY_IS_POWERTYPE, StereotypesManager.PROPERTY_ORDER
+            });
 
     for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++) {
       if (ignoredClassValues.contains(lTaggedValues[i].getName())) {
@@ -164,8 +172,8 @@ public interface ModelElement {
           JsonObject referenceTag = new JsonObject();
 
           if (lTaggedValues[i].getValueAsElement() != null) {
-            referenceTag.addProperty("type",
-                ModelElement.toOntoUMLSchemaType(lTaggedValues[i].getValueAsElement()));
+            referenceTag.addProperty(
+                "type", ModelElement.toOntoUMLSchemaType(lTaggedValues[i].getValueAsElement()));
             referenceTag.addProperty("id", lTaggedValues[i].getValueAsElement().getId());
           } else {
             referenceTag = null;
@@ -173,15 +181,16 @@ public interface ModelElement {
           obj.add(lTaggedValues[i].getName(), referenceTag);
           break;
         case 5:
-          obj.addProperty(lTaggedValues[i].getName(),
-              Integer.parseInt((String) lTaggedValues[i].getValue()));
+          obj.addProperty(
+              lTaggedValues[i].getName(), Integer.parseInt((String) lTaggedValues[i].getValue()));
           break;
         case 6:
-          obj.addProperty(lTaggedValues[i].getName(),
-              Float.parseFloat((String) lTaggedValues[i].getValue()));
+          obj.addProperty(
+              lTaggedValues[i].getName(), Float.parseFloat((String) lTaggedValues[i].getValue()));
           break;
         case 7:
-          obj.addProperty(lTaggedValues[i].getName(),
+          obj.addProperty(
+              lTaggedValues[i].getName(),
               Boolean.parseBoolean((String) lTaggedValues[i].getValue()));
           break;
         default:
@@ -189,8 +198,7 @@ public interface ModelElement {
       }
     }
 
-    if (obj.size() == 0)
-      return null;
+    if (obj.size() == 0) return null;
 
     return obj;
   }
@@ -267,16 +275,17 @@ public interface ModelElement {
         ((IAttribute) element).setDerived(isDerived);
         break;
 
-      case IModelElementFactory.MODEL_TYPE_CLASS: {
-        final String currentName = element.getName() != null ? element.getName().trim() : "";
+      case IModelElementFactory.MODEL_TYPE_CLASS:
+        {
+          final String currentName = element.getName() != null ? element.getName().trim() : "";
 
-        if (isDerived(element)) {
-          element.setName(currentName.substring(1));
-        } else {
-          element.setName("/" + currentName);
+          if (isDerived(element)) {
+            element.setName(currentName.substring(1));
+          } else {
+            element.setName("/" + currentName);
+          }
+          break;
         }
-        break;
-      }
 
       default:
         throw new UnsupportedOperationException(
@@ -288,17 +297,19 @@ public interface ModelElement {
     final String elementType = element.getModelType();
 
     switch (elementType) {
-      case IModelElementFactory.MODEL_TYPE_ASSOCIATION_END: {
-        final IAssociationEnd associationEnd = (IAssociationEnd) element;
-        final IMultiplicity multiplicity = associationEnd.getMultiplicityDetail();
-        return multiplicity != null ? multiplicity.isOrdered() : false;
-      }
+      case IModelElementFactory.MODEL_TYPE_ASSOCIATION_END:
+        {
+          final IAssociationEnd associationEnd = (IAssociationEnd) element;
+          final IMultiplicity multiplicity = associationEnd.getMultiplicityDetail();
+          return multiplicity != null ? multiplicity.isOrdered() : false;
+        }
 
-      case IModelElementFactory.MODEL_TYPE_ATTRIBUTE: {
-        final IAttribute attribute = (IAttribute) element;
-        final IMultiplicity multiplicity = attribute.getMultiplicityDetail();
-        return multiplicity != null ? multiplicity.isOrdered() : false;
-      }
+      case IModelElementFactory.MODEL_TYPE_ATTRIBUTE:
+        {
+          final IAttribute attribute = (IAttribute) element;
+          final IMultiplicity multiplicity = attribute.getMultiplicityDetail();
+          return multiplicity != null ? multiplicity.isOrdered() : false;
+        }
 
       default:
         throw new UnsupportedOperationException(
@@ -311,27 +322,29 @@ public interface ModelElement {
     IMultiplicity multiplicity = null;
 
     switch (elementType) {
-      case IModelElementFactory.MODEL_TYPE_ASSOCIATION_END: {
-        final IAssociationEnd associationEnd = (IAssociationEnd) element;
-        multiplicity = associationEnd.getMultiplicityDetail();
+      case IModelElementFactory.MODEL_TYPE_ASSOCIATION_END:
+        {
+          final IAssociationEnd associationEnd = (IAssociationEnd) element;
+          multiplicity = associationEnd.getMultiplicityDetail();
 
-        if (multiplicity == null) {
-          multiplicity = IModelElementFactory.instance().createMultiplicity();
-          associationEnd.setMultiplicityDetail(multiplicity);
+          if (multiplicity == null) {
+            multiplicity = IModelElementFactory.instance().createMultiplicity();
+            associationEnd.setMultiplicityDetail(multiplicity);
+          }
+          break;
         }
-        break;
-      }
 
-      case IModelElementFactory.MODEL_TYPE_ATTRIBUTE: {
-        final IAttribute attribute = (IAttribute) element;
-        multiplicity = attribute.getMultiplicityDetail();
+      case IModelElementFactory.MODEL_TYPE_ATTRIBUTE:
+        {
+          final IAttribute attribute = (IAttribute) element;
+          multiplicity = attribute.getMultiplicityDetail();
 
-        if (multiplicity == null) {
-          multiplicity = IModelElementFactory.instance().createMultiplicity();
-          attribute.setMultiplicityDetail(multiplicity);
+          if (multiplicity == null) {
+            multiplicity = IModelElementFactory.instance().createMultiplicity();
+            attribute.setMultiplicityDetail(multiplicity);
+          }
+          break;
         }
-        break;
-      }
 
       default:
         throw new UnsupportedOperationException(
@@ -345,13 +358,15 @@ public interface ModelElement {
     final String elementType = element.getModelType();
 
     switch (elementType) {
-      case IModelElementFactory.MODEL_TYPE_ASSOCIATION_END: {
-        return ((IAssociationEnd) element).isReadOnly();
-      }
+      case IModelElementFactory.MODEL_TYPE_ASSOCIATION_END:
+        {
+          return ((IAssociationEnd) element).isReadOnly();
+        }
 
-      case IModelElementFactory.MODEL_TYPE_ATTRIBUTE: {
-        return ((IAttribute) element).isReadOnly();
-      }
+      case IModelElementFactory.MODEL_TYPE_ATTRIBUTE:
+        {
+          return ((IAttribute) element).isReadOnly();
+        }
 
       default:
         throw new UnsupportedOperationException(
@@ -363,15 +378,17 @@ public interface ModelElement {
     final String elementType = element.getModelType();
 
     switch (elementType) {
-      case IModelElementFactory.MODEL_TYPE_ASSOCIATION_END: {
-        ((IAssociationEnd) element).setReadOnly(isReadOnly);
-        break;
-      }
+      case IModelElementFactory.MODEL_TYPE_ASSOCIATION_END:
+        {
+          ((IAssociationEnd) element).setReadOnly(isReadOnly);
+          break;
+        }
 
-      case IModelElementFactory.MODEL_TYPE_ATTRIBUTE: {
-        ((IAttribute) element).setReadOnly(isReadOnly);
-        break;
-      }
+      case IModelElementFactory.MODEL_TYPE_ATTRIBUTE:
+        {
+          ((IAttribute) element).setReadOnly(isReadOnly);
+          break;
+        }
 
       default:
         throw new UnsupportedOperationException(
@@ -380,8 +397,8 @@ public interface ModelElement {
   }
 
   @SuppressWarnings("unchecked")
-  public static <T extends IModelElement> void forEachSelectedElement(T element,
-      Consumer<T> consumer) {
+  public static <T extends IModelElement> void forEachSelectedElement(
+      T element, Consumer<T> consumer) {
     if (element == null) {
       return;
     }
@@ -399,9 +416,11 @@ public interface ModelElement {
 
     Arrays.stream(selectedDiagramElements)
         .map(selectedDiagramElement -> selectedDiagramElement.getModelElement())
-        .filter(selectedElement -> selectedElement != null
-            && selectedElementType.equals(selectedElement.getModelType()))
-        .forEach((Consumer<? super IModelElement>) consumer);;
+        .filter(
+            selectedElement ->
+                selectedElement != null
+                    && selectedElementType.equals(selectedElement.getModelType()))
+        .forEach((Consumer<? super IModelElement>) consumer);
+    ;
   }
-
 }
