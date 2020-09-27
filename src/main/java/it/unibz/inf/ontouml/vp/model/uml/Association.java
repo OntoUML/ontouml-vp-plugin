@@ -1,11 +1,5 @@
 package it.unibz.inf.ontouml.vp.model.uml;
 
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -20,6 +14,12 @@ import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IMultiplicity;
 import com.vp.plugin.model.ITaggedValueContainer;
 import it.unibz.inf.ontouml.vp.utils.Stereotype;
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Implementation of ModelElement to handle IAssociation objects to be serialized as
@@ -166,16 +166,14 @@ public class Association implements ModelElement {
   }
 
   public void addStereotype(String name) {
-    if (this.stereotypes == null)
-      this.stereotypes = new ArrayList<String>();
+    if (this.stereotypes == null) this.stereotypes = new ArrayList<String>();
 
     this.stereotypes.add(name);
   }
 
   public void removeStereotype(String name) {
 
-    if (this.stereotypes.contains(name))
-      this.stereotypes.remove(name);
+    if (this.stereotypes.contains(name)) this.stereotypes.remove(name);
   }
 
   public List<Property> getProperties() {
@@ -191,16 +189,14 @@ public class Association implements ModelElement {
   }
 
   public void addProperty(Property property) {
-    if (this.properties == null)
-      this.properties = new ArrayList<Property>();
+    if (this.properties == null) this.properties = new ArrayList<Property>();
 
     this.properties.add(property);
   }
 
   public void removeProperty(Property property) {
 
-    if (this.properties.contains(property))
-      this.properties.remove(property);
+    if (this.properties.contains(property)) this.properties.remove(property);
   }
 
   public boolean isAbstract() {
@@ -343,9 +339,13 @@ public class Association implements ModelElement {
     // 5 - Creates new views for the inverted association accordingly
     for (ConnectorViewDescription originalViewDescription : originalViewsDecriptions) {
       final IAssociationUIModel invertedView =
-          (IAssociationUIModel) dm.createConnector(originalViewDescription.diagram, association,
-              originalViewDescription.connectorTargetView,
-              originalViewDescription.connectorSourceView, originalViewDescription.points);
+          (IAssociationUIModel)
+              dm.createConnector(
+                  originalViewDescription.diagram,
+                  association,
+                  originalViewDescription.connectorTargetView,
+                  originalViewDescription.connectorSourceView,
+                  originalViewDescription.points);
 
       if (originalViewDescription.isMasterView) {
         invertedView.toBeMasterView();
