@@ -51,7 +51,7 @@ public class ApplyStereotypeController implements VPContextActionController {
           final boolean shouldProceed = ViewManagerUtils.associationInvertionWarningDialog();
 
           if (shouldProceed) {
-            Association.invertAssociation(clickedAssociation);
+            Association.invertAssociation(clickedAssociation, false);
             applyStereotype(action, clickedAssociation);
           }
         }

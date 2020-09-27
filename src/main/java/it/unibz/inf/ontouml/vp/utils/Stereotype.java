@@ -129,10 +129,6 @@ public class Stereotype {
     return new ArrayList<>(Arrays.asList(SUBKIND, ROLE, PHASE, HISTORICAL_ROLE));
   }
 
-  public static boolean isValid(String stereotype) {
-    return getOntoUMLClassStereotypeNames().contains(stereotype);
-  }
-
   public static boolean isNonSortal(String stereotype) {
     return getNonSortalStereotypeNames().contains(stereotype);
   }

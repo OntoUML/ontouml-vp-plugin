@@ -6,11 +6,28 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.vp.plugin.model.*;
+import com.vp.plugin.model.IAttribute;
+import com.vp.plugin.model.IClass;
+import com.vp.plugin.model.IDataType;
+import com.vp.plugin.model.IEnumerationLiteral;
+import com.vp.plugin.model.IGeneralization;
+import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.ISimpleRelationship;
+import com.vp.plugin.model.ITaggedValue;
+import com.vp.plugin.model.ITaggedValueContainer;
 import it.unibz.inf.ontouml.vp.utils.RestrictedTo;
 import it.unibz.inf.ontouml.vp.utils.Stereotype;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -628,7 +645,7 @@ public class Class implements ModelElement {
 
   public static boolean hasValidStereotype(IClass _class) {
     final String stereotype = ModelElement.getUniqueStereotypeName(_class);
-    return Stereotype.isValid(stereotype);
+    return Stereotype.getOntoUMLClassStereotypeNames().contains(stereotype);
   }
 
   public static boolean isRestrictedToEditable(IClass _class) {

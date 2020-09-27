@@ -717,28 +717,27 @@ public class ViewManagerUtils {
     }
 
     final ViewManager vm = ApplicationManager.instance().getViewManager();
-    final Object[] options = {"Yes", "No", "Yes (do not repeat this warning)"};
+    final Object[] options = {"Yes (ignore warnings)", "Yes", "No"};
 
     int selectedOption =
         vm.showOptionDialog(
             vm.getRootFrame(),
-            "This action will invert the source and the target of your association with "
-                + "side-effect accross all views. Do you wish to continue?",
+            "This action will invert the source and the target of your association\n"
+                + "with side-effect accross all views. Do you wish to continue?",
             "Association Inversion Warning",
             JOptionPane.YES_NO_CANCEL_OPTION,
             JOptionPane.QUESTION_MESSAGE,
             new ImageIcon(getFilePath(SIMPLE_LOGO)),
             options,
-            options[1]);
+            options[2]);
 
     switch (selectedOption) {
-      case JOptionPane.CANCEL_OPTION:
-        // Borrows the value for "Cancel" as a second "Yes (do not repeat this warning)"
+      case 0:
         projectConfig.setIgnoreAssociationInversionWarning(true);
         config.save();
-      case JOptionPane.YES_OPTION:
+      case 1:
         return true;
-      case JOptionPane.NO_OPTION:
+      case 2:
         return false;
       default:
         throw new UnsupportedOperationException("Unexpected option value: " + selectedOption);

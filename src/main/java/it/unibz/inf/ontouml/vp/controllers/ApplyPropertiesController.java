@@ -153,7 +153,7 @@ public class ApplyPropertiesController implements VPContextActionController {
 
       case ActionIdManager.ASSOCIATION_PROPERTY_REVERSE_ASSOCIATION:
         ModelElement.forEachSelectedElement(
-            clickedAssociation, clicked -> Association.invertAssociation(clicked));
+            clickedAssociation, clicked -> Association.invertAssociation(clicked, true));
         break;
     }
   }
