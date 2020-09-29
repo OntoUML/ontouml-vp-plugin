@@ -279,6 +279,9 @@ public class Association implements ModelElement {
 
       originalViewDescription.points = points;
       originalViewsDecriptions.add(originalViewDescription);
+
+      // Before deleting the view, we must hide any role name boxes as the trigger null pointer
+      // exceptions during deletion, breaking the diagram
       originalView.setShowFromRoleName(false);
       originalView.setShowFromRoleVisibility(false);
       originalView.setShowToRoleName(false);
@@ -357,14 +360,7 @@ public class Association implements ModelElement {
   }
 
   public static void setNavigability(IAssociation association) {
-    final IClass source = getSource(association);
-    final IClass target = getTarget(association);
-    final String sourceStereotype = ModelElement.getUniqueStereotypeName(source);
-    final String targetStereotype = ModelElement.getUniqueStereotypeName(target);
-    final List<String> classStereotypes = Stereotype.getOntoUMLClassStereotypeNames();
-
-    if (!classStereotypes.contains(sourceStereotype)
-        || !classStereotypes.contains(targetStereotype)) {
+    if (!Association.isOntoumlAssociation(association)) {
       return;
     }
 
@@ -387,23 +383,23 @@ public class Association implements ModelElement {
     String aggregationKind = IAssociationEnd.AGGREGATION_KIND_NONE;
 
     switch (stereotype) {
-      case Stereotype.COMPONENT_OF:
       case Stereotype.MEMBER_OF:
+        aggregationKind = IAssociationEnd.AGGREGATION_KIND_SHARED;
+        break;
+      case Stereotype.COMPONENT_OF:
       case Stereotype.SUB_COLLECTION_OF:
       case Stereotype.SUB_QUANTITY_OF:
       case Stereotype.PARTICIPATIONAL:
         aggregationKind = IAssociationEnd.AGGREGATION_KIND_COMPOSITED;
         break;
       default:
-        if (!Stereotype.getOntoUMLAssociationStereotypeNames().contains(stereotype)) {
-          // We don't interfere where there is not stereotype
-          return;
-        } else {
+        if (hasValidStereotype(association)) {
           // When there is a non-parthood stereotype we must remove any aggregation kind
           sourceEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
           targetEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
-          return;
         }
+        // We don't interfere where there is not stereotype
+        return;
     }
 
     if (forceOverride) {
@@ -496,7 +492,6 @@ public class Association implements ModelElement {
         break;
 
       case Stereotype.SUB_COLLECTION_OF:
-        // TODO: Review defaults
         sourceMultiplicity = IAssociationEnd.MULTIPLICITY_ONE;
         targetMultiplicity = IAssociationEnd.MULTIPLICITY_ONE;
         break;
@@ -551,9 +546,6 @@ public class Association implements ModelElement {
       case Stereotype.INSTANTIATION:
         sourceMultiplicity = IAssociationEnd.MULTIPLICITY_ZERO_TO_MANY; // Source: lower order type
         targetMultiplicity = IAssociationEnd.MULTIPLICITY_ONE_TO_MANY; // Target: higher order type
-        // TODO: double-check if we should set instantiations read only to false
-        // sourceMustNotBeReadOnly = true;
-        // targetMustNotBeReadOnly = true;
         break;
 
       case Stereotype.BRINGS_ABOUT:
@@ -567,8 +559,6 @@ public class Association implements ModelElement {
         sourceMultiplicity = IAssociationEnd.MULTIPLICITY_ONE; // Source: situation
         targetMultiplicity = IAssociationEnd.MULTIPLICITY_ZERO_TO_ONE; // Target: event
         sourceMustBeReadOnly = true;
-        // TODO: double-check if we should set triggers read only to false on target
-        // targetMustNotBeReadOnly = true;
         break;
 
       default:
@@ -594,5 +584,16 @@ public class Association implements ModelElement {
     if (targetMustBeReadOnly) {
       targetEnd.setReadOnly(true);
     }
+  }
+
+  public static boolean isOntoumlAssociation(IAssociation association) {
+    return (hasValidStereotype(association) || association.stereotypeCount() == 0)
+        && Class.hasValidStereotype(Association.getSource(association))
+        && Class.hasValidStereotype(Association.getTarget(association));
+  }
+
+  public static boolean hasValidStereotype(IAssociation association) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(association);
+    return Stereotype.getOntoUMLAssociationStereotypeNames().contains(stereotype);
   }
 }
