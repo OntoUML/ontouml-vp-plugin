@@ -3,21 +3,15 @@ package it.unibz.inf.ontouml.vp.model.uml;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.vp.plugin.ApplicationManager;
-import com.vp.plugin.DiagramManager;
 import com.vp.plugin.diagram.IDiagramElement;
-import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.diagram.connector.IAssociationUIModel;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IClass;
-import com.vp.plugin.model.IMultiplicity;
-import com.vp.plugin.model.ITaggedValueContainer;
+import it.unibz.inf.ontouml.vp.model.AssociationModelDescription;
+import it.unibz.inf.ontouml.vp.model.PropertyDescription;
 import it.unibz.inf.ontouml.vp.utils.Stereotype;
-import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -98,11 +92,13 @@ public class Association implements ModelElement {
     setName(source.getName());
     setDescription(source.getDescription());
 
-    if (modelElements.contains(source.getFromEnd().getId()))
+    if (modelElements.contains(source.getFromEnd().getId())) {
       addProperty(new Property((IAssociationEnd) source.getFromEnd()));
+    }
 
-    if (modelElements.contains(source.getToEnd().getId()))
+    if (modelElements.contains(source.getToEnd().getId())) {
       addProperty(new Property((IAssociationEnd) source.getToEnd()));
+    }
 
     String[] stereotypes = source.toStereotypeArray();
     for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
@@ -166,14 +162,18 @@ public class Association implements ModelElement {
   }
 
   public void addStereotype(String name) {
-    if (this.stereotypes == null) this.stereotypes = new ArrayList<String>();
+    if (this.stereotypes == null) {
+      this.stereotypes = new ArrayList<String>();
+    }
 
     this.stereotypes.add(name);
   }
 
   public void removeStereotype(String name) {
 
-    if (this.stereotypes.contains(name)) this.stereotypes.remove(name);
+    if (this.stereotypes.contains(name)) {
+      this.stereotypes.remove(name);
+    }
   }
 
   public List<Property> getProperties() {
@@ -189,14 +189,18 @@ public class Association implements ModelElement {
   }
 
   public void addProperty(Property property) {
-    if (this.properties == null) this.properties = new ArrayList<Property>();
+    if (this.properties == null) {
+      this.properties = new ArrayList<Property>();
+    }
 
     this.properties.add(property);
   }
 
   public void removeProperty(Property property) {
 
-    if (this.properties.contains(property)) this.properties.remove(property);
+    if (this.properties.contains(property)) {
+      this.properties.remove(property);
+    }
   }
 
   public boolean isAbstract() {
@@ -239,124 +243,43 @@ public class Association implements ModelElement {
     return (IAssociationEnd) association.getToEnd();
   }
 
-  public static void invertAssociation(IAssociation association, boolean invertEnds) {
+  public static void invertAssociation(IAssociation association) {
     final IClass originalSource = getSource(association);
     final IClass originalTarget = getTarget(association);
     final IAssociationEnd originalSourceEnd = getSourceEnd(association);
     final IAssociationEnd originalTargetEnd = getTargetEnd(association);
+    final PropertyDescription sourceEndDescription = new PropertyDescription(originalSourceEnd);
+    final PropertyDescription targetEndDescription = new PropertyDescription(originalTargetEnd);
+    final List<AssociationModelDescription> originalAssociationsDecriptions =
+        retrieveAndDeleteAssociationModels(association);
 
-    class ConnectorViewDescription {
-      IDiagramUIModel diagram;
-      IDiagramElement connectorSourceView;
-      IDiagramElement connectorTargetView;
-      Point[] points;
-      boolean isMasterView;
-      boolean isShowDirection;
-    }
-
-    final IDiagramElement[] associationViews = association.getDiagramElements();
-    final DiagramManager dm = ApplicationManager.instance().getDiagramManager();
-    final List<ConnectorViewDescription> originalViewsDecriptions = new ArrayList<>();
-
-    // 1 - Stores a description of all views of the original association and deletes them
-    for (int i = 0; associationViews != null && i < associationViews.length; i++) {
-      final IAssociationUIModel originalView = (IAssociationUIModel) associationViews[i];
-      final ConnectorViewDescription originalViewDescription = new ConnectorViewDescription();
-
-      originalViewDescription.diagram = originalView.getDiagramUIModel();
-      originalViewDescription.connectorSourceView = originalView.getFromShape();
-      originalViewDescription.connectorTargetView = originalView.getToShape();
-      originalViewDescription.isMasterView = originalView.isMasterView();
-      originalViewDescription.isShowDirection = originalView.isShowDirection();
-
-      Point[] points = originalView.getPoints();
-
-      if (points != null) {
-        final List<Point> pointsListToReverse = Arrays.asList(points);
-        Collections.reverse(pointsListToReverse);
-        points = pointsListToReverse.toArray(points);
-      }
-
-      originalViewDescription.points = points;
-      originalViewsDecriptions.add(originalViewDescription);
-
-      // Before deleting the view, we must hide any role name boxes as the trigger null pointer
-      // exceptions during deletion, breaking the diagram
-      originalView.setShowFromRoleName(false);
-      originalView.setShowFromRoleVisibility(false);
-      originalView.setShowToRoleName(false);
-      originalView.setShowToRoleVisibility(false);
-      originalView.deleteViewOnly();
-    }
-
-    // 2 - Stores all relevant info on the associations ends before inverting
-    final String sourceAggregation = originalSourceEnd.getAggregationKind();
-    final IMultiplicity sourceMultiplicityDetail = originalSourceEnd.getMultiplicityDetail();
-    final String sourceMultiplicity = originalSourceEnd.getMultiplicity();
-    final String sourceName = originalSourceEnd.getName();
-    final ITaggedValueContainer sourceTaggedValues = originalSourceEnd.getTaggedValues();
-    final boolean isSourceDerived = originalSourceEnd.isDerived();
-    final boolean isSourceReadOnly = originalSourceEnd.isReadOnly();
-    // TODO: include support to redefined and subsetted properties
-    // final IAssociationEnd[] sourceRedefinitions = originalSourceEnd.toRedefinedPropertyArray();
-    // final IAssociationEnd[] sourceSubsettings = originalSourceEnd.toSubsettedPropertyArray();
-
-    final String targetAggregation = originalTargetEnd.getAggregationKind();
-    final IMultiplicity targetMultiplicityDetail = originalTargetEnd.getMultiplicityDetail();
-    final String targetMultiplicity = originalTargetEnd.getMultiplicity();
-    final String targetName = originalTargetEnd.getName();
-    final ITaggedValueContainer targetTaggedValues = originalTargetEnd.getTaggedValues();
-    final boolean isTargetDerived = originalTargetEnd.isDerived();
-    final boolean isTargetReadOnly = originalTargetEnd.isReadOnly();
-
-    // 3 - Inverts the association
     setSource(association, originalTarget);
     setTarget(association, originalSource);
 
-    // 4 - If original association ends are to be kept in place, sets properties as originally
-    // defined
-    if (!invertEnds) {
-      originalSourceEnd.setAggregationKind(targetAggregation);
-      if (targetMultiplicityDetail != null) {
-        originalSourceEnd.setMultiplicityDetail(targetMultiplicityDetail);
-      } else {
-        originalSourceEnd.setMultiplicity(targetMultiplicity);
-      }
-      originalSourceEnd.setName(targetName);
-      originalSourceEnd.setTaggedValues(targetTaggedValues);
-      originalSourceEnd.setDerived(isTargetDerived);
-      originalSourceEnd.setReadOnly(isTargetReadOnly);
+    sourceEndDescription.copyTo(originalTargetEnd);
+    targetEndDescription.copyTo(originalSourceEnd);
 
-      originalTargetEnd.setAggregationKind(sourceAggregation);
-      if (sourceMultiplicityDetail != null) {
-        originalTargetEnd.setMultiplicityDetail(sourceMultiplicityDetail);
-      } else {
-        originalTargetEnd.setMultiplicity(sourceMultiplicity);
-      }
-      originalTargetEnd.setName(sourceName);
-      originalTargetEnd.setTaggedValues(sourceTaggedValues);
-      originalTargetEnd.setDerived(isSourceDerived);
-      originalTargetEnd.setReadOnly(isSourceReadOnly);
+    for (AssociationModelDescription originalAssociationsDecription :
+        originalAssociationsDecriptions) {
+      originalAssociationsDecription.recreateInvertedAssociationModel();
+    }
+  }
+
+  private static List<AssociationModelDescription> retrieveAndDeleteAssociationModels(
+      IAssociation association) {
+    final IDiagramElement[] associationModels = association.getDiagramElements();
+    final List<AssociationModelDescription> associationModelsDecriptions = new ArrayList<>();
+
+    for (int i = 0; associationModels != null && i < associationModels.length; i++) {
+      final IAssociationUIModel associationModel = (IAssociationUIModel) associationModels[i];
+      final AssociationModelDescription associationModelDescription =
+          new AssociationModelDescription(associationModel);
+
+      associationModelsDecriptions.add(associationModelDescription);
+      associationModelDescription.deleteAssociationModel();
     }
 
-    // 5 - Creates new views for the inverted association accordingly
-    for (ConnectorViewDescription originalViewDescription : originalViewsDecriptions) {
-      final IAssociationUIModel invertedView =
-          (IAssociationUIModel)
-              dm.createConnector(
-                  originalViewDescription.diagram,
-                  association,
-                  originalViewDescription.connectorTargetView,
-                  originalViewDescription.connectorSourceView,
-                  originalViewDescription.points);
-
-      if (originalViewDescription.isMasterView) {
-        invertedView.toBeMasterView();
-      }
-
-      invertedView.setShowDirection(originalViewDescription.isShowDirection);
-      invertedView.resetCaption();
-    }
+    return associationModelsDecriptions;
   }
 
   public static void setNavigability(IAssociation association) {

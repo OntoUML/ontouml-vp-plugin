@@ -153,7 +153,7 @@ public class ApplyPropertiesController implements VPContextActionController {
 
       case ActionIdManager.ASSOCIATION_PROPERTY_REVERSE_ASSOCIATION:
         ModelElement.forEachSelectedElement(
-            clickedAssociation, clicked -> Association.invertAssociation(clicked, true));
+            clickedAssociation, clicked -> Association.invertAssociation(clicked));
         break;
     }
   }
@@ -301,7 +301,9 @@ public class ApplyPropertiesController implements VPContextActionController {
           ITaggedValue taggedValue =
               StereotypesManager.reapplyStereotypeAndGetTaggedValue(selectedElement, metaProperty);
 
-          if (taggedValue == null) return;
+          if (taggedValue == null) {
+            return;
+          }
 
           taggedValue.setValue(!value);
         });
@@ -312,7 +314,9 @@ public class ApplyPropertiesController implements VPContextActionController {
         StereotypesManager.reapplyStereotypeAndGetTaggedValue(
             clickedClass, StereotypesManager.PROPERTY_ORDER);
 
-    if (baseTaggedValue == null) return;
+    if (baseTaggedValue == null) {
+      return;
+    }
 
     final SetOrderView dialog = new SetOrderView(baseTaggedValue.getValueAsString());
     ApplicationManager.instance().getViewManager().showDialog(dialog);
@@ -325,7 +329,9 @@ public class ApplyPropertiesController implements VPContextActionController {
               StereotypesManager.reapplyStereotypeAndGetTaggedValue(
                   selectedClass, StereotypesManager.PROPERTY_ORDER);
 
-          if (taggedValue == null) return;
+          if (taggedValue == null) {
+            return;
+          }
 
           taggedValue.setValue(order);
         });

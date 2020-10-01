@@ -1,13 +1,18 @@
 package it.unibz.inf.ontouml.vp.model.uml;
 
-import com.google.gson.JsonObject;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import com.vp.plugin.model.*;
-import com.vp.plugin.model.factory.IModelElementFactory;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+import com.vp.plugin.model.IAssociationClass;
+import com.vp.plugin.model.IAssociationEnd;
+import com.vp.plugin.model.IAttribute;
+import com.vp.plugin.model.IClass;
+import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.IMultiplicity;
+import com.vp.plugin.model.factory.IModelElementFactory;
 
 /**
  * Implementation of ModelElement to handle IAtrribute and IAssociationEnd objects to be serialized
@@ -104,8 +109,9 @@ public class Property implements ModelElement {
               + source.getTypeAsString());
     }
 
-    if (!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED)))
+    if (!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED))) {
       setCardinality(source.getMultiplicity());
+    }
 
     setOrdered(ModelElement.isOrdered(source));
     setDerived(source.isDerived());
@@ -152,8 +158,9 @@ public class Property implements ModelElement {
       }
     }
 
-    if (!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED)))
+    if (!((source.getMultiplicity()).equals(IAttribute.MULTIPLICITY_UNSPECIFIED))) {
       setCardinality(source.getMultiplicity());
+    }
 
     setOrdered(ModelElement.isOrdered(source));
     setDerived(source.isDerived());
@@ -189,7 +196,9 @@ public class Property implements ModelElement {
     setName(null);
     setDescription(null);
 
-    if (type != null) setPropertyType(new Reference(type));
+    if (type != null) {
+      setPropertyType(new Reference(type));
+    }
 
     setCardinality("0..*");
   }
@@ -200,11 +209,15 @@ public class Property implements ModelElement {
     try {
       final IModelElement type = associationEnd.getTypeAsElement();
 
-      if (!type.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) return noStereotype;
+      if (!type.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS)) {
+        return noStereotype;
+      }
 
       final String[] stereotypes = ((IClass) type).toStereotypeArray();
 
-      if (stereotypes != null && stereotypes.length == 1) return stereotypes[0];
+      if (stereotypes != null && stereotypes.length == 1) {
+        return stereotypes[0];
+      }
 
       return noStereotype;
     } catch (Exception e) {
@@ -301,13 +314,17 @@ public class Property implements ModelElement {
   }
 
   public void addStereotype(String name) {
-    if (this.stereotypes == null) this.stereotypes = new ArrayList<String>();
+    if (this.stereotypes == null) {
+      this.stereotypes = new ArrayList<String>();
+    }
 
     this.stereotypes.add(name);
   }
 
   public void removeStereotype(String name) {
-    if (this.stereotypes != null && this.stereotypes.contains(name)) this.stereotypes.remove(name);
+    if (this.stereotypes != null && this.stereotypes.contains(name)) {
+      this.stereotypes.remove(name);
+    }
   }
 
   public JsonObject getPropertyAssignments() {
@@ -327,14 +344,17 @@ public class Property implements ModelElement {
   }
 
   public void addSubsettedProperty(Reference ref) {
-    if (this.subsettedProperties == null) this.subsettedProperties = new ArrayList<Reference>();
+    if (this.subsettedProperties == null) {
+      this.subsettedProperties = new ArrayList<Reference>();
+    }
 
     this.subsettedProperties.add(ref);
   }
 
   public void removeSubsettedProperty(Reference ref) {
-    if (this.subsettedProperties != null && this.subsettedProperties.contains(ref))
+    if (this.subsettedProperties != null && this.subsettedProperties.contains(ref)) {
       this.subsettedProperties.remove(ref);
+    }
   }
 
   public List<Reference> getRedefinedProperties() {
@@ -346,14 +366,17 @@ public class Property implements ModelElement {
   }
 
   public void addRedefinedProperty(Reference ref) {
-    if (this.redefinedProperties == null) this.redefinedProperties = new ArrayList<Reference>();
+    if (this.redefinedProperties == null) {
+      this.redefinedProperties = new ArrayList<Reference>();
+    }
 
     this.redefinedProperties.add(ref);
   }
 
   public void removeRedefinedProperty(Reference ref) {
-    if (this.redefinedProperties != null && this.redefinedProperties.contains(ref))
+    if (this.redefinedProperties != null && this.redefinedProperties.contains(ref)) {
       this.redefinedProperties.remove(ref);
+    }
   }
 
   public String getAggregationKind() {
@@ -398,5 +421,35 @@ public class Property implements ModelElement {
 
   public String getType() {
     return type;
+  }
+
+  public static void removeRedefinedProperties(IAssociationEnd associationEnd) {
+    final IAssociationEnd[] redefinedProperties = associationEnd.toRedefinedPropertyArray();
+
+    for (int i = 0; redefinedProperties != null && i < redefinedProperties.length; i++) {
+      associationEnd.removeRedefinedProperty(redefinedProperties[i]);
+    }
+  }
+
+  public static void removeSubsettedProperties(IAssociationEnd associationEnd) {
+    final IAssociationEnd[] subsettedProperties = associationEnd.toSubsettedPropertyArray();
+
+    for (int i = 0; subsettedProperties != null && i < subsettedProperties.length; i++) {
+      associationEnd.removeSubsettedProperty(subsettedProperties[i]);
+    }
+  }
+
+  public static void addRedefinedProperties(
+      IAssociationEnd associationEnd, IAssociationEnd[] redefinedProperties) {
+    for (int i = 0; redefinedProperties != null && i < redefinedProperties.length; i++) {
+      associationEnd.addRedefinedProperty(redefinedProperties[i]);
+    }
+  }
+
+  public static void addSubsettedProperties(
+      IAssociationEnd associationEnd, IAssociationEnd[] subsettedProperties) {
+    for (int i = 0; subsettedProperties != null && i < subsettedProperties.length; i++) {
+      associationEnd.addSubsettedProperty(subsettedProperties[i]);
+    }
   }
 }
