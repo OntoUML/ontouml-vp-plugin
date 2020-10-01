@@ -79,7 +79,8 @@ public class AssociationModelDescription {
 
     if (currentSource.equals(originalSource) || currentTarget.equals(originalTarget)) {
       throw new IllegalStateException(
-          "Inverted association models can only be created after the original association inverted.");
+          "Inverted association models can only be created after the original association"
+              + " inverted.");
     }
 
     final DiagramManager dm = ApplicationManager.instance().getDiagramManager();

@@ -1,8 +1,5 @@
 package it.unibz.inf.ontouml.vp.model.uml;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -13,6 +10,9 @@ import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IMultiplicity;
 import com.vp.plugin.model.factory.IModelElementFactory;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Implementation of ModelElement to handle IAtrribute and IAssociationEnd objects to be serialized
