@@ -150,11 +150,6 @@ public class ApplyPropertiesController implements VPContextActionController {
       case ActionIdManager.CLASS_PROPERTY_SET_ORDER:
         setOrderProperty(clickedClass);
         break;
-
-      case ActionIdManager.ASSOCIATION_PROPERTY_REVERSE_ASSOCIATION:
-        ModelElement.forEachSelectedElement(
-            clickedAssociation, clicked -> Association.invertAssociation(clicked));
-        break;
     }
   }
 

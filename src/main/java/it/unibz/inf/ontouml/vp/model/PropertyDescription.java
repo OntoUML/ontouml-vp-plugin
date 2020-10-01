@@ -53,4 +53,15 @@ public class PropertyDescription {
     Property.addRedefinedProperties(associationEnd, redefinedProperties);
     Property.addSubsettedProperties(associationEnd, subsettedProperties);
   }
+
+  public void partialCopyTo(IAssociationEnd associationEnd) {
+    associationEnd.setName(name);
+
+    ModelElement.setDerived(associationEnd, isDerived);
+
+    Property.removeRedefinedProperties(associationEnd);
+    Property.removeSubsettedProperties(associationEnd);
+    Property.addRedefinedProperties(associationEnd, redefinedProperties);
+    Property.addSubsettedProperties(associationEnd, subsettedProperties);
+  }
 }

@@ -142,7 +142,7 @@ public class ApplyStereotypeController implements VPContextActionController {
             association,
             selectedAssociation -> {
               if (!selectedOrInvertedAssociations.contains(selectedAssociation)) {
-                Association.invertAssociation(selectedAssociation);
+                Association.invertAssociation(selectedAssociation, true);
                 selectedOrInvertedAssociations.add(selectedAssociation);
               }
             });

@@ -243,7 +243,8 @@ public class Association implements ModelElement {
     return (IAssociationEnd) association.getToEnd();
   }
 
-  public static void invertAssociation(IAssociation association) {
+  public static void invertAssociation(
+      IAssociation association, boolean keepAllAssociationEndPropertiesInPlace) {
     final IClass originalSource = getSource(association);
     final IClass originalTarget = getTarget(association);
     final IAssociationEnd originalSourceEnd = getSourceEnd(association);
@@ -256,8 +257,15 @@ public class Association implements ModelElement {
     setSource(association, originalTarget);
     setTarget(association, originalSource);
 
-    sourceEndDescription.copyTo(originalTargetEnd);
-    targetEndDescription.copyTo(originalSourceEnd);
+    if (keepAllAssociationEndPropertiesInPlace) {
+      sourceEndDescription.copyTo(originalTargetEnd);
+      targetEndDescription.copyTo(originalSourceEnd);
+    } else {
+      sourceEndDescription.partialCopyTo(originalTargetEnd);
+      targetEndDescription.partialCopyTo(originalSourceEnd);
+    }
+
+    setNavigability(association);
 
     for (AssociationModelDescription originalAssociationsDecription :
         originalAssociationsDecriptions) {

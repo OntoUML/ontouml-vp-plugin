@@ -108,10 +108,24 @@
 			</action>
 			-->
         </actionSet>
+        
+        <contextSensitiveActionSet id="it.unibz.inf.ontouml.vp.AssociationActions">
+            <contextTypes all="false"/>
+            <include type="Association"/>
+            
+         	<separator id="it.unibz.inf.ontouml.vp.AssociationActions.separator" menuPath="#"/>
+            
+            <action id="it.unibz.inf.ontouml.vp.AssociationActions.invertAssociation" label="Invert Association" style="normal" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ModelActionController"/>
+            </action>
+            
+        </contextSensitiveActionSet>
 
         <contextSensitiveActionSet id="it.unibz.inf.ontouml.vp.ClassProperties">
             <contextTypes all="false"/>
             <include type="Class"/>
+            
+            <separator id="it.unibz.inf.ontouml.vp.ClassProperties.separator" menuPath="#"/>
             
             <menu id="classPropertiesMenu" label="Meta-Properties" mnemonic="P" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
 
@@ -196,6 +210,8 @@
         <contextSensitiveActionSet id="it.unibz.inf.ontouml.vp.AttributesProperties">
             <contextTypes all="false"/>
             <include type="Attribute"/>
+            
+            <separator id="it.unibz.inf.ontouml.vp.AttributesProperties.separator" menuPath="#"/>
             
             <menu id="attributesPropertiesMenu" label="Meta-Properties" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
             

@@ -161,8 +161,6 @@ public final class ActionIdManager {
   public static final String CLASS_PROPERTY_SET_ORDER =
       "it.unibz.inf.ontouml.vp.ClassProperties.order";
 
-  public static final String ASSOCIATION_PROPERTY_REVERSE_ASSOCIATION =
-      "it.unibz.inf.ontouml.vp.AssociationProperties.reverseAssociation";
   public static final String ASSOCIATION_PROPERTY_SET_IS_ABSTRACT =
       "it.unibz.inf.ontouml.vp.AssociationProperties.isAbstract";
   public static final String ASSOCIATION_PROPERTY_SET_IS_DERIVED =
@@ -186,6 +184,9 @@ public final class ActionIdManager {
       "it.unibz.inf.ontouml.vp.AttributeProperties.isOrdered";
   public static final String ATTRIBUTE_PROPERTY_SET_IS_READ_ONLY =
       "it.unibz.inf.ontouml.vp.AttributeProperties.isReadOnly";
+
+  public static final String ASSOCIATION_ACTION_INVERT_ASSOCIATION =
+      "it.unibz.inf.ontouml.vp.AssociationActions.invertAssociation";
 
   public static String classStereotypeToActionID(String stereotype) {
     switch (stereotype) {

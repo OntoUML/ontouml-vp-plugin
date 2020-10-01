@@ -175,8 +175,9 @@ public class ViewManagerUtils {
 
       verificationDiagramConcludedDialog(errorCount, diagramName);
 
-      if (errorCount == 0)
+      if (errorCount == 0) {
         errorList.add("No issues were found in diagram \"" + diagramName + "\".");
+      }
 
       for (JsonElement elem : response) {
         final JsonObject error = elem.getAsJsonObject();
@@ -224,7 +225,9 @@ public class ViewManagerUtils {
 
       verificationConcludedDialog(errorCount);
 
-      if (errorCount == 0) errorList.add("No issues were found in your project.");
+      if (errorCount == 0) {
+        errorList.add("No issues were found in your project.");
+      }
 
       for (JsonElement elem : response) {
         final JsonObject error = elem.getAsJsonObject();
@@ -426,10 +429,14 @@ public class ViewManagerUtils {
     final IDiagramUIModel[] diagramArray =
         ApplicationManager.instance().getProjectManager().getProject().toDiagramArray();
 
-    if (diagramArray == null) return null;
+    if (diagramArray == null) {
+      return null;
+    }
 
     for (IDiagramUIModel diagram : diagramArray) {
-      if (diagram instanceof IClassDiagramUIModel && diagram.isOpened()) return diagram.getName();
+      if (diagram instanceof IClassDiagramUIModel && diagram.isOpened()) {
+        return diagram.getName();
+      }
     }
 
     return null;
@@ -439,10 +446,14 @@ public class ViewManagerUtils {
     final IDiagramUIModel[] diagramArray =
         ApplicationManager.instance().getProjectManager().getProject().toDiagramArray();
 
-    if (diagramArray == null) return null;
+    if (diagramArray == null) {
+      return null;
+    }
 
     for (IDiagramUIModel diagram : diagramArray) {
-      if (diagram instanceof IClassDiagramUIModel && diagram.isOpened()) return diagram.getId();
+      if (diagram instanceof IClassDiagramUIModel && diagram.isOpened()) {
+        return diagram.getId();
+      }
     }
 
     return null;
@@ -458,10 +469,14 @@ public class ViewManagerUtils {
 
   private static boolean isElementInCurrentDiagram(String id) {
 
-    if (getCurrentClassDiagram() == null) return false;
+    if (getCurrentClassDiagram() == null) {
+      return false;
+    }
 
     for (IDiagramElement element : getCurrentClassDiagram().toDiagramElementArray()) {
-      if (element.getModelElement().getId().equals(id)) return true;
+      if (element.getModelElement().getId().equals(id)) {
+        return true;
+      }
     }
 
     return false;
@@ -475,7 +490,9 @@ public class ViewManagerUtils {
 
       for (JsonElement elem : response) {
         if (isElementInCurrentDiagram(
-            elem.getAsJsonObject().getAsJsonObject("source").get("id").getAsString())) errorCount++;
+            elem.getAsJsonObject().getAsJsonObject("source").get("id").getAsString())) {
+          errorCount++;
+        }
       }
     } catch (JsonSyntaxException e) {
       return 0;
@@ -725,8 +742,9 @@ public class ViewManagerUtils {
     final JPanel _pMessagePane = new JPanel();
     final JLabel _lLineOne =
         new JLabel(
-            "<html>This action will invert the source and the target of<br>"
-                + "your association with side-effect accross all views.<br><br>"
+            "<html>This action will invert the direction of the<br>"
+                + "association in all diagrams it appears. You may<br>"
+                + "want to check if its name is still consistent.<br><br>"
                 + "Do you wish to continue?</html>");
     final JCheckBox _chkHideWarnings = new JCheckBox("Do not show this dialog again");
 
