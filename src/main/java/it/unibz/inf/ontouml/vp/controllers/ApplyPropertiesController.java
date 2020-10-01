@@ -1,28 +1,26 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
-import java.awt.event.ActionEvent;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPContext;
 import com.vp.plugin.action.VPContextActionController;
-import com.vp.plugin.diagram.IDiagramElement;
-import com.vp.plugin.diagram.IDiagramUIModel;
+import com.vp.plugin.model.IAssociation;
+import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IClass;
+import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.factory.IModelElementFactory;
-
 import it.unibz.inf.ontouml.vp.model.Configurations;
+import it.unibz.inf.ontouml.vp.model.uml.Association;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.ActionIdManager;
+import it.unibz.inf.ontouml.vp.utils.RestrictedTo;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
 import it.unibz.inf.ontouml.vp.views.SelectRestrictionsView;
 import it.unibz.inf.ontouml.vp.views.SetOrderView;
+import java.awt.event.ActionEvent;
+import java.util.List;
 
 /**
  * Implementation of context sensitive action of change OntoUML stereotypes in model elements.
@@ -32,171 +30,324 @@ import it.unibz.inf.ontouml.vp.views.SetOrderView;
  */
 public class ApplyPropertiesController implements VPContextActionController {
 
-   @Override
-   public void performAction(VPAction action, VPContext context, ActionEvent event) {
-      if (
-         context.getModelElement() == null || 
-         !(context.getModelElement() instanceof IClass)
-      ) {
-         return ;
-      }
+  @Override
+  public void performAction(VPAction action, VPContext context, ActionEvent event) {
+    final IModelElement clickedElement = context.getModelElement();
+    final String clickedElementType = clickedElement.getModelType();
 
-      final IClass clickedClass = (IClass) context.getModelElement();
+    if (!IModelElementFactory.MODEL_TYPE_ASSOCIATION.equals(clickedElementType)
+        && !IModelElementFactory.MODEL_TYPE_ASSOCIATION_END.equals(clickedElementType)
+        && !IModelElementFactory.MODEL_TYPE_ATTRIBUTE.equals(clickedElementType)
+        && !IModelElementFactory.MODEL_TYPE_CLASS.equals(clickedElementType)) {
+      return;
+    }
 
-      switch (action.getActionId()) {
-         case ActionIdManager.PROPERTY_SET_RESTRICTED_TO:
-            this.setRestrictedTo(context, clickedClass);
-            break;
+    final IAssociation clickedAssociation =
+        IModelElementFactory.MODEL_TYPE_ASSOCIATION.equals(clickedElementType)
+            ? (IAssociation) context.getModelElement()
+            : null;
+    final IClass clickedClass =
+        IModelElementFactory.MODEL_TYPE_CLASS.equals(clickedElementType)
+            ? (IClass) context.getModelElement()
+            : null;
 
-         case ActionIdManager.PROPERTY_SET_IS_ABSTRACT:
-            final boolean isAbstract = clickedClass.isAbstract();
-            forEachSelectedClass(context, cla -> cla.setAbstract(!isAbstract));
-            break;
+    switch (action.getActionId()) {
+      case ActionIdManager.CLASS_PROPERTY_SET_RESTRICTED_TO:
+        this.setRestrictedTo(clickedClass);
+        break;
 
-         case ActionIdManager.PROPERTY_SET_IS_DERIVED:
-            final boolean isDerived = ModelElement.getIsDerived(clickedClass);
-            forEachSelectedClass(context, selected ->  {
-               ModelElement.setIsDerived(selected, !isDerived);
-            });
-            break;
-         case ActionIdManager.PROPERTY_SET_IS_EXTENSIONAL:
-            setBooleanTaggedValue(context, clickedClass, StereotypesManager.PROPERTY_IS_EXTENSIONAL);
-            break;
+      case ActionIdManager.ASSOCIATION_PROPERTY_SET_IS_ABSTRACT:
+      case ActionIdManager.CLASS_PROPERTY_SET_IS_ABSTRACT:
+        {
+          final boolean isAbstract = ModelElement.isAbstract(clickedElement);
+          ModelElement.forEachSelectedElement(
+              clickedElement,
+              selectedElement -> ModelElement.setAbstract(selectedElement, !isAbstract));
+          break;
+        }
 
-         case ActionIdManager.PROPERTY_SET_IS_POWERTYPE:
-            setBooleanTaggedValue(context, clickedClass, StereotypesManager.PROPERTY_IS_POWERTYPE);
-            break;
+      case ActionIdManager.ASSOCIATION_PROPERTY_SET_IS_DERIVED:
+      case ActionIdManager.CLASS_PROPERTY_SET_IS_DERIVED:
+        {
+          final boolean isDerived = ModelElement.isDerived(clickedElement);
+          ModelElement.forEachSelectedElement(
+              clickedElement,
+              selectedElement -> ModelElement.setDerived(selectedElement, !isDerived));
+          break;
+        }
 
-         case ActionIdManager.PROPERTY_SET_ORDER:
-            setOrderProperty(context, clickedClass);
-            break;
-      }
-   }
+      case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_DERIVED:
+        {
+          final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
+          sourceEnd.setDerived(!sourceEnd.isDerived());
+          break;
+        }
 
-   @Override
-   public void update(VPAction action, VPContext context) {
-      if (
-         context.getModelElement() == null || 
-         !(context.getModelElement() instanceof IClass)
-      ) {
-         return ;
-      }
+      case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_DERIVED:
+        {
+          final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
+          targetEnd.setDerived(!targetEnd.isDerived());
+          break;
+        }
 
-      final IClass _class = (IClass) context.getModelElement();
-      final String stereotype = StereotypesManager.getUniqueStereotypeName(_class);
-      final Set<String> allClassStereotypes = StereotypesManager.getOntoUMLClassStereotypeNames();
+      case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_DERIVED:
+        {
+          final boolean isDerived = ModelElement.isDerived(clickedElement);
+          ModelElement.setDerived(clickedElement, !isDerived);
+          break;
+        }
 
-      switch (action.getActionId()) {
-         case ActionIdManager.PROPERTY_SET_RESTRICTED_TO:
-            if (allClassStereotypes.contains(stereotype)) {
-               final boolean isSmartModelingEnabled = 
-                  Configurations.getInstance()
-                     .getProjectConfigurations()
-                     .isSmartModellingEnabled();
-               final List<String> nonFixedRestrictedTo =
-                  Arrays.asList(StereotypesManager.STR_CATEGORY,
-                     StereotypesManager.STR_MIXIN,
-                     StereotypesManager.STR_PHASE_MIXIN,
-                     StereotypesManager.STR_ROLE_MIXIN,
-                     StereotypesManager.STR_HISTORICAL_ROLE_MIXIN);
-               
-               action.setEnabled(!isSmartModelingEnabled ||
-                  nonFixedRestrictedTo.contains(stereotype));
-            } else {
-               action.setEnabled(false);
-            }
-            break;
-         case ActionIdManager.PROPERTY_SET_IS_ABSTRACT:
-            action.setEnabled(true);
-            action.setSelected(_class.isAbstract());
-            break;
-         case ActionIdManager.PROPERTY_SET_IS_DERIVED:
-            action.setEnabled(true);
-            action.setSelected(ModelElement.getIsDerived(_class));
-            break;
-         case ActionIdManager.PROPERTY_SET_IS_EXTENSIONAL:
-            action.setEnabled(StereotypesManager.STR_COLLECTIVE.equals(stereotype));
-            action.setSelected(Class.getIsExtensional(_class));
-            break;
-         case ActionIdManager.PROPERTY_SET_IS_POWERTYPE:
-            action.setEnabled(StereotypesManager.STR_TYPE.equals(stereotype));
-            action.setSelected(Class.getIsPowertype(_class));
-            break;
-         case ActionIdManager.PROPERTY_SET_ORDER:
-            action.setEnabled(_class.hasStereotype(StereotypesManager.STR_TYPE));
-            break;
-      }
-   }
+      case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_ORDERED:
+        {
+          final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
+          ModelElement.setOrdered(sourceEnd, !ModelElement.isOrdered(sourceEnd));
+          break;
+        }
 
-   private void forEachSelectedClass(VPContext context, Consumer<IClass> consumer) {
-      if (!(context.getModelElement() instanceof IClass))
-         return;
+      case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_ORDERED:
+        {
+          final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
+          ModelElement.setOrdered(targetEnd, !ModelElement.isOrdered(targetEnd));
+          break;
+        }
 
-      final IDiagramUIModel diagram = context.getDiagram();
-      final IClass _class = (IClass) context.getModelElement();
+      case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_ORDERED:
+        {
+          final boolean isOrdered = ModelElement.isOrdered(clickedElement);
+          ModelElement.setOrdered(clickedElement, !isOrdered);
+          break;
+        }
 
-      if(diagram == null) {
-         consumer.accept(_class);
-         return ;
-      }
+      case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_READ_ONLY:
+        {
+          final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
+          ModelElement.setReadOnly(sourceEnd, !ModelElement.isReadOnly(sourceEnd));
+          break;
+        }
 
-      final IDiagramElement[] diagramElements = context.getDiagram()
-              .getSelectedDiagramElement();
+      case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_READ_ONLY:
+        {
+          final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
+          ModelElement.setReadOnly(targetEnd, !ModelElement.isReadOnly(targetEnd));
+          break;
+        }
 
-      Arrays.stream(diagramElements)
-              .filter(e -> e.getModelElement().getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS))
-              .map(e -> (IClass) e.getModelElement())
-              .forEach(consumer);
-   }
+      case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_READ_ONLY:
+        {
+          final boolean isReadOnly = ModelElement.isReadOnly(clickedElement);
+          ModelElement.setReadOnly(clickedElement, !isReadOnly);
+          break;
+        }
 
-   private void setBooleanTaggedValue(VPContext context, IClass clickedClass, String metaProperty) {
-      final ITaggedValue booleanTaggedValue = StereotypesManager.reapplyStereotypeAndGetTaggedValue(clickedClass, metaProperty);
-      final boolean value = booleanTaggedValue != null && Boolean.parseBoolean(booleanTaggedValue.getValueAsString());
+      case ActionIdManager.CLASS_PROPERTY_SET_IS_EXTENSIONAL:
+        setBooleanTaggedValue(clickedClass, StereotypesManager.PROPERTY_IS_EXTENSIONAL);
+        break;
 
-      forEachSelectedClass(context, cla -> {
-         ITaggedValue taggedValue = StereotypesManager.reapplyStereotypeAndGetTaggedValue(cla, metaProperty);
+      case ActionIdManager.CLASS_PROPERTY_SET_IS_POWERTYPE:
+        setBooleanTaggedValue(clickedClass, StereotypesManager.PROPERTY_IS_POWERTYPE);
+        break;
 
-         if (taggedValue == null)
+      case ActionIdManager.CLASS_PROPERTY_SET_ORDER:
+        setOrderProperty(clickedClass);
+        break;
+    }
+  }
+
+  @Override
+  public void update(VPAction action, VPContext context) {
+    final IModelElement clickedElement = context.getModelElement();
+    final String clickedElementType = clickedElement.getModelType();
+
+    if (!IModelElementFactory.MODEL_TYPE_ASSOCIATION.equals(clickedElementType)
+        && !IModelElementFactory.MODEL_TYPE_ASSOCIATION_END.equals(clickedElementType)
+        && !IModelElementFactory.MODEL_TYPE_ATTRIBUTE.equals(clickedElementType)
+        && !IModelElementFactory.MODEL_TYPE_CLASS.equals(clickedElementType)) {
+      action.setEnabled(false);
+      return;
+    }
+
+    final IClass clickedClass =
+        IModelElementFactory.MODEL_TYPE_CLASS.equals(clickedElementType)
+            ? (IClass) context.getModelElement()
+            : null;
+    final IAssociation clickedAssociation =
+        IModelElementFactory.MODEL_TYPE_ASSOCIATION.equals(clickedElementType)
+            ? (IAssociation) context.getModelElement()
+            : null;
+    final boolean isSmartModelingEnabled =
+        Configurations.getInstance().getProjectConfigurations().isSmartModellingEnabled();
+    boolean enabled = true;
+
+    switch (action.getActionId()) {
+      case ActionIdManager.ASSOCIATION_PROPERTY_SET_IS_ABSTRACT:
+        action.setSelected(ModelElement.isAbstract(clickedElement));
+        break;
+
+      case ActionIdManager.CLASS_PROPERTY_SET_IS_ABSTRACT:
+        action.setSelected(clickedClass.isAbstract());
+        enabled = Class.isAbstractEditable(clickedClass) || !isSmartModelingEnabled;
+        break;
+
+      case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_DERIVED:
+        {
+          final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
+          action.setSelected(sourceEnd.isDerived());
+          enabled = true;
+          break;
+        }
+
+      case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_DERIVED:
+        {
+          final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
+          action.setSelected(targetEnd.isDerived());
+          enabled = true;
+          break;
+        }
+
+      case ActionIdManager.ASSOCIATION_PROPERTY_SET_IS_DERIVED:
+      case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_DERIVED:
+      case ActionIdManager.CLASS_PROPERTY_SET_IS_DERIVED:
+        action.setSelected(ModelElement.isDerived(clickedElement));
+        enabled = true;
+        break;
+
+      case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_ORDERED:
+        {
+          final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
+          action.setSelected(ModelElement.isOrdered(sourceEnd));
+          enabled = true;
+          break;
+        }
+
+      case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_ORDERED:
+        {
+          final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
+          action.setSelected(ModelElement.isOrdered(targetEnd));
+          enabled = true;
+          break;
+        }
+
+      case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_ORDERED:
+        action.setSelected(ModelElement.isOrdered(clickedElement));
+        enabled = true;
+        break;
+
+      case ActionIdManager.ASSOCIATION_PROPERTY_SOURCE_SET_IS_READ_ONLY:
+        {
+          final IAssociationEnd sourceEnd = Association.getSourceEnd(clickedAssociation);
+          action.setSelected(ModelElement.isReadOnly(sourceEnd));
+          enabled = true;
+          break;
+        }
+
+      case ActionIdManager.ASSOCIATION_PROPERTY_TARGET_SET_IS_READ_ONLY:
+        {
+          final IAssociationEnd targetEnd = Association.getTargetEnd(clickedAssociation);
+          action.setSelected(ModelElement.isReadOnly(targetEnd));
+          enabled = true;
+          break;
+        }
+
+      case ActionIdManager.ATTRIBUTE_PROPERTY_SET_IS_READ_ONLY:
+        action.setSelected(ModelElement.isReadOnly(clickedElement));
+        enabled = true;
+        break;
+
+      case ActionIdManager.CLASS_PROPERTY_SET_RESTRICTED_TO:
+        enabled =
+            Class.isRestrictedToEditable(clickedClass)
+                || (!isSmartModelingEnabled && Class.hasValidStereotype(clickedClass));
+        break;
+
+      case ActionIdManager.CLASS_PROPERTY_SET_IS_EXTENSIONAL:
+        action.setSelected(Class.isExtensional(clickedClass));
+        enabled =
+            Class.isCollective(clickedClass)
+                || Class.hasCollectiveNature(clickedClass)
+                || (!isSmartModelingEnabled && Class.hasValidStereotype(clickedClass));
+        break;
+
+      case ActionIdManager.CLASS_PROPERTY_SET_IS_POWERTYPE:
+        action.setSelected(Class.isPowertype(clickedClass));
+        enabled = Class.isType(clickedClass);
+        break;
+
+      case ActionIdManager.CLASS_PROPERTY_SET_ORDER:
+        enabled = Class.isType(clickedClass);
+        if (Class.hasValidStereotype(clickedClass)) {
+          String order = Class.getOrderOr(clickedClass).orElse("1");
+          action.setLabel("Set order" + " (" + order + ")");
+        }
+        break;
+    }
+
+    action.setEnabled(enabled);
+  }
+
+  private void setBooleanTaggedValue(IClass clickedClass, String metaProperty) {
+    final ITaggedValue booleanTaggedValue =
+        StereotypesManager.reapplyStereotypeAndGetTaggedValue(clickedClass, metaProperty);
+    final boolean value =
+        booleanTaggedValue != null && Boolean.parseBoolean(booleanTaggedValue.getValueAsString());
+
+    ModelElement.forEachSelectedElement(
+        clickedClass,
+        selectedElement -> {
+          ITaggedValue taggedValue =
+              StereotypesManager.reapplyStereotypeAndGetTaggedValue(selectedElement, metaProperty);
+
+          if (taggedValue == null) {
             return;
+          }
 
-         taggedValue.setValue(!value);
-      });
-   }
+          taggedValue.setValue(!value);
+        });
+  }
 
-   private void setOrderProperty(VPContext context, IClass clickedClass) {
-      final ITaggedValue baseTaggedValue =
-              StereotypesManager.reapplyStereotypeAndGetTaggedValue(clickedClass, StereotypesManager.PROPERTY_ORDER);
+  private void setOrderProperty(IClass clickedClass) {
+    final ITaggedValue baseTaggedValue =
+        StereotypesManager.reapplyStereotypeAndGetTaggedValue(
+            clickedClass, StereotypesManager.PROPERTY_ORDER);
 
-      if (baseTaggedValue == null)
-         return;
+    if (baseTaggedValue == null) {
+      return;
+    }
 
-      final SetOrderView dialog = new SetOrderView(baseTaggedValue.getValueAsString());
-      ApplicationManager.instance().getViewManager().showDialog(dialog);
-      final String order = dialog.getOrder();
+    final SetOrderView dialog = new SetOrderView(baseTaggedValue.getValueAsString());
+    ApplicationManager.instance().getViewManager().showDialog(dialog);
+    final String order = dialog.getOrder();
 
-      forEachSelectedClass(context, cla -> {
-         ITaggedValue taggedValue = StereotypesManager.reapplyStereotypeAndGetTaggedValue(cla, StereotypesManager.PROPERTY_ORDER);
+    ModelElement.forEachSelectedElement(
+        clickedClass,
+        selectedClass -> {
+          ITaggedValue taggedValue =
+              StereotypesManager.reapplyStereotypeAndGetTaggedValue(
+                  selectedClass, StereotypesManager.PROPERTY_ORDER);
 
-         if (taggedValue == null)
+          if (taggedValue == null) {
             return;
+          }
 
-         taggedValue.setValue(order);
-      });
-   }
+          taggedValue.setValue(order);
+        });
+  }
 
-   private void setRestrictedTo(VPContext context, IClass clickedClass) {
-      System.out.println("\nClicked class: " + clickedClass.getName());
-      String currentRestrictions = Class.getRestrictedTo(clickedClass);
-      currentRestrictions = currentRestrictions == null ? "" : currentRestrictions;
+  private void setRestrictedTo(IClass clickedClass) {
+    String currentRestrictions = Class.getRestrictedTo(clickedClass);
+    currentRestrictions = currentRestrictions == null ? "" : currentRestrictions;
 
-      final SelectRestrictionsView dialog = new SelectRestrictionsView(currentRestrictions);
-      ApplicationManager.instance().getViewManager().showDialog(dialog);
-      final String newRestrictions = dialog.getSelectedValues();
+    String stereotype = ModelElement.getUniqueStereotypeName(clickedClass);
+    List<String> selectableRestrictedTo = RestrictedTo.possibleRestrictedToValues(stereotype);
 
-      forEachSelectedClass(context, cla -> {
-         System.out.println("setRestrictedTo on class: " + cla.getName());
-         Class.setRestrictedTo(cla, newRestrictions);
-      });
-   }
+    final SelectRestrictionsView dialog =
+        new SelectRestrictionsView(currentRestrictions, selectableRestrictedTo);
+    ApplicationManager.instance().getViewManager().showDialog(dialog);
+    final String newRestrictions = dialog.getSelectedValues();
 
+    ModelElement.forEachSelectedElement(
+        clickedClass,
+        selectedClass -> {
+          Class.setRestrictedTo(selectedClass, newRestrictions);
+        });
+  }
 }

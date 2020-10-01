@@ -5,7 +5,7 @@
 
     <groupId>it.unibz.inf.ontouml</groupId>
     <artifactId>ontouml-vp-plugin</artifactId>
-    <version>0.4.0-alpha1</version>
+    <version>0.4.0-alpha2</version>
 
     <name>OntoUML 2 Plugin for Visual Paradigm</name>
 
@@ -178,8 +178,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -252,6 +252,24 @@
                         <argument>${visualparadigm.app.dir}</argument>
                     </arguments>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.coveo</groupId>
+                <artifactId>fmt-maven-plugin</artifactId>
+                <version>2.10</version>
+                <configuration>
+                    <verbose>true</verbose>
+                    <skip>false</skip>
+                    <style>google</style>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
 

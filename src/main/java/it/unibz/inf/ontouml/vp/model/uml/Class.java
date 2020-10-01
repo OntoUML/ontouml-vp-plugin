@@ -1,18 +1,5 @@
 package it.unibz.inf.ontouml.vp.model.uml;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -28,594 +15,660 @@ import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.ISimpleRelationship;
 import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
-
+import it.unibz.inf.ontouml.vp.utils.RestrictedTo;
+import it.unibz.inf.ontouml.vp.utils.Stereotype;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
- * Implementation of ModelElement to handle IClass and IDataType objects to be
- * serialized as ontouml-schema/Class
+ * Implementation of ModelElement to handle IClass and IDataType objects to be serialized as
+ * ontouml-schema/Class
  *
  * @author Claudenir Fonseca
  * @author Tiago Prince Sales
  * @author Victor Viola
  */
-
 public class Class implements ModelElement {
 
-   private final IModelElement sourceModelElement;
+  private final IModelElement sourceModelElement;
 
-   @SerializedName("type")
-   @Expose
-   private final String type;
+  @SerializedName("type")
+  @Expose
+  private final String type;
 
-   @SerializedName("id")
-   @Expose
-   private final String id;
+  @SerializedName("id")
+  @Expose
+  private final String id;
 
-   @SerializedName("name")
-   @Expose
-   private String name;
+  @SerializedName("name")
+  @Expose
+  private String name;
 
-   @SerializedName("description")
-   @Expose
-   private String description;
+  @SerializedName("description")
+  @Expose
+  private String description;
 
-   @SerializedName("properties")
-   @Expose
-   private Set<Property> properties;
+  @SerializedName("properties")
+  @Expose
+  private Set<Property> properties;
 
-   @SerializedName("literals")
-   @Expose
-   private LinkedList<Literal> literals;
+  @SerializedName("literals")
+  @Expose
+  private LinkedList<Literal> literals;
 
-   @SerializedName("propertyAssignments")
-   @Expose
-   private JsonObject propertyAssignments;
+  @SerializedName("propertyAssignments")
+  @Expose
+  private JsonObject propertyAssignments;
 
-   @SerializedName("stereotypes")
-   @Expose
-   private List<String> stereotypes;
+  @SerializedName("stereotypes")
+  @Expose
+  private List<String> stereotypes;
 
-   @SerializedName("isAbstract")
-   @Expose
-   private boolean isAbstract;
+  @SerializedName("isAbstract")
+  @Expose
+  private boolean isAbstract;
 
-   @SerializedName("isDerived")
-   @Expose
-   private boolean isDerived;
+  @SerializedName("isDerived")
+  @Expose
+  private boolean isDerived;
 
-   @SerializedName("allowed")
-   @Expose
-   private JsonArray restrictedTo;
+  @SerializedName("allowed")
+  @Expose
+  private JsonArray restrictedTo;
 
-   @SerializedName("isExtensional")
-   @Expose
-   private JsonElement isExtensional;
+  @SerializedName("isExtensional")
+  @Expose
+  private JsonElement isExtensional;
 
-   @SerializedName("isPowertype")
-   @Expose
-   private JsonElement isPowertype;
+  @SerializedName("isPowertype")
+  @Expose
+  private JsonElement isPowertype;
 
-   @SerializedName("order")
-   @Expose
-   private String order;
+  @SerializedName("order")
+  @Expose
+  private String order;
 
-   private Class(IModelElement source) {
-      this.sourceModelElement = source;
-      this.type = ModelElement.TYPE_CLASS;
-      this.id = source.getId();
-      this.properties = null;
-      this.stereotypes = null;
-      this.literals = null;
-   }
+  private Class(IModelElement source) {
+    this.sourceModelElement = source;
+    this.type = ModelElement.TYPE_CLASS;
+    this.id = source.getId();
+    this.properties = null;
+    this.stereotypes = null;
+    this.literals = null;
+  }
 
-   public Class(IClass source) {
-      this((IModelElement) source);
+  public Class(IClass source) {
+    this((IModelElement) source);
 
-      final IAttribute[] attributes = source.toAttributeArray();
-      for (int i = 0; attributes != null && i < attributes.length; i++) {
-         addProperties(new Property(attributes[i]));
+    final IAttribute[] attributes = source.toAttributeArray();
+    for (int i = 0; attributes != null && i < attributes.length; i++) {
+      addProperties(new Property(attributes[i]));
+    }
+
+    final String[] stereotypes = source.toStereotypeArray();
+    for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
+      addStereotype(stereotypes[i]);
+    }
+
+    if (this.stereotypes != null && this.stereotypes.contains(Stereotype.ENUMERATION)) {
+      IEnumerationLiteral[] literalArray = source.toEnumerationLiteralArray();
+      for (int i = 0; literalArray != null && i < literalArray.length; i++)
+        addLiteral(new Literal(literalArray[i]));
+    }
+
+    setAbstract(source.isAbstract());
+    setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
+
+    if (source.getName().trim().startsWith("/")) {
+      setName(source.getName().substring(1));
+      this.isDerived = true;
+    } else {
+      setName(source.getName().trim());
+    }
+
+    setDescription(source.getDescription());
+
+    loadTags(source);
+  }
+
+  public Class(IDataType source) {
+    this((IModelElement) source);
+
+    addStereotype(Stereotype.DATATYPE);
+    setAbstract(false);
+    setDerived(false);
+
+    setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
+
+    if (source.getName().trim().startsWith("/")) {
+      setName(source.getName().substring(1));
+      this.isDerived = true;
+    } else {
+      setName(source.getName().trim());
+    }
+
+    // TODO: change this to apply only to default VP datatypes
+    if (restrictedTo == null) {
+      restrictedTo = new JsonArray();
+      restrictedTo.add("abstract");
+    }
+  }
+
+  public Class(IClass source, HashSet<String> modelElements) {
+    this((IModelElement) source);
+
+    final IAttribute[] attributes = source.toAttributeArray();
+    for (int i = 0; attributes != null && i < attributes.length; i++) {
+      if (modelElements.contains(attributes[i].getId())) addProperties(new Property(attributes[i]));
+    }
+
+    final String[] stereotypes = source.toStereotypeArray();
+    for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
+      addStereotype(stereotypes[i]);
+    }
+
+    if (this.stereotypes != null && this.stereotypes.contains(Stereotype.ENUMERATION)) {
+      IEnumerationLiteral[] literalArray = source.toEnumerationLiteralArray();
+      for (int i = 0; literalArray != null && i < literalArray.length; i++)
+        addLiteral(new Literal(literalArray[i]));
+    }
+
+    setAbstract(source.isAbstract());
+    setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
+
+    if (source.getName().trim().startsWith("/")) {
+      setName(source.getName().substring(1));
+      this.isDerived = true;
+    } else {
+      setName(source.getName().trim());
+    }
+
+    setDescription(source.getDescription());
+
+    loadTags(source);
+  }
+
+  private void loadTags(IClass source) {
+    if (source.getTaggedValues() != null) {
+      final JsonParser parser = new JsonParser();
+
+      if (hasRestrictedTo(source)) {
+        String restrictedTo = getRestrictedTo(source);
+
+        if (restrictedTo == null) {
+          this.restrictedTo = null;
+        } else {
+          restrictedTo = restrictedTo.trim().replaceAll(" +", ",").replaceAll(",", "\",\"");
+
+          final JsonElement restrictedToArray =
+              !restrictedTo.equals("")
+                  ? parser.parse("[\"" + restrictedTo + "\"]")
+                  : parser.parse("[]");
+          this.restrictedTo =
+              restrictedToArray.isJsonArray() && ((JsonArray) restrictedToArray).size() > 0
+                  ? (JsonArray) restrictedToArray
+                  : null;
+        }
       }
 
-      final String[] stereotypes = source.toStereotypeArray();
-      for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
-         addStereotype(stereotypes[i]);
-      }
-
-      if (this.stereotypes != null && this.stereotypes.contains(StereotypesManager.STR_ENUMERATION)) {
-         IEnumerationLiteral[] literalArray = source.toEnumerationLiteralArray();
-         for (int i = 0; literalArray != null && i < literalArray.length; i++)
-            addLiteral(new Literal(literalArray[i]));
-      }
-
-      setAbstract(source.isAbstract());
-      setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
-
-      if (source.getName().trim().startsWith("/")) {
-         setName(source.getName().substring(1));
-         this.isDerived = true;
+      if (hasIsExtensional(source)) {
+        this.isExtensional = parser.parse("" + isExtensional(source));
       } else {
-         setName(source.getName().trim());
+        this.isExtensional = parser.parse("null");
       }
 
-      setDescription(source.getDescription());
-
-      loadTags(source);
-   }
-
-   public Class(IDataType source) {
-      this((IModelElement) source);
-
-      addStereotype(StereotypesManager.STR_DATATYPE);
-      setAbstract(false);
-      setDerived(false);
-
-      setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
-
-      if (source.getName().trim().startsWith("/")) {
-         setName(source.getName().substring(1));
-         this.isDerived = true;
+      if (hasIsPowertype(source)) {
+        this.isPowertype = parser.parse("" + isPowertype(source));
       } else {
-         setName(source.getName().trim());
+        this.isPowertype = parser.parse("null");
       }
 
-      // TODO: change this to apply only to default VP datatypes
-      if (restrictedTo == null) {
-         restrictedTo = new JsonArray();
-         restrictedTo.add("abstract");
+      if (hasOrder(source)) {
+        this.order = getOrder(source);
       }
+    }
+  }
 
-   }
+  @Override
+  public IModelElement getSourceModelElement() {
+    return this.sourceModelElement;
+  }
 
-   public Class(IClass source, HashSet<String> modelElements) {
-      this((IModelElement) source);
+  @Override
+  public String getId() {
+    return getSourceModelElement().getId();
+  }
 
-      final IAttribute[] attributes = source.toAttributeArray();
-      for (int i = 0; attributes != null && i < attributes.length; i++) {
-         if (modelElements.contains(attributes[i].getId()))
-            addProperties(new Property(attributes[i]));
+  @Override
+  public String getOntoUMLType() {
+    return this.type;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = ModelElement.safeGetString(name);
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = ModelElement.safeGetString(description);
+    ;
+  }
+
+  public Set<Property> getProperties() {
+    return properties;
+  }
+
+  public void addProperties(Property property) {
+    if (this.properties == null) this.properties = new HashSet<Property>();
+
+    this.properties.add(property);
+  }
+
+  public void removeProperties(Property property) {
+    if (this.properties != null && this.properties.contains(property))
+      this.properties.remove(property);
+  }
+
+  public JsonObject getPropertyAssignments() {
+    return propertyAssignments;
+  }
+
+  public void setPropertyAssignments(JsonObject propertyAssignments) {
+    this.propertyAssignments = propertyAssignments;
+  }
+
+  public List<String> getStereotypes() {
+    return this.stereotypes;
+  }
+
+  public void setStereotypes(List<String> stereotypes) {
+    this.stereotypes = stereotypes;
+  }
+
+  public String getStereotype(int position) {
+    return this.stereotypes.get(position);
+  }
+
+  public void addStereotype(String name) {
+    if (this.stereotypes == null) this.stereotypes = new ArrayList<String>();
+
+    this.stereotypes.add(name);
+  }
+
+  public void removeStereotype(String name) {
+    if (this.stereotypes != null && this.stereotypes.contains(name)) this.stereotypes.remove(name);
+  }
+
+  public boolean isAbstract() {
+    return this.isAbstract;
+  }
+
+  public void setAbstract(boolean isAbstract) {
+    this.isAbstract = isAbstract;
+  }
+
+  public boolean isDerived() {
+    return this.isDerived;
+  }
+
+  public void setDerived(boolean isDerived) {
+    this.isDerived = isDerived;
+  }
+
+  public LinkedList<Literal> getLiterals() {
+    return literals;
+  }
+
+  public void setLiterals(LinkedList<Literal> literals) {
+    this.literals = literals;
+  }
+
+  public void addLiteral(Literal literal) {
+    if (getLiterals() == null) {
+      setLiterals(new LinkedList<Literal>());
+    }
+
+    this.literals.add(literal);
+  }
+
+  public static Set<IClass> getParents(IClass _class) {
+    final Set<IClass> parents = new HashSet<IClass>();
+    final ISimpleRelationship[] relationships = _class.toToRelationshipArray();
+
+    for (int i = 0; relationships != null && i < relationships.length; i++) {
+      if (relationships[i] instanceof IGeneralization) {
+        final IGeneralization generalization = (IGeneralization) relationships[i];
+        final IModelElement parent = Generalization.getGeneral(generalization);
+
+        if (parent instanceof IClass) {
+          parents.add((IClass) parent);
+        }
       }
+    }
 
-      final String[] stereotypes = source.toStereotypeArray();
-      for (int i = 0; stereotypes != null && i < stereotypes.length; i++) {
-         addStereotype(stereotypes[i]);
+    return parents;
+  }
+
+  public static Set<IClass> getChildren(IClass _class) {
+    final Set<IClass> children = new HashSet<IClass>();
+    final ISimpleRelationship[] relationships = _class.toFromRelationshipArray();
+
+    for (int i = 0; relationships != null && i < relationships.length; i++) {
+      if (relationships[i] instanceof IGeneralization) {
+        final IGeneralization generalization = (IGeneralization) relationships[i];
+        final IModelElement child = Generalization.getSpecific(generalization);
+
+        if (child instanceof IClass) {
+          children.add((IClass) child);
+        }
       }
+    }
 
-      if (this.stereotypes != null && this.stereotypes.contains(StereotypesManager.STR_ENUMERATION)) {
-         IEnumerationLiteral[] literalArray = source.toEnumerationLiteralArray();
-         for (int i = 0; literalArray != null && i < literalArray.length; i++)
-            addLiteral(new Literal(literalArray[i]));
+    return children;
+  }
+
+  public static Set<IClass> getAncestors(IClass _class) {
+    final Set<IClass> ancestors = new HashSet<IClass>();
+    final Set<IClass> parents = getChildren(_class);
+
+    for (IClass parent : parents) {
+      ancestors.addAll(getDescendants(parent));
+      ancestors.add(parent);
+    }
+
+    return ancestors;
+  }
+
+  public static Set<IClass> getDescendants(IClass _class) {
+    final Set<IClass> descendants = new HashSet<IClass>();
+    final Set<IClass> children = getChildren(_class);
+
+    for (IClass child : children) {
+      descendants.addAll(getDescendants(child));
+      descendants.add(child);
+    }
+
+    return descendants;
+  }
+
+  public static void applyOnChildren(IClass _class, Consumer<IClass> function) {
+    final Set<IClass> children = getChildren(_class);
+
+    for (IClass child : children) {
+      function.accept(child);
+    }
+  }
+
+  public static void applyOnParents(IClass _class, Consumer<IClass> function) {
+    final Set<IClass> parents = getParents(_class);
+
+    for (IClass parent : parents) {
+      function.accept(parent);
+    }
+  }
+
+  public static void applyOnDescendants(IClass _class, Function<IClass, Boolean> function) {
+    final Set<IClass> children = getChildren(_class);
+
+    for (IClass child : children) {
+      final boolean shouldContinue = function.apply(child);
+      if (shouldContinue) {
+        applyOnDescendants(child, function);
       }
+    }
+  }
 
-      setAbstract(source.isAbstract());
-      setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
+  public static void applyOnAncestors(IClass _class, Function<IClass, Boolean> function) {
+    final Set<IClass> parents = getParents(_class);
 
-      if (source.getName().trim().startsWith("/")) {
-         setName(source.getName().substring(1));
-         this.isDerived = true;
-      } else {
-         setName(source.getName().trim());
+    for (IClass parent : parents) {
+      final boolean shouldContinue = function.apply(parent);
+      if (shouldContinue) {
+        applyOnAncestors(parent, function);
       }
+    }
+  }
 
-      setDescription(source.getDescription());
+  public static void setRestrictedTo(IClass _class, String restrictions) {
+    if (_class.getTaggedValues() == null) {
+      return;
+    }
 
-      loadTags(source);
-   }
+    System.out.println("WILL TRY TO SET VALUE: " + restrictions);
 
-   private void loadTags(IClass source) {
-      if (source.getTaggedValues() != null) {
-         final JsonParser parser = new JsonParser();
+    Iterator<?> values = _class.getTaggedValues().taggedValueIterator();
 
-         if(hasRestrictedTo(source)) {
-            String restrictedTo = getRestrictedTo(source);
+    while (values != null && values.hasNext()) {
+      final ITaggedValue value = (ITaggedValue) values.next();
 
-            if (restrictedTo == null) {
-               this.restrictedTo = null;
-            } else {
-               restrictedTo = restrictedTo.trim()
-                     .replaceAll(" +", ",").replaceAll(",", "\",\"");
-               
-            final JsonElement restrictedToArray = !restrictedTo.equals("") ?
-                  parser.parse("[\"" + restrictedTo + "\"]") :
-                  parser.parse("[]");
-            this.restrictedTo = 
-                  restrictedToArray.isJsonArray() && ((JsonArray) restrictedToArray).size() > 0 ?
-                  (JsonArray) restrictedToArray : null;
-            }
-         }
+      if (value.getName().equals(StereotypesManager.PROPERTY_RESTRICTED_TO)) {
+        final String notNull = restrictions != null ? restrictions : "";
+        final List<String> sortList = Arrays.asList(notNull.split("\\s+"));
+        Collections.sort(sortList);
+        final Set<String> noDuplicates = new LinkedHashSet<>(sortList);
+        final String newRestrictions = noDuplicates.toString().replaceAll("[\\[\\],]", "").trim();
+        final String currentRestrictions =
+            value.getValueAsString() != null ? value.getValueAsString() : "";
 
-         if(hasIsExtensional(source)) {
-            this.isExtensional = parser.parse(""+getIsExtensional(source));
-         } else {
-            this.isExtensional = parser.parse("null");
-         }
+        if (!currentRestrictions.equals(newRestrictions)) {
+          value.setValue(newRestrictions);
+        }
 
-         if(hasIsPowertype(source)) {
-            this.isPowertype = parser.parse(""+getIsPowertype(source));
-         } else {
-            this.isPowertype = parser.parse("null");
-         }
+        System.out.println("NEW VALUE: " + value.getValueAsText());
 
-         if(hasOrder(source)) {
-            this.order = getOrder(source);
-         }
+        return;
       }
-   }
+    }
+  }
 
-   @Override
-   public IModelElement getSourceModelElement() {
-      return this.sourceModelElement;
-   }
+  private static void setDefaultRestrictedTo(IClass element, String stereotypeName) {
+    String currentRestrictedTo = getRestrictedTo(element);
 
-   @Override
-   public String getId() {
-      return getSourceModelElement().getId();
-   }
+    if (RestrictedTo.shouldOverrideRestrictedTo(stereotypeName, currentRestrictedTo)) {
+      final String defaultNature = RestrictedTo.getDefaultRestrictedTo(stereotypeName);
+      setRestrictedTo(element, defaultNature);
+    }
+  }
 
-   @Override
-   public String getOntoUMLType() {
-      return this.type;
-   }
+  public static void setDefaultRestrictedTo(IClass _class) {
+    setDefaultRestrictedTo(_class, ModelElement.getUniqueStereotypeName(_class));
+  }
 
-   public String getName() {
-      return name;
-   }
+  public static String getRestrictedTo(IClass _class) {
+    final ITaggedValueContainer container = _class.getTaggedValues();
+    final ITaggedValue restrictedTo =
+        container != null
+            ? container.getTaggedValueByName(StereotypesManager.PROPERTY_RESTRICTED_TO)
+            : null;
 
-   public void setName(String name) {
-      this.name = ModelElement.safeGetString(name);
-   }
+    return restrictedTo != null ? restrictedTo.getValueAsString() : null;
+  }
 
-   public String getDescription() {
-      return description;
-   }
+  public static String getRestrictedTo(Set<IClass> classes) {
+    String classesRestrictions = "";
 
-   public void setDescription(String description) {
-      this.description = ModelElement.safeGetString(description);
-      ;
-   }
-
-   public Set<Property> getProperties() {
-      return properties;
-   }
-
-   public void addProperties(Property property) {
-      if (this.properties == null)
-         this.properties = new HashSet<Property>();
-
-      this.properties.add(property);
-   }
-
-   public void removeProperties(Property property) {
-      if (this.properties != null && this.properties.contains(property))
-         this.properties.remove(property);
-   }
-
-   public JsonObject getPropertyAssignments() {
-      return propertyAssignments;
-   }
-
-   public void setPropertyAssignments(JsonObject propertyAssignments) {
-      this.propertyAssignments = propertyAssignments;
-   }
-
-   public List<String> getStereotypes() {
-      return this.stereotypes;
-   }
-
-   public void setStereotypes(List<String> stereotypes) {
-      this.stereotypes = stereotypes;
-   }
-
-   public String getStereotype(int position) {
-      return this.stereotypes.get(position);
-   }
-
-   public void addStereotype(String name) {
-      if (this.stereotypes == null)
-         this.stereotypes = new ArrayList<String>();
-
-      this.stereotypes.add(name);
-   }
-
-   public void removeStereotype(String name) {
-      if (this.stereotypes != null && this.stereotypes.contains(name))
-         this.stereotypes.remove(name);
-   }
-
-   public boolean isAbstract() {
-      return this.isAbstract;
-   }
-
-   public void setAbstract(boolean isAbstract) {
-      this.isAbstract = isAbstract;
-   }
-
-   public boolean isDerived() {
-      return this.isDerived;
-   }
-
-   public void setDerived(boolean isDerived) {
-      this.isDerived = isDerived;
-   }
-
-   public LinkedList<Literal> getLiterals() {
-      return literals;
-   }
-
-   public void setLiterals(LinkedList<Literal> literals) {
-      this.literals = literals;
-   }
-
-   public void addLiteral(Literal literal) {
-      if (getLiterals() == null) {
-         setLiterals(new LinkedList<Literal>());
+    for (IClass _class : classes) {
+      final String _classRestrictions = getRestrictedTo(_class);
+      if (_classRestrictions != null) {
+        classesRestrictions += " " + _classRestrictions;
       }
+    }
 
-      this.literals.add(literal);
-   }
+    classesRestrictions =
+        Arrays.stream(classesRestrictions.split("\\s+"))
+            .distinct()
+            .collect(Collectors.joining(" "));
 
-   public static Set<IClass> getParents(IClass _class) {
-		final Set<IClass> parents = new HashSet<IClass>();
-		final ISimpleRelationship[] relationships = _class.toToRelationshipArray();
+    return !classesRestrictions.equals("") ? classesRestrictions : null;
+  }
 
-		for (int i = 0; relationships != null && i < relationships.length; i++) {
-			if(relationships[i] instanceof IGeneralization) {
-				final IGeneralization generalization = (IGeneralization) relationships[i];
-				final IModelElement parent = Generalization.getGeneral(generalization);
+  public static List<String> getRestrictedToList(String restrictedTo) {
+    if (restrictedTo == null || restrictedTo.equals("")) return Collections.emptyList();
 
-				if (parent instanceof IClass) {
-					parents.add((IClass) parent);
-				}
-			}
-		}
+    return Arrays.asList(restrictedTo.split("\\s+"));
+  }
 
-		return parents;
-	}
+  public static List<String> getRestrictedToList(IClass _class) {
+    return getRestrictedToList(getRestrictedTo(_class));
+  }
 
-	public static Set<IClass> getChildren(IClass _class) {
-		final Set<IClass> children = new HashSet<IClass>();
-		final ISimpleRelationship[] relationships = _class.toFromRelationshipArray();
+  public static boolean hasRestrictedTo(IClass _class) {
+    final ITaggedValueContainer container = _class.getTaggedValues();
+    final ITaggedValue restrictedTo =
+        container != null
+            ? container.getTaggedValueByName(StereotypesManager.PROPERTY_RESTRICTED_TO)
+            : null;
 
-		for (int i = 0; relationships != null && i < relationships.length; i++) {
-			if(relationships[i] instanceof IGeneralization) {
-				final IGeneralization generalization = (IGeneralization) relationships[i];
-				final IModelElement child = Generalization.getSpecific(generalization);
+    return restrictedTo != null;
+  }
 
-				if (child instanceof IClass) {
-					children.add((IClass) child);
-				}
-			}
-		}
+  public static String getOrder(IClass _class) {
+    final ITaggedValueContainer container = _class.getTaggedValues();
+    final ITaggedValue order =
+        container != null
+            ? container.getTaggedValueByName(StereotypesManager.PROPERTY_ORDER)
+            : null;
 
-		return children;
-	}
+    return order != null ? order.getValueAsString() : null;
+  }
 
-	public static Set<IClass> getAncestors(IClass _class) {
-		final Set<IClass> ancestors = new HashSet<IClass>();
-		final Set<IClass> parents = getChildren(_class);
+  public static Optional<String> getOrderOr(IClass _class) {
+    return Optional.ofNullable(getOrder(_class));
+  }
 
-		for (IClass parent : parents) {
-			ancestors.addAll(getDescendants(parent));
-			ancestors.add(parent);
-		}
+  public static void setOrder(IClass _class, String newOrder) {
+    final ITaggedValueContainer container = _class.getTaggedValues();
+    final ITaggedValue order =
+        container != null
+            ? container.getTaggedValueByName(StereotypesManager.PROPERTY_ORDER)
+            : null;
 
-		return ancestors;
-	}
+    if (order != null) {
+      order.setValue(newOrder);
+    }
+  }
 
-	public static Set<IClass> getDescendants(IClass _class) {
-		final Set<IClass> descendants = new HashSet<IClass>();
-		final Set<IClass> children = getChildren(_class);
+  public static boolean hasOrder(IClass _class) {
+    final ITaggedValueContainer container = _class.getTaggedValues();
+    final ITaggedValue order =
+        container != null
+            ? container.getTaggedValueByName(StereotypesManager.PROPERTY_ORDER)
+            : null;
 
-		for (IClass child : children) {
-			descendants.addAll(getDescendants(child));
-			descendants.add(child);
-		}
+    return order != null;
+  }
 
-		return descendants;
-	}
+  public static boolean isPowertype(IClass _class) {
+    final ITaggedValueContainer container = _class.getTaggedValues();
+    final ITaggedValue isPowertype =
+        container != null
+            ? container.getTaggedValueByName(StereotypesManager.PROPERTY_IS_POWERTYPE)
+            : null;
+    final String isPowertypeValue = isPowertype != null ? isPowertype.getValueAsString() : "";
 
-	public static void applyOnChildren(IClass _class, Consumer<IClass> function) {
-		final Set<IClass> children = getChildren(_class);
+    return Boolean.parseBoolean(isPowertypeValue);
+  }
 
-		for (IClass child : children) {
-			function.accept(child);
-		}
-	}
+  public static void setIsPowertype(IClass _class, boolean isPowertypeValue) {
+    final ITaggedValueContainer container = _class.getTaggedValues();
+    final ITaggedValue isPowertype =
+        container != null
+            ? container.getTaggedValueByName(StereotypesManager.PROPERTY_IS_POWERTYPE)
+            : null;
 
-	public static void applyOnParents(IClass _class, Consumer<IClass>  function) {
-		final Set<IClass> parents = getParents(_class);
+    if (isPowertype != null) {
+      isPowertype.setValue(isPowertypeValue);
+    }
+  }
 
-		for (IClass parent : parents) {
-			function.accept(parent);
-		}
-	}
+  public static boolean hasIsPowertype(IClass _class) {
+    final ITaggedValueContainer container = _class.getTaggedValues();
+    final ITaggedValue isPowertype =
+        container != null
+            ? container.getTaggedValueByName(StereotypesManager.PROPERTY_IS_POWERTYPE)
+            : null;
 
-	public static void applyOnDescendants(IClass _class, Function<IClass,Boolean> function) {
-		final Set<IClass> children = getChildren(_class);
+    return isPowertype != null;
+  }
 
-		for (IClass child : children) {
-			final boolean shouldContinue = function.apply(child);
-			if(shouldContinue) {
-				applyOnDescendants(child, function);
-			}
-		}
-	}
+  public static boolean isExtensional(IClass _class) {
+    final ITaggedValueContainer container = _class.getTaggedValues();
+    final ITaggedValue isExtensional =
+        container != null
+            ? container.getTaggedValueByName(StereotypesManager.PROPERTY_IS_EXTENSIONAL)
+            : null;
+    final String isExtensionalValue = isExtensional != null ? isExtensional.getValueAsString() : "";
 
-	public static void applyOnAncestors(IClass _class, Function<IClass,Boolean> function) {
-		final Set<IClass> parents = getParents(_class);
+    return Boolean.parseBoolean(isExtensionalValue);
+  }
 
-		for (IClass parent : parents) {
-			final boolean shouldContinue = function.apply(parent);
-			if(shouldContinue) {
-				applyOnAncestors(parent, function);
-			}
-		}
-   }
+  public static void setIsExtensional(IClass _class, boolean isExtensionalValue) {
+    final ITaggedValueContainer container = _class.getTaggedValues();
+    final ITaggedValue isExtensional =
+        container != null
+            ? container.getTaggedValueByName(StereotypesManager.PROPERTY_IS_EXTENSIONAL)
+            : null;
 
-   public static void setRestrictedTo(IClass _class, String restrictions) {
-		if(_class.getTaggedValues() == null) { 
-			return ; 
-		}
+    if (isExtensional != null) {
+      isExtensional.setValue(isExtensionalValue);
+    }
+  }
 
-		Iterator<?> values = _class.getTaggedValues().taggedValueIterator();
-			
-		while(values != null && values.hasNext()) {
-			final ITaggedValue value = (ITaggedValue) values.next();
-			
-			if(
-            value.getName().equals(StereotypesManager.PROPERTY_RESTRICTED_TO)
-         ) {
-            final String notNull = restrictions != null ? restrictions : "";
-				final List<String> sortList = Arrays.asList(notNull.split("\\s+"));
-				Collections.sort(sortList);
-				final Set<String> noDuplicates = new LinkedHashSet<String>(sortList);
-				final String newRestrictions = noDuplicates.toString()
-						.replaceAll("[\\[\\],]", "").trim();
-				final String currentRestrictions = value.getValueAsString() != null ?
-						value.getValueAsString() : "" ;
-				
-				if(!currentRestrictions.equals(newRestrictions)) {
-					value.setValue(newRestrictions);
-				}
+  public static boolean hasIsExtensional(IClass _class) {
+    final ITaggedValueContainer container = _class.getTaggedValues();
+    final ITaggedValue isExtensional =
+        container != null
+            ? container.getTaggedValueByName(StereotypesManager.PROPERTY_IS_EXTENSIONAL)
+            : null;
 
-				return ;
-			}
-      }
-	}
+    return isExtensional != null;
+  }
 
-	private static void setDefaultRestrictedTo(IClass element, String stereotypeName) {
-		final String defaultNature = StereotypesManager.getDefaultRestrictedTo(stereotypeName);
-		setRestrictedTo(element, defaultNature);
-	}
+  public static boolean hasValidStereotype(IClass _class) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(_class);
+    return Stereotype.getOntoUMLClassStereotypeNames().contains(stereotype);
+  }
 
-	public static void setDefaultRestrictedTo(IClass _class) {
-      setDefaultRestrictedTo(_class, 
-         StereotypesManager.getUniqueStereotypeName(_class));
-	}
+  public static boolean isRestrictedToEditable(IClass _class) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(_class);
+    return RestrictedTo.isRestrictedToEditable(stereotype);
+  }
 
-	public static String getRestrictedTo(IClass _class) {
-      final ITaggedValueContainer container = _class.getTaggedValues();
-      final ITaggedValue restrictedTo = container != null ? 
-            container.getTaggedValueByName(StereotypesManager.PROPERTY_RESTRICTED_TO) :
-            null;
-      
-      return restrictedTo != null ? restrictedTo.getValueAsString() : null;
-	}
+  public static boolean isAbstractEditable(IClass _class) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(_class);
+    return stereotype == null || !Stereotype.isNonSortal(stereotype);
+  }
 
-	public static String getRestrictedTo(Set<IClass> classes) {
-      String classesRestrictions = "";
+  public static boolean isCollective(IClass _class) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(_class);
+    return Stereotype.COLLECTIVE.equals(stereotype);
+  }
 
-      for (IClass _class : classes) {
-         final String _classRestrictions = getRestrictedTo(_class);
-         if (_classRestrictions != null) {
-            classesRestrictions += " " + _classRestrictions;
-         }
-      }
+  public static boolean isType(IClass _class) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(_class);
+    return Stereotype.TYPE.equals(stereotype);
+  }
 
-      classesRestrictions = Arrays.stream(classesRestrictions.split("\\s+"))
-            .distinct().collect(Collectors.joining(" "));
-      
-      return !classesRestrictions.equals("") ? classesRestrictions : null;
-	}
-   
-   public static boolean hasRestrictedTo(IClass _class) {
-      final ITaggedValueContainer container = _class.getTaggedValues();
-      final ITaggedValue restrictedTo = container != null ?
-            container.getTaggedValueByName(StereotypesManager.PROPERTY_RESTRICTED_TO) :
-            null;
-      
-      return restrictedTo != null;
-   }
-   
-   public static String getOrder(IClass _class) {
-      final ITaggedValueContainer container = _class.getTaggedValues();
-      final ITaggedValue order = container != null ?
-            container.getTaggedValueByName(StereotypesManager.PROPERTY_ORDER) :
-            null;
-      
-      return order != null ? order.getValueAsString() : null ;
-   }
-
-   public static void setOrder(IClass _class, String newOrder) {
-      final ITaggedValueContainer container = _class.getTaggedValues();
-      final ITaggedValue order = container != null ?
-            container.getTaggedValueByName(StereotypesManager.PROPERTY_ORDER) :
-            null;
-      
-      if (order != null) {
-         order.setValue(newOrder);
-      }
-   }
-
-   public static boolean hasOrder(IClass _class) {
-      final ITaggedValueContainer container = _class.getTaggedValues();
-      final ITaggedValue order = container != null ?
-            container.getTaggedValueByName(StereotypesManager.PROPERTY_ORDER) :
-            null;
-      
-      return order != null;
-   }
-
-   public static boolean getIsPowertype(IClass _class) {
-      final ITaggedValueContainer container = _class.getTaggedValues();
-      final ITaggedValue isPowertype = container != null ?
-            container.getTaggedValueByName(StereotypesManager.PROPERTY_IS_POWERTYPE) :
-            null;
-      final String isPowertypeValue = isPowertype != null ?
-            isPowertype.getValueAsString() : "" ;
-      
-      return Boolean.parseBoolean(isPowertypeValue);
-   }
-
-   public static void setIsPowertype(IClass _class, boolean isPowertypeValue) {
-      final ITaggedValueContainer container = _class.getTaggedValues();
-      final ITaggedValue isPowertype = container != null ?
-            container.getTaggedValueByName(StereotypesManager.PROPERTY_IS_POWERTYPE) :
-            null;
-      
-      if (isPowertype != null) {
-         isPowertype.setValue(isPowertypeValue);
-      }
-   }
-
-   public static boolean hasIsPowertype(IClass _class) {
-      final ITaggedValueContainer container = _class.getTaggedValues();
-      final ITaggedValue isPowertype = container != null ?
-            container.getTaggedValueByName(StereotypesManager.PROPERTY_IS_POWERTYPE) :
-            null;
-      
-      return isPowertype != null;
-   }
-
-   public static boolean getIsExtensional(IClass _class) {
-      final ITaggedValueContainer container = _class.getTaggedValues();
-      final ITaggedValue isExtensional = container != null ?
-            container.getTaggedValueByName(StereotypesManager.PROPERTY_IS_EXTENSIONAL) :
-            null;
-      final String isExtensionalValue = isExtensional != null ?
-            isExtensional.getValueAsString() : "" ;
-      
-      return Boolean.parseBoolean(isExtensionalValue);
-   }
-
-   public static void setIsExtensional(IClass _class, boolean isExtensionalValue) {
-      final ITaggedValueContainer container = _class.getTaggedValues();
-      final ITaggedValue isExtensional = container != null ?
-            container.getTaggedValueByName(StereotypesManager.PROPERTY_IS_EXTENSIONAL) :
-            null;
-      
-      if (isExtensional != null) {
-         isExtensional.setValue(isExtensionalValue);
-      }
-   }
-
-   public static boolean hasIsExtensional(IClass _class) {
-      final ITaggedValueContainer container = _class.getTaggedValues();
-      final ITaggedValue isExtensional = container != null ?
-            container.getTaggedValueByName(StereotypesManager.PROPERTY_IS_EXTENSIONAL) :
-            null;
-      
-      return isExtensional != null;
-   }
-
+  public static boolean hasCollectiveNature(IClass _class) {
+    return RestrictedTo.COLLECTIVE.equals(getRestrictedTo(_class));
+  }
 }
