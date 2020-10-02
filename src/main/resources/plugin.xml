@@ -161,12 +161,6 @@
             
             <menu id="associationPropertiesMenu" label="Meta-Properties" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png"/>
             
-            <action id="it.unibz.inf.ontouml.vp.AssociationProperties.reverseAssociation" label="Invert Association" style="normal" menuPath="associationPropertiesMenu/#">
-                <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyPropertiesController"/>
-            </action>
-            
-            <separator id="it.unibz.inf.ontouml.vp.AssociationProperties.separator2" menuPath="associationPropertiesMenu/#"/>
-            
             <menu id="associationTargetPropertiesMenu" label="Target End" menuPath="associationPropertiesMenu/#"/>
             
             <action id="it.unibz.inf.ontouml.vp.AssociationProperties.Target.isDerived" label="Is Derived" style="toggle" menuPath="associationPropertiesMenu/associationTargetPropertiesMenu/#">
