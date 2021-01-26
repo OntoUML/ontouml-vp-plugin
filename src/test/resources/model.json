@@ -1,0 +1,59 @@
+{
+  "id" : "9e12cd3a-ecee-4f8d-ac36-d856711c1124",
+  "name" : null,
+  "description" : null,
+  "container" : {
+    "empty" : true,
+    "present" : false
+  },
+  "project" : {
+    "empty" : false,
+    "present" : true
+  },
+  "model" : {
+    "empty" : true,
+    "present" : false
+  },
+  "diagrams" : [ ],
+  "type" : "Project",
+  "contents" : [ ],
+  "allContents" : [ ],
+  "allClasses" : [ ],
+  "allRelations" : [ ],
+  "allAttributes" : [ ],
+  "allModelElements" : [ ],
+  "allPackages" : [ ],
+  "allLiterals" : [ ],
+  "allRelationEnds" : [ ],
+  "allGeneralizations" : [ ],
+  "allGeneralizationSets" : [ ],
+  "allTypes" : [ ],
+  "allHistoricalRoles" : [ ],
+  "allHistoricalRoleMixins" : [ ],
+  "allEvents" : [ ],
+  "allSituations" : [ ],
+  "allCategories" : [ ],
+  "allMixins" : [ ],
+  "allRoleMixins" : [ ],
+  "allPhaseMixin" : [ ],
+  "allKinds" : [ ],
+  "allCollectives" : [ ],
+  "allQuantities" : [ ],
+  "allRelators" : [ ],
+  "allQualities" : [ ],
+  "allModes" : [ ],
+  "allSubkinds" : [ ],
+  "allRoles" : [ ],
+  "allPhases" : [ ],
+  "allEnumerations" : [ ],
+  "allDatatypes" : [ ],
+  "allAbstracts" : [ ],
+  "firstName" : {
+    "empty" : true,
+    "present" : false
+  },
+  "firstDescription" : {
+    "empty" : true,
+    "present" : false
+  }
+}

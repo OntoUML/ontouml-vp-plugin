@@ -18,7 +18,8 @@
                 </os>
             </activation>
             <properties>
-                <script.executable>"${project.basedir}${file.separator}scripts${file.separator}run-vp.bat"</script.executable>
+                <script.executable>"${project.basedir}${file.separator}scripts${file.separator}run-vp.bat"
+                </script.executable>
             </properties>
         </profile>
         <profile>
@@ -37,17 +38,48 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <visualparadigm.app.dir>
+            /Applications/Visual Paradigm.app/Contents/Resources/app
         </visualparadigm.app.dir>
         <visualparadigm.plugin.dir>
+            /Users/tpsales/Library/Application Support/VisualParadigm/plugins
         </visualparadigm.plugin.dir>
     </properties>
 
     <dependencies>
         <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.7.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.7.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.truth</groupId>
+            <artifactId>truth</artifactId>
+            <version>1.1.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.truth.extensions</groupId>
+            <artifactId>truth-java8-extension</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.12.1</version>
+        </dependency>
+        <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.8.5</version>
         </dependency>
+
         <dependency>
             <groupId>com.visualparadigm.app</groupId>
             <artifactId>com.visualparadigm.app.lib.openapi</artifactId>
@@ -173,6 +205,14 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
