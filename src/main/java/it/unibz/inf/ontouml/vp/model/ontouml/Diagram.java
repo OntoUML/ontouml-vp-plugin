@@ -5,18 +5,17 @@ import java.util.List;
 
 public class Diagram extends OntoumlElement {
 
-   public Diagram(OntoumlElement container, String id, MultilingualText name) {
-      super(container, id, name);
-   }
+  public Diagram(OntoumlElement container, String id, MultilingualText name) {
+    super(container, id, name);
+  }
 
-   @Override
-   public List<OntoumlElement> getContents() {
-      return Collections.emptyList();
-   }
+  @Override
+  public List<OntoumlElement> getContents() {
+    return Collections.emptyList();
+  }
 
-   @Override
-   public String getType() {
-      return "Diagram";
-   }
-
+  @Override
+  public String getType() {
+    return "Diagram";
+  }
 }
