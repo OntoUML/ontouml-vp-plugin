@@ -121,44 +121,43 @@ public class ProjectConfigurations {
   @SerializedName("ignoreAssociationInversionWarning")
   @Expose()
   private boolean ignoreAssociationInversionWarning;
-  
-  //Transformation properties for Relational Schema
+
+  // Transformation properties for Relational Schema
   @SerializedName("mappingStrategy")
   @Expose()
   private MappingStrategy mappingStrategy;
-	
+
   @SerializedName("targetDBMS")
   @Expose()
   private DBMSSuported targetDBMS;
-	
+
   @SerializedName("standarizeNames")
   @Expose()
   private boolean standardizeNames;
-  
+
   @SerializedName("generateSchema")
   @Expose()
   private boolean generateSchema;
-  
+
   @SerializedName("generateConnection")
   @Expose()
   private boolean generateConnection;
-  
+
   @SerializedName("hostNameConnection")
   @Expose()
   private String hostNameConnection;
-  
+
   @SerializedName("databaseConnection")
   @Expose()
   private String databaseConnection;
-  
+
   @SerializedName("userConnection")
   @Expose()
   private String userConnection;
-  
+
   @SerializedName("passwordConnectino")
   @Expose()
   private String passwordConnectino;
-  
 
   /** Constructor without args to be called when deserializing project settings. */
   public ProjectConfigurations() {
@@ -197,9 +196,9 @@ public class ProjectConfigurations {
     this.isSmartModellingEnabled = ProjectConfigurations.DEFAULT_IS_AUTOMATIC_MODELLING_ENABLED;
     this.ignoreAssociationInversionWarning =
         ProjectConfigurations.DEFAULT_IGNORE_ASSOCIATION_INVERSION_WARNING;
-    
+
     this.targetDBMS = ProjectConfigurations.DEFAULT_DBMS;
-    this.mappingStrategy =  ProjectConfigurations.DEFAULT_MAPPING_STRATEGY;
+    this.mappingStrategy = ProjectConfigurations.DEFAULT_MAPPING_STRATEGY;
     this.standardizeNames = ProjectConfigurations.DEFAULT_STANTDARDIZE_NAMES;
     this.generateSchema = ProjectConfigurations.DEFAULT_GENERATE_SCHEMA;
     this.generateConnection = ProjectConfigurations.DEFAULT_GENERATE_CONNECTION;
@@ -474,158 +473,166 @@ public class ProjectConfigurations {
   public void setIgnoreAssociationInversionWarning(boolean ignoreAssociationInversionWarning) {
     this.ignoreAssociationInversionWarning = ignoreAssociationInversionWarning;
   }
-  
+
   /**
-	 * Informs the mapping strategy for the relational schema.
-	 * 
-	 * @param mappingStrategy
-	 */
-	public void setMappingStrategy(MappingStrategy mappingStrategy) {
-		this.mappingStrategy = mappingStrategy;
-	}
-	
-	/**
-	 * Returns the mapping strategy for the relational schema.
-	 * @return MappingStrategy
-	 */
-	public MappingStrategy getMappingStrategy() {
-		return this.mappingStrategy;
-	}
-	
-	/**
-	 * Checks whether the nomenclature will be standardized in the database.
-	 * @return boolean
-	 */
-	public boolean isStandardizeNames() {
-		return standardizeNames;
-	}
-	
-	/**
-	 * Informs if the nomenclature will be standardized in the database.
-	 * @param standarizeNames
-	 */
-	public void setStandardizeNames(boolean standarizeNames) {
-		this.standardizeNames = standarizeNames;
-	}
-	
-	/**
-	 * Returns the target DBMS for generating the files.
-	 * @return DBMSSuported
-	 */
-	public DBMSSuported getTargetDBMS() {
-		return targetDBMS;
-	}
+   * Informs the mapping strategy for the relational schema.
+   *
+   * @param mappingStrategy
+   */
+  public void setMappingStrategy(MappingStrategy mappingStrategy) {
+    this.mappingStrategy = mappingStrategy;
+  }
 
-	/**
-	 * Informs the target DBMS for generating the files.
-	 * 
-	 * @param targetDBMS
-	 */
-	public void setTargetDBMS(DBMSSuported targetDBMS) {
-		this.targetDBMS = targetDBMS;
-	}
-	
-	/**
-	 * Returns if it is necessary to generate the relational schema for the ontology.
-	 * 
-	 * @return boolean
-	 */
-	public boolean isGenerateSchema() {
-		return generateSchema;
-	}
-	
-	/**
-	 * Informs if it is necessary to generate the relational schema for the ontology.
-	 * @param generateSchema
-	 */
-	public void setGenerateSchema(boolean generateSchema) {
-		this.generateSchema = generateSchema;
-	}
-	
-	/**
-	 * Returns if it is necessary to generate the connection for the database.
-	 * 
-	 * @return boolean
-	 */
-	public boolean isGenerateConnection() {
-		return generateConnection;
-	}
-	
-	/**
-	 * Informs if it is necessary to generate the connection for the database.
-	 * @param generateConnection
-	 */
-	public void setGenerateConnection(boolean generateConnection) {
-		this.generateConnection = generateConnection;
-	}
-	
-	/**
-	 * Returns the host name connection.
-	 * 
-	 * @return string
-	 */
-	public String getHostNameConnection() {
-		return hostNameConnection;
-	}
-	
-	/**
-	 * Informs the host name connection.
-	 * @param hostName
-	 */
-	public void setHostNameConnection(String hostName) {
-		this.hostNameConnection = hostName;
-	}	
-	
-	/**
-	 * Returns the database name connection.
-	 * 
-	 * @return string
-	 */
-	public String getDatabaseNameConnection() {
-		return databaseConnection;
-	}
-	
-	/**
-	 * Informs the database name connection.
-	 * @param databaseName
-	 */
-	public void setDatabaseNameConnection(String databaseName) {
-		this.databaseConnection = databaseName;
-	}
-	
-	/**
-	 * Returns the user name connection.
-	 * 
-	 * @return string
-	 */
-	public String getUserNameConnection() {
-		return userConnection;
-	}
-	
-	/**
-	 * Informs the user name connection.
-	 * @param userName
-	 */
-	public void setUserNameConnection(String userName) {
-		this.userConnection = userName;
-	}
-	
-	/**
-	 * Returns the password connection.
-	 * 
-	 * @return string
-	 */
-	public String getPassword() {
-		return passwordConnectino;
-	}
-	
-	/**
-	 * Informs the password connection.
-	 * @param password
-	 */
-	public void setPassword(String password) {
-		this.passwordConnectino = password;
-	}
-	  
+  /**
+   * Returns the mapping strategy for the relational schema.
+   *
+   * @return MappingStrategy
+   */
+  public MappingStrategy getMappingStrategy() {
+    return this.mappingStrategy;
+  }
 
+  /**
+   * Checks whether the nomenclature will be standardized in the database.
+   *
+   * @return boolean
+   */
+  public boolean isStandardizeNames() {
+    return standardizeNames;
+  }
+
+  /**
+   * Informs if the nomenclature will be standardized in the database.
+   *
+   * @param standarizeNames
+   */
+  public void setStandardizeNames(boolean standarizeNames) {
+    this.standardizeNames = standarizeNames;
+  }
+
+  /**
+   * Returns the target DBMS for generating the files.
+   *
+   * @return DBMSSuported
+   */
+  public DBMSSuported getTargetDBMS() {
+    return targetDBMS;
+  }
+
+  /**
+   * Informs the target DBMS for generating the files.
+   *
+   * @param targetDBMS
+   */
+  public void setTargetDBMS(DBMSSuported targetDBMS) {
+    this.targetDBMS = targetDBMS;
+  }
+
+  /**
+   * Returns if it is necessary to generate the relational schema for the ontology.
+   *
+   * @return boolean
+   */
+  public boolean isGenerateSchema() {
+    return generateSchema;
+  }
+
+  /**
+   * Informs if it is necessary to generate the relational schema for the ontology.
+   *
+   * @param generateSchema
+   */
+  public void setGenerateSchema(boolean generateSchema) {
+    this.generateSchema = generateSchema;
+  }
+
+  /**
+   * Returns if it is necessary to generate the connection for the database.
+   *
+   * @return boolean
+   */
+  public boolean isGenerateConnection() {
+    return generateConnection;
+  }
+
+  /**
+   * Informs if it is necessary to generate the connection for the database.
+   *
+   * @param generateConnection
+   */
+  public void setGenerateConnection(boolean generateConnection) {
+    this.generateConnection = generateConnection;
+  }
+
+  /**
+   * Returns the host name connection.
+   *
+   * @return string
+   */
+  public String getHostNameConnection() {
+    return hostNameConnection;
+  }
+
+  /**
+   * Informs the host name connection.
+   *
+   * @param hostName
+   */
+  public void setHostNameConnection(String hostName) {
+    this.hostNameConnection = hostName;
+  }
+
+  /**
+   * Returns the database name connection.
+   *
+   * @return string
+   */
+  public String getDatabaseNameConnection() {
+    return databaseConnection;
+  }
+
+  /**
+   * Informs the database name connection.
+   *
+   * @param databaseName
+   */
+  public void setDatabaseNameConnection(String databaseName) {
+    this.databaseConnection = databaseName;
+  }
+
+  /**
+   * Returns the user name connection.
+   *
+   * @return string
+   */
+  public String getUserNameConnection() {
+    return userConnection;
+  }
+
+  /**
+   * Informs the user name connection.
+   *
+   * @param userName
+   */
+  public void setUserNameConnection(String userName) {
+    this.userConnection = userName;
+  }
+
+  /**
+   * Returns the password connection.
+   *
+   * @return string
+   */
+  public String getPassword() {
+    return passwordConnectino;
+  }
+
+  /**
+   * Informs the password connection.
+   *
+   * @param password
+   */
+  public void setPassword(String password) {
+    this.passwordConnectino = password;
+  }
 }

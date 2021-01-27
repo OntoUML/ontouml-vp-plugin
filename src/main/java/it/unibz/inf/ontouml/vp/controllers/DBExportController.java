@@ -1,7 +1,7 @@
 /**
  * Access class of the Generate Schema toolbar button.
- *  
- * Author: Gustavo Ludovico Guidoni
+ *
+ * <p>Author: Gustavo Ludovico Guidoni
  */
 package it.unibz.inf.ontouml.vp.controllers;
 
@@ -13,29 +13,27 @@ import it.unibz.inf.ontouml.vp.views.DBExportHandler;
 
 public class DBExportController implements VPActionController {
 
-	@Override
-	public void performAction(VPAction action) {
-		
-		DBExportHandler dialog = new DBExportHandler();
+  @Override
+  public void performAction(VPAction action) {
 
-		if( OntoUMLPlugin.getDBExportWindowOpen() == true )
-			return;
-		
-		OntoUMLPlugin.setDBExportWindowOpen(true);
+    DBExportHandler dialog = new DBExportHandler();
 
-		ApplicationManager.instance().getViewManager(). showDialog(dialog);
-	}
+    if (OntoUMLPlugin.getDBExportWindowOpen() == true) return;
 
-	/**
-	 * Called when the menu containing the button is accessed allowing for action
-	 * manipulation, such as enable/disable or selecting the button.
-	 * 
-	 * OBS: DOES NOT apply to this class.
-	 */
-	@Override
-	public void update(VPAction arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-	
+    OntoUMLPlugin.setDBExportWindowOpen(true);
+
+    ApplicationManager.instance().getViewManager().showDialog(dialog);
+  }
+
+  /**
+   * Called when the menu containing the button is accessed allowing for action manipulation, such
+   * as enable/disable or selecting the button.
+   *
+   * <p>OBS: DOES NOT apply to this class.
+   */
+  @Override
+  public void update(VPAction arg0) {
+    // TODO Auto-generated method stub
+
+  }
 }

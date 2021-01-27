@@ -20,7 +20,7 @@ public class ProgressPanel extends JPanel {
   private JProgressBar progressBar;
   private JButton btnCancel;
   private IDialog _dialog;
-  
+
   public ProgressPanel(String text) {
     setSize(new Dimension(200, 100));
 
@@ -39,7 +39,7 @@ public class ProgressPanel extends JPanel {
 
   public ProgressPanel(ServerRequest request) {
     this("Contacting Server...");
-    setSize(new Dimension(200, 120));//Add 20 to the height because add a button
+    setSize(new Dimension(200, 120)); // Add 20 to the height because add a button
 
     btnCancel = new JButton("Cancel");
     btnCancel.addActionListener(
