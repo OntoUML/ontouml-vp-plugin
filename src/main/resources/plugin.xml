@@ -49,6 +49,7 @@
                     menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.JsonExportController" />
             </action>
+            
             <action 
                     id="it.unibz.inf.ontouml.vp.actions.GUFOExportAction"
                     actionType="generalAction"
@@ -60,6 +61,33 @@
                     menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.GUFOExportController" />
             </action>
+            
+            
+			<action 
+                    id="it.unibz.inf.ontouml.vp.actions.DBExportView"
+                    actionType="generalAction"
+                    description="Exports the OntoUML ontology to DB."
+                    style="normal"
+                    tooltip="Exports the OntoUML ontology to DB."
+                    icon="icons/toolbar/export_schema.png"
+                    label="DB Script"
+                    menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.DBExportController" />
+            </action>
+                        
+            
+            <action 
+                    id="it.unibz.inf.ontouml.vp.actions.OBDAExportView"
+                    actionType="generalAction"
+                    description="Export the OntoUMl ontology to OBDA."
+                    style="normal"
+                    tooltip="Export the OntoUMl ontology to OBDA."
+                    icon="icons/toolbar/export_ontop.png"
+                    label="OBDA File"
+                    menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.OBDAExportController" />
+            </action>
+
 
             <action
                     id="it.unibz.inf.ontouml.vp.actions.UpdatePluginAction"
