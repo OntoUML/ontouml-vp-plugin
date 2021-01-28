@@ -34,7 +34,8 @@ class MultilingualTextTest {
 
   @Test
   @DisplayName(
-      "If the requested language does not exist and there is no English text, getText() should retrieve text in the first available language (in alphabetical order)")
+      "If the requested language does not exist and there is no English text, getText() should"
+          + " retrieve text in the first available language (in alphabetical order)")
   void shouldGetFirstLangaugeOnMissing() {
     text.putText("pt", "Oi");
     text.putText("it", "Ciao");
@@ -58,7 +59,8 @@ class MultilingualTextTest {
 
   @Test
   @DisplayName(
-      "If no language is specified, and there is no English text, getText() should retrieve text in the first available language (in alphabetical order)")
+      "If no language is specified, and there is no English text, getText() should retrieve text"
+          + " in the first available language (in alphabetical order)")
   void shouldGetFirstLangaugeByDefault() {
     text.putText("pt", "Oi");
     text.putText("es", "Hola");

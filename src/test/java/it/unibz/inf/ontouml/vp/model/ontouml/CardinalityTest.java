@@ -104,7 +104,8 @@ class CardinalityTest {
 
   @Test
   @DisplayName(
-      "An invalid cardinality of \"a..b\" should still set lower and upper if in the correct pattern")
+      "An invalid cardinality of \"a..b\" should still set lower and upper if in the correct"
+          + " pattern")
   void invalidCardinalitySetsLowerUpper() {
     Cardinality c = new Cardinality("a..b");
     assertThat(c.getLowerBound()).hasValue("a");
@@ -113,7 +114,8 @@ class CardinalityTest {
 
   @Test
   @DisplayName(
-      "An invalid cardinality of \"a..b\" should throw exceptions on getLowerBoundAsInt() and getUpperBoundAsInt()")
+      "An invalid cardinality of \"a..b\" should throw exceptions on getLowerBoundAsInt() and"
+          + " getUpperBoundAsInt()")
   void invalidCardinalityShouldThrowExceptionOnGetAsInt() {
     Cardinality c = new Cardinality("a..b");
     assertThrows(NumberFormatException.class, () -> c.getLowerBoundAsInt());

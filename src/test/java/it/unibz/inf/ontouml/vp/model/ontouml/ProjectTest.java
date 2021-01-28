@@ -61,7 +61,8 @@ class ProjectTest {
 
   @Test
   @DisplayName(
-      "setModel() should propagate the caller as the project of the all direct contents of the argument.")
+      "setModel() should propagate the caller as the project of the all direct contents of the"
+          + " argument.")
   void setModelShouldPropagateProject() {
     Package anotherModel = new Package();
     Package firstChild = anotherModel.createPackage();
@@ -75,7 +76,8 @@ class ProjectTest {
 
   @Test
   @DisplayName(
-      "setModel() should propagate the caller as the project of the all direct/indirect contents of the argument.")
+      "setModel() should propagate the caller as the project of the all direct/indirect contents"
+          + " of the argument.")
   void setModelShouldPropagateProjectToAll() {
     Package anotherModel = new Package();
     Class c1 = anotherModel.createClass();

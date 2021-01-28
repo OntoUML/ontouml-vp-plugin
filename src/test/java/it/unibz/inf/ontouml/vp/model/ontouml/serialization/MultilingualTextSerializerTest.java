@@ -30,7 +30,8 @@ public class MultilingualTextSerializerTest {
 
   @Test
   @DisplayName(
-      "should serialize text object with a multiple value as an object whose fields are the languages")
+      "should serialize text object with a multiple value as an object whose fields are the"
+          + " languages")
   void serializeMultiValuedObjectAsObject() throws IOException {
     MultilingualText text = new MultilingualText();
     text.putText("en", "Person");
