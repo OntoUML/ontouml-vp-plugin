@@ -1,12 +1,12 @@
 {
-  "id" : "0d2e2328-33de-4e98-b9f8-187f04a1f379",
+  "id" : "6e48d1dc-1213-4023-bcad-80ff93686a08",
   "name" : {
-    "pt" : "Meu Project",
-    "en" : "My Project"
+    "en" : "My Project",
+    "pt" : "Meu Project"
   },
   "description" : {
-    "it" : "Il miglior progetto in modellazione concettuale.",
-    "en" : "The best conceptual modeling project."
+    "en" : "The best conceptual modeling project.",
+    "it" : "Il miglior progetto in modellazione concettuale."
   },
   "type" : "Project",
   "model" : {
@@ -22,7 +22,7 @@
       "type" : "Package",
       "propertyAssignments" : null,
       "contents" : [ {
-        "id" : "f5f3e1d0-af44-4fc3-8929-f6c14ea88b65",
+        "id" : "329dbeed-d973-4027-9e8a-971445b9530c",
         "name" : "Person",
         "description" : null,
         "type" : "Class",
@@ -37,7 +37,7 @@
         "literals" : null,
         "restrictedTo" : [ "functional-complex" ]
       }, {
-        "id" : "13eeb4ed-01f2-4cfb-abf2-5e9b96ae0428",
+        "id" : "d45e018f-7802-4f51-98ef-a86d3b2ac213",
         "name" : "organization",
         "description" : null,
         "type" : "Class",
@@ -52,7 +52,7 @@
         "literals" : null,
         "restrictedTo" : [ "functional-complex" ]
       }, {
-        "id" : "4be21817-9eb5-4225-aa9a-cfa5c0df96e1",
+        "id" : "7144ac23-4322-474b-bc25-54a368a147d2",
         "name" : "Car",
         "description" : null,
         "type" : "Class",
@@ -67,7 +67,7 @@
         "literals" : null,
         "restrictedTo" : [ "functional-complex" ]
       }, {
-        "id" : "289232bd-6688-40ea-82fe-7da0bd09d273",
+        "id" : "16f43d0f-e606-4d1b-b95d-d3240f51ec46",
         "name" : "Agent",
         "description" : null,
         "type" : "Class",
@@ -82,36 +82,36 @@
         "literals" : null,
         "restrictedTo" : [ "functional-complex", "collective", "quantity" ]
       }, {
-        "id" : "6ea8cb64-d2d9-4746-bb2f-4b3ead89768e",
+        "id" : "c4deab8e-4436-49f7-aeb4-70d6fa8652b8",
         "name" : null,
         "description" : null,
         "type" : "Generalization",
         "propertyAssignments" : null,
         "general" : {
-          "id" : "289232bd-6688-40ea-82fe-7da0bd09d273",
+          "id" : "16f43d0f-e606-4d1b-b95d-d3240f51ec46",
           "type" : "Class"
         },
         "specific" : {
-          "id" : "f5f3e1d0-af44-4fc3-8929-f6c14ea88b65",
+          "id" : "329dbeed-d973-4027-9e8a-971445b9530c",
           "type" : "Class"
         }
       }, {
-        "id" : "ef4e6196-b659-43da-bd58-720190fc4509",
+        "id" : "fc750366-aac1-4f76-8d07-fd29dc923dfd",
         "name" : null,
         "description" : null,
         "type" : "Generalization",
         "propertyAssignments" : null,
         "general" : {
-          "id" : "289232bd-6688-40ea-82fe-7da0bd09d273",
+          "id" : "16f43d0f-e606-4d1b-b95d-d3240f51ec46",
           "type" : "Class"
         },
         "specific" : {
-          "id" : "13eeb4ed-01f2-4cfb-abf2-5e9b96ae0428",
+          "id" : "d45e018f-7802-4f51-98ef-a86d3b2ac213",
           "type" : "Class"
         }
       } ]
     }, {
-      "id" : "f8ecea5b-f3ec-4acc-86ab-783001b9fa6a",
+      "id" : "7d12fa50-388b-472d-b194-e7ec2108ccdd",
       "name" : "owns",
       "description" : null,
       "type" : "Relation",
@@ -120,7 +120,7 @@
       "isAbstract" : false,
       "isDerived" : false,
       "properties" : [ {
-        "id" : "91baba5a-2af8-46c1-b74e-94a7e4800ec4",
+        "id" : "b6986c6f-8b37-43d3-a129-96377c78ea5e",
         "name" : "person",
         "description" : null,
         "type" : "Property",
@@ -131,14 +131,14 @@
         "isOrdered" : false,
         "cardinality" : "1..*",
         "propertyType" : {
-          "id" : "f5f3e1d0-af44-4fc3-8929-f6c14ea88b65",
+          "id" : "329dbeed-d973-4027-9e8a-971445b9530c",
           "type" : "Class"
         },
         "subsettedProperties" : null,
         "redefinedProperties" : null,
         "aggregationKind" : null
       }, {
-        "id" : "433f2bea-0a33-4ef0-bfd5-cc03c06cfa28",
+        "id" : "553db5a7-b02f-45c4-90d5-28e1d70202ef",
         "name" : "car",
         "description" : null,
         "type" : "Property",
@@ -149,7 +149,7 @@
         "isOrdered" : false,
         "cardinality" : "0..*",
         "propertyType" : {
-          "id" : "4be21817-9eb5-4225-aa9a-cfa5c0df96e1",
+          "id" : "7144ac23-4322-474b-bc25-54a368a147d2",
           "type" : "Class"
         },
         "subsettedProperties" : null,
@@ -157,7 +157,7 @@
         "aggregationKind" : null
       } ]
     }, {
-      "id" : "609be2d2-f0c7-4706-a23c-db914f98ba99",
+      "id" : "eb6c03bd-2ee3-4844-b96d-9f4f36fd5b05",
       "name" : null,
       "description" : null,
       "type" : "GeneralizationSet",
@@ -166,10 +166,10 @@
       "isComplete" : true,
       "categorizer" : null,
       "generalizations" : [ {
-        "id" : "6ea8cb64-d2d9-4746-bb2f-4b3ead89768e",
+        "id" : "fc750366-aac1-4f76-8d07-fd29dc923dfd",
         "type" : "Generalization"
       }, {
-        "id" : "ef4e6196-b659-43da-bd58-720190fc4509",
+        "id" : "c4deab8e-4436-49f7-aeb4-70d6fa8652b8",
         "type" : "Generalization"
       } ]
     } ]

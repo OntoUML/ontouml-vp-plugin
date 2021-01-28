@@ -1,11 +1,7 @@
 package it.unibz.inf.ontouml.vp.listeners;
 
 import com.vp.plugin.ApplicationManager;
-import com.vp.plugin.model.IClass;
-import com.vp.plugin.model.IGeneralization;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IProject;
-import com.vp.plugin.model.IProjectModelListener;
+import com.vp.plugin.model.*;
 import com.vp.plugin.model.factory.IModelElementFactory;
 import java.util.Iterator;
 

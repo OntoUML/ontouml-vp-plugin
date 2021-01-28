@@ -1,12 +1,6 @@
 package it.unibz.inf.ontouml.vp.model;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 import com.google.gson.annotations.Expose;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IProject;

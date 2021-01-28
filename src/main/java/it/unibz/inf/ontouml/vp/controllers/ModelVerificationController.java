@@ -9,7 +9,7 @@ import it.unibz.inf.ontouml.vp.model.ServerRequest;
 import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 import it.unibz.inf.ontouml.vp.views.ProgressPanel;
-import java.awt.Component;
+import java.awt.*;
 
 /**
  * Implementation of toolbar button action responsible for performing model verification.

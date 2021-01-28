@@ -8,7 +8,7 @@ import com.vp.plugin.diagram.connector.IAssociationUIModel;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IModelElement;
 import it.unibz.inf.ontouml.vp.model.uml.Association;
-import java.awt.Point;
+import java.awt.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

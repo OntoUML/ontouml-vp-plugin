@@ -1,20 +1,9 @@
 package it.unibz.inf.ontouml.vp.utils;
 
 import com.vp.plugin.ApplicationManager;
-import com.vp.plugin.model.IClass;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IProject;
-import com.vp.plugin.model.IStereotype;
-import com.vp.plugin.model.ITaggedValue;
-import com.vp.plugin.model.ITaggedValueContainer;
-import com.vp.plugin.model.ITaggedValueDefinition;
-import com.vp.plugin.model.ITaggedValueDefinitionContainer;
+import com.vp.plugin.model.*;
 import com.vp.plugin.model.factory.IModelElementFactory;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class StereotypesManager {
 

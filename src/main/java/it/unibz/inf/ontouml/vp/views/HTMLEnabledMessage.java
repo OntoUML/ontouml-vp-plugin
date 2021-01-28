@@ -1,11 +1,8 @@
 package it.unibz.inf.ontouml.vp.views;
 
 import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
-import java.awt.Color;
-import java.awt.Desktop;
-import java.awt.Font;
-import javax.swing.JEditorPane;
-import javax.swing.JLabel;
+import java.awt.*;
+import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 

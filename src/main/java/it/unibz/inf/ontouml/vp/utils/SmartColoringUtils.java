@@ -6,7 +6,7 @@ import com.vp.plugin.model.IClass;
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
-import java.awt.Color;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

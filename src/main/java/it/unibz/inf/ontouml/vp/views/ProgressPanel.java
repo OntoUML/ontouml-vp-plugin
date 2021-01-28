@@ -3,14 +3,10 @@ package it.unibz.inf.ontouml.vp.views;
 import com.vp.plugin.view.IDialog;
 import it.unibz.inf.ontouml.vp.model.ServerRequest;
 import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
+import javax.swing.*;
 
 public class ProgressPanel extends JPanel {
 
