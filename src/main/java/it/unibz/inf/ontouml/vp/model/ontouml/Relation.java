@@ -1,9 +1,13 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.unibz.inf.ontouml.vp.model.ontouml.serialization.RelationSerializer;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+@JsonSerialize(using = RelationSerializer.class)
 public final class Relation extends Classifier<Relation, RelationStereotype> {
 
    private Relation(String id, MultilingualText name, RelationStereotype ontoumlStereotype) {
@@ -42,6 +46,10 @@ public final class Relation extends Classifier<Relation, RelationStereotype> {
 
    public Relation(String id, String name, String stereotypeName, Classifier<?, ?> source, Classifier<?, ?> target) {
       this(id, new MultilingualText(name), stereotypeName, source, target);
+   }
+
+   public Relation(String id, String name, Classifier<?, ?> source, Classifier<?, ?> target) {
+      this(id, new MultilingualText(name), (String) null, source, target);
    }
 
    public Relation(RelationStereotype ontoumlStereotype, Classifier<?, ?> source, Classifier<?, ?> target) {

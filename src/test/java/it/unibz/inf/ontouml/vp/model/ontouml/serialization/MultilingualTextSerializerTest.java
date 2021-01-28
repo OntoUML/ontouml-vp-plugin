@@ -1,7 +1,8 @@
-package it.unibz.inf.ontouml.vp.model.ontouml;
+package it.unibz.inf.ontouml.vp.model.ontouml.serialization;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import it.unibz.inf.ontouml.vp.model.ontouml.MultilingualText;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +10,7 @@ import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public class MultilingualTextSerializationTest {
+public class MultilingualTextSerializerTest {
    static ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
    @Test
@@ -41,4 +42,5 @@ public class MultilingualTextSerializationTest {
       assertThat(json).contains("\"pt\" : \"Pessoa\"");
       assertThat(json).contains("\"it\" : \"Persona\"");
    }
+
 }

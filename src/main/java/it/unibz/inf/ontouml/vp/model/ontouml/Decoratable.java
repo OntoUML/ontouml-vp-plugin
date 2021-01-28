@@ -1,7 +1,11 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.unibz.inf.ontouml.vp.model.ontouml.serialization.DecoratableSerializer;
+
 import java.util.Optional;
 
+@JsonSerialize(using = DecoratableSerializer.class)
 public abstract class Decoratable<S extends Stereotype> extends ModelElement {
    private String customStereotype;
    private S ontoumlStereotype;

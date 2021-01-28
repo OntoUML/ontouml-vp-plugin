@@ -5,9 +5,13 @@ public enum AggregationKind {
    SHARED("SHARED"),
    COMPOSITE("COMPOSITE");
 
-   String name;
+   final String name;
 
    AggregationKind(String name) {
       this.name = name;
+   }
+
+   public String getName() {
+      return name;
    }
 }

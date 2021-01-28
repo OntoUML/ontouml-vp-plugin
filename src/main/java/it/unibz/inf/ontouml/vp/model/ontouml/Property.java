@@ -1,10 +1,14 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.unibz.inf.ontouml.vp.model.ontouml.serialization.PropertySerializer;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@JsonSerialize(using = PropertySerializer.class)
 public final class Property extends Decoratable<PropertyStereotype> {
    private Cardinality cardinality = new Cardinality();
    private Classifier<?, ?> propertyType;
@@ -73,7 +77,14 @@ public final class Property extends Decoratable<PropertyStereotype> {
    }
 
    public void setCardinality(Cardinality cardinality) {
+      if (cardinality == null)
+         throw new NullPointerException("Cannot set null cardinality object on property!");
+
       this.cardinality = cardinality;
+   }
+
+   public void setCardinality(String cardinality) {
+      this.cardinality.setValue(cardinality);
    }
 
    public void setPropertyType(Classifier<?, ?> propertyType) {
@@ -81,23 +92,43 @@ public final class Property extends Decoratable<PropertyStereotype> {
    }
 
    public List<Property> getSubsettedProperties() {
-      return subsettedProperties;
+      return new ArrayList<>(subsettedProperties);
    }
 
    public void setSubsettedProperties(List<Property> subsettedProperties) {
-      this.subsettedProperties = subsettedProperties;
+      if (subsettedProperties == null)
+         throw new NullPointerException("Cannot set null list of subsetted properties.");
+
+      OntoumlUtils.addIfNotNull(this.subsettedProperties, subsettedProperties);
+   }
+
+   public void addSubsettedProperty(Property property){
+      if (property == null)
+         throw new NullPointerException("Cannot add a null value to the list of subsetted properties.");
+
+      subsettedProperties.add(property);
    }
 
    public List<Property> getRedefinedProperties() {
-      return redefinedProperties;
+      return new ArrayList<>(redefinedProperties);
    }
 
    public void setRedefinedProperties(List<Property> redefinedProperties) {
-      this.redefinedProperties = redefinedProperties;
+      if (redefinedProperties == null)
+         throw new NullPointerException("Cannot set null list of redefined properties.");
+
+      OntoumlUtils.addIfNotNull(this.redefinedProperties, redefinedProperties);
    }
 
-   public AggregationKind getAggregationKind() {
-      return aggregationKind;
+   public void addRedefinedProperty(Property property){
+      if (property == null)
+         throw new NullPointerException("Cannot add a null value to the list of redefined properties.");
+
+      redefinedProperties.add(property);
+   }
+
+   public Optional<AggregationKind> getAggregationKind() {
+      return Optional.ofNullable(aggregationKind);
    }
 
    public void setAggregationKind(AggregationKind aggregationKind) {

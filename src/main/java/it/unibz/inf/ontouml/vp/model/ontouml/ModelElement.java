@@ -1,13 +1,16 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.unibz.inf.ontouml.vp.model.ontouml.serialization.ModelElementSerializer;
+
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
 /**
  * An element that is part of the abstract syntax of the language, such as a Package, a Class, a Relation, a Generalization, a GeneralizationSet, or a Property.
- *
  */
+@JsonSerialize(using = ModelElementSerializer.class)
 public abstract class ModelElement extends OntoumlElement {
    private Map<String, Object> propertyAssignments = new TreeMap<>();
 
@@ -26,7 +29,7 @@ public abstract class ModelElement extends OntoumlElement {
       this.propertyAssignments.putAll(map);
    }
 
-   public void addPropertyAssignment(String name, String value) {
+   public void addPropertyAssignment(String name, Object value) {
       if (name == null)
          throw new IllegalArgumentException("The name of a property assignment cannot be null.");
 
@@ -49,7 +52,11 @@ public abstract class ModelElement extends OntoumlElement {
    }
 
    public Map<String, Object> getPropertyAssignments() {
-      return propertyAssignments;
+      return propertyAssignments != null ? new TreeMap<>(propertyAssignments) : new TreeMap<>();
+   }
+
+   public boolean hasPropertyAssignments() {
+      return propertyAssignments != null && propertyAssignments.size() > 0;
    }
 
    /**

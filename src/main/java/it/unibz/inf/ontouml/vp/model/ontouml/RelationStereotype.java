@@ -1,8 +1,6 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public enum RelationStereotype implements Stereotype {
 
@@ -26,17 +24,17 @@ public enum RelationStereotype implements Stereotype {
    BRINGS_ABOUT("bringsAbout"),
    TRIGGERS("triggers");
 
-   public static List<RelationStereotype> EXISTENTIAL_DEPENDENCY_ON_SOURCE =
-           Arrays.asList(BRINGS_ABOUT, CREATION, MANIFESTATION, PARTICIPATION, PARTICIPATIONAL, TERMINATION, TRIGGERS);
+   public static Collection<RelationStereotype> EXISTENTIAL_DEPENDENCY_ON_SOURCE =
+           Set.of(BRINGS_ABOUT, CREATION, MANIFESTATION, PARTICIPATION, PARTICIPATIONAL, TERMINATION, TRIGGERS);
 
-   public static List<RelationStereotype> EXISTENTIAL_DEPENDENCY_ON_TARGET =
-           Arrays.asList(BRINGS_ABOUT, CHARACTERIZATION, CREATION, EXTERNAL_DEPENDENCE, HISTORICAL_DEPENDENCE, MEDIATION, PARTICIPATIONAL);
+   public static Collection<RelationStereotype> EXISTENTIAL_DEPENDENCY_ON_TARGET =
+           Set.of(BRINGS_ABOUT, CHARACTERIZATION, CREATION, EXTERNAL_DEPENDENCE, HISTORICAL_DEPENDENCE, MEDIATION, PARTICIPATIONAL);
 
-   public static List<RelationStereotype> EXISTENTIAL_DEPENDENCY =
-           Arrays.asList(BRINGS_ABOUT, CHARACTERIZATION, CREATION, EXTERNAL_DEPENDENCE, HISTORICAL_DEPENDENCE, MANIFESTATION,
+   public static Collection<RelationStereotype> EXISTENTIAL_DEPENDENCY =
+           Set.of(BRINGS_ABOUT, CHARACTERIZATION, CREATION, EXTERNAL_DEPENDENCE, HISTORICAL_DEPENDENCE, MANIFESTATION,
                    MEDIATION, PARTICIPATION, PARTICIPATIONAL, TERMINATION, TRIGGERS);
 
-   public static List<RelationStereotype> ALLOWS_HIGHER_ARITY = Arrays.asList(MATERIAL);
+   public static Collection<RelationStereotype> ALLOWS_HIGHER_ARITY = Set.of(MATERIAL);
 
    public final String stereotypeName;
 

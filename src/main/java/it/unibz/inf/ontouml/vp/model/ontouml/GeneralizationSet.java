@@ -1,7 +1,11 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.unibz.inf.ontouml.vp.model.ontouml.serialization.GeneralizationSetSerializer;
+
 import java.util.*;
 
+@JsonSerialize(using = GeneralizationSetSerializer.class)
 public class GeneralizationSet extends ModelElement {
 
    private boolean isDisjoint;
@@ -17,6 +21,14 @@ public class GeneralizationSet extends ModelElement {
 
    public GeneralizationSet(String id, String name, Class categorizer, Collection<Generalization> generalizations) {
       this(id, new MultilingualText(name), categorizer, generalizations);
+   }
+
+   public GeneralizationSet(String id, String name, Collection<Generalization> generalizations) {
+      this(id, new MultilingualText(name), null, generalizations);
+   }
+
+   public GeneralizationSet(String id, String name, Generalization... generalizations) {
+      this(id, new MultilingualText(name), null, Arrays.asList(generalizations));
    }
 
    public GeneralizationSet(MultilingualText name, Class categorizer, Collection<Generalization> generalizations) {
@@ -59,8 +71,8 @@ public class GeneralizationSet extends ModelElement {
       isComplete = complete;
    }
 
-   public Class getCategorizer() {
-      return categorizer;
+   public Optional<Class> getCategorizer() {
+      return Optional.ofNullable(categorizer);
    }
 
    public void setCategorizer(Class categorizer) {
@@ -68,10 +80,13 @@ public class GeneralizationSet extends ModelElement {
    }
 
    public Set<Generalization> getGeneralizations() {
-      return generalizations;
+      return new HashSet<>(generalizations);
    }
 
    public void setGeneralizations(Collection<Generalization> generalizations) {
+      if (generalizations == null)
+         throw new NullPointerException("Cannot set generalization list to null.");
+
       OntoumlUtils.addIfNotNull(this.generalizations, generalizations);
    }
 

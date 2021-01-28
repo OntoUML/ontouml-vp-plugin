@@ -1,5 +1,7 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
+import java.util.Optional;
+
 public class Cardinality {
 
    private String cardinality;
@@ -8,18 +10,18 @@ public class Cardinality {
 
    public Cardinality(String lowerBound, String upperBound) {
       String cardinalityString = lowerBound.equals(upperBound) ? lowerBound : lowerBound + ".." + upperBound;
-      setCardinality(cardinalityString);
+      setValue(cardinalityString);
    }
 
    public Cardinality(String cardinality) {
-      setCardinality(cardinality);
+      setValue(cardinality);
    }
 
    public Cardinality() {
-      setCardinality("1");
+      setValue("1");
    }
 
-   public void setCardinality(String cardinality) {
+   public void setValue(String cardinality) {
       if (cardinality == null)
          throw new NullPointerException("Cannot set null cardinality");
 
@@ -27,16 +29,16 @@ public class Cardinality {
       setBounds();
    }
 
-   public String getCardinality() {
-      return cardinality;
+   public Optional<String> getValue() {
+      return Optional.ofNullable(cardinality);
    }
 
-   public String getLowerBound() {
-      return lowerBound;
+   public Optional<String> getLowerBound() {
+      return Optional.ofNullable(lowerBound);
    }
 
-   public String getUpperBound() {
-      return upperBound;
+   public Optional<String> getUpperBound() {
+      return Optional.ofNullable(upperBound);
    }
 
    public int getLowerBoundAsInt() {

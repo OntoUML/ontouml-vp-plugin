@@ -1,7 +1,11 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.unibz.inf.ontouml.vp.model.ontouml.serialization.ProjectSerializer;
+
 import java.util.*;
 
+@JsonSerialize(using = ProjectSerializer.class)
 public class Project extends OntoumlElement implements ModelContainer {
    private Package model;
    private List<Diagram> diagrams = new ArrayList<>();
@@ -11,12 +15,17 @@ public class Project extends OntoumlElement implements ModelContainer {
       setProject(this);
    }
 
+   public Project(String id, String name) {
+      super(null, id, new MultilingualText(name));
+      setProject(this);
+   }
+
    public Project(MultilingualText name) {
       this(null, name);
    }
 
    public Project() {
-      this(null, null);
+      this(null, (MultilingualText) null);
    }
 
    @Override
@@ -29,11 +38,15 @@ public class Project extends OntoumlElement implements ModelContainer {
    }
 
    public Package createModel() {
-      return createModel("Model");
+      return createModel(null, "Model");
    }
 
    public Package createModel(String modelName) {
-      Package model = new Package(modelName);
+      return createModel(null, modelName);
+   }
+
+   public Package createModel(String id, String modelName) {
+      Package model = new Package(id, modelName);
       setModel(model);
       return model;
    }
@@ -50,7 +63,12 @@ public class Project extends OntoumlElement implements ModelContainer {
    }
 
    public List<Diagram> getDiagrams() {
-      return diagrams;
+      List<Diagram> copy = new ArrayList<>();
+
+      if (diagrams != null)
+         copy.addAll(diagrams);
+
+      return copy;
    }
 
    public void setDiagrams(List<Diagram> diagrams) {
@@ -76,7 +94,7 @@ public class Project extends OntoumlElement implements ModelContainer {
    }
 
    public boolean hasDiagram() {
-      return !getDiagrams().isEmpty();
+      return diagrams != null && diagrams.size() > 0;
    }
 
    @Override

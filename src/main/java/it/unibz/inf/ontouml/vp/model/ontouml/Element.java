@@ -1,7 +1,11 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.unibz.inf.ontouml.vp.model.ontouml.serialization.ElementSerializer;
+
 import java.util.*;
 
+@JsonSerialize(using = ElementSerializer.class)
 public abstract class Element implements Comparable<Element> {
    String id;
    MultilingualText name;
@@ -15,6 +19,13 @@ public abstract class Element implements Comparable<Element> {
 
    public String getId() {
       return id;
+   }
+
+   public void setId(String id) {
+      if(id==null)
+         throw new NullPointerException("Cannot set null id.");
+
+      this.id = id;
    }
 
    public MultilingualText getName() {

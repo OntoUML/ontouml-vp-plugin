@@ -1,9 +1,14 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.unibz.inf.ontouml.vp.model.ontouml.serialization.ClassSerializer;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@JsonSerialize(using = ClassSerializer.class)
 public final class Class extends Classifier<Class, ClassStereotype> {
    protected Boolean isExtensional;
    protected Boolean isPowertype;
@@ -53,27 +58,27 @@ public final class Class extends Classifier<Class, ClassStereotype> {
       return "Class";
    }
 
-   public boolean isExtensional() {
-      return isExtensional;
+   public Optional<Boolean> isExtensional() {
+      return Optional.ofNullable(isExtensional);
    }
 
-   public void setExtensional(boolean value) {
+   public void setExtensional(Boolean value) {
       isExtensional = value;
    }
 
-   public boolean isPowertype() {
-      return isPowertype;
+   public Optional<Boolean> isPowertype() {
+      return Optional.ofNullable(isPowertype);
    }
 
-   public void setPowertype(boolean value) {
+   public void setPowertype(Boolean value) {
       isPowertype = value;
    }
 
-   public int getOrder() {
-      return order;
+   public Optional<Integer> getOrder() {
+      return Optional.ofNullable(order);
    }
 
-   public void setOrder(int value) {
+   public void setOrder(Integer value) {
       order = value;
    }
 
@@ -84,6 +89,11 @@ public final class Class extends Classifier<Class, ClassStereotype> {
    public void setRestrictedTo(Collection<Nature> restrictedTo) {
       this.restrictedTo.clear();
       this.restrictedTo.addAll(restrictedTo);
+   }
+
+   public void setRestrictedTo(Nature... restrictedTo) {
+      this.restrictedTo.clear();
+      this.restrictedTo.addAll(Arrays.asList(restrictedTo));
    }
 
    public List<Literal> getLiterals() {
@@ -295,8 +305,126 @@ public final class Class extends Classifier<Class, ClassStereotype> {
       return restrictedToEquals(Nature.ABSTRACT);
    }
 
+   public static Class createKind(String id, String name) {
+      Class clas = new Class(id, name, ClassStereotype.KIND);
+      clas.setRestrictedTo(Nature.FUNCTIONAL_COMPLEX);
+      return clas;
+   }
+
+   public static Class createCollective(String id, String name) {
+      Class clas = new Class(id, name, ClassStereotype.COLLECTIVE);
+      clas.setRestrictedTo(Nature.COLLECTIVE);
+      return clas;
+   }
+
+   public static Class createQuantity(String id, String name) {
+      Class clas = new Class(id, name, ClassStereotype.QUANTITY);
+      clas.setRestrictedTo(Nature.QUANTITY);
+      return clas;
+   }
+
+   public static Class createRelator(String id, String name) {
+      Class clas = new Class(id, name, ClassStereotype.RELATOR);
+      clas.setRestrictedTo(Nature.RELATOR);
+      return clas;
+   }
+
+   public static Class createMode(String id, String name) {
+      Class clas = new Class(id, name, ClassStereotype.MODE);
+      clas.setRestrictedTo(Nature.INTRINSIC_MODE, Nature.EXTRINSIC_MODE);
+      return clas;
+   }
+
+   public static Class createQuality(String id, String name) {
+      Class clas = new Class(id, name, ClassStereotype.QUALITY);
+      clas.setRestrictedTo(Nature.QUALITY);
+      return clas;
+   }
+
+   public static Class createSubkind(String id, String name) {
+      return new Class(id, name, ClassStereotype.SUBKIND);
+   }
+
+   public static Class createRole(String id, String name) {
+      return new Class(id, name, ClassStereotype.ROLE);
+   }
+
+   public static Class createPhase(String id, String name) {
+      return new Class(id, name, ClassStereotype.PHASE);
+   }
+
+   public static Class createHistoricalRole(String id, String name) {
+      return new Class(id, name, ClassStereotype.HISTORICAL_ROLE);
+   }
+
+   public static Class createMixin(String id, String name) {
+      Class clas = new Class(id, name, ClassStereotype.MIXIN);
+      clas.setAbstract(true);
+      clas.setRestrictedTo(Nature.SUBSTANTIAL_NATURES);
+      return clas;
+   }
+
+   public static Class createCategory(String id, String name) {
+      Class clas = new Class(id, name, ClassStereotype.CATEGORY);
+      clas.setAbstract(true);
+      clas.setRestrictedTo(Nature.SUBSTANTIAL_NATURES);
+      return clas;
+   }
+
+   public static Class createRoleMixin(String id, String name) {
+      Class clas = new Class(id, name, ClassStereotype.ROLE_MIXIN);
+      clas.setAbstract(true);
+      clas.setRestrictedTo(Nature.SUBSTANTIAL_NATURES);
+      return clas;
+   }
+
+   public static Class createPhaseMixin(String id, String name) {
+      Class clas = new Class(id, name, ClassStereotype.PHASE_MIXIN);
+      clas.setAbstract(true);
+      clas.setRestrictedTo(Nature.SUBSTANTIAL_NATURES);
+      return clas;
+   }
+
+   public static Class createHistoricalRoleMixin(String id, String name) {
+      Class clas = new Class(id, name, ClassStereotype.HISTORICAL_ROLE_MIXIN);
+      clas.setAbstract(true);
+      clas.setRestrictedTo(Nature.SUBSTANTIAL_NATURES);
+      return clas;
+   }
+
+   public static Class createEvent(String id, String name) {
+      Class clas = new Class(id, name, ClassStereotype.EVENT);
+      clas.setRestrictedTo(Nature.EVENT);
+      return clas;
+   }
+
+   public static Class createSituation(String id, String name) {
+      Class clas = new Class(id, name, ClassStereotype.SITUATION);
+      clas.setRestrictedTo(Nature.TYPE);
+      return clas;
+   }
+
+   public static Class createType(String id, String name) {
+      Class clas = new Class(id, name, ClassStereotype.TYPE);
+      clas.setRestrictedTo(Nature.FUNCTIONAL_COMPLEX);
+      return clas;
+   }
+
+   public static Class createAbstract(String id, String name) {
+      Class clas = new Class(id, name, ClassStereotype.ABSTRACT);
+      clas.setRestrictedTo(Nature.ABSTRACT);
+      return clas;
+   }
+
+   public static Class createDatatype(String id, String name) {
+      Class clas = new Class(id, name, ClassStereotype.DATATYPE);
+      clas.setRestrictedTo(Nature.ABSTRACT);
+      return clas;
+   }
+
    public static Class createEnumeration(String id, String name, String... literals) {
       Class enumeration = new Class(id, name, ClassStereotype.ENUMERATION);
+      enumeration.setRestrictedTo(Nature.ABSTRACT);
       enumeration.createLiterals(literals);
       return enumeration;
    }

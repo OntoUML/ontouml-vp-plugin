@@ -1,59 +1,178 @@
 {
-  "id" : "9e12cd3a-ecee-4f8d-ac36-d856711c1124",
-  "name" : null,
-  "description" : null,
-  "container" : {
-    "empty" : true,
-    "present" : false
+  "id" : "0d2e2328-33de-4e98-b9f8-187f04a1f379",
+  "name" : {
+    "pt" : "Meu Project",
+    "en" : "My Project"
   },
-  "project" : {
-    "empty" : false,
-    "present" : true
+  "description" : {
+    "it" : "Il miglior progetto in modellazione concettuale.",
+    "en" : "The best conceptual modeling project."
   },
-  "model" : {
-    "empty" : true,
-    "present" : false
-  },
-  "diagrams" : [ ],
   "type" : "Project",
-  "contents" : [ ],
-  "allContents" : [ ],
-  "allClasses" : [ ],
-  "allRelations" : [ ],
-  "allAttributes" : [ ],
-  "allModelElements" : [ ],
-  "allPackages" : [ ],
-  "allLiterals" : [ ],
-  "allRelationEnds" : [ ],
-  "allGeneralizations" : [ ],
-  "allGeneralizationSets" : [ ],
-  "allTypes" : [ ],
-  "allHistoricalRoles" : [ ],
-  "allHistoricalRoleMixins" : [ ],
-  "allEvents" : [ ],
-  "allSituations" : [ ],
-  "allCategories" : [ ],
-  "allMixins" : [ ],
-  "allRoleMixins" : [ ],
-  "allPhaseMixin" : [ ],
-  "allKinds" : [ ],
-  "allCollectives" : [ ],
-  "allQuantities" : [ ],
-  "allRelators" : [ ],
-  "allQualities" : [ ],
-  "allModes" : [ ],
-  "allSubkinds" : [ ],
-  "allRoles" : [ ],
-  "allPhases" : [ ],
-  "allEnumerations" : [ ],
-  "allDatatypes" : [ ],
-  "allAbstracts" : [ ],
-  "firstName" : {
-    "empty" : true,
-    "present" : false
+  "model" : {
+    "id" : "pk1",
+    "name" : "My Model",
+    "description" : null,
+    "type" : "Package",
+    "propertyAssignments" : null,
+    "contents" : [ {
+      "id" : "pk2",
+      "name" : "My Module",
+      "description" : null,
+      "type" : "Package",
+      "propertyAssignments" : null,
+      "contents" : [ {
+        "id" : "f5f3e1d0-af44-4fc3-8929-f6c14ea88b65",
+        "name" : "Person",
+        "description" : null,
+        "type" : "Class",
+        "propertyAssignments" : null,
+        "stereotype" : "kind",
+        "isAbstract" : false,
+        "isDerived" : false,
+        "properties" : null,
+        "isExtensional" : null,
+        "isPowertype" : null,
+        "order" : null,
+        "literals" : null,
+        "restrictedTo" : [ "functional-complex" ]
+      }, {
+        "id" : "13eeb4ed-01f2-4cfb-abf2-5e9b96ae0428",
+        "name" : "organization",
+        "description" : null,
+        "type" : "Class",
+        "propertyAssignments" : null,
+        "stereotype" : "kind",
+        "isAbstract" : false,
+        "isDerived" : false,
+        "properties" : null,
+        "isExtensional" : null,
+        "isPowertype" : null,
+        "order" : null,
+        "literals" : null,
+        "restrictedTo" : [ "functional-complex" ]
+      }, {
+        "id" : "4be21817-9eb5-4225-aa9a-cfa5c0df96e1",
+        "name" : "Car",
+        "description" : null,
+        "type" : "Class",
+        "propertyAssignments" : null,
+        "stereotype" : "kind",
+        "isAbstract" : false,
+        "isDerived" : false,
+        "properties" : null,
+        "isExtensional" : null,
+        "isPowertype" : null,
+        "order" : null,
+        "literals" : null,
+        "restrictedTo" : [ "functional-complex" ]
+      }, {
+        "id" : "289232bd-6688-40ea-82fe-7da0bd09d273",
+        "name" : "Agent",
+        "description" : null,
+        "type" : "Class",
+        "propertyAssignments" : null,
+        "stereotype" : "category",
+        "isAbstract" : true,
+        "isDerived" : false,
+        "properties" : null,
+        "isExtensional" : null,
+        "isPowertype" : null,
+        "order" : null,
+        "literals" : null,
+        "restrictedTo" : [ "functional-complex", "collective", "quantity" ]
+      }, {
+        "id" : "6ea8cb64-d2d9-4746-bb2f-4b3ead89768e",
+        "name" : null,
+        "description" : null,
+        "type" : "Generalization",
+        "propertyAssignments" : null,
+        "general" : {
+          "id" : "289232bd-6688-40ea-82fe-7da0bd09d273",
+          "type" : "Class"
+        },
+        "specific" : {
+          "id" : "f5f3e1d0-af44-4fc3-8929-f6c14ea88b65",
+          "type" : "Class"
+        }
+      }, {
+        "id" : "ef4e6196-b659-43da-bd58-720190fc4509",
+        "name" : null,
+        "description" : null,
+        "type" : "Generalization",
+        "propertyAssignments" : null,
+        "general" : {
+          "id" : "289232bd-6688-40ea-82fe-7da0bd09d273",
+          "type" : "Class"
+        },
+        "specific" : {
+          "id" : "13eeb4ed-01f2-4cfb-abf2-5e9b96ae0428",
+          "type" : "Class"
+        }
+      } ]
+    }, {
+      "id" : "f8ecea5b-f3ec-4acc-86ab-783001b9fa6a",
+      "name" : "owns",
+      "description" : null,
+      "type" : "Relation",
+      "propertyAssignments" : null,
+      "stereotype" : null,
+      "isAbstract" : false,
+      "isDerived" : false,
+      "properties" : [ {
+        "id" : "91baba5a-2af8-46c1-b74e-94a7e4800ec4",
+        "name" : "person",
+        "description" : null,
+        "type" : "Property",
+        "propertyAssignments" : null,
+        "stereotype" : null,
+        "isDerived" : false,
+        "isReadOnly" : false,
+        "isOrdered" : false,
+        "cardinality" : "1..*",
+        "propertyType" : {
+          "id" : "f5f3e1d0-af44-4fc3-8929-f6c14ea88b65",
+          "type" : "Class"
+        },
+        "subsettedProperties" : null,
+        "redefinedProperties" : null,
+        "aggregationKind" : null
+      }, {
+        "id" : "433f2bea-0a33-4ef0-bfd5-cc03c06cfa28",
+        "name" : "car",
+        "description" : null,
+        "type" : "Property",
+        "propertyAssignments" : null,
+        "stereotype" : null,
+        "isDerived" : false,
+        "isReadOnly" : false,
+        "isOrdered" : false,
+        "cardinality" : "0..*",
+        "propertyType" : {
+          "id" : "4be21817-9eb5-4225-aa9a-cfa5c0df96e1",
+          "type" : "Class"
+        },
+        "subsettedProperties" : null,
+        "redefinedProperties" : null,
+        "aggregationKind" : null
+      } ]
+    }, {
+      "id" : "609be2d2-f0c7-4706-a23c-db914f98ba99",
+      "name" : null,
+      "description" : null,
+      "type" : "GeneralizationSet",
+      "propertyAssignments" : null,
+      "isDisjoint" : true,
+      "isComplete" : true,
+      "categorizer" : null,
+      "generalizations" : [ {
+        "id" : "6ea8cb64-d2d9-4746-bb2f-4b3ead89768e",
+        "type" : "Generalization"
+      }, {
+        "id" : "ef4e6196-b659-43da-bd58-720190fc4509",
+        "type" : "Generalization"
+      } ]
+    } ]
   },
-  "firstDescription" : {
-    "empty" : true,
-    "present" : false
-  }
+  "diagrams" : null
 }

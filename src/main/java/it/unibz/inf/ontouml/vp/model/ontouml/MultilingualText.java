@@ -1,6 +1,7 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.unibz.inf.ontouml.vp.model.ontouml.serialization.MultilingualTextSerializer;
 
 import java.util.*;
 

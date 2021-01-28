@@ -1,20 +1,13 @@
-package it.unibz.inf.ontouml.vp.model.ontouml;
+package it.unibz.inf.ontouml.vp.model.ontouml.serialization;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import it.unibz.inf.ontouml.vp.model.ontouml.MultilingualText;
 
 import java.io.IOException;
 
-public class MultilingualTextSerializer extends StdSerializer<MultilingualText> {
-
-   public MultilingualTextSerializer() {
-      super(MultilingualText.class);
-   }
-
-   protected MultilingualTextSerializer(java.lang.Class<MultilingualText> t) {
-      super(t);
-   }
+public class MultilingualTextSerializer extends JsonSerializer<MultilingualText> {
 
    @Override
    public void serialize(

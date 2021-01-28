@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth8.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CardinalityTest {
@@ -19,8 +20,8 @@ class CardinalityTest {
    @DisplayName("A cardinality of \"1\" sets lowerBound and upperBound to 1")
    void oneShouldSetLowerUpperBounds() {
       Cardinality c = new Cardinality("1");
-      assertThat(c.getLowerBound()).isEqualTo("1");
-      assertThat(c.getUpperBound()).isEqualTo("1");
+      assertThat(c.getLowerBound()).hasValue("1");
+      assertThat(c.getUpperBound()).hasValue("1");
       assertThat(c.getLowerBoundAsInt()).isEqualTo(1);
       assertThat(c.getUpperBoundAsInt()).isEqualTo(1);
    }
@@ -36,8 +37,8 @@ class CardinalityTest {
    @DisplayName("A cardinality of \"1..1\" sets lowerBound and upperBound to 1")
    void oneToOneShouldSetLowerUpperBounds() {
       Cardinality c = new Cardinality("1..1");
-      assertThat(c.getLowerBound()).isEqualTo("1");
-      assertThat(c.getUpperBound()).isEqualTo("1");
+      assertThat(c.getLowerBound()).hasValue("1");
+      assertThat(c.getUpperBound()).hasValue("1");
       assertThat(c.getLowerBoundAsInt()).isEqualTo(1);
       assertThat(c.getUpperBoundAsInt()).isEqualTo(1);
    }
@@ -53,8 +54,8 @@ class CardinalityTest {
    @DisplayName("A cardinality of \"1..*\" sets lowerBound to 1 and upperBound to */Integer.MAX_VALUE")
    void oneToManyShouldSetLowerUpperBounds() {
       Cardinality c = new Cardinality("1..*");
-      assertThat(c.getLowerBound()).isEqualTo("1");
-      assertThat(c.getUpperBound()).isEqualTo("*");
+      assertThat(c.getLowerBound()).hasValue("1");
+      assertThat(c.getUpperBound()).hasValue("*");
       assertThat(c.getLowerBoundAsInt()).isEqualTo(1);
       assertThat(c.getUpperBoundAsInt()).isEqualTo(Integer.MAX_VALUE);
    }
@@ -70,8 +71,8 @@ class CardinalityTest {
    @DisplayName("A cardinality of \"0..*\" sets lowerBound to 0 and upperBound to Integer.MAX_VALUE")
    void zeroToManyShouldSetLowerUpperBounds() {
       Cardinality c = new Cardinality("0..*");
-      assertThat(c.getLowerBound()).isEqualTo("0");
-      assertThat(c.getUpperBound()).isEqualTo("*");
+      assertThat(c.getLowerBound()).hasValue("0");
+      assertThat(c.getUpperBound()).hasValue("*");
       assertThat(c.getLowerBoundAsInt()).isEqualTo(0);
       assertThat(c.getUpperBoundAsInt()).isEqualTo(Integer.MAX_VALUE);
    }
@@ -87,8 +88,8 @@ class CardinalityTest {
    @DisplayName("A cardinality of \"1..3\" sets lowerBound to 1 and upperBound to 3")
    void oneToThreeShouldSetLowerUpperBounds() {
       Cardinality c = new Cardinality("1..3");
-      assertThat(c.getLowerBound()).isEqualTo("1");
-      assertThat(c.getUpperBound()).isEqualTo("3");
+      assertThat(c.getLowerBound()).hasValue("1");
+      assertThat(c.getUpperBound()).hasValue("3");
       assertThat(c.getLowerBoundAsInt()).isEqualTo(1);
       assertThat(c.getUpperBoundAsInt()).isEqualTo(3);
    }
@@ -104,8 +105,8 @@ class CardinalityTest {
    @DisplayName("An invalid cardinality of \"a..b\" should still set lower and upper if in the correct pattern")
    void invalidCardinalitySetsLowerUpper() {
       Cardinality c = new Cardinality("a..b");
-      assertThat(c.getLowerBound()).isEqualTo("a");
-      assertThat(c.getUpperBound()).isEqualTo("b");
+      assertThat(c.getLowerBound()).hasValue("a");
+      assertThat(c.getUpperBound()).hasValue("b");
    }
 
    @Test

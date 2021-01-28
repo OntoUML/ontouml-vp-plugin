@@ -1,8 +1,12 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.unibz.inf.ontouml.vp.model.ontouml.serialization.GeneralizationSerializer;
+
 import java.util.Collections;
 import java.util.List;
 
+@JsonSerialize(using = GeneralizationSerializer.class)
 public class Generalization extends ModelElement {
 
    private Classifier<?, ?> general;
@@ -11,8 +15,8 @@ public class Generalization extends ModelElement {
 
    public <T extends Classifier<T, S>, S extends Stereotype> Generalization(String id, MultilingualText name, Classifier<T, S> specific, Classifier<T, S> general) {
       super(id, name);
-      this.general = general;
-      this.specific = specific;
+      setGeneral(general);
+      setSpecific(specific);
    }
 
    public <T extends Classifier<T, S>, S extends Stereotype> Generalization(String id, String name, Classifier<T, S> specific, Classifier<T, S> general) {
@@ -42,6 +46,9 @@ public class Generalization extends ModelElement {
    }
 
    public void setGeneral(Classifier<?, ?> general) {
+      if(general==null)
+         throw new NullPointerException("Cannot set general to null!");
+
       this.general = general;
    }
 
@@ -50,6 +57,9 @@ public class Generalization extends ModelElement {
    }
 
    public void setSpecific(Classifier<?, ?> specific) {
+      if(specific==null)
+         throw new NullPointerException("Cannot set specific to null!");
+
       this.specific = specific;
    }
 
