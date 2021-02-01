@@ -1,6 +1,8 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.unibz.inf.ontouml.vp.model.ontouml.deserialization.PropertyDeserializer;
 import it.unibz.inf.ontouml.vp.model.ontouml.serialization.PropertySerializer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @JsonSerialize(using = PropertySerializer.class)
+@JsonDeserialize(using = PropertyDeserializer.class)
 public final class Property extends Decoratable<PropertyStereotype> {
   private Cardinality cardinality = new Cardinality();
   private Classifier<?, ?> propertyType;
@@ -54,6 +57,10 @@ public final class Property extends Decoratable<PropertyStereotype> {
     }
   }
 
+  public Property() {
+    this(null);
+  }
+
   @Override
   public String getType() {
     return "Property";
@@ -76,6 +83,10 @@ public final class Property extends Decoratable<PropertyStereotype> {
     return cardinality;
   }
 
+  public Optional<String> getCardinalityValue() {
+    return cardinality.getValue();
+  }
+
   public void setCardinality(Cardinality cardinality) {
     if (cardinality == null)
       throw new NullPointerException("Cannot set null cardinality object on property!");
@@ -96,10 +107,9 @@ public final class Property extends Decoratable<PropertyStereotype> {
   }
 
   public void setSubsettedProperties(List<Property> subsettedProperties) {
-    if (subsettedProperties == null)
-      throw new NullPointerException("Cannot set null list of subsetted properties.");
-
-    OntoumlUtils.addIfNotNull(this.subsettedProperties, subsettedProperties);
+    this.subsettedProperties.clear();
+    if (subsettedProperties != null)
+      OntoumlUtils.addIfNotNull(this.subsettedProperties, subsettedProperties);
   }
 
   public void addSubsettedProperty(Property property) {
@@ -110,15 +120,25 @@ public final class Property extends Decoratable<PropertyStereotype> {
     subsettedProperties.add(property);
   }
 
+  public void removeSubsettedProperty(Property property) {
+    subsettedProperties.remove(property);
+  }
+
+  public void replaceSubsettedProperty(Property toReplace, Property replaceFor) {
+    int i = subsettedProperties.indexOf(toReplace);
+    if (i >= 0) {
+      subsettedProperties.set(i, replaceFor);
+    }
+  }
+
   public List<Property> getRedefinedProperties() {
     return new ArrayList<>(redefinedProperties);
   }
 
   public void setRedefinedProperties(List<Property> redefinedProperties) {
-    if (redefinedProperties == null)
-      throw new NullPointerException("Cannot set null list of redefined properties.");
-
-    OntoumlUtils.addIfNotNull(this.redefinedProperties, redefinedProperties);
+    this.redefinedProperties.clear();
+    if (redefinedProperties != null)
+      OntoumlUtils.addIfNotNull(this.redefinedProperties, redefinedProperties);
   }
 
   public void addRedefinedProperty(Property property) {
@@ -127,6 +147,17 @@ public final class Property extends Decoratable<PropertyStereotype> {
           "Cannot add a null value to the list of redefined properties.");
 
     redefinedProperties.add(property);
+  }
+
+  public void removeRedefinedProperty(Property property) {
+    redefinedProperties.remove(property);
+  }
+
+  public void replaceRedefinedProperty(Property toReplace, Property replaceFor) {
+    int i = redefinedProperties.indexOf(toReplace);
+    if (i >= 0) {
+      redefinedProperties.set(i, replaceFor);
+    }
   }
 
   public Optional<AggregationKind> getAggregationKind() {

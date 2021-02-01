@@ -1,12 +1,15 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.unibz.inf.ontouml.vp.model.ontouml.deserialization.ProjectDeserializer;
 import it.unibz.inf.ontouml.vp.model.ontouml.serialization.ProjectSerializer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @JsonSerialize(using = ProjectSerializer.class)
+@JsonDeserialize(using = ProjectDeserializer.class)
 public class Project extends OntoumlElement implements ModelContainer {
   private Package model;
   private List<Diagram> diagrams = new ArrayList<>();

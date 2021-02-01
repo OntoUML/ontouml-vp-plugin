@@ -1,22 +1,26 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.unibz.inf.ontouml.vp.model.ontouml.deserialization.LiteralDeserializer;
 import it.unibz.inf.ontouml.vp.model.ontouml.serialization.LiteralSerializer;
 import java.util.Collections;
 import java.util.List;
 
 @JsonSerialize(using = LiteralSerializer.class)
+@JsonDeserialize(using = LiteralDeserializer.class)
 public class Literal extends ModelElement {
 
-  public Literal(Class enumeration, String id, MultilingualText name) {
-    super(enumeration, id, name);
-
-    if (enumeration != null && !enumeration.isEnumeration())
-      throw new IllegalArgumentException("The container of a literal must be an Enumeration.");
+  public Literal(String id, MultilingualText name) {
+    super(id, name);
   }
 
-  public Literal(Class enumeration, String name) {
-    this(enumeration, null, new MultilingualText(name));
+  public Literal(String name) {
+    this(null, new MultilingualText(name));
+  }
+
+  public Literal() {
+    this(null);
   }
 
   @Override

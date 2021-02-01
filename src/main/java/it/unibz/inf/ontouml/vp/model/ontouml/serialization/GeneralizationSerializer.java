@@ -14,8 +14,8 @@ public class GeneralizationSerializer extends ModelElementSerializer<Generalizat
 
     super.serialize(generalization, jsonGen, provider);
 
-    writeNullableReferenceField("general", generalization.getGeneral(), jsonGen);
-    writeNullableReferenceField("specific", generalization.getSpecific(), jsonGen);
+    writeNullableReferenceField("general", generalization.getGeneral().orElse(null), jsonGen);
+    writeNullableReferenceField("specific", generalization.getSpecific().orElse(null), jsonGen);
 
     jsonGen.writeEndObject();
   }

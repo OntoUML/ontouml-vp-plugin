@@ -10,19 +10,21 @@ import java.io.IOException;
 public class ClassSerializer extends ClassifierSerializer<Class, ClassStereotype> {
 
   @Override
-  public void serialize(Class clas, JsonGenerator jsonGen, SerializerProvider provider)
+  public void serialize(Class clazz, JsonGenerator jsonGen, SerializerProvider provider)
       throws IOException {
-    super.serialize(clas, jsonGen, provider);
+    super.serialize(clazz, jsonGen, provider);
 
-    writeNullableBooleanField("isExtensional", clas.isExtensional().orElse(null), jsonGen);
-    writeNullableBooleanField("isPowertype", clas.isPowertype().orElse(null), jsonGen);
-    writeNullableIntegerField("order", clas.getOrder().orElse(null), jsonGen);
-    writeNullableArrayField("literals", clas.getLiterals(), jsonGen);
+    writeNullableBooleanField("isExtensional", clazz.isExtensional().orElse(null), jsonGen);
+    writeNullableBooleanField("isPowertype", clazz.isPowertype().orElse(null), jsonGen);
+    writeNullableIntegerField("order", clazz.getOrder().orElse(null), jsonGen);
+    writeNullableArrayField("literals", clazz.getLiterals(), jsonGen);
 
-    if (!clas.getRestrictedTo().isEmpty()) {
+    if (!clazz.getRestrictedTo().isEmpty()) {
       jsonGen.writeArrayFieldStart("restrictedTo");
 
-      for (Nature nature : clas.getRestrictedTo()) jsonGen.writeString(nature.getName());
+      for (Nature nature : clazz.getRestrictedTo()) {
+        jsonGen.writeString(nature.getName());
+      }
 
       jsonGen.writeEndArray();
     } else {

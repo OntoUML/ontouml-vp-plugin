@@ -56,8 +56,8 @@ public class PropertySerializerTest {
 
   @Test
   void shouldSerializePropertyTypeReference() throws JsonProcessingException {
-    Class clas = new Class("c1", (String) null, (String) null);
-    property.setPropertyType(clas);
+    Class clazz = new Class("c1", (String) null, (String) null);
+    property.setPropertyType(clazz);
 
     mapper = new ObjectMapper();
     json = mapper.writeValueAsString(property);

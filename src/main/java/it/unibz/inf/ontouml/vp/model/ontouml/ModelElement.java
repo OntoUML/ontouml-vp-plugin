@@ -14,10 +14,6 @@ import java.util.TreeMap;
 public abstract class ModelElement extends OntoumlElement {
   private Map<String, Object> propertyAssignments = new TreeMap<>();
 
-  public ModelElement(OntoumlElement container, String id, MultilingualText name) {
-    super(container, id, name);
-  }
-
   public ModelElement(String id, MultilingualText name) {
     super(id, name);
   }

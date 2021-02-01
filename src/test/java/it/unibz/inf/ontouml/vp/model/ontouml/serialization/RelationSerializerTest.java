@@ -13,15 +13,15 @@ import org.junit.jupiter.api.Test;
 
 public class RelationSerializerTest {
   ObjectMapper mapper;
-  Class clas;
+  Class clazz;
   Relation relation;
   String json;
 
   @BeforeEach
   void setUp() throws JsonProcessingException {
     mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-    clas = new Class("c1", (String) null, (String) null);
-    relation = new Relation("r1", "my relation", clas, clas);
+    clazz = new Class("c1", (String) null, (String) null);
+    relation = new Relation("r1", "my relation", clazz, clazz);
     json = mapper.writeValueAsString(relation);
   }
 

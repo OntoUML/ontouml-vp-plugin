@@ -1,6 +1,9 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.unibz.inf.ontouml.vp.model.ontouml.deserialization.PackageDeserializer;
 import it.unibz.inf.ontouml.vp.model.ontouml.serialization.PackageSerializer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,6 +11,8 @@ import java.util.Collection;
 import java.util.List;
 
 @JsonSerialize(using = PackageSerializer.class)
+@JsonDeserialize(using = PackageDeserializer.class)
+@JsonTypeName("Package")
 public class Package extends ModelElement implements ModelContainer {
 
   List<ModelElement> contents = new ArrayList<>();
@@ -43,10 +48,25 @@ public class Package extends ModelElement implements ModelContainer {
     return copiedContents;
   }
 
-  public <T extends ModelElement> T addContent(T child) {
+  private <T extends ModelElement> T addAndReturnContent(T child) {
+    if (child == null) throw new NullPointerException("Cannot add a null element to the package.");
+
     child.setContainer(this);
     contents.add(child);
     return child;
+  }
+
+  public void addContent(ModelElement child) {
+    addAndReturnContent(child);
+  }
+
+  public void addContents(Collection<? extends ModelElement> contents) {
+    OntoumlUtils.addIfNotNull(this.contents, contents);
+  }
+
+  public void setContents(Collection<? extends ModelElement> contents) {
+    this.contents.clear();
+    addContents(contents);
   }
 
   public boolean hasContents() {
@@ -62,7 +82,7 @@ public class Package extends ModelElement implements ModelContainer {
   }
 
   public Package createPackage(String id, String name) {
-    return addContent(new Package(id, name));
+    return addAndReturnContent(new Package(id, name));
   }
 
   public Class createClass() {
@@ -74,11 +94,11 @@ public class Package extends ModelElement implements ModelContainer {
   }
 
   public Class createClass(String id, String name, ClassStereotype stereotype) {
-    return addContent(new Class(id, name, stereotype));
+    return addAndReturnContent(new Class(id, name, stereotype));
   }
 
   public Class createClass(String id, String name, String customStereotype) {
-    return addContent(new Class(id, name, customStereotype));
+    return addAndReturnContent(new Class(id, name, customStereotype));
   }
 
   public Class createKind(String name) {
@@ -86,7 +106,7 @@ public class Package extends ModelElement implements ModelContainer {
   }
 
   public Class createKind(String id, String name) {
-    return addContent(Class.createKind(id, name));
+    return addAndReturnContent(Class.createKind(id, name));
   }
 
   public Class createCollective(String name) {
@@ -94,7 +114,7 @@ public class Package extends ModelElement implements ModelContainer {
   }
 
   public Class createCollective(String id, String name) {
-    return addContent(Class.createCollective(id, name));
+    return addAndReturnContent(Class.createCollective(id, name));
   }
 
   public Class createQuantity(String name) {
@@ -102,7 +122,7 @@ public class Package extends ModelElement implements ModelContainer {
   }
 
   public Class createQuantity(String id, String name) {
-    return addContent(Class.createQuantity(id, name));
+    return addAndReturnContent(Class.createQuantity(id, name));
   }
 
   public Class createRelator(String name) {
@@ -110,7 +130,7 @@ public class Package extends ModelElement implements ModelContainer {
   }
 
   public Class createRelator(String id, String name) {
-    return addContent(Class.createRelator(id, name));
+    return addAndReturnContent(Class.createRelator(id, name));
   }
 
   public Class createQuality(String name) {
@@ -118,7 +138,7 @@ public class Package extends ModelElement implements ModelContainer {
   }
 
   public Class createQuality(String id, String name) {
-    return addContent(Class.createQuality(id, name));
+    return addAndReturnContent(Class.createQuality(id, name));
   }
 
   public Class createMode(String name) {
@@ -126,7 +146,7 @@ public class Package extends ModelElement implements ModelContainer {
   }
 
   public Class createMode(String id, String name) {
-    return addContent(Class.createMode(id, name));
+    return addAndReturnContent(Class.createMode(id, name));
   }
 
   public Class createSubkind(String name) {
@@ -134,7 +154,7 @@ public class Package extends ModelElement implements ModelContainer {
   }
 
   public Class createSubkind(String id, String name) {
-    return addContent(Class.createSubkind(id, name));
+    return addAndReturnContent(Class.createSubkind(id, name));
   }
 
   public Class createRole(String name) {
@@ -142,7 +162,7 @@ public class Package extends ModelElement implements ModelContainer {
   }
 
   public Class createRole(String id, String name) {
-    return addContent(Class.createRole(id, name));
+    return addAndReturnContent(Class.createRole(id, name));
   }
 
   public Class createPhase(String name) {
@@ -150,7 +170,7 @@ public class Package extends ModelElement implements ModelContainer {
   }
 
   public Class createPhase(String id, String name) {
-    return addContent(Class.createPhase(id, name));
+    return addAndReturnContent(Class.createPhase(id, name));
   }
 
   public Class createRoleMixin(String name) {
@@ -158,7 +178,7 @@ public class Package extends ModelElement implements ModelContainer {
   }
 
   public Class createRoleMixin(String id, String name) {
-    return addContent(Class.createRoleMixin(id, name));
+    return addAndReturnContent(Class.createRoleMixin(id, name));
   }
 
   public Class createPhaseMixin(String name) {
@@ -166,7 +186,7 @@ public class Package extends ModelElement implements ModelContainer {
   }
 
   public Class createPhaseMixin(String id, String name) {
-    return addContent(Class.createPhaseMixin(id, name));
+    return addAndReturnContent(Class.createPhaseMixin(id, name));
   }
 
   public Class createMixin(String name) {
@@ -174,7 +194,7 @@ public class Package extends ModelElement implements ModelContainer {
   }
 
   public Class createMixin(String id, String name) {
-    return addContent(Class.createMixin(id, name));
+    return addAndReturnContent(Class.createMixin(id, name));
   }
 
   public Class createCategory(String name) {
@@ -182,7 +202,7 @@ public class Package extends ModelElement implements ModelContainer {
   }
 
   public Class createCategory(String id, String name) {
-    return addContent(Class.createCategory(id, name));
+    return addAndReturnContent(Class.createCategory(id, name));
   }
 
   public Class createEvent(String name) {
@@ -190,7 +210,7 @@ public class Package extends ModelElement implements ModelContainer {
   }
 
   public Class createEvent(String id, String name) {
-    return addContent(Class.createEvent(id, name));
+    return addAndReturnContent(Class.createEvent(id, name));
   }
 
   public Class createSituation(String name) {
@@ -198,7 +218,7 @@ public class Package extends ModelElement implements ModelContainer {
   }
 
   public Class createSituation(String id, String name) {
-    return addContent(Class.createSituation(id, name));
+    return addAndReturnContent(Class.createSituation(id, name));
   }
 
   public Class createHistoricalRole(String name) {
@@ -206,7 +226,7 @@ public class Package extends ModelElement implements ModelContainer {
   }
 
   public Class createHistoricalRole(String id, String name) {
-    return addContent(Class.createHistoricalRole(id, name));
+    return addAndReturnContent(Class.createHistoricalRole(id, name));
   }
 
   public Class createHistoricalRoleMixin(String name) {
@@ -214,7 +234,7 @@ public class Package extends ModelElement implements ModelContainer {
   }
 
   public Class createHistoricalRoleMixin(String id, String name) {
-    return addContent(Class.createHistoricalRoleMixin(id, name));
+    return addAndReturnContent(Class.createHistoricalRoleMixin(id, name));
   }
 
   public Class createType(String name) {
@@ -222,7 +242,7 @@ public class Package extends ModelElement implements ModelContainer {
   }
 
   public Class createType(String id, String name) {
-    return addContent(Class.createType(id, name));
+    return addAndReturnContent(Class.createType(id, name));
   }
 
   public Class createAbstract(String name) {
@@ -230,7 +250,7 @@ public class Package extends ModelElement implements ModelContainer {
   }
 
   public Class createAbstract(String id, String name) {
-    return addContent(Class.createAbstract(id, name));
+    return addAndReturnContent(Class.createAbstract(id, name));
   }
 
   public Class createDatatype(String name) {
@@ -238,7 +258,7 @@ public class Package extends ModelElement implements ModelContainer {
   }
 
   public Class createDatatype(String id, String name) {
-    return addContent(Class.createDatatype(id, name));
+    return addAndReturnContent(Class.createDatatype(id, name));
   }
 
   public Class createEnumeration(String[] literals) {
@@ -250,7 +270,7 @@ public class Package extends ModelElement implements ModelContainer {
   }
 
   public Class createEnumeration(String id, String name, String[] literals) {
-    return addContent(Class.createEnumeration(id, name, literals));
+    return addAndReturnContent(Class.createEnumeration(id, name, literals));
   }
 
   public Relation createRelation(Classifier<?, ?> source, Classifier<?, ?> target) {
@@ -267,7 +287,7 @@ public class Package extends ModelElement implements ModelContainer {
       RelationStereotype stereotype,
       Classifier<?, ?> source,
       Classifier<?, ?> target) {
-    return addContent(new Relation(id, name, stereotype, source, target));
+    return addAndReturnContent(new Relation(id, name, stereotype, source, target));
   }
 
   public <T extends Classifier<T, S>, S extends Stereotype> Generalization createGeneralization(
@@ -277,7 +297,7 @@ public class Package extends ModelElement implements ModelContainer {
 
   public <T extends Classifier<T, S>, S extends Stereotype> Generalization createGeneralization(
       String id, Classifier<T, S> specific, Classifier<T, S> general) {
-    return addContent(new Generalization(id, specific, general));
+    return addAndReturnContent(new Generalization(id, specific, general));
   }
 
   public GeneralizationSet createGeneralizationSet(Generalization... generalizations) {
@@ -300,6 +320,6 @@ public class Package extends ModelElement implements ModelContainer {
 
   public GeneralizationSet createGeneralizationSet(
       String id, String name, Class categorizer, Collection<Generalization> generalizations) {
-    return addContent(new GeneralizationSet(id, name, categorizer, generalizations));
+    return addAndReturnContent(new GeneralizationSet(id, name, categorizer, generalizations));
   }
 }

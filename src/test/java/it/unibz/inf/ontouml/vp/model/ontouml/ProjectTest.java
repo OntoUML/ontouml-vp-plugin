@@ -95,4 +95,12 @@ class ProjectTest {
     Stream.of(c1, c2, p1, g1, r1, pk2)
         .forEach(element -> assertThat(element.getProject()).hasValue(project));
   }
+
+  @Test
+  void getAllContentsShouldReturnClassAttributes() {
+    Class person = model.createKind("c1", "Person");
+    Property name = person.createAttribute("p1", "name", null);
+
+    assertThat(project.getAllContents()).contains(name);
+  }
 }

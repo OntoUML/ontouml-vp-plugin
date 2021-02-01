@@ -1,10 +1,13 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.unibz.inf.ontouml.vp.model.ontouml.deserialization.GeneralizationSetDeserializer;
 import it.unibz.inf.ontouml.vp.model.ontouml.serialization.GeneralizationSetSerializer;
 import java.util.*;
 
 @JsonSerialize(using = GeneralizationSetSerializer.class)
+@JsonDeserialize(using = GeneralizationSetDeserializer.class)
 public class GeneralizationSet extends ModelElement {
 
   private boolean isDisjoint;
@@ -89,9 +92,7 @@ public class GeneralizationSet extends ModelElement {
   }
 
   public void setGeneralizations(Collection<Generalization> generalizations) {
-    if (generalizations == null)
-      throw new NullPointerException("Cannot set generalization list to null.");
-
+    this.generalizations.clear();
     OntoumlUtils.addIfNotNull(this.generalizations, generalizations);
   }
 

@@ -9,9 +9,9 @@ import java.io.IOException;
 public class RelationSerializer extends ClassifierSerializer<Relation, RelationStereotype> {
 
   @Override
-  public void serialize(Relation clas, JsonGenerator jsonGen, SerializerProvider provider)
+  public void serialize(Relation clazz, JsonGenerator jsonGen, SerializerProvider provider)
       throws IOException {
-    super.serialize(clas, jsonGen, provider);
+    super.serialize(clazz, jsonGen, provider);
     jsonGen.writeEndObject();
   }
 }

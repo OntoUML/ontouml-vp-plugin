@@ -1,21 +1,22 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public interface ModelContainer {
 
   List<OntoumlElement> getContents();
 
-  List<OntoumlElement> getContents(Predicate<OntoumlElement> filter);
-
   List<OntoumlElement> getAllContents();
 
-  List<OntoumlElement> getAllContents(Predicate<OntoumlElement> filter);
-
   default <T> List<T> getAllContentsByType(java.lang.Class<T> type) {
-    return getAllContents(type::isInstance).stream().map(type::cast).collect(Collectors.toList());
+    return getAllContents().stream()
+        .filter(type::isInstance)
+        .map(type::cast)
+        .collect(Collectors.toList());
   }
 
   default List<ModelElement> getAllModelElements() {
@@ -30,10 +31,12 @@ public interface ModelContainer {
     return getAllContentsByType(Class.class);
   }
 
+  default List<Property> getAllProperties() {
+    return getAllContentsByType(Property.class);
+  }
+
   default List<Property> getAllAttributes() {
-    return getAllContentsByType(Property.class).stream()
-        .filter(Property::isAttribute)
-        .collect(Collectors.toList());
+    return getAllProperties().stream().filter(Property::isAttribute).collect(Collectors.toList());
   }
 
   default List<Literal> getAllLiterals() {
@@ -173,5 +176,59 @@ public interface ModelContainer {
 
   default List<Class> getAllAbstracts() {
     return this.getClassesByStereotype(ClassStereotype.ABSTRACT);
+  }
+
+  default <T extends OntoumlElement> Optional<T> getElementById(
+      String id, java.lang.Class<T> type) {
+
+    List<OntoumlElement> elements =
+        getAllContents().stream()
+            .filter(e -> type.isInstance(e) && id.equals(e.getId()))
+            .collect(Collectors.toList());
+
+    if (elements.size() == 1) return Optional.of(type.cast(elements.get(0)));
+
+    if (elements.size() == 0) return Optional.empty();
+
+    throw new IllegalStateException(
+        "There is more than one instance of " + type.getName() + " with the same id!");
+  }
+
+  default Optional<Class> getClassById(String id) {
+    return getElementById(id, Class.class);
+  }
+
+  default Optional<Relation> getRelationById(String id) {
+    return getElementById(id, Relation.class);
+  }
+
+  default Optional<Generalization> getGeneralizationById(String id) {
+    return getElementById(id, Generalization.class);
+  }
+
+  default Optional<GeneralizationSet> getGeneralizationSetById(String id) {
+    return getElementById(id, GeneralizationSet.class);
+  }
+
+  default Optional<Property> getPropertyById(String id) {
+    return getElementById(id, Property.class);
+  }
+
+  default Optional<Package> getPackageById(String id) {
+    return getElementById(id, Package.class);
+  }
+
+  default Map<String, OntoumlElement> getElementMap() throws IllegalStateException {
+    Map<String, OntoumlElement> map = new HashMap<>();
+
+    for (OntoumlElement element : getAllContents()) {
+      String key = element.getId();
+      if (map.containsKey(key)) {
+        throw new IllegalStateException("Duplicate ids!");
+      }
+      map.put(key, element);
+    }
+
+    return map;
   }
 }

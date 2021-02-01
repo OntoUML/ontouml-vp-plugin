@@ -62,23 +62,24 @@ public abstract class OntoumlElement extends Element {
 
   public abstract List<OntoumlElement> getContents();
 
-  public List<OntoumlElement> getAllContents(Predicate<OntoumlElement> filter) {
-    List<OntoumlElement> contents = getContents(filter);
+  public List<OntoumlElement> getAllContents() {
+    List<OntoumlElement> directContents = getContents();
 
-    if (contents.isEmpty()) return contents;
+    if (directContents.isEmpty()) return directContents;
 
-    List<OntoumlElement> allContents =
-        contents.stream()
-            .flatMap(child -> child.getContents(filter).stream())
+    List<OntoumlElement> childrenContents =
+        directContents.stream()
+            .flatMap(child -> child.getAllContents().stream())
             .collect(Collectors.toList());
 
-    allContents.addAll(contents);
+    childrenContents.addAll(directContents);
 
-    return allContents;
+    return childrenContents;
   }
 
-  public List<OntoumlElement> getAllContents() {
-    return getAllContents(null);
+  @Override
+  public String toString() {
+    return getType() + " { id: " + id + "(hash: " + hashCode() + "), name: " + getName() + "}";
   }
 
   public abstract String getType();

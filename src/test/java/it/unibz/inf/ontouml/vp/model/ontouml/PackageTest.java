@@ -11,49 +11,47 @@ class PackageTest {
   Project project = new Project();
   Package model = project.createModel();
   Package pkg = model.createPackage();
-  Class clas = model.createClass();
-  Relation relation = model.createRelation(clas, clas);
-  Generalization generalization = model.createGeneralization(clas, clas);
+  Class clazz = model.createClass();
+  Relation relation = model.createRelation(clazz, clazz);
+  Generalization generalization = model.createGeneralization(clazz, clazz);
   GeneralizationSet genSet = model.createGeneralizationSet(generalization);
 
   @Test
   @DisplayName("createClass() should set the caller as the container of the new class.")
   void shouldPropagateCallerAsContainer() {
-    assertThat(clas.getContainer()).hasValue(model);
+    assertThat(clazz.getContainer()).hasValue(model);
   }
 
   @Test
   @DisplayName("createClass() should set propagate the caller's project to the new class.")
   void shouldPropagateCallerAsProject() {
-    assertThat(clas.getProject()).hasValue(project);
+    assertThat(clazz.getProject()).hasValue(project);
   }
 
   @Test
   @DisplayName("createClass() should create a class without attributes.")
   void shouldHaveNoAttributes() {
-    assertThat(clas.getAttributes()).hasSize(0);
+    assertThat(clazz.getAttributes()).hasSize(0);
   }
 
   @Test
   @DisplayName("createEnumeration() should create a class with the Enumeration stereotype.")
   void shouldHaveEnumerationStereotype() {
-    Class clas = model.createEnumeration(new String[] {"Red", "Blue", "Green"});
-    assertThat(clas.getOntoumlStereotype()).hasValue(ClassStereotype.ENUMERATION);
+    Class clazz = model.createEnumeration(new String[] {"Red", "Blue", "Green"});
+    assertThat(clazz.getOntoumlStereotype()).hasValue(ClassStereotype.ENUMERATION);
   }
 
   @Test
   @DisplayName("createEnumeration() should create a class with the Enumeration stereotype.")
   void shouldCreateLiterals() {
-    Class clas = model.createEnumeration(new String[] {"Red", "Blue", "Green"});
-    List<Literal> literals = clas.getLiterals();
+    Class clazz = model.createEnumeration(new String[] {"Red", "Blue", "Green"});
+    List<Literal> literals = clazz.getLiterals();
 
-    assertThat(clas.getLiterals()).hasSize(3);
+    assertThat(literals).hasSize(3);
     assertThat(literals).containsNoDuplicates();
-    //      assertThat(literals).comparingElementsUsing( Correspondence.(l -> l.getfi ))
 
-    //      assertTrue(contains(literals, l -> "Red".equals(l.getFirstName().get())));
-    //      assertTrue(contains(literals, l -> "Blue".equals(l.getFirstName().get())));
-    //      assertTrue(contains(literals, l -> "Green".equals(l.getFirstName().get())));
+    assertThat(literals.stream().map(l -> l.getFirstName().orElse("")))
+        .containsExactly("Red", "Blue", "Green");
   }
 
   @Test
@@ -111,5 +109,10 @@ class PackageTest {
       "createGeneralizationSet() should set propagate the caller's project to the new class.")
   void shouldPropagateCallerAsProjectOfGeneralizationSet() {
     assertThat(genSet.getProject()).hasValue(project);
+  }
+
+  @Test
+  void getContentsShouldReturnChildren() {
+    assertThat(model.getContents()).containsExactly(pkg, clazz, relation, generalization, genSet);
   }
 }

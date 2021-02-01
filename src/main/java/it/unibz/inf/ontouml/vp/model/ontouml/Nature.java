@@ -1,7 +1,9 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public enum Nature {
   FUNCTIONAL_COMPLEX("functional-complex"),
@@ -60,5 +62,9 @@ public enum Nature {
 
   public boolean isExtrinsicMoment() {
     return EXTRINSIC_MOMENT_NATURES.contains(this);
+  }
+
+  public static Optional<Nature> findByName(String name) {
+    return Stream.of(Nature.values()).filter(nature -> nature.getName().equals(name)).findFirst();
   }
 }

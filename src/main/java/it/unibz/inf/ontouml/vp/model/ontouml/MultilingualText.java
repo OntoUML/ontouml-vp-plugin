@@ -1,10 +1,13 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.unibz.inf.ontouml.vp.model.ontouml.deserialization.MultilingualTextDeserializer;
 import it.unibz.inf.ontouml.vp.model.ontouml.serialization.MultilingualTextSerializer;
 import java.util.*;
 
 @JsonSerialize(using = MultilingualTextSerializer.class)
+@JsonDeserialize(using = MultilingualTextDeserializer.class)
 public class MultilingualText {
   private static String defaultLanguage = "en";
   private static String[] languagePreference = new String[] {defaultLanguage};
@@ -70,6 +73,7 @@ public class MultilingualText {
   }
 
   public Collection<String> getLanguages() {
+
     return textMap.keySet();
   }
 
@@ -97,5 +101,14 @@ public class MultilingualText {
       throw new NullPointerException("Cannot set a null preference array.");
 
     MultilingualText.languagePreference = languagePreference;
+  }
+
+  @Override
+  public String toString() {
+    if (textMap.size() <= 1) {
+      return getText().orElse(null);
+    }
+
+    return textMap.toString();
   }
 }

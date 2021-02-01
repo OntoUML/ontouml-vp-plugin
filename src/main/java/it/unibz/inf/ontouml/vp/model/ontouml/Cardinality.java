@@ -23,8 +23,6 @@ public class Cardinality {
   }
 
   public void setValue(String cardinality) {
-    if (cardinality == null) throw new NullPointerException("Cannot set null cardinality");
-
     this.cardinality = cardinality;
     setBounds();
   }
@@ -50,6 +48,11 @@ public class Cardinality {
   }
 
   private void setBounds() {
+    if (cardinality == null) {
+      lowerBound = upperBound = null;
+      return;
+    }
+
     if (cardinality.equals("*")) {
       lowerBound = "0";
       upperBound = "*";

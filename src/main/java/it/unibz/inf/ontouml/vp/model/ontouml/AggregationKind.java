@@ -1,5 +1,8 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
+import java.util.Optional;
+import java.util.stream.Stream;
+
 public enum AggregationKind {
   NONE("NONE"),
   SHARED("SHARED"),
@@ -13,5 +16,11 @@ public enum AggregationKind {
 
   public String getName() {
     return name;
+  }
+
+  public static Optional<AggregationKind> findByName(String name) {
+    return Stream.of(AggregationKind.values())
+        .filter(nature -> nature.getName().equals(name))
+        .findFirst();
   }
 }

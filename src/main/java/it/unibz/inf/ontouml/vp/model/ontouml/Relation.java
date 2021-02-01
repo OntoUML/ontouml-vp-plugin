@@ -1,19 +1,24 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.unibz.inf.ontouml.vp.model.ontouml.deserialization.RelationDeserializer;
 import it.unibz.inf.ontouml.vp.model.ontouml.serialization.RelationSerializer;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 @JsonSerialize(using = RelationSerializer.class)
+@JsonDeserialize(using = RelationDeserializer.class)
+@JsonTypeName("Relation")
 public final class Relation extends Classifier<Relation, RelationStereotype> {
 
-  private Relation(String id, MultilingualText name, RelationStereotype ontoumlStereotype) {
+  public Relation(String id, MultilingualText name, RelationStereotype ontoumlStereotype) {
     super(id, name, ontoumlStereotype);
   }
 
-  private Relation(String id, MultilingualText name, String stereotypeName) {
+  public Relation(String id, MultilingualText name, String stereotypeName) {
     super(id, name, stereotypeName);
   }
 
@@ -90,6 +95,10 @@ public final class Relation extends Classifier<Relation, RelationStereotype> {
 
   public Relation(Classifier<?, ?> source, Classifier<?, ?> target) {
     this(null, (MultilingualText) null, (RelationStereotype) null, source, target);
+  }
+
+  public Relation() {
+    this(null, null, (RelationStereotype) null);
   }
 
   @Override
@@ -835,4 +844,21 @@ public final class Relation extends Classifier<Relation, RelationStereotype> {
 
     return getSourceEnd();
   }
+
+  public static Relation createRelation(
+      String id, String name, Classifier<?, ?> source, Classifier<?, ?> target) {
+    return new Relation(id, name, source, target);
+  }
+
+  public static Relation createMaterial(
+      String id, String name, Classifier<?, ?> source, Classifier<?, ?> target) {
+    return new Relation(id, name, RelationStereotype.MATERIAL, source, target);
+  }
+
+  public static Relation createComparative(
+      String id, String name, Classifier<?, ?> source, Classifier<?, ?> target) {
+    return new Relation(id, name, RelationStereotype.COMPARATIVE, source, target);
+  }
+
+  // TODO: Write additional factory methods.
 }
