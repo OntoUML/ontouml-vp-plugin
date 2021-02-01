@@ -2,13 +2,12 @@ package it.unibz.inf.ontouml.vp.model.ontouml.serialization;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import it.unibz.inf.ontouml.vp.model.ontouml.*;
 import it.unibz.inf.ontouml.vp.model.ontouml.Class;
 import it.unibz.inf.ontouml.vp.model.ontouml.Package;
-import it.unibz.inf.ontouml.vp.model.ontouml.*;
-import org.junit.jupiter.api.Test;
-
 import java.io.File;
 import java.io.IOException;
+import org.junit.jupiter.api.Test;
 
 public class SerializationTest {
   ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);

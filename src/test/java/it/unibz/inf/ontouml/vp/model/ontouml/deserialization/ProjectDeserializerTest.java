@@ -26,9 +26,7 @@ class ProjectDeserializerTest {
           + "  \"description\" : {\n"
           + "    \"it\" : \"Il miglior progetto in modellazione concettuale.\",\n"
           + "    \"en\" : \"The best conceptual modeling project.\"\n"
-          + "  },"
-          + "  \"type\" : \"Project\","
-          + "  \"model\": {\n"
+          + "  },  \"type\" : \"Project\",  \"model\": {\n"
           + "    \"id\": \"pk1\",\n"
           + "    \"name\": \"Model\",\n"
           + "    \"type\": \"Package\",\n"
@@ -36,12 +34,12 @@ class ProjectDeserializerTest {
           + "      { \"id\": \"c1\", \"type\": \"Class\", \"name\": \"Agent\" },\n"
           + "      { \"id\": \"c2\", \"type\": \"Class\", \"name\": \"Person\" },\n"
           + "      { \"id\": \"r1\", \"type\": \"Relation\", \"name\": \"knows\" },\n"
-          + "      { \"id\": \"g1\", \"type\": \"Generalization\", \"name\": \"PersonToAgent\" },\n"
-          + "      { \"id\": \"gs1\", \"type\": \"GeneralizationSet\", \"name\": \"AgentNature\" }\n"
+          + "      { \"id\": \"g1\", \"type\": \"Generalization\", \"name\": \"PersonToAgent\""
+          + " },\n"
+          + "      { \"id\": \"gs1\", \"type\": \"GeneralizationSet\", \"name\": \"AgentNature\""
+          + " }\n"
           + "    ]\n"
-          + "  },"
-          + "  \"diagrams\": null"
-          + "}";
+          + "  },  \"diagrams\": null}";
 
   static ObjectMapper mapper;
   static Project project;
@@ -145,8 +143,10 @@ class ProjectDeserializerTest {
             + "            \"id\": \"att2\",\n"
             + "            \"type\": \"Property\",\n"
             + "            \"propertyType\": { \"id\": \"c2\", \"type\": \"Class\" },\n"
-            + "            \"subsettedProperties\": [ {\"id\": \"att1\", \"type\": \"Property\"} ],\n"
-            + "            \"redefinedProperties\": [ {\"id\": \"att1\", \"type\": \"Property\"} ]\n"
+            + "            \"subsettedProperties\": [ {\"id\": \"att1\", \"type\": \"Property\"}"
+            + " ],\n"
+            + "            \"redefinedProperties\": [ {\"id\": \"att1\", \"type\": \"Property\"}"
+            + " ]\n"
             + "          }\n"
             + "        ]\n"
             + "      },\n"
