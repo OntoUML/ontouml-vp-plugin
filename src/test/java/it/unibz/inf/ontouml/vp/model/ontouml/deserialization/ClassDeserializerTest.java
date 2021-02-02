@@ -65,7 +65,7 @@ class ClassDeserializerTest {
           + "    \"subsettedProperties\" : null,\n"
           + "    \"redefinedProperties\" : null,\n"
           + "    \"aggregationKind\" : null\n"
-          + "  } ]\n"
+          + "  } ],\n"
           + "  \"isExtensional\" : true,\n"
           + "  \"isPowertype\" : true,\n"
           + "  \"order\" : 1,\n"
