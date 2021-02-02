@@ -39,6 +39,8 @@ public class JsonExportController implements VPActionController {
     final Configurations configs = Configurations.getInstance();
     final ProjectConfigurations projectConfigurations = configs.getProjectConfigurations();
 
+    System.out.println("\n\nperformAction()!\n\n");
+
     FileDialog fd =
         new FileDialog(
             (Frame) ApplicationManager.instance().getViewManager().getRootFrame(),
@@ -48,10 +50,14 @@ public class JsonExportController implements VPActionController {
     String suggestedFolderPath = projectConfigurations.getExportFolderPath();
     String suggestedFileName = projectConfigurations.getExportFilename();
 
+    System.out.println("\n\ncheckIsEmpty!\n\n");
+
     if (suggestedFileName.isEmpty()) {
       String projectName = ApplicationManager.instance().getProjectManager().getProject().getName();
       suggestedFileName = projectName + ".json";
     }
+
+    System.out.println("\n\nWill set FileDialog props!\n\n");
 
     fd.setDirectory(suggestedFolderPath);
     fd.setFile(suggestedFileName);
@@ -61,15 +67,24 @@ public class JsonExportController implements VPActionController {
 
     if (fileDirectory != null) {
 
+      System.out.println("\n\nWill create Progress Dialog!\n\n");
       loading = new ProgressDialog();
+      System.out.println("\n\nWill show Progress Dialog!\n\n");
       ApplicationManager.instance().getViewManager().showDialog(loading);
+      System.out.println("\n\nShowed Progress Dialog!\n\n");
 
       try {
+        System.out.println("\n\ngetFile()!\n\n");
         String fileName = fd.getFile();
 
+        System.out.println("\n\nendsWith\n\n");
         if (!fileName.endsWith(".json")) fileName += ".json";
 
+        System.out.println("\n\ngenerateModel\n\n");
         final String jsonModel = ModelElement.generateModel(true);
+        System.out.println("\n\nGENERATED\n\n");
+        //        Transformer.transform();
+
         Files.write(Paths.get(fileDirectory, fileName), jsonModel.getBytes());
         projectConfigurations.setExportFolderPath(fileDirectory);
         projectConfigurations.setExportFilename(fileName);

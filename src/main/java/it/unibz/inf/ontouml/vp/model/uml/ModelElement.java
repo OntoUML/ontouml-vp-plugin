@@ -149,10 +149,8 @@ public interface ModelElement {
     ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
     List<String> ignoredClassValues =
         Arrays.asList(
-            new String[] {
-              StereotypesManager.PROPERTY_RESTRICTED_TO, StereotypesManager.PROPERTY_IS_EXTENSIONAL,
-              StereotypesManager.PROPERTY_IS_POWERTYPE, StereotypesManager.PROPERTY_ORDER
-            });
+            StereotypesManager.PROPERTY_RESTRICTED_TO, StereotypesManager.PROPERTY_IS_EXTENSIONAL,
+            StereotypesManager.PROPERTY_IS_POWERTYPE, StereotypesManager.PROPERTY_ORDER);
 
     for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++) {
       if (ignoredClassValues.contains(lTaggedValues[i].getName())) {
@@ -388,9 +386,8 @@ public interface ModelElement {
     }
   }
 
-  @SuppressWarnings("unchecked")
-  public static <T extends IModelElement> void forEachSelectedElement(
-      T element, Consumer<T> consumer) {
+  // TODO: CHECKME!
+  static <T extends IModelElement> void forEachSelectedElement(T element, Consumer<T> consumer) {
     if (element == null) {
       return;
     }
@@ -412,7 +409,7 @@ public interface ModelElement {
             selectedElement ->
                 selectedElement != null
                     && selectedElementType.equals(selectedElement.getModelType()))
-        .forEach((Consumer<? super IModelElement>) consumer);
+        .forEach((Consumer<IModelElement>) consumer);
     ;
   }
 }

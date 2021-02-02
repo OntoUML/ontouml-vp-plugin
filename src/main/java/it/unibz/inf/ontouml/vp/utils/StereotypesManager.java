@@ -15,10 +15,9 @@ public class StereotypesManager {
   public static final String PROPERTY_IS_POWERTYPE = "isPowertype";
   public static final String PROPERTY_ORDER = "order";
 
-  public static List<String> getOntoUMLTaggedValues() {
-    return Arrays.asList(
-        PROPERTY_RESTRICTED_TO, PROPERTY_IS_EXTENSIONAL, PROPERTY_IS_POWERTYPE, PROPERTY_ORDER);
-  }
+  public static Set<String> CLASS_TAGGED_VALUES =
+      Set.of(
+          PROPERTY_RESTRICTED_TO, PROPERTY_IS_EXTENSIONAL, PROPERTY_IS_POWERTYPE, PROPERTY_ORDER);
 
   /** Method to be called whenever a project is opened to properly install all stereotypes. */
   public static void generate() {
@@ -187,7 +186,7 @@ public class StereotypesManager {
       // 1. Saves and deletes tagged values associated to a stereotype
       for (ITaggedValue tv : taggedValues) {
         final boolean isAllowedTag = tv.getName().equals("allowed");
-        final boolean isOntoUMLTag = getOntoUMLTaggedValues().contains(tv.getName());
+        final boolean isOntoUMLTag = CLASS_TAGGED_VALUES.contains(tv.getName());
         final boolean isAssociatedToStereotype = tv.getTagDefinition() != null;
 
         if (isAllowedTag) {
