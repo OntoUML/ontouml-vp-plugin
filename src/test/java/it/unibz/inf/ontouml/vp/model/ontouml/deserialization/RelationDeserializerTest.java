@@ -5,10 +5,8 @@ import static com.google.common.truth.Truth8.assertThat;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.unibz.inf.ontouml.vp.model.ontouml.*;
 import it.unibz.inf.ontouml.vp.model.ontouml.Class;
-import it.unibz.inf.ontouml.vp.model.ontouml.Classifier;
-import it.unibz.inf.ontouml.vp.model.ontouml.Property;
-import it.unibz.inf.ontouml.vp.model.ontouml.Relation;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -106,6 +104,16 @@ class RelationDeserializerTest {
   }
 
   @Test
+  void shouldDeserializeIsAbstract() {
+    assertThat(relation.isAbstract()).isTrue();
+  }
+
+  @Test
+  void shouldDeserializeIsDerived() {
+    assertThat(relation.isDerived()).isTrue();
+  }
+
+  @Test
   void shouldDeserializeEnds() {
     assertThat(relation.getProperties()).hasSize(2);
     assertThat(relation.getProperties().get(0).getId()).isEqualTo("p1");
@@ -138,5 +146,33 @@ class RelationDeserializerTest {
     Classifier<?, ?> target = relation.getTarget();
     assertThat(target.getId()).isEqualTo("c2");
     assertThat(target).isInstanceOf(Class.class);
+  }
+
+  @Test
+  void shouldDeserializeOntoumlStereotype() throws JsonProcessingException {
+    String json =
+        "{\n"
+            + "  \"id\": \"r1\",\n"
+            + "  \"type\": \"Relation\",\n"
+            + "  \"stereotype\": \"material\"\n"
+            + "}";
+
+    Relation relation = mapper.readValue(json, Relation.class);
+    assertThat(relation.getOntoumlStereotype()).hasValue(RelationStereotype.MATERIAL);
+    assertThat(relation.getCustomStereotype()).isEmpty();
+  }
+
+  @Test
+  void shouldDeserializeCustomStereotype() throws JsonProcessingException {
+    String json =
+        "{\n"
+            + "  \"id\": \"r1\",\n"
+            + "  \"type\": \"Relation\",\n"
+            + "  \"stereotype\": \"custom\"\n"
+            + "}";
+
+    Relation relation = mapper.readValue(json, Relation.class);
+    assertThat(relation.getOntoumlStereotype()).isEmpty();
+    assertThat(relation.getCustomStereotype()).hasValue("custom");
   }
 }

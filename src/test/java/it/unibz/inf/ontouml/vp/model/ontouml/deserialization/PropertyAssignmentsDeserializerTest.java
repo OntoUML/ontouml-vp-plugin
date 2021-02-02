@@ -11,7 +11,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-class ModelElementDeserializerTest {
+class PropertyAssignmentsDeserializerTest {
 
   static String json =
       "{\n"

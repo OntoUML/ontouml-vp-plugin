@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unibz.inf.ontouml.vp.model.ontouml.AggregationKind;
 import it.unibz.inf.ontouml.vp.model.ontouml.Class;
 import it.unibz.inf.ontouml.vp.model.ontouml.Property;
+import it.unibz.inf.ontouml.vp.model.ontouml.PropertyStereotype;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -110,5 +111,33 @@ class PropertyDeserializerTest {
   @Test
   void shouldDeserializeAggregationKind() {
     assertThat(property.getAggregationKind()).hasValue(AggregationKind.COMPOSITE);
+  }
+
+  @Test
+  void shouldDeserializeOntoumlStereotype() throws JsonProcessingException {
+    String json =
+        "{\n"
+            + "  \"id\": \"p1\",\n"
+            + "  \"type\": \"Property\",\n"
+            + "  \"stereotype\": \"begin\"\n"
+            + "}";
+
+    Property property = mapper.readValue(json, Property.class);
+    assertThat(property.getOntoumlStereotype()).hasValue(PropertyStereotype.BEGIN);
+    assertThat(property.getCustomStereotype()).isEmpty();
+  }
+
+  @Test
+  void shouldDeserializeCustomStereotype() throws JsonProcessingException {
+    String json =
+        "{\n"
+            + "  \"id\": \"p1\",\n"
+            + "  \"type\": \"Property\",\n"
+            + "  \"stereotype\": \"custom\"\n"
+            + "}";
+
+    Property property = mapper.readValue(json, Property.class);
+    assertThat(property.getOntoumlStereotype()).isEmpty();
+    assertThat(property.getCustomStereotype()).hasValue("custom");
   }
 }
