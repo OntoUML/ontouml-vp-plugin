@@ -39,22 +39,6 @@ public class Trace {
   public OntoumlElement getTarget(IModelElement source) {
     return getTarget(source.getId());
   }
-  //
-  //  public Optional<Object> getSource(String id) {
-  //    return Optional.ofNullable(map.get(id).getSource());
-  //  }
-  //
-  //  public Optional<Object> getSource(OntoumlElement target) {
-  //    return getSource(target.getId());
-  //  }
-  //
-  //  public Optional<OntoumlElement> getTarget(String id) {
-  //    return Optional.ofNullable(map.get(id).getTarget());
-  //  }
-  //
-  //  public Optional<OntoumlElement> getTarget(IModelElement source) {
-  //    return getTarget(source.getId());
-  //  }
 
   public static Trace getInstance() {
     if (instance == null) instance = new Trace();
@@ -76,5 +60,23 @@ public class Trace {
                     + x.getValue().getTarget().getFirstName().orElse("Unnamed")
                     + "\n")
         .collect(Collectors.joining());
+  }
+
+  private static class Correspondence {
+    Object source;
+    OntoumlElement target;
+
+    public Correspondence(Object source, OntoumlElement target) {
+      this.source = source;
+      this.target = target;
+    }
+
+    public Object getSource() {
+      return source;
+    }
+
+    public OntoumlElement getTarget() {
+      return target;
+    }
   }
 }
