@@ -39,11 +39,17 @@ public abstract class Classifier<T extends Classifier<T, S>, S extends Stereotyp
     return properties;
   }
 
-  public void setProperties(Collection<Property> properties) {
-    if (properties == null)
-      throw new NullPointerException("Cannot set a null value to the properties list.");
+  public void addProperty(Property property) {
+    if (property != null) {
+      property.setContainer(this);
+      properties.add(property);
+    }
+  }
 
-    this.properties.addAll(properties);
+  public void setProperties(Collection<Property> properties) {
+    this.properties.clear();
+
+    if (properties != null) properties.forEach(p -> addProperty(p));
   }
 
   public boolean hasProperties() {

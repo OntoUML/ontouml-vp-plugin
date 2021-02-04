@@ -72,8 +72,8 @@ public class GUFOExportView extends JPanel {
     JPanel packageMappingPanel = new JPanel();
 
     mainTabbedPane.add(mainPanel, "Basic Settings");
-    mainTabbedPane.add(elementMappingPanel, "Element Mapping");
-    mainTabbedPane.add(packageMappingPanel, "Package Mapping");
+    mainTabbedPane.add(elementMappingPanel, "Element Correspondence");
+    mainTabbedPane.add(packageMappingPanel, "Package Correspondence");
 
     JPanel optionsPanelLeft = new JPanel();
     JPanel optionsPanelRight = new JPanel();

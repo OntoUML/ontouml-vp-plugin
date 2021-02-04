@@ -148,9 +148,21 @@ public final class Class extends Classifier<Class, ClassStereotype> {
     return getProperties();
   }
 
-  public void addAttribute(Property p) {}
+  public void addAttribute(Property attribute) {
+    if (attribute == null) return;
 
-  public void setAttributes(Collection<Property> attributes) {}
+    attribute.setContainer(this);
+    properties.add(attribute);
+  }
+
+  public void setAttributes(Collection<Property> attributes) {
+    if (properties == null) properties = new ArrayList<>();
+    else properties.clear();
+
+    if (attributes == null) return;
+
+    attributes.forEach(a -> addAttribute(a));
+  }
 
   public Property createAttribute(String name, Classifier<?, ?> type) {
     return createAttribute(null, name, type);

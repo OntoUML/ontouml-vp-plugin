@@ -860,5 +860,10 @@ public final class Relation extends Classifier<Relation, RelationStereotype> {
     return new Relation(id, name, RelationStereotype.COMPARATIVE, source, target);
   }
 
+  public static Relation createDerivation(
+      String id, String name, Classifier<?, ?> source, Classifier<?, ?> target) {
+    return new Relation(id, name, RelationStereotype.DERIVATION, source, target);
+  }
+
   // TODO: Write additional factory methods.
 }

@@ -298,7 +298,7 @@ public interface ModelElement {
         {
           final IAttribute attribute = (IAttribute) element;
           final IMultiplicity multiplicity = attribute.getMultiplicityDetail();
-          return multiplicity != null ? multiplicity.isOrdered() : false;
+          return multiplicity != null && multiplicity.isOrdered();
         }
 
       default:

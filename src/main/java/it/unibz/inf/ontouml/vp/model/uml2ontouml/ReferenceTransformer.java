@@ -9,9 +9,9 @@ public class ReferenceTransformer {
   public static OntoumlElement transformStub(IModelElement source) {
     OntoumlElement stub = null;
 
-    if (source instanceof IClass) {
+    if (source instanceof IClass || source instanceof IDataType) {
       stub = new Class();
-    } else if (source instanceof IAssociation) {
+    } else if (source instanceof IAssociation || source instanceof IAssociationClass) {
       stub = new Relation();
     } else if (source instanceof IPackage) {
       stub = new Package();
