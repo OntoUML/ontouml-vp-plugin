@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Rectangle;
-
 import java.io.IOException;
 
 public class RectangleDeserializer extends JsonDeserializer<Rectangle> {

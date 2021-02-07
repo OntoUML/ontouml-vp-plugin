@@ -1,5 +1,7 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 
+import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeObjectField;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -8,10 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.GeneralizationSet;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.GeneralizationSetView;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Text;
-
 import java.io.IOException;
-
-import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeObjectField;
 
 public class GeneralizationSetViewDeserializer extends JsonDeserializer<GeneralizationSetView> {
 
@@ -26,7 +25,8 @@ public class GeneralizationSetViewDeserializer extends JsonDeserializer<Generali
     String id = root.get("id").asText();
     view.setId(id);
 
-    GeneralizationSet gs = deserializeObjectField(root, "modelElement", GeneralizationSet.class, codec);
+    GeneralizationSet gs =
+        deserializeObjectField(root, "modelElement", GeneralizationSet.class, codec);
     view.setModelElement(gs);
 
     Text shape = deserializeObjectField(root, "shape", Text.class, codec);

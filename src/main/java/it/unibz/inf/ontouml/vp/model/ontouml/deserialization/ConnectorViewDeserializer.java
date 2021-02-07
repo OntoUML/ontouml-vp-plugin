@@ -1,14 +1,13 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 
+import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeObjectField;
+
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.JsonNode;
 import it.unibz.inf.ontouml.vp.model.ontouml.OntoumlElement;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.*;
-
 import java.io.IOException;
 import java.util.List;
-
-import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeObjectField;
 
 public class ConnectorViewDeserializer {
 

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Path;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Point;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
