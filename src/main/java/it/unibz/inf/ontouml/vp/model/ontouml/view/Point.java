@@ -4,25 +4,25 @@ public class Point {
   double x;
   double y;
 
-  public Point(double x, double y) {
-    this.x = x;
-    this.y = y;
+  public Point(Double x, Double y) {
+    setX(x);
+    setY(y);
   }
 
   public double getX() {
     return x;
   }
 
-  public void setX(double x) {
-    this.x = x;
+  public void setX(Double x) {
+    this.x = (x != null) ? x : 0;
   }
 
   public double getY() {
     return y;
   }
 
-  public void setY(double y) {
-    this.y = y;
+  public void setY(Double y) {
+    this.y = (y != null) ? y : 0;
   }
 
   @Override

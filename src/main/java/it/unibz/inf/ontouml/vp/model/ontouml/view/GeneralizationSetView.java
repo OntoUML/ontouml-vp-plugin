@@ -1,10 +1,13 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.view;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.unibz.inf.ontouml.vp.model.ontouml.deserialization.GeneralizationSetViewDeserializer;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.GeneralizationSet;
 import it.unibz.inf.ontouml.vp.model.ontouml.serialization.GeneralizationSetViewSerializer;
 
 @JsonSerialize(using = GeneralizationSetViewSerializer.class)
+@JsonDeserialize(using = GeneralizationSetViewDeserializer.class)
 public class GeneralizationSetView extends NodeView<GeneralizationSet, Text> {
 
   public GeneralizationSetView(String id, GeneralizationSet genSet) {

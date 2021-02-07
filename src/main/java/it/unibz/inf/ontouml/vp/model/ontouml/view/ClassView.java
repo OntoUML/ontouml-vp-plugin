@@ -1,10 +1,13 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.view;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.unibz.inf.ontouml.vp.model.ontouml.deserialization.ClassViewDeserializer;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
 import it.unibz.inf.ontouml.vp.model.ontouml.serialization.ClassViewSerializer;
 
 @JsonSerialize(using = ClassViewSerializer.class)
+@JsonDeserialize(using = ClassViewDeserializer.class)
 public class ClassView extends NodeView<Class, Rectangle> {
   public ClassView(String id, Class clazz) {
     super(id, clazz);

@@ -23,8 +23,6 @@ public class IClassDiagramTransformer {
 
     IClassDiagramUIModel source = (IClassDiagramUIModel) sourceElement;
 
-    System.out.println(source.getType() + ": " + source.getName());
-
     Diagram target = new Diagram();
 
     String id = source.getId();

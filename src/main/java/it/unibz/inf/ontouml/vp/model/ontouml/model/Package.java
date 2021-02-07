@@ -3,7 +3,7 @@ package it.unibz.inf.ontouml.vp.model.ontouml.model;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import it.unibz.inf.ontouml.vp.model.ontouml.ModelContainer;
+import it.unibz.inf.ontouml.vp.model.ontouml.ModelElementContainer;
 import it.unibz.inf.ontouml.vp.model.ontouml.MultilingualText;
 import it.unibz.inf.ontouml.vp.model.ontouml.OntoumlElement;
 import it.unibz.inf.ontouml.vp.model.ontouml.OntoumlUtils;
@@ -17,7 +17,7 @@ import java.util.List;
 @JsonSerialize(using = PackageSerializer.class)
 @JsonDeserialize(using = PackageDeserializer.class)
 @JsonTypeName("Package")
-public class Package extends ModelElement implements ModelContainer {
+public class Package extends ModelElement implements ModelElementContainer {
 
   List<ModelElement> contents = new ArrayList<>();
 

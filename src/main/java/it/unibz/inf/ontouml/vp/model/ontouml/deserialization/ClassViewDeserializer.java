@@ -40,7 +40,7 @@ public class ClassDeserializer extends JsonDeserializer<Class> {
       clazz.setRestrictedTo(restrictedTo);
     }
 
-    List<Literal> literals = deserializeArrayField(root, "literals", Literal.class, codec);
+    List<Literal> literals = deserializeObjectArray(root, "literals", Literal.class, codec);
     if (literals != null) {
       clazz.setLiterals(literals);
     }

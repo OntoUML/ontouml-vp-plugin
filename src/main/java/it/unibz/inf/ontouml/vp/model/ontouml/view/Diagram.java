@@ -1,15 +1,20 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.view;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import it.unibz.inf.ontouml.vp.model.ontouml.DiagramElementContainer;
 import it.unibz.inf.ontouml.vp.model.ontouml.MultilingualText;
 import it.unibz.inf.ontouml.vp.model.ontouml.OntoumlElement;
+import it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DiagramDeserializer;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.ModelElement;
 import it.unibz.inf.ontouml.vp.model.ontouml.serialization.DiagramSerializer;
+
 import java.util.*;
 
 /** A set of {@link DiagramElement} instances use to describe a perspective of the OntoUML model. */
 @JsonSerialize(using = DiagramSerializer.class)
-public class Diagram extends ViewElement {
+@JsonDeserialize(using = DiagramDeserializer.class)
+public class Diagram extends ViewElement implements DiagramElementContainer {
 
   private ModelElement owner;
   private Set<DiagramElement<?, ?>> contents = new HashSet<>();

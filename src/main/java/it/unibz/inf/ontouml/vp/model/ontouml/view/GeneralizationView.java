@@ -1,13 +1,17 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.view;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import it.unibz.inf.ontouml.vp.model.ontouml.OntoumlElement;
+import it.unibz.inf.ontouml.vp.model.ontouml.deserialization.ClassViewDeserializer;
+import it.unibz.inf.ontouml.vp.model.ontouml.deserialization.GeneralizationViewDeserializer;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Generalization;
 import it.unibz.inf.ontouml.vp.model.ontouml.serialization.GeneralizationViewSerializer;
 import java.util.ArrayList;
 import java.util.List;
 
 @JsonSerialize(using = GeneralizationViewSerializer.class)
+@JsonDeserialize(using = GeneralizationViewDeserializer.class)
 public class GeneralizationView extends ConnectorView<Generalization> {
 
   public GeneralizationView(String id, Generalization generalization) {

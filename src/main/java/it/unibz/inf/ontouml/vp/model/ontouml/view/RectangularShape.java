@@ -1,7 +1,7 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.view;
 
 public abstract class RectangularShape extends Shape {
-  Point topLeft = new Point(0, 0);
+  Point topLeft = new Point(0.0, 0.0);
   double width = 20;
   double height = 10;
 
@@ -29,7 +29,7 @@ public abstract class RectangularShape extends Shape {
     return topLeft.getX();
   }
 
-  public void setX(double x) {
+  public void setX(Double x) {
     topLeft.setX(x);
   }
 
@@ -37,7 +37,7 @@ public abstract class RectangularShape extends Shape {
     return topLeft.getY();
   }
 
-  public void setY(double y) {
+  public void setY(Double y) {
     topLeft.setY(y);
   }
 
@@ -45,15 +45,15 @@ public abstract class RectangularShape extends Shape {
     return width;
   }
 
-  public void setWidth(double width) {
-    this.width = width;
+  public void setWidth(Double width) {
+    this.width = (width != null) ? width : 0;
   }
 
   public double getHeight() {
     return height;
   }
 
-  public void setHeight(double height) {
-    this.height = height;
+  public void setHeight(Double height) {
+    this.height = (height != null) ? height : 0;
   }
 }

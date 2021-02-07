@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @JsonSerialize(using = ProjectSerializer.class)
 @JsonDeserialize(using = ProjectDeserializer.class)
-public class Project extends OntoumlElement implements ModelContainer {
+public class Project extends OntoumlElement implements ModelElementContainer, DiagramElementContainer {
   private Package model;
   private List<Diagram> diagrams = new ArrayList<>();
 
@@ -68,11 +68,7 @@ public class Project extends OntoumlElement implements ModelContainer {
   }
 
   public List<Diagram> getDiagrams() {
-    List<Diagram> copy = new ArrayList<>();
-
-    if (diagrams != null) copy.addAll(diagrams);
-
-    return copy;
+    return new ArrayList<>(diagrams);
   }
 
   public void addDiagram(Diagram diagram) {
@@ -104,7 +100,7 @@ public class Project extends OntoumlElement implements ModelContainer {
   public List<OntoumlElement> getContents() {
     List<OntoumlElement> contents = new ArrayList<>();
 
-    if (diagrams != null) contents.addAll(diagrams);
+    contents.addAll(diagrams);
 
     if (getModel().isPresent()) contents.add(getModel().get());
 

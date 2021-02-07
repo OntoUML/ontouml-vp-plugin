@@ -1,6 +1,6 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 
-import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeClassifier;
+import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeClassifierField;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.ObjectCodec;
@@ -23,10 +23,10 @@ public class GeneralizationDeserializer extends JsonDeserializer<Generalization>
     ElementDeserializer.deserialize(gen, root, codec);
     ModelElementDeserializer.deserialize(gen, root, codec);
 
-    Classifier<?, ?> general = deserializeClassifier(root, "general", codec, context);
+    Classifier<?, ?> general = deserializeClassifierField(root, "general", codec);
     gen.setGeneral(general);
 
-    Classifier<?, ?> specific = deserializeClassifier(root, "specific", codec, context);
+    Classifier<?, ?> specific = deserializeClassifierField(root, "specific", codec);
     gen.setSpecific(specific);
 
     return gen;

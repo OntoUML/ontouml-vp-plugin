@@ -12,11 +12,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class GeneralizationSetDeserializerTest {
 
-  static String json =
+  String json =
       "{\n"
           + "  \"id\" : \"gs1\",\n"
           + "  \"name\" : null,\n"
@@ -38,11 +39,11 @@ class GeneralizationSetDeserializerTest {
           + "  } ]\n"
           + "} ]";
 
-  static ObjectMapper mapper;
-  static GeneralizationSet gs;
+  ObjectMapper mapper;
+  GeneralizationSet gs;
 
-  @BeforeAll
-  static void setUp() throws JsonProcessingException {
+  @BeforeEach
+  void setUp() throws JsonProcessingException {
     mapper = new ObjectMapper();
     gs = mapper.readValue(json, GeneralizationSet.class);
   }

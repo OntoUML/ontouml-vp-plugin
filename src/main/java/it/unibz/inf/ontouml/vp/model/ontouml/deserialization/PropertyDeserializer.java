@@ -38,15 +38,15 @@ public class PropertyDeserializer extends JsonDeserializer<Property> {
     String cardinality = deserializeNullableStringField(root, "cardinality");
     property.setCardinality(cardinality);
 
-    Classifier<?, ?> propertyType = deserializeClassifier(root, "propertyType", codec, context);
+    Classifier<?, ?> propertyType = deserializeClassifierField(root, "propertyType", codec);
     property.setPropertyType(propertyType);
 
     List<Property> subsettedProperties =
-        deserializeObjectArray(root, "subsettedProperties", Property.class, codec);
+        deserializeArrayField(root, "subsettedProperties", Property.class, codec);
     property.setSubsettedProperties(subsettedProperties);
 
     List<Property> redefinedProperties =
-        deserializeObjectArray(root, "redefinedProperties", Property.class, codec);
+        deserializeArrayField(root, "redefinedProperties", Property.class, codec);
     property.setRedefinedProperties(redefinedProperties);
 
     String aggregationKind = deserializeNullableStringField(root, "aggregationKind");

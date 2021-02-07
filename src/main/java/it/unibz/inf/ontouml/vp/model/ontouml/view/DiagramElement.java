@@ -37,7 +37,7 @@ public abstract class DiagramElement<T extends ModelElement, S extends Shape> ex
   }
 
   public void setShape(S shape) {
-    this.shape = shape;
+    if (shape != null) this.shape = shape;
   }
 
   abstract S createShape();

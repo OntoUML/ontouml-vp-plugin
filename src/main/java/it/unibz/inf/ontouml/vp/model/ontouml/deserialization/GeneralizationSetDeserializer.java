@@ -31,11 +31,11 @@ public class GeneralizationSetDeserializer extends JsonDeserializer<Generalizati
     boolean isDisjoint = deserializeBooleanField(root, "isDisjoint");
     gs.setDisjoint(isDisjoint);
 
-    Class categorizer = deserializeObject(root, "categorizer", Class.class, codec);
+    Class categorizer = deserializeObjectField(root, "categorizer", Class.class, codec);
     gs.setCategorizer(categorizer);
 
     List<Generalization> generalizations =
-        deserializeObjectArray(root, "generalizations", Generalization.class, codec);
+        deserializeArrayField(root, "generalizations", Generalization.class, codec);
     gs.setGeneralizations(generalizations);
 
     return gs;

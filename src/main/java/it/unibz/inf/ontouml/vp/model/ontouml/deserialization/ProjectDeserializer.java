@@ -1,16 +1,20 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 
-import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeObject;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import it.unibz.inf.ontouml.vp.model.ontouml.*;
+import it.unibz.inf.ontouml.vp.model.ontouml.Project;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Package;
+import it.unibz.inf.ontouml.vp.model.ontouml.view.Diagram;
+
 import java.io.IOException;
+import java.util.List;
+
+import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeArrayField;
+import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeObjectField;
 
 public class ProjectDeserializer extends JsonDeserializer<Project> {
 
@@ -22,8 +26,12 @@ public class ProjectDeserializer extends JsonDeserializer<Project> {
     Project project = new Project();
 
     ElementDeserializer.deserialize(project, root, codec);
-    Package model = deserializeObject(root, "model", Package.class, codec);
+
+    Package model = deserializeObjectField(root, "model", Package.class, codec);
     project.setModel(model);
+
+    List<Diagram> diagrams = deserializeArrayField(root, "diagrams", Diagram.class, codec);
+    project.setDiagrams(diagrams);
 
     try {
       ReferenceResolver.resolveReferences(project);

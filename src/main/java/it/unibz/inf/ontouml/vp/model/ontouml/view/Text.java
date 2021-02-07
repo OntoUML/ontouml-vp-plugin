@@ -1,12 +1,15 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.view;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import it.unibz.inf.ontouml.vp.model.ontouml.OntoumlElement;
+import it.unibz.inf.ontouml.vp.model.ontouml.deserialization.TextDeserializer;
 import it.unibz.inf.ontouml.vp.model.ontouml.serialization.TextSerializer;
 import java.util.ArrayList;
 import java.util.List;
 
 @JsonSerialize(using = TextSerializer.class)
+@JsonDeserialize(using = TextDeserializer.class)
 public class Text extends RectangularShape {
   String value;
 

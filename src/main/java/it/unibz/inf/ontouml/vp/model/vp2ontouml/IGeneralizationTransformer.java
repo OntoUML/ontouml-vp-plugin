@@ -14,16 +14,6 @@ public class IGeneralizationTransformer {
     IGeneralization source = (IGeneralization) sourceElement;
     Generalization target = new Generalization();
 
-    //    System.out.println(
-    //        "Master.getMetaModelElement().getName(): "
-    //            + source.getMasterView().getMetaModelElement().getName());
-    //    System.out.println(
-    //        "Master.getDiagramUIModel().getName(): "
-    //            + source.getMasterView().getDiagramUIModel().getName());
-    //    System.out.println(
-    //        "Master.getDiagramUIModel().getParentModel.getName(): "
-    //            + source.getMasterView().getDiagramUIModel().getParentModel().getName());
-
     IModelElementTransformer.transform(source, target);
     ITaggedValueTransformer.transform(source, target);
 

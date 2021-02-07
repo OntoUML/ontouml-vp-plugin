@@ -1,8 +1,12 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 
-import it.unibz.inf.ontouml.vp.model.ontouml.*;
-import it.unibz.inf.ontouml.vp.model.ontouml.model.*;
+import it.unibz.inf.ontouml.vp.model.ontouml.OntoumlElement;
+import it.unibz.inf.ontouml.vp.model.ontouml.Project;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.*;
+import it.unibz.inf.ontouml.vp.model.ontouml.view.ConnectorView;
+import it.unibz.inf.ontouml.vp.model.ontouml.view.DiagramElement;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -27,6 +31,45 @@ public class ReferenceResolver {
       resolveCategorizer(elementMap, gs);
       resolveGeneralizations(elementMap, gs);
     }
+
+    for (DiagramElement diagramElement : project.getAllDiagramElements()) {
+      resolveModelElement(elementMap, diagramElement);
+    }
+
+    for (ConnectorView connectorView : project.getAllConnectorViews()) {
+      resolveSource(elementMap, connectorView);
+      resolveTarget(elementMap, connectorView);
+    }
+  }
+
+  private static void resolveSource(
+      Map<String, OntoumlElement> elementMap, ConnectorView element) {
+    DiagramElement reference = element.getSource();
+
+    if (reference == null) return;
+
+    DiagramElement source = resolve(elementMap, reference, DiagramElement.class);
+    element.setSource(source);
+  }
+
+  private static void resolveTarget(
+      Map<String, OntoumlElement> elementMap, ConnectorView element) {
+    DiagramElement reference = element.getTarget();
+
+    if (reference == null) return;
+
+    DiagramElement source = resolve(elementMap, reference, DiagramElement.class);
+    element.setTarget(source);
+  }
+
+  private static void resolveModelElement(
+      Map<String, OntoumlElement> elementMap, DiagramElement element) {
+    ModelElement reference = element.getModelElement();
+
+    if (reference == null) return;
+
+    ModelElement source = resolve(elementMap, reference, ModelElement.class);
+    element.setModelElement(source);
   }
 
   private static void resolveGeneralizations(

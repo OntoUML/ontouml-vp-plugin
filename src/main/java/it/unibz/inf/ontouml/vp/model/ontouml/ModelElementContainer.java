@@ -1,36 +1,27 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
-import it.unibz.inf.ontouml.vp.model.ontouml.model.*;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Package;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public interface ModelContainer {
-
-  List<OntoumlElement> getContents();
-
-  List<OntoumlElement> getAllContents();
-
-  default <T> List<T> getAllContentsByType(java.lang.Class<T> type) {
-    return getAllContents().stream()
-        .filter(type::isInstance)
-        .map(type::cast)
-        .collect(Collectors.toList());
-  }
+public interface ModelElementContainer extends ElementContainer {
 
   default List<ModelElement> getAllModelElements() {
     return getAllContentsByType(ModelElement.class);
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Package> getAllPackages() {
+  default List<Package> getAllPackages() {
     return getAllContentsByType(it.unibz.inf.ontouml.vp.model.ontouml.model.Package.class);
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllClasses() {
-    return getAllContentsByType(it.unibz.inf.ontouml.vp.model.ontouml.model.Class.class);
+  default List<Class> getAllClasses() {
+    return getAllContentsByType(Class.class);
   }
 
   default List<Property> getAllProperties() {
@@ -63,7 +54,7 @@ public interface ModelContainer {
     return getAllContentsByType(GeneralizationSet.class);
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getClassesByStereotype(
+  default List<Class> getClassesByStereotype(
       ClassStereotype stereotype) {
     if (stereotype == null) throw new NullPointerException("Input stereotype cannot be null!");
 
@@ -97,108 +88,92 @@ public interface ModelContainer {
         .collect(Collectors.toList());
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllTypes() {
+  default List<Class> getAllTypes() {
     return this.getClassesByStereotype(ClassStereotype.TYPE);
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllHistoricalRoles() {
+  default List<Class> getAllHistoricalRoles() {
     return this.getClassesByStereotype(ClassStereotype.HISTORICAL_ROLE);
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllHistoricalRoleMixins() {
+  default List<Class> getAllHistoricalRoleMixins() {
     return this.getClassesByStereotype(ClassStereotype.HISTORICAL_ROLE_MIXIN);
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllEvents() {
+  default List<Class> getAllEvents() {
     return this.getClassesByStereotype(ClassStereotype.EVENT);
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllSituations() {
+  default List<Class> getAllSituations() {
     return this.getClassesByStereotype(ClassStereotype.SITUATION);
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllCategories() {
+  default List<Class> getAllCategories() {
     return this.getClassesByStereotype(ClassStereotype.CATEGORY);
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllMixins() {
+  default List<Class> getAllMixins() {
     return this.getClassesByStereotype(ClassStereotype.MIXIN);
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllRoleMixins() {
+  default List<Class> getAllRoleMixins() {
     return this.getClassesByStereotype(ClassStereotype.ROLE_MIXIN);
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllPhaseMixin() {
+  default List<Class> getAllPhaseMixin() {
     return this.getClassesByStereotype(ClassStereotype.PHASE_MIXIN);
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllKinds() {
+  default List<Class> getAllKinds() {
     return this.getClassesByStereotype(ClassStereotype.KIND);
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllCollectives() {
+  default List<Class> getAllCollectives() {
     return this.getClassesByStereotype(ClassStereotype.COLLECTIVE);
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllQuantities() {
+  default List<Class> getAllQuantities() {
     return this.getClassesByStereotype(ClassStereotype.QUANTITY);
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllRelators() {
+  default List<Class> getAllRelators() {
     return this.getClassesByStereotype(ClassStereotype.RELATOR);
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllQualities() {
+  default List<Class> getAllQualities() {
     return this.getClassesByStereotype(ClassStereotype.QUALITY);
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllModes() {
+  default List<Class> getAllModes() {
     return this.getClassesByStereotype(ClassStereotype.MODE);
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllSubkinds() {
+  default List<Class> getAllSubkinds() {
     return this.getClassesByStereotype(ClassStereotype.SUBKIND);
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllRoles() {
+  default List<Class> getAllRoles() {
     return this.getClassesByStereotype(ClassStereotype.ROLE);
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllPhases() {
+  default List<Class> getAllPhases() {
     return this.getClassesByStereotype(ClassStereotype.PHASE);
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllEnumerations() {
+  default List<Class> getAllEnumerations() {
     return this.getClassesByStereotype(ClassStereotype.ENUMERATION);
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllDatatypes() {
+  default List<Class> getAllDatatypes() {
     return this.getClassesByStereotype(ClassStereotype.DATATYPE);
   }
 
-  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllAbstracts() {
+  default List<Class> getAllAbstracts() {
     return this.getClassesByStereotype(ClassStereotype.ABSTRACT);
   }
 
-  default <T extends OntoumlElement> Optional<T> getElementById(
-      String id, java.lang.Class<T> type) {
-
-    List<OntoumlElement> elements =
-        getAllContents().stream()
-            .filter(e -> type.isInstance(e) && id.equals(e.getId()))
-            .collect(Collectors.toList());
-
-    if (elements.size() == 1) return Optional.of(type.cast(elements.get(0)));
-
-    if (elements.size() == 0) return Optional.empty();
-
-    throw new IllegalStateException(
-        "There is more than one instance of " + type.getName() + " with the same id!");
-  }
-
-  default Optional<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getClassById(String id) {
-    return getElementById(id, it.unibz.inf.ontouml.vp.model.ontouml.model.Class.class);
+  default Optional<Class> getClassById(String id) {
+    return getElementById(id, Class.class);
   }
 
   default Optional<Relation> getRelationById(String id) {
@@ -217,7 +192,7 @@ public interface ModelContainer {
     return getElementById(id, Property.class);
   }
 
-  default Optional<it.unibz.inf.ontouml.vp.model.ontouml.model.Package> getPackageById(String id) {
+  default Optional<Package> getPackageById(String id) {
     return getElementById(id, Package.class);
   }
 

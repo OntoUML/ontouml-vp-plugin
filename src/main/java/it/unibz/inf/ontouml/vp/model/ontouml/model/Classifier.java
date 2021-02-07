@@ -1,5 +1,6 @@
-package it.unibz.inf.ontouml.vp.model.ontouml;
+package it.unibz.inf.ontouml.vp.model.ontouml.model;
 
+import it.unibz.inf.ontouml.vp.model.ontouml.MultilingualText;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
