@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.ClassView;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Rectangle;
-
 import java.io.IOException;
 
 public class ClassViewDeserializer extends JsonDeserializer<ClassView> {

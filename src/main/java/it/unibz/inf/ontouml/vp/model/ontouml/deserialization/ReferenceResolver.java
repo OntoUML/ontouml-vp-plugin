@@ -2,11 +2,10 @@ package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 
 import it.unibz.inf.ontouml.vp.model.ontouml.OntoumlElement;
 import it.unibz.inf.ontouml.vp.model.ontouml.Project;
-import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.*;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.ConnectorView;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.DiagramElement;
-
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -42,8 +41,7 @@ public class ReferenceResolver {
     }
   }
 
-  private static void resolveSource(
-      Map<String, OntoumlElement> elementMap, ConnectorView element) {
+  private static void resolveSource(Map<String, OntoumlElement> elementMap, ConnectorView element) {
     DiagramElement reference = element.getSource();
 
     if (reference == null) return;
@@ -52,8 +50,7 @@ public class ReferenceResolver {
     element.setSource(source);
   }
 
-  private static void resolveTarget(
-      Map<String, OntoumlElement> elementMap, ConnectorView element) {
+  private static void resolveTarget(Map<String, OntoumlElement> elementMap, ConnectorView element) {
     DiagramElement reference = element.getTarget();
 
     if (reference == null) return;

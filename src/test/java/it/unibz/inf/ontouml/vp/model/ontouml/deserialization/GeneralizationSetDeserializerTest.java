@@ -11,7 +11,6 @@ import it.unibz.inf.ontouml.vp.model.ontouml.model.GeneralizationSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -1,9 +1,8 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
+import it.unibz.inf.ontouml.vp.model.ontouml.model.*;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Package;
-import it.unibz.inf.ontouml.vp.model.ontouml.model.*;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,8 +53,7 @@ public interface ModelElementContainer extends ElementContainer {
     return getAllContentsByType(GeneralizationSet.class);
   }
 
-  default List<Class> getClassesByStereotype(
-      ClassStereotype stereotype) {
+  default List<Class> getClassesByStereotype(ClassStereotype stereotype) {
     if (stereotype == null) throw new NullPointerException("Input stereotype cannot be null!");
 
     return getAllClasses().stream()

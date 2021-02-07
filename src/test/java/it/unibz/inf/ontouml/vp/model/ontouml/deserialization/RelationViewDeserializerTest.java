@@ -1,19 +1,20 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.unibz.inf.ontouml.vp.model.ontouml.view.Path;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Point;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.RelationView;
-import it.unibz.inf.ontouml.vp.model.ontouml.view.Path;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static com.google.common.truth.Truth.assertThat;
 
 class RelationViewDeserializerTest {
 
   static ObjectMapper mapper = new ObjectMapper();
-  static String json =  "{\n"
+  static String json =
+      "{\n"
           + "  \"id\": \"rv1\",\n"
           + "  \"type\": \"RelationView\",\n"
           + "  \"modelElement\": { \"id\": \"re1\", \"type\": \"Relation\" },\n"
@@ -28,7 +29,6 @@ class RelationViewDeserializerTest {
           + "  \"source\": { \"id\": \"cv1\", \"type\": \"ClassView\" },\n"
           + "  \"target\": { \"id\": \"cv2\", \"type\": \"ClassView\" }\n"
           + "}";
-     
 
   static RelationView view;
   static Path shape;
@@ -87,6 +87,4 @@ class RelationViewDeserializerTest {
     assertThat(secondPoint.getX()).isEqualTo(812.0);
     assertThat(secondPoint.getY()).isEqualTo(93.0);
   }
-
-
 }

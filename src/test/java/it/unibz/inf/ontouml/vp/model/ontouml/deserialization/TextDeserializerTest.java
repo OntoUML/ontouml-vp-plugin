@@ -1,12 +1,12 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Text;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static com.google.common.truth.Truth.assertThat;
 
 class TextDeserializerTest {
 

@@ -1,14 +1,13 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Path;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Point;
-import org.junit.jupiter.api.Test;
-
 import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
+import org.junit.jupiter.api.Test;
 
 class PathDeserializerTest {
 

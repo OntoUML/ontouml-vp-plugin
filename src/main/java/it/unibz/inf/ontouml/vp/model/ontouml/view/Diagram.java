@@ -8,7 +8,6 @@ import it.unibz.inf.ontouml.vp.model.ontouml.OntoumlElement;
 import it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DiagramDeserializer;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.ModelElement;
 import it.unibz.inf.ontouml.vp.model.ontouml.serialization.DiagramSerializer;
-
 import java.util.*;
 
 /** A set of {@link DiagramElement} instances use to describe a perspective of the OntoUML model. */

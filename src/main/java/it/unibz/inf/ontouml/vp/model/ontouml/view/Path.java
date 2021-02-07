@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import it.unibz.inf.ontouml.vp.model.ontouml.OntoumlElement;
 import it.unibz.inf.ontouml.vp.model.ontouml.deserialization.PathDeserializer;
 import it.unibz.inf.ontouml.vp.model.ontouml.serialization.PathSerializer;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

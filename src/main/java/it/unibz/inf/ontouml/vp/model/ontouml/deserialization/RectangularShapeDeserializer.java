@@ -1,14 +1,13 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 
+import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeObject;
+
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.JsonNode;
 import it.unibz.inf.ontouml.vp.model.ontouml.OntoumlElement;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.*;
-
 import java.io.IOException;
 import java.util.List;
-
-import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeObject;
 
 public class ConnectorViewDeserializer {
 
@@ -34,8 +33,7 @@ public class ConnectorViewDeserializer {
     List<Class<? extends OntoumlElement>> allowedTypes =
         List.of(ClassView.class, RelationView.class);
 
-    OntoumlElement source =
-        deserializeObject(root, fieldName, allowedTypes, codec);
+    OntoumlElement source = deserializeObject(root, fieldName, allowedTypes, codec);
 
     return (source instanceof DiagramElement<?, ?>) ? (DiagramElement<?, ?>) source : null;
   }

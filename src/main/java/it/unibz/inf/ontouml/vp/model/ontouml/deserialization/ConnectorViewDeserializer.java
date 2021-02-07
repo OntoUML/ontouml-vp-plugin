@@ -11,7 +11,6 @@ import it.unibz.inf.ontouml.vp.model.ontouml.view.ClassView;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.DiagramElement;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Path;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.RelationView;
-
 import java.io.IOException;
 import java.util.List;
 

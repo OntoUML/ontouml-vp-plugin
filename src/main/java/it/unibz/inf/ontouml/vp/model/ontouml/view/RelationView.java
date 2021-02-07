@@ -3,7 +3,6 @@ package it.unibz.inf.ontouml.vp.model.ontouml.view;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import it.unibz.inf.ontouml.vp.model.ontouml.OntoumlElement;
-import it.unibz.inf.ontouml.vp.model.ontouml.deserialization.ClassViewDeserializer;
 import it.unibz.inf.ontouml.vp.model.ontouml.deserialization.RelationViewDeserializer;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Relation;
 import it.unibz.inf.ontouml.vp.model.ontouml.serialization.RelationViewSerializer;

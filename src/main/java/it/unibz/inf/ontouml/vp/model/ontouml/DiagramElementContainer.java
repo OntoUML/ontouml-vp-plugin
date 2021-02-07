@@ -1,7 +1,6 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
 import it.unibz.inf.ontouml.vp.model.ontouml.view.*;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -46,5 +45,4 @@ public interface DiagramElementContainer extends ElementContainer {
   default Optional<GeneralizationSetView> getGeneralizationSetViewById(String id) {
     return getElementById(id, GeneralizationSetView.class);
   }
-
 }

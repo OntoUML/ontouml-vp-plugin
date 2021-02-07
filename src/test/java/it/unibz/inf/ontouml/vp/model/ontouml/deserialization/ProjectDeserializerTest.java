@@ -8,12 +8,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import it.unibz.inf.ontouml.vp.model.ontouml.*;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.*;
-import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Package;
 import java.util.Optional;
 import java.util.stream.Stream;
-
-import it.unibz.inf.ontouml.vp.model.ontouml.view.ClassView;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

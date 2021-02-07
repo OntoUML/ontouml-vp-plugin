@@ -1,5 +1,8 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 
+import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeArrayField;
+import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeObjectField;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.ObjectCodec;
@@ -9,12 +12,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import it.unibz.inf.ontouml.vp.model.ontouml.Project;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Package;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Diagram;
-
 import java.io.IOException;
 import java.util.List;
-
-import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeArrayField;
-import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeObjectField;
 
 public class ProjectDeserializer extends JsonDeserializer<Project> {
 

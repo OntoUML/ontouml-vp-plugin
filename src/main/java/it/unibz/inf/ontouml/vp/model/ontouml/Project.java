@@ -12,7 +12,8 @@ import java.util.Optional;
 
 @JsonSerialize(using = ProjectSerializer.class)
 @JsonDeserialize(using = ProjectDeserializer.class)
-public class Project extends OntoumlElement implements ModelElementContainer, DiagramElementContainer {
+public class Project extends OntoumlElement
+    implements ModelElementContainer, DiagramElementContainer {
   private Package model;
   private List<Diagram> diagrams = new ArrayList<>();
 
