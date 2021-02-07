@@ -96,17 +96,16 @@
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ReportErrorController" />
             </action>
 
-            <!--
-            <action 
+            <action
 					id="it.unibz.inf.ontouml.vp.actions.ReloadClassesAction"
-					actionType="generalAction" 
-					label="Reload Plugin - DEBUG" 
-					tooltip="Reload Plugin" 
+					actionType="generalAction"
+					label="Reload Plugin - DEBUG"
+					tooltip="Reload Plugin"
 					style="normal"
 					toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
 				<actionController class="it.unibz.inf.ontouml.vp.controllers.ReloadClassesController" />
 			</action>
-			-->
+
         </actionSet>
         
         <contextSensitiveActionSet id="it.unibz.inf.ontouml.vp.AssociationActions">
@@ -269,7 +268,7 @@
             <action id="it.unibz.inf.ontouml.vp.addSubkindStereotype" label="Subkind" style="normal" menuPath="ontoUMLMenu1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotypeController"/>
             </action>
-            
+
             <action id="it.unibz.inf.ontouml.vp.addRoleStereotype" label="Role" style="normal" menuPath="ontoUMLMenu1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotypeController"/>
             </action>

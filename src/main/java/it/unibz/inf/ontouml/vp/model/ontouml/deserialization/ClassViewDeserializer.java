@@ -1,50 +1,37 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 
-import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.*;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
-import it.unibz.inf.ontouml.vp.model.ontouml.model.Literal;
-import java.io.IOException;
-import java.util.List;
+import it.unibz.inf.ontouml.vp.model.ontouml.view.ClassView;
+import it.unibz.inf.ontouml.vp.model.ontouml.view.Rectangle;
 
-public class ClassDeserializer extends JsonDeserializer<Class> {
+import java.io.IOException;
+
+import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeObjectField;
+
+public class ClassViewDeserializer extends JsonDeserializer<ClassView> {
 
   @Override
-  public Class deserialize(JsonParser parser, DeserializationContext context) throws IOException {
+  public ClassView deserialize(JsonParser parser, DeserializationContext context)
+      throws IOException {
     ObjectCodec codec = parser.getCodec();
     JsonNode root = parser.readValueAsTree();
 
-    Class clazz = new Class();
+    ClassView view = new ClassView();
 
-    ElementDeserializer.deserialize(clazz, root, codec);
-    ModelElementDeserializer.deserialize(clazz, root, codec);
-    DecoratableDeserializer.deserialize(clazz, root, codec);
-    ClassifierDeserializer.deserialize(clazz, root, codec);
+    String id = root.get("id").asText();
+    view.setId(id);
 
-    Boolean isExtensional = deserializeNullableBooleanField(root, "isExtensional");
-    clazz.setExtensional(isExtensional);
+    Class element = deserializeObjectField(root, "modelElement", Class.class, codec);
+    view.setModelElement(element);
 
-    Boolean isPowertype = deserializeNullableBooleanField(root, "isPowertype");
-    clazz.setPowertype(isPowertype);
+    Rectangle shape = deserializeObjectField(root, "shape", Rectangle.class, codec);
+    view.setShape(shape);
 
-    Integer order = deserializeNullableIntegerField(root, "order");
-    clazz.setOrder(order);
-
-    String[] restrictedTo = deserializeNullableStringArrayField(root, "restrictedTo", codec);
-    if (restrictedTo != null) {
-      clazz.setRestrictedTo(restrictedTo);
-    }
-
-    List<Literal> literals = deserializeObjectArray(root, "literals", Literal.class, codec);
-    if (literals != null) {
-      clazz.setLiterals(literals);
-    }
-
-    return clazz;
+    return view;
   }
 }

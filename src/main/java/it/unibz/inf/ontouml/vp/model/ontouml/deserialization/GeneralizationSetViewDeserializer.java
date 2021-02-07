@@ -5,25 +5,33 @@ import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
-import it.unibz.inf.ontouml.vp.model.ontouml.view.ClassView;
-import it.unibz.inf.ontouml.vp.model.ontouml.view.Rectangle;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.GeneralizationSet;
+import it.unibz.inf.ontouml.vp.model.ontouml.view.GeneralizationSetView;
+import it.unibz.inf.ontouml.vp.model.ontouml.view.Text;
+
 import java.io.IOException;
 
-public class ClassViewDeserializer extends JsonDeserializer<ClassView> {
+import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeObjectField;
+
+public class GeneralizationSetViewDeserializer extends JsonDeserializer<GeneralizationSetView> {
 
   @Override
-  public ClassView deserialize(JsonParser parser, DeserializationContext context)
+  public GeneralizationSetView deserialize(JsonParser parser, DeserializationContext context)
       throws IOException {
     ObjectCodec codec = parser.getCodec();
     JsonNode root = parser.readValueAsTree();
 
-    ClassView classView = new ClassView();
+    GeneralizationSetView view = new GeneralizationSetView();
 
-    DiagramElementDeserializer.deserialize(classView, root, codec);
-    DeserializerUtils.deserializeObject(root, "modelElement", Class.class, codec);
-    DeserializerUtils.deserializeObject(root, "shape", Rectangle.class, codec);
+    String id = root.get("id").asText();
+    view.setId(id);
 
-    return classView;
+    GeneralizationSet gs = deserializeObjectField(root, "modelElement", GeneralizationSet.class, codec);
+    view.setModelElement(gs);
+
+    Text shape = deserializeObjectField(root, "shape", Text.class, codec);
+    view.setShape(shape);
+
+    return view;
   }
 }

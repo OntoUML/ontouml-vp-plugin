@@ -1,40 +1,31 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 
-import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeObject;
-
-import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.JsonNode;
-import it.unibz.inf.ontouml.vp.model.ontouml.OntoumlElement;
-import it.unibz.inf.ontouml.vp.model.ontouml.view.*;
+import it.unibz.inf.ontouml.vp.model.ontouml.view.RectangularShape;
+
 import java.io.IOException;
-import java.util.List;
 
-public class ConnectorViewDeserializer {
+import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeNullableDoubleField;
+import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeObjectField;
 
-  public static void deserialize(ConnectorView<?> view, JsonNode root, ObjectCodec codec)
+public class RectangularShapeDeserializer {
+
+  public static void deserialize(RectangularShape shape, JsonNode node)
       throws IOException {
 
-    String id = root.get("id").asText();
-    view.setId(id);
+    String id = node.get("id").asText();
+    shape.setId(id);
 
-    Path path = deserializeObject(root, "shape", Path.class, codec);
-    view.setPath(path);
+    Double x = deserializeNullableDoubleField(node, "x");
+    shape.setX(x);
 
-    DiagramElement<?, ?> source = deserializeConnectorEnd(root, "source", codec);
-    view.setSource(source);
+    Double y = deserializeNullableDoubleField(node, "y");
+    shape.setY(y);
 
-    DiagramElement<?, ?> target = deserializeConnectorEnd(root, "target", codec);
-    view.setTarget(target);
-  }
+    Double width = deserializeNullableDoubleField(node, "width");
+    shape.setWidth(width);
 
-  private static DiagramElement<?, ?> deserializeConnectorEnd(
-      JsonNode root, String fieldName, ObjectCodec codec) throws IOException {
-
-    List<Class<? extends OntoumlElement>> allowedTypes =
-        List.of(ClassView.class, RelationView.class);
-
-    OntoumlElement source = deserializeObject(root, fieldName, allowedTypes, codec);
-
-    return (source instanceof DiagramElement<?, ?>) ? (DiagramElement<?, ?>) source : null;
+    Double height = deserializeNullableDoubleField(node, "height");
+    shape.setHeight(height);
   }
 }

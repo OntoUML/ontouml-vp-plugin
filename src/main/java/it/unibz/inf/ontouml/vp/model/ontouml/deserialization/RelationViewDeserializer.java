@@ -5,25 +5,28 @@ import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
-import it.unibz.inf.ontouml.vp.model.ontouml.view.ClassView;
-import it.unibz.inf.ontouml.vp.model.ontouml.view.Rectangle;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Relation;
+import it.unibz.inf.ontouml.vp.model.ontouml.view.RelationView;
+
 import java.io.IOException;
 
-public class ClassViewDeserializer extends JsonDeserializer<ClassView> {
+import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeObjectField;
+
+public class RelationViewDeserializer extends JsonDeserializer<RelationView> {
 
   @Override
-  public ClassView deserialize(JsonParser parser, DeserializationContext context)
+  public RelationView deserialize(JsonParser parser, DeserializationContext context)
       throws IOException {
     ObjectCodec codec = parser.getCodec();
     JsonNode root = parser.readValueAsTree();
 
-    ClassView classView = new ClassView();
+    RelationView view = new RelationView();
 
-    DiagramElementDeserializer.deserialize(classView, root, codec);
-    DeserializerUtils.deserializeObject(root, "modelElement", Class.class, codec);
-    DeserializerUtils.deserializeObject(root, "shape", Rectangle.class, codec);
+    ConnectorViewDeserializer.deserialize(view, root, codec);
 
-    return classView;
+    Relation stub = deserializeObjectField(root, "modelElement", Relation.class, codec);
+    view.setModelElement(stub);
+
+    return view;
   }
 }
