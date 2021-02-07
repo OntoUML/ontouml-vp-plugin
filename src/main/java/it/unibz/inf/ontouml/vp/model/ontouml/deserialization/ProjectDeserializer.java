@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import it.unibz.inf.ontouml.vp.model.ontouml.*;
-import it.unibz.inf.ontouml.vp.model.ontouml.Package;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Package;
 import java.io.IOException;
 
 public class ProjectDeserializer extends JsonDeserializer<Project> {

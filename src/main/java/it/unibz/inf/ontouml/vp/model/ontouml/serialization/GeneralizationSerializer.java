@@ -1,22 +1,24 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.serialization;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import it.unibz.inf.ontouml.vp.model.ontouml.Generalization;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Generalization;
 import java.io.IOException;
 
-public class GeneralizationSerializer extends ModelElementSerializer<Generalization> {
+public class GeneralizationSerializer extends JsonSerializer<Generalization> {
 
   @Override
-  public void serialize(
-      Generalization generalization, JsonGenerator jsonGen, SerializerProvider provider)
+  public void serialize(Generalization gen, JsonGenerator jsonGen, SerializerProvider provider)
       throws IOException {
-
-    super.serialize(generalization, jsonGen, provider);
-
-    writeNullableReferenceField("general", generalization.getGeneral().orElse(null), jsonGen);
-    writeNullableReferenceField("specific", generalization.getSpecific().orElse(null), jsonGen);
-
+    jsonGen.writeStartObject();
+    serializeFields(gen, jsonGen);
     jsonGen.writeEndObject();
+  }
+
+  static void serializeFields(Generalization gen, JsonGenerator jsonGen) throws IOException {
+    ModelElementSerializer.serializeFields(gen, jsonGen);
+    Serializer.writeNullableReferenceField("general", gen.getGeneral().orElse(null), jsonGen);
+    Serializer.writeNullableReferenceField("specific", gen.getSpecific().orElse(null), jsonGen);
   }
 }

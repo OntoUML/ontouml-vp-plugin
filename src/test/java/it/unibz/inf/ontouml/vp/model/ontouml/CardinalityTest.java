@@ -4,6 +4,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth8.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Cardinality;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

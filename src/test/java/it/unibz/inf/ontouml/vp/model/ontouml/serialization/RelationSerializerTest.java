@@ -5,9 +5,9 @@ import static com.google.common.truth.Truth.assertThat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import it.unibz.inf.ontouml.vp.model.ontouml.Class;
-import it.unibz.inf.ontouml.vp.model.ontouml.Relation;
-import it.unibz.inf.ontouml.vp.model.ontouml.RelationStereotype;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Relation;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.RelationStereotype;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

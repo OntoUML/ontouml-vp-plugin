@@ -3,7 +3,9 @@ package it.unibz.inf.ontouml.vp.model.ontouml;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import it.unibz.inf.ontouml.vp.model.ontouml.deserialization.ProjectDeserializer;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Package;
 import it.unibz.inf.ontouml.vp.model.ontouml.serialization.ProjectSerializer;
+import it.unibz.inf.ontouml.vp.model.ontouml.view.Diagram;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -73,26 +75,25 @@ public class Project extends OntoumlElement implements ModelContainer {
     return copy;
   }
 
-  public void setDiagrams(List<Diagram> diagrams) {
-    if (diagrams == null)
-      throw new NullPointerException("Cannot set the diagram list of a project to null.");
-
-    this.diagrams.clear();
-    OntoumlUtils.addIfNotNull(this.diagrams, diagrams);
-  }
-
   public void addDiagram(Diagram diagram) {
-    if (diagram == null)
-      throw new NullPointerException("Cannot add a null diagram to the project.");
+    if (diagram == null) return;
 
+    diagram.setContainer(this);
     diagrams.add(diagram);
   }
 
   public void addDiagrams(List<Diagram> diagrams) {
-    if (diagrams == null)
-      throw new NullPointerException("Cannot add a null diagram list to the project.");
+    if (diagrams == null) return;
 
-    OntoumlUtils.addIfNotNull(this.diagrams, diagrams);
+    diagrams.forEach(d -> addDiagram(d));
+  }
+
+  public void setDiagrams(List<Diagram> diagrams) {
+    this.diagrams.clear();
+
+    if (diagrams == null) return;
+
+    addDiagrams(diagrams);
   }
 
   public boolean hasDiagram() {

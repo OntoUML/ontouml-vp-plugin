@@ -7,8 +7,8 @@ import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import it.unibz.inf.ontouml.vp.model.ontouml.Classifier;
-import it.unibz.inf.ontouml.vp.model.ontouml.Generalization;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Classifier;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Generalization;
 import java.io.IOException;
 
 public class GeneralizationDeserializer extends JsonDeserializer<Generalization> {

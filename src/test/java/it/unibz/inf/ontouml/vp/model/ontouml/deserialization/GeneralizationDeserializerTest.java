@@ -5,8 +5,8 @@ import static com.google.common.truth.Truth8.assertThat;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.unibz.inf.ontouml.vp.model.ontouml.Classifier;
-import it.unibz.inf.ontouml.vp.model.ontouml.Generalization;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Classifier;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Generalization;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

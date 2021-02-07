@@ -4,7 +4,7 @@ import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.Deserializer
 
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.JsonNode;
-import it.unibz.inf.ontouml.vp.model.ontouml.Decoratable;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Decoratable;
 import java.io.IOException;
 
 public class DecoratableDeserializer {

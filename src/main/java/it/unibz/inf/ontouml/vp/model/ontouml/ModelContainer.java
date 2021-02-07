@@ -1,5 +1,7 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
+import it.unibz.inf.ontouml.vp.model.ontouml.model.*;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Package;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,12 +25,12 @@ public interface ModelContainer {
     return getAllContentsByType(ModelElement.class);
   }
 
-  default List<Package> getAllPackages() {
-    return getAllContentsByType(Package.class);
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Package> getAllPackages() {
+    return getAllContentsByType(it.unibz.inf.ontouml.vp.model.ontouml.model.Package.class);
   }
 
-  default List<Class> getAllClasses() {
-    return getAllContentsByType(Class.class);
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllClasses() {
+    return getAllContentsByType(it.unibz.inf.ontouml.vp.model.ontouml.model.Class.class);
   }
 
   default List<Property> getAllProperties() {
@@ -61,7 +63,8 @@ public interface ModelContainer {
     return getAllContentsByType(GeneralizationSet.class);
   }
 
-  default List<Class> getClassesByStereotype(ClassStereotype stereotype) {
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getClassesByStereotype(
+      ClassStereotype stereotype) {
     if (stereotype == null) throw new NullPointerException("Input stereotype cannot be null!");
 
     return getAllClasses().stream()
@@ -94,87 +97,87 @@ public interface ModelContainer {
         .collect(Collectors.toList());
   }
 
-  default List<Class> getAllTypes() {
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllTypes() {
     return this.getClassesByStereotype(ClassStereotype.TYPE);
   }
 
-  default List<Class> getAllHistoricalRoles() {
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllHistoricalRoles() {
     return this.getClassesByStereotype(ClassStereotype.HISTORICAL_ROLE);
   }
 
-  default List<Class> getAllHistoricalRoleMixins() {
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllHistoricalRoleMixins() {
     return this.getClassesByStereotype(ClassStereotype.HISTORICAL_ROLE_MIXIN);
   }
 
-  default List<Class> getAllEvents() {
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllEvents() {
     return this.getClassesByStereotype(ClassStereotype.EVENT);
   }
 
-  default List<Class> getAllSituations() {
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllSituations() {
     return this.getClassesByStereotype(ClassStereotype.SITUATION);
   }
 
-  default List<Class> getAllCategories() {
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllCategories() {
     return this.getClassesByStereotype(ClassStereotype.CATEGORY);
   }
 
-  default List<Class> getAllMixins() {
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllMixins() {
     return this.getClassesByStereotype(ClassStereotype.MIXIN);
   }
 
-  default List<Class> getAllRoleMixins() {
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllRoleMixins() {
     return this.getClassesByStereotype(ClassStereotype.ROLE_MIXIN);
   }
 
-  default List<Class> getAllPhaseMixin() {
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllPhaseMixin() {
     return this.getClassesByStereotype(ClassStereotype.PHASE_MIXIN);
   }
 
-  default List<Class> getAllKinds() {
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllKinds() {
     return this.getClassesByStereotype(ClassStereotype.KIND);
   }
 
-  default List<Class> getAllCollectives() {
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllCollectives() {
     return this.getClassesByStereotype(ClassStereotype.COLLECTIVE);
   }
 
-  default List<Class> getAllQuantities() {
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllQuantities() {
     return this.getClassesByStereotype(ClassStereotype.QUANTITY);
   }
 
-  default List<Class> getAllRelators() {
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllRelators() {
     return this.getClassesByStereotype(ClassStereotype.RELATOR);
   }
 
-  default List<Class> getAllQualities() {
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllQualities() {
     return this.getClassesByStereotype(ClassStereotype.QUALITY);
   }
 
-  default List<Class> getAllModes() {
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllModes() {
     return this.getClassesByStereotype(ClassStereotype.MODE);
   }
 
-  default List<Class> getAllSubkinds() {
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllSubkinds() {
     return this.getClassesByStereotype(ClassStereotype.SUBKIND);
   }
 
-  default List<Class> getAllRoles() {
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllRoles() {
     return this.getClassesByStereotype(ClassStereotype.ROLE);
   }
 
-  default List<Class> getAllPhases() {
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllPhases() {
     return this.getClassesByStereotype(ClassStereotype.PHASE);
   }
 
-  default List<Class> getAllEnumerations() {
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllEnumerations() {
     return this.getClassesByStereotype(ClassStereotype.ENUMERATION);
   }
 
-  default List<Class> getAllDatatypes() {
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllDatatypes() {
     return this.getClassesByStereotype(ClassStereotype.DATATYPE);
   }
 
-  default List<Class> getAllAbstracts() {
+  default List<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getAllAbstracts() {
     return this.getClassesByStereotype(ClassStereotype.ABSTRACT);
   }
 
@@ -194,8 +197,8 @@ public interface ModelContainer {
         "There is more than one instance of " + type.getName() + " with the same id!");
   }
 
-  default Optional<Class> getClassById(String id) {
-    return getElementById(id, Class.class);
+  default Optional<it.unibz.inf.ontouml.vp.model.ontouml.model.Class> getClassById(String id) {
+    return getElementById(id, it.unibz.inf.ontouml.vp.model.ontouml.model.Class.class);
   }
 
   default Optional<Relation> getRelationById(String id) {
@@ -214,7 +217,7 @@ public interface ModelContainer {
     return getElementById(id, Property.class);
   }
 
-  default Optional<Package> getPackageById(String id) {
+  default Optional<it.unibz.inf.ontouml.vp.model.ontouml.model.Package> getPackageById(String id) {
     return getElementById(id, Package.class);
   }
 

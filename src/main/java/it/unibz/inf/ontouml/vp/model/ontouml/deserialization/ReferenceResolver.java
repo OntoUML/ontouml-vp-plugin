@@ -1,7 +1,8 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 
 import it.unibz.inf.ontouml.vp.model.ontouml.*;
-import it.unibz.inf.ontouml.vp.model.ontouml.Class;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.*;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;

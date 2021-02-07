@@ -1,19 +1,29 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.serialization;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import it.unibz.inf.ontouml.vp.model.ontouml.ModelElement;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.ModelElement;
 import java.io.IOException;
 
-public class ModelElementSerializer<T extends ModelElement> extends OntoumlElementSerializer<T> {
+public class ModelElementSerializer extends JsonSerializer<ModelElement> {
 
   @Override
-  public void serialize(T element, JsonGenerator jsonGen, SerializerProvider provider)
+  public void serialize(
+      ModelElement modelElement, JsonGenerator jsonGen, SerializerProvider provider)
       throws IOException {
-    super.serialize(element, jsonGen, provider);
+    jsonGen.writeStartObject();
+    serializeFields(modelElement, jsonGen);
+    jsonGen.writeEndObject();
+  }
 
-    if (element.hasPropertyAssignments())
-      jsonGen.writeObjectField("propertyAssignments", element.getPropertyAssignments());
-    else jsonGen.writeNullField("propertyAssignments");
+  static void serializeFields(ModelElement modelElement, JsonGenerator jsonGen) throws IOException {
+    OntoumlElementSerializer.serializeFields(modelElement, jsonGen);
+
+    if (modelElement.hasPropertyAssignments()) {
+      jsonGen.writeObjectField("propertyAssignments", modelElement.getPropertyAssignments());
+    } else {
+      jsonGen.writeNullField("propertyAssignments");
+    }
   }
 }

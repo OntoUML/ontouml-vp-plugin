@@ -5,7 +5,7 @@ import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
-import it.unibz.inf.ontouml.vp.model.uml2ontouml.Uml2OntoumlTransformer;
+import it.unibz.inf.ontouml.vp.model.vp2ontouml.Uml2OntoumlTransformer;
 import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 import java.awt.*;
 import java.io.IOException;

@@ -3,13 +3,16 @@ package it.unibz.inf.ontouml.vp.model.ontouml;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth8.assertThat;
 
+import it.unibz.inf.ontouml.vp.model.ontouml.model.*;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Package;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class PackageTest {
   Project project = new Project();
-  Package model = project.createModel();
+  it.unibz.inf.ontouml.vp.model.ontouml.model.Package model = project.createModel();
   Package pkg = model.createPackage();
   Class clazz = model.createClass();
   Relation relation = model.createRelation(clazz, clazz);

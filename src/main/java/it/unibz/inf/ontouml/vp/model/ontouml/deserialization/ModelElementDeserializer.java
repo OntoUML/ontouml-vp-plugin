@@ -3,7 +3,7 @@ package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import it.unibz.inf.ontouml.vp.model.ontouml.ModelElement;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.ModelElement;
 import java.io.IOException;
 import java.util.Map;
 

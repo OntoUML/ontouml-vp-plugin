@@ -6,15 +6,23 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import it.unibz.inf.ontouml.vp.model.ontouml.Element;
 import java.io.IOException;
 
-public class ElementSerializer<T extends Element> extends JsonSerializer<T> {
+public class ElementSerializer extends JsonSerializer<Element> {
 
   @Override
-  public void serialize(T element, JsonGenerator jsonGen, SerializerProvider provider)
+  public void serialize(Element element, JsonGenerator jsonGen, SerializerProvider provider)
       throws IOException {
-
     jsonGen.writeStartObject();
-    jsonGen.writeStringField("id", element.getId());
+    serializeFields(element, jsonGen);
+    jsonGen.writeEndObject();
+  }
+
+  static void serializeFields(Element element, JsonGenerator jsonGen) throws IOException {
+    serializeId(element, jsonGen);
     jsonGen.writeObjectField("name", element.getName());
     jsonGen.writeObjectField("description", element.getDescription());
+  }
+
+  static void serializeId(Element element, JsonGenerator jsonGen) throws IOException {
+    jsonGen.writeStringField("id", element.getId());
   }
 }

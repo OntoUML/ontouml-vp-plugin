@@ -1,11 +1,8 @@
 package it.unibz.inf.ontouml.vp.model.ontouml;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import it.unibz.inf.ontouml.vp.model.ontouml.serialization.ElementSerializer;
 import java.util.Optional;
 import java.util.UUID;
 
-@JsonSerialize(using = ElementSerializer.class)
 public abstract class Element implements Comparable<Element> {
   String id;
   MultilingualText name;

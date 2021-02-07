@@ -2,6 +2,10 @@ package it.unibz.inf.ontouml.vp.model.ontouml;
 
 import static com.google.common.truth.Truth8.assertThat;
 
+import it.unibz.inf.ontouml.vp.model.ontouml.model.ClassStereotype;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.PropertyStereotype;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.RelationStereotype;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Stereotype;
 import org.junit.jupiter.api.Test;
 
 class StereotypeTest {

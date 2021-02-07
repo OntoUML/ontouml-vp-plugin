@@ -7,9 +7,9 @@ import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import it.unibz.inf.ontouml.vp.model.ontouml.AggregationKind;
-import it.unibz.inf.ontouml.vp.model.ontouml.Classifier;
-import it.unibz.inf.ontouml.vp.model.ontouml.Property;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.AggregationKind;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Classifier;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Property;
 import java.io.IOException;
 import java.util.List;
 

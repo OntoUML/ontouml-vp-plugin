@@ -5,9 +5,9 @@ import static com.google.common.truth.Truth8.assertThat;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.unibz.inf.ontouml.vp.model.ontouml.Class;
-import it.unibz.inf.ontouml.vp.model.ontouml.Generalization;
-import it.unibz.inf.ontouml.vp.model.ontouml.GeneralizationSet;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Generalization;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.GeneralizationSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;

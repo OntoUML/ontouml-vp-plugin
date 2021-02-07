@@ -2,6 +2,7 @@ package it.unibz.inf.ontouml.vp.model.ontouml;
 
 import static com.google.common.truth.Truth8.assertThat;
 
+import it.unibz.inf.ontouml.vp.model.ontouml.model.RelationStereotype;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
