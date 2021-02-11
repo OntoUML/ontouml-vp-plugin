@@ -5,6 +5,7 @@ import it.unibz.inf.ontouml.vp.model.ontouml.Project;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.*;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.ConnectorView;
+import it.unibz.inf.ontouml.vp.model.ontouml.view.Diagram;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.DiagramElement;
 import java.util.HashSet;
 import java.util.Map;
@@ -31,6 +32,10 @@ public class ReferenceResolver {
       resolveGeneralizations(elementMap, gs);
     }
 
+    for (Diagram diagram : project.getDiagrams()) {
+      resolveOwner(elementMap, diagram);
+    }
+
     for (DiagramElement diagramElement : project.getAllDiagramElements()) {
       resolveModelElement(elementMap, diagramElement);
     }
@@ -39,6 +44,15 @@ public class ReferenceResolver {
       resolveSource(elementMap, connectorView);
       resolveTarget(elementMap, connectorView);
     }
+  }
+
+  private static void resolveOwner(Map<String, OntoumlElement> elementMap, Diagram diagram) {
+    ModelElement reference = diagram.getOwner();
+
+    if (reference == null) return;
+
+    ModelElement source = resolve(elementMap, reference, ModelElement.class);
+    diagram.setOwner(source);
   }
 
   private static void resolveSource(Map<String, OntoumlElement> elementMap, ConnectorView element) {

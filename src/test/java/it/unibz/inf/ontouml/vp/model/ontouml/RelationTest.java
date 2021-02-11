@@ -12,8 +12,8 @@ public class RelationTest {
 
   @Test
   void shouldReturnEndsAsContent() {
-    Class person = Class.createKind("c1", "Person");
-    Relation knows = Relation.createMaterial("r1", "knows", person, person);
+    Class person = Class.createKind("Person");
+    Relation knows = Relation.createMaterial("knows", person, person);
 
     List<OntoumlElement> contents = knows.getContents();
     assertThat(contents).hasSize(2);
@@ -22,5 +22,23 @@ public class RelationTest {
         element -> {
           assertThat(element).isInstanceOf(Property.class);
         });
+  }
+
+  @Test
+  void shouldHoldBetweenClasses() {
+    Class person = Class.createKind("Person");
+    Relation knows = Relation.createMaterial("knows", person, person);
+
+    assertThat(knows.holdsBetweenClasses()).isTrue();
+  }
+
+  @Test
+  void shouldNotHoldBetweenClasses() {
+    Class person = Class.createKind("Person");
+    Relation loves = Relation.createMaterial("loves", person, person);
+    Class love = Class.createMode("Love");
+    Relation derivation = Relation.createDerivation(love, loves);
+
+    assertThat(derivation.holdsBetweenClasses()).isFalse();
   }
 }

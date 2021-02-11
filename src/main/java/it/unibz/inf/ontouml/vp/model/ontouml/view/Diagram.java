@@ -40,6 +40,10 @@ public class Diagram extends ViewElement implements DiagramElementContainer {
     return new ArrayList<>(contents);
   }
 
+  public List<DiagramElement> getDiagramElements() {
+    return new ArrayList<>(contents);
+  }
+
   public void addElement(DiagramElement<?, ?> diagramElement) {
     if (diagramElement == null) return;
 

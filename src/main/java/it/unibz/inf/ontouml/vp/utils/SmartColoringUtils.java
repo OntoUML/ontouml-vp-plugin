@@ -3,6 +3,7 @@ package it.unibz.inf.ontouml.vp.utils;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.shape.IClassUIModel;
 import com.vp.plugin.model.IClass;
+import com.vp.plugin.model.IModelElement;
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
@@ -141,11 +142,13 @@ public class SmartColoringUtils {
   }
 
   public static void paint(IClassUIModel classDiagramElement) {
-    final IClass _class =
-        classDiagramElement.getModelElement() instanceof IClass
-            ? (IClass) classDiagramElement.getModelElement()
-            : null;
-    final Color defaultColor = getColor(_class);
+    if (classDiagramElement == null) return;
+
+    IModelElement modelElement = classDiagramElement.getModelElement();
+
+    if (!(modelElement instanceof IClass)) return;
+
+    final Color defaultColor = getColor((IClass) modelElement);
 
     if (defaultColor != null) {
       classDiagramElement.getFillColor().setColor1(defaultColor);

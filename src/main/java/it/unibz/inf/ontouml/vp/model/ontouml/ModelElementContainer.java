@@ -166,6 +166,12 @@ public interface ModelElementContainer extends ElementContainer {
     return this.getClassesByStereotype(ClassStereotype.DATATYPE);
   }
 
+  default List<Class> getAllPrimitiveDatatypes() {
+    return getAllDatatypes().stream()
+        .filter(d -> d.isPrimitiveDatatype())
+        .collect(Collectors.toList());
+  }
+
   default List<Class> getAllAbstracts() {
     return this.getClassesByStereotype(ClassStereotype.ABSTRACT);
   }

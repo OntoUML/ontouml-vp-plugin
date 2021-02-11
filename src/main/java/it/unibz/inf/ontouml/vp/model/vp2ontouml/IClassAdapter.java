@@ -91,6 +91,8 @@ public class IClassAdapter implements IAdapter {
   }
 
   public String[] getRestrictedTo() {
+    if (isDatatype()) return new String[] {"abstract"};
+
     Object value = getValueOfTaggedValue(StereotypesManager.PROPERTY_RESTRICTED_TO);
     return value instanceof String ? ((String) value).split(" ") : null;
   }

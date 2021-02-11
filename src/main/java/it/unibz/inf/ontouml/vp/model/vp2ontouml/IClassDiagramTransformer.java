@@ -12,13 +12,14 @@ import com.vp.plugin.diagram.shape.IModelUIModel;
 import com.vp.plugin.diagram.shape.IPackageUIModel;
 import com.vp.plugin.model.IModelElement;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.ModelElement;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Package;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Diagram;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.DiagramElement;
 import java.util.Arrays;
 
 public class IClassDiagramTransformer {
 
-  public static Diagram transform(IDiagramUIModel sourceElement) {
+  public static Diagram transform(IDiagramUIModel sourceElement, Package root) {
     if (!(sourceElement instanceof IClassDiagramUIModel)) return null;
 
     IClassDiagramUIModel source = (IClassDiagramUIModel) sourceElement;
@@ -34,7 +35,7 @@ public class IClassDiagramTransformer {
     String description = source.getDocumentation();
     target.addDescription(description);
 
-    ModelElement owner = getOwner(source);
+    ModelElement owner = getOwner(source, root);
     target.setOwner(owner);
 
     Arrays.stream(source.toDiagramElementArray())
@@ -44,9 +45,12 @@ public class IClassDiagramTransformer {
     return target;
   }
 
-  private static ModelElement getOwner(IClassDiagramUIModel source) {
-    IModelElement container = source.getParentModel();
-    return (ModelElement) ReferenceTransformer.transformStub(container);
+  private static ModelElement getOwner(IClassDiagramUIModel source, Package root) {
+    IModelElement owner = source.getParentModel();
+
+    if (owner == null) return root;
+
+    return ReferenceTransformer.transformStub(owner);
   }
 
   public static DiagramElement<?, ?> transfromIDiagramElement(IDiagramElement source) {

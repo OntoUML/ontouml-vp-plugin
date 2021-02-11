@@ -46,8 +46,7 @@ public class DiagramListener implements IDiagramListener {
   public void diagramUIModelRenamed(IDiagramUIModel diagram) {}
 
   private void smartPaint(IDiagramElement diagramElement) {
-    if (diagramElement != null
-        && diagramElement instanceof IClassUIModel
+    if (diagramElement instanceof IClassUIModel
         && Configurations.getInstance().getProjectConfigurations().isAutomaticColoringEnabled()) {
       SmartColoringUtils.paint((IClassUIModel) diagramElement);
     }

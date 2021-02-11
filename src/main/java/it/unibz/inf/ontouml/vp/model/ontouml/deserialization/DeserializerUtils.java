@@ -264,7 +264,7 @@ public class DeserializerUtils {
     return castOrNull(classifier, Classifier.class);
   }
 
-  private static <T> T castOrNull(Object object, java.lang.Class<T> type) {
+  public static <T> T castOrNull(Object object, java.lang.Class<T> type) {
     return (type.isInstance(object)) ? type.cast(object) : null;
   }
 }

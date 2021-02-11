@@ -126,4 +126,10 @@ class PackageDeserializerTest {
     assertThat(contents.get(0)).isInstanceOf(Class.class);
     assertThat(contents.get(0).getId()).isEqualTo("c2");
   }
+
+  @Test
+  void shouldResolveContainer() {
+    OntoumlElement element = pkg.getContents().get(0);
+    assertThat(element.getContainer()).hasValue(pkg);
+  }
 }

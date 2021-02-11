@@ -38,12 +38,23 @@
             <menu id="it.unibz.inf.ontouml.vp.actionset1.menu1"
                   menuPath="#it.unibz.inf.ontouml.vp.actionset1.toolbar1/#"/>
 
+            <action
+                    id="it.unibz.inf.ontouml.vp.actions.JsonImportAction"
+                    actionType="generalAction"
+                    description="Imports a project from a JSON file formatted according to the OntoUML JSON Schema."
+                    style="normal"
+                    tooltip="Imports a project from a JSON file formatted according to the OntoUML JSON Schema."
+                    icon="icons/toolbar/import-export-orange.png"
+                    label="Import from JSON"
+                    menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.JsonImportController" />
+            </action>
             <action 
                     id="it.unibz.inf.ontouml.vp.actions.JsonExportAction"
                     actionType="generalAction"
-                    description="Exports the model into a JSON file formatted according to OntoUML JSON Schema."
+                    description="Exports the project as a JSON file formatted according to the OntoUML JSON Schema."
                     style="normal"
-                    tooltip="Exports the model into a JSON file formatted according to OntoUML JSON Schema."
+                    tooltip="Exports the project as a JSON file formatted according to the OntoUML JSON Schema."
                     icon="icons/toolbar/import-export-orange.png"
                     label="Export to JSON"
                     menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">

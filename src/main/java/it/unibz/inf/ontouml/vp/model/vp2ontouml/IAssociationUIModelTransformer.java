@@ -16,6 +16,9 @@ public class IAssociationUIModelTransformer {
     IDiagramElementTransformer.transform(source, target, Relation.class);
     IConnectorTransformer.transform(source, target);
 
+    // TODO: investigate if we can access the labels associated to the association (e.g.
+    // stereotype+name, multiplicities)
+
     return target;
   }
 }

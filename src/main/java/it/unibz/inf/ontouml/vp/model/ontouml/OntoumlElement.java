@@ -43,8 +43,6 @@ public abstract class OntoumlElement extends Element {
     return getProject().isEmpty();
   }
 
-  // TODO: check this with Claudenir
-
   /** Setting the project of an element propagates to all of its contents */
   public void setProject(Project project) {
     this.project = project;

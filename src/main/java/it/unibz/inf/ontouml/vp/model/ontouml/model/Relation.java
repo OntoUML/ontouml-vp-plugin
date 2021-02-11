@@ -292,14 +292,49 @@ public final class Relation extends Classifier<Relation, RelationStereotype> {
     return arity() == 3;
   }
 
-  public boolean involvesOnlyClasses() {
-    if (properties == null) return false;
+  public boolean holdsBetweenClasses() {
+    if (arity() < 2) return false;
+    return properties.stream().allMatch(p -> p.isPropertyTypeClass());
+  }
 
-    return properties.stream().allMatch(Property::isPropertyTypeClass);
+  public boolean holdsBetweenRelations() {
+    if (arity() < 2) return false;
+    return properties.stream().allMatch(p -> p.isPropertyTypeRelation());
+  }
+
+  public boolean holdsBetweenClassAndRelation() {
+    if (arity() < 2) return false;
+    return properties.stream().anyMatch(p -> p.isPropertyTypeRelation())
+        && properties.stream().anyMatch(p -> p.isPropertyTypeClass());
+  }
+
+  public boolean holdsBetweenEvents() {
+    if (arity() < 2) return false;
+
+    return properties.stream()
+        .allMatch(
+            p -> p.isPropertyTypeClass() && p.getPropertyTypeAsClass().isRestrictedToEvents());
+  }
+
+  public boolean holdsBetweenMoments() {
+    if (arity() < 2) return false;
+
+    return properties.stream()
+        .allMatch(
+            p -> p.isPropertyTypeClass() && p.getPropertyTypeAsClass().isRestrictedToMoments());
+  }
+
+  public boolean holdsBetweenSubstantials() {
+    if (arity() < 2) return false;
+
+    return properties.stream()
+        .allMatch(
+            p ->
+                p.isPropertyTypeClass() && p.getPropertyTypeAsClass().isRestrictedToSubstantials());
   }
 
   public boolean isBinaryClassRelation() {
-    return isBinary() && involvesOnlyClasses();
+    return isBinary() && holdsBetweenClasses();
   }
 
   public boolean fromRelationToClass() {
@@ -307,7 +342,7 @@ public final class Relation extends Classifier<Relation, RelationStereotype> {
   }
 
   public boolean isTernaryClassRelation() {
-    return isTernary() && involvesOnlyClasses();
+    return isTernary() && holdsBetweenClasses();
   }
 
   public boolean isPartWholeRelation() {
@@ -430,31 +465,6 @@ public final class Relation extends Classifier<Relation, RelationStereotype> {
     }
 
     return true;
-  }
-
-  public boolean holdsBetweenEvents() {
-    if (arity() < 2) return false;
-
-    return properties.stream()
-        .allMatch(
-            p -> p.isPropertyTypeClass() && p.getPropertyTypeAsClass().isRestrictedToEvents());
-  }
-
-  public boolean holdsBetweenMoments() {
-    if (arity() < 2) return false;
-
-    return properties.stream()
-        .allMatch(
-            p -> p.isPropertyTypeClass() && p.getPropertyTypeAsClass().isRestrictedToMoments());
-  }
-
-  public boolean holdsBetweenSubstantials() {
-    if (arity() < 2) return false;
-
-    return properties.stream()
-        .allMatch(
-            p ->
-                p.isPropertyTypeClass() && p.getPropertyTypeAsClass().isRestrictedToSubstantials());
   }
 
   public Class getMediated() {
@@ -857,6 +867,11 @@ public final class Relation extends Classifier<Relation, RelationStereotype> {
     return new Relation(id, name, RelationStereotype.MATERIAL, source, target);
   }
 
+  public static Relation createMaterial(
+      String name, Classifier<?, ?> source, Classifier<?, ?> target) {
+    return createMaterial(null, name, source, target);
+  }
+
   public static Relation createComparative(
       String id, String name, Classifier<?, ?> source, Classifier<?, ?> target) {
     return new Relation(id, name, RelationStereotype.COMPARATIVE, source, target);
@@ -865,6 +880,10 @@ public final class Relation extends Classifier<Relation, RelationStereotype> {
   public static Relation createDerivation(
       String id, String name, Classifier<?, ?> source, Classifier<?, ?> target) {
     return new Relation(id, name, RelationStereotype.DERIVATION, source, target);
+  }
+
+  public static Relation createDerivation(Classifier<?, ?> source, Classifier<?, ?> target) {
+    return createDerivation(null, null, source, target);
   }
 
   // TODO: Write additional factory methods.

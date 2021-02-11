@@ -21,10 +21,10 @@ public class ClassifierDeserializer {
     boolean isDerived = deserializeBooleanField(root, "isDerived");
     classifier.setDerived(isDerived);
 
-    JsonNode propetiesNode = root.get("properties");
-    if (propetiesNode != null && propetiesNode.isArray()) {
+    JsonNode propertiesNode = root.get("properties");
+    if (propertiesNode != null && propertiesNode.isArray()) {
       List<Property> properties =
-          propetiesNode.traverse(codec).readValueAs(new TypeReference<List<Property>>() {});
+          propertiesNode.traverse(codec).readValueAs(new TypeReference<List<Property>>() {});
       classifier.setProperties(properties);
     }
   }

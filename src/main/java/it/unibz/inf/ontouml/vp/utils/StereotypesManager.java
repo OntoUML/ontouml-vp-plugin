@@ -159,7 +159,7 @@ public class StereotypesManager {
       return;
     }
 
-    System.out.println("\nStereotype: " + stereotype.getName());
+    System.out.println("Applying stereotype: " + stereotype.getName());
     ITaggedValueDefinitionContainer definitionContainer = stereotype.getTaggedValueDefinitions();
     if (definitionContainer != null) {
       Iterator<?> iterator = definitionContainer.taggedValueDefinitionIterator();

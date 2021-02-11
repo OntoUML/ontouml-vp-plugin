@@ -11,10 +11,18 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class IClassTransformer {
+  private static final List<String> VP_PRIMITIVE_DATATYPES =
+      List.of(
+          "boolean", "byte", "char", "double", "float", "int", "long", "short", "string", "void");
 
   public static Class transform(IModelElement sourceElement) {
     if (!(sourceElement instanceof IClass) && !(sourceElement instanceof IDataType)) {
       return null;
+    }
+
+    if (sourceElement instanceof IDataType) {
+      IDataType sourceDatatype = (IDataType) sourceElement;
+      //      sourceDatatype.
     }
 
     IClassAdapter source = new IClassAdapter(sourceElement);

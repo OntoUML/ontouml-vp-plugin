@@ -1,4 +1,4 @@
-package it.unibz.inf.ontouml.vp.model;
+package it.unibz.inf.ontouml.vp.model.uml;
 
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.DiagramManager;
@@ -7,7 +7,6 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.diagram.connector.IAssociationUIModel;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IModelElement;
-import it.unibz.inf.ontouml.vp.model.uml.Association;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Collections;

@@ -1,10 +1,9 @@
-package it.unibz.inf.ontouml.vp.model;
+package it.unibz.inf.ontouml.vp.model.uml;
 
 import com.vp.plugin.model.IAssociationEnd;
+import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IMultiplicity;
 import com.vp.plugin.model.ITaggedValueContainer;
-import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
-import it.unibz.inf.ontouml.vp.model.uml.Property;
 
 public class PropertyDescription {
 
@@ -16,8 +15,8 @@ public class PropertyDescription {
   final String name; // must invert
   final IMultiplicity multiplicityDetail; // must invert
   final ITaggedValueContainer taggedValues; // I don't know
-  final IAssociationEnd[] redefinedProperties; // must invert
-  final IAssociationEnd[] subsettedProperties; // must invert
+  final IModelElement[] redefinedProperties; // must invert
+  final IModelElement[] subsettedProperties; // must invert
 
   public PropertyDescription(IAssociationEnd associationEnd) {
     this.associationEnd = associationEnd;

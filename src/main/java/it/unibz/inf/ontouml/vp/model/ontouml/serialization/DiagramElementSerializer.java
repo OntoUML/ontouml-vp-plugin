@@ -1,5 +1,7 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.serialization;
 
+import static it.unibz.inf.ontouml.vp.model.ontouml.serialization.Serializer.writeNullableReferenceField;
+
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -21,7 +23,7 @@ public class DiagramElementSerializer extends JsonSerializer<DiagramElement<?, ?
       throws IOException {
     ElementSerializer.serializeId(element, jsonGen);
     OntoumlElementSerializer.serializeType(element, jsonGen);
-    Serializer.writeNullableReferenceField("modelElement", element.getModelElement(), jsonGen);
+    writeNullableReferenceField("modelElement", element.getModelElement(), jsonGen);
     jsonGen.writeObjectField("shape", element.getShape());
   }
 }

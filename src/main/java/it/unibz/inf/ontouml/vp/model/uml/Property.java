@@ -8,6 +8,7 @@ import com.vp.plugin.model.factory.IModelElementFactory;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Implementation of ModelElement to handle IAtrribute and IAssociationEnd objects to be serialized
@@ -285,7 +286,7 @@ public class Property implements ModelElement {
   }
 
   public void setOrdered(IMultiplicity multiplicity) {
-    this.isOrdered = (multiplicity != null) ? multiplicity.isOrdered() : false;
+    this.isOrdered = multiplicity != null && multiplicity.isOrdered();
   }
 
   public boolean isReadOnly() {
@@ -317,7 +318,7 @@ public class Property implements ModelElement {
   }
 
   public void removeStereotype(String name) {
-    if (this.stereotypes != null && this.stereotypes.contains(name)) {
+    if (this.stereotypes != null) {
       this.stereotypes.remove(name);
     }
   }
@@ -347,7 +348,7 @@ public class Property implements ModelElement {
   }
 
   public void removeSubsettedProperty(Reference ref) {
-    if (this.subsettedProperties != null && this.subsettedProperties.contains(ref)) {
+    if (this.subsettedProperties != null) {
       this.subsettedProperties.remove(ref);
     }
   }
@@ -369,7 +370,7 @@ public class Property implements ModelElement {
   }
 
   public void removeRedefinedProperty(Reference ref) {
-    if (this.redefinedProperties != null && this.redefinedProperties.contains(ref)) {
+    if (this.redefinedProperties != null) {
       this.redefinedProperties.remove(ref);
     }
   }
@@ -419,32 +420,32 @@ public class Property implements ModelElement {
   }
 
   public static void removeRedefinedProperties(IAssociationEnd associationEnd) {
-    final IAssociationEnd[] redefinedProperties = associationEnd.toRedefinedPropertyArray();
-
-    for (int i = 0; redefinedProperties != null && i < redefinedProperties.length; i++) {
-      associationEnd.removeRedefinedProperty(redefinedProperties[i]);
-    }
+    Stream.of(associationEnd.toRedefinedPropertyArray())
+        .forEach(redefined -> associationEnd.removeRedefinedProperty(redefined));
   }
 
   public static void removeSubsettedProperties(IAssociationEnd associationEnd) {
-    final IAssociationEnd[] subsettedProperties = associationEnd.toSubsettedPropertyArray();
-
-    for (int i = 0; subsettedProperties != null && i < subsettedProperties.length; i++) {
-      associationEnd.removeSubsettedProperty(subsettedProperties[i]);
-    }
+    Stream.of(associationEnd.toSubsettedPropertyArray())
+        .forEach(subsetted -> associationEnd.removeSubsettedProperty(subsetted));
   }
 
   public static void addRedefinedProperties(
-      IAssociationEnd associationEnd, IAssociationEnd[] redefinedProperties) {
-    for (int i = 0; redefinedProperties != null && i < redefinedProperties.length; i++) {
-      associationEnd.addRedefinedProperty(redefinedProperties[i]);
-    }
+      IAssociationEnd associationEnd, IModelElement[] redefinedProperties) {
+
+    if (redefinedProperties == null || associationEnd == null) return;
+
+    Stream.of(redefinedProperties)
+        .filter(prop -> prop instanceof IAssociationEnd || prop instanceof IAttribute)
+        .forEach(prop -> associationEnd.addRedefinedProperty(prop));
   }
 
   public static void addSubsettedProperties(
-      IAssociationEnd associationEnd, IAssociationEnd[] subsettedProperties) {
-    for (int i = 0; subsettedProperties != null && i < subsettedProperties.length; i++) {
-      associationEnd.addSubsettedProperty(subsettedProperties[i]);
-    }
+      IAssociationEnd associationEnd, IModelElement[] subsettedProperties) {
+
+    if (subsettedProperties == null || associationEnd == null) return;
+
+    Stream.of(subsettedProperties)
+        .filter(prop -> prop instanceof IAssociationEnd || prop instanceof IAttribute)
+        .forEach(prop -> associationEnd.addSubsettedProperty(prop));
   }
 }

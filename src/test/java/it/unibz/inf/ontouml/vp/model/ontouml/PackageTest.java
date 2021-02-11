@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 class PackageTest {
   Project project = new Project();
-  it.unibz.inf.ontouml.vp.model.ontouml.model.Package model = project.createModel();
+  Package model = project.createModel();
   Package pkg = model.createPackage();
   Class clazz = model.createClass();
   Relation relation = model.createRelation(clazz, clazz);
@@ -117,5 +117,15 @@ class PackageTest {
   @Test
   void getContentsShouldReturnChildren() {
     assertThat(model.getContents()).containsExactly(pkg, clazz, relation, generalization, genSet);
+  }
+
+  @Test
+  void modelShouldBeRoot() {
+    assertThat(model.isRoot()).isTrue();
+  }
+
+  @Test
+  void childPackageShouldNotBeRoot() {
+    assertThat(pkg.isRoot()).isFalse();
   }
 }

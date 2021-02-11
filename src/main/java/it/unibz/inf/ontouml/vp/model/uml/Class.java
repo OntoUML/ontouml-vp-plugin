@@ -436,7 +436,7 @@ public class Class implements ModelElement {
       return;
     }
 
-    System.out.println("WILL TRY TO SET VALUE: " + restrictions);
+    System.out.println("Class '" + _class.getName() + "': Setting restrictedTo to " + restrictions);
 
     Iterator<?> values = _class.getTaggedValues().taggedValueIterator();
 
@@ -456,7 +456,8 @@ public class Class implements ModelElement {
           value.setValue(newRestrictions);
         }
 
-        System.out.println("NEW VALUE: " + value.getValueAsText());
+        System.out.println(
+            "Class '" + _class.getName() + "': restrictedTo set to " + value.getValueAsText());
 
         return;
       }

@@ -93,6 +93,7 @@ public class IPropertyAdapter implements IAdapter {
   public IModelElement getTypeAsElement() {
     if (isAttribute()) return attribute.getTypeAsElement();
     if (isAssociationEnd()) return associationEnd.getTypeAsElement();
+
     return null;
   }
 

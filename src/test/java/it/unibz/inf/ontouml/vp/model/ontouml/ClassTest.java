@@ -31,4 +31,21 @@ public class ClassTest {
     assertThat(contents).hasSize(2);
     assertThat(contents).isEqualTo(List.of(red, blue));
   }
+
+  @Test
+  void shouldBePrimitiveDatatype() {
+    Class primitive = Class.createDatatype("1", "string");
+    assertThat(primitive.isPrimitiveDatatype()).isTrue();
+  }
+
+  @Test
+  void shouldNotBePrimitiveDatatype() {
+    Class color = Class.createDatatype("1", "color");
+    Class number = Class.createDatatype("1", "number");
+    color.createAttribute("red", number);
+    color.createAttribute("green", number);
+    color.createAttribute("blue", number);
+
+    assertThat(color.isPrimitiveDatatype()).isFalse();
+  }
 }

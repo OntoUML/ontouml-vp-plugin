@@ -303,10 +303,22 @@ public final class Class extends Classifier<Class, ClassStereotype> {
     return restrictedToEquals(Nature.ABSTRACT);
   }
 
+  public boolean isDatatype() {
+    return hasStereotype(ClassStereotype.DATATYPE);
+  }
+
+  public boolean isPrimitiveDatatype() {
+    return isDatatype() && !hasAttributes();
+  }
+
   public static Class createKind(String id, String name) {
     Class clazz = new Class(id, name, ClassStereotype.KIND);
     clazz.setRestrictedTo(Nature.FUNCTIONAL_COMPLEX);
     return clazz;
+  }
+
+  public static Class createKind(String name) {
+    return createKind(null, name);
   }
 
   public static Class createCollective(String id, String name) {
@@ -331,6 +343,10 @@ public final class Class extends Classifier<Class, ClassStereotype> {
     Class clazz = new Class(id, name, ClassStereotype.MODE);
     clazz.setRestrictedTo(Nature.INTRINSIC_MODE, Nature.EXTRINSIC_MODE);
     return clazz;
+  }
+
+  public static Class createMode(String name) {
+    return createMode(null, name);
   }
 
   public static Class createQuality(String id, String name) {
