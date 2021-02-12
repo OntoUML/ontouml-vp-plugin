@@ -3,13 +3,13 @@ package it.unibz.inf.ontouml.vp.model.vp2ontouml;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.model.IModelElement;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.ModelElement;
-import it.unibz.inf.ontouml.vp.model.ontouml.view.DiagramElement;
+import it.unibz.inf.ontouml.vp.model.ontouml.view.ElementView;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Shape;
 
 public class IDiagramElementTransformer {
 
   public static <T extends ModelElement, S extends Shape> void transform(
-      IDiagramElement source, DiagramElement<T, S> target, Class<T> type) {
+          IDiagramElement source, ElementView<T, S> target, Class<T> type) {
 
     String id = source.getId();
     target.setId(id);

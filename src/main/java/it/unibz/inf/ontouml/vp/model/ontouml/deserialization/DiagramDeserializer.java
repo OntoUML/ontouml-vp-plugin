@@ -30,7 +30,7 @@ public class DiagramDeserializer extends JsonDeserializer<Diagram> {
     ModelElement owner = deserializeOwner(root, codec);
     diagram.setOwner(owner);
 
-    List<DiagramElement<?, ?>> contents = deserializeContents(root, codec);
+    List<ElementView<?, ?>> contents = deserializeContents(root, codec);
     diagram.setContents(contents);
 
     return diagram;
@@ -42,7 +42,7 @@ public class DiagramDeserializer extends JsonDeserializer<Diagram> {
     return castOrNull(owner, ModelElement.class);
   }
 
-  private List<DiagramElement<?, ?>> deserializeContents(JsonNode root, ObjectCodec codec)
+  private List<ElementView<?, ?>> deserializeContents(JsonNode root, ObjectCodec codec)
       throws IOException {
     List<OntoumlElement> contents =
         deserializeArrayField(
@@ -56,8 +56,8 @@ public class DiagramDeserializer extends JsonDeserializer<Diagram> {
             codec);
 
     return contents.stream()
-        .filter(x -> x instanceof DiagramElement<?, ?>)
-        .map(x -> (DiagramElement<?, ?>) x)
+        .filter(x -> x instanceof ElementView<?, ?>)
+        .map(x -> (ElementView<?, ?>) x)
         .collect(Collectors.toList());
   }
 }

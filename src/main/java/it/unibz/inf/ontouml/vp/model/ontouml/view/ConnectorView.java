@@ -5,9 +5,9 @@ import it.unibz.inf.ontouml.vp.model.ontouml.model.ModelElement;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ConnectorView<T extends ModelElement> extends DiagramElement<T, Path> {
-  private DiagramElement<?, ?> source;
-  private DiagramElement<?, ?> target;
+public abstract class ConnectorView<T extends ModelElement> extends ElementView<T, Path> {
+  private ElementView<?, ?> source;
+  private ElementView<?, ?> target;
 
   public ConnectorView(String id, T connector) {
     super(id, connector);
@@ -41,19 +41,19 @@ public abstract class ConnectorView<T extends ModelElement> extends DiagramEleme
     setShape(path);
   }
 
-  public DiagramElement<?, ?> getSource() {
+  public ElementView<?, ?> getSource() {
     return source;
   }
 
-  public void setSource(DiagramElement<?, ?> source) {
+  public void setSource(ElementView<?, ?> source) {
     this.source = source;
   }
 
-  public DiagramElement<?, ?> getTarget() {
+  public ElementView<?, ?> getTarget() {
     return target;
   }
 
-  public void setTarget(DiagramElement<?, ?> target) {
+  public void setTarget(ElementView<?, ?> target) {
     this.target = target;
   }
 }

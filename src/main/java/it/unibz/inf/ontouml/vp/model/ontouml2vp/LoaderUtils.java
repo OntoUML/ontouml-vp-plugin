@@ -11,7 +11,7 @@ import com.vp.plugin.model.factory.IModelElementFactory;
 import it.unibz.inf.ontouml.vp.model.ontouml.OntoumlElement;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.ModelElement;
-import it.unibz.inf.ontouml.vp.model.ontouml.view.DiagramElement;
+import it.unibz.inf.ontouml.vp.model.ontouml.view.ElementView;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -20,25 +20,25 @@ public class LoaderUtils {
 
   static IProject vpProject = ApplicationManager.instance().getProjectManager().getProject();
 
-  static IDiagramElement getIDiagramElement(IClassDiagramUIModel vpDiagram, DiagramElement view) {
+  static IDiagramElement getIDiagramElement(IClassDiagramUIModel vpDiagram, ElementView view) {
     String targetId = view.getId();
     return vpDiagram.getDiagramElementById(targetId);
   }
 
   static <T extends IDiagramElement> T getIDiagramElement(
-      IClassDiagramUIModel vpDiagram, DiagramElement view, java.lang.Class<T> vpType) {
+          IClassDiagramUIModel vpDiagram, ElementView view, java.lang.Class<T> vpType) {
     String targetId = view.getId();
     return vpType.cast(vpDiagram.getDiagramElementById(targetId));
   }
 
-  static IModelElement getIModelElement(DiagramElement view) {
+  static IModelElement getIModelElement(ElementView view) {
     IProject vpProject = ApplicationManager.instance().getProjectManager().getProject();
     String modelElementId = view.getModelElement().getId();
     return vpProject.getModelElementById(modelElementId);
   }
 
   static String getIncompatibleMessage(
-      DiagramElement fromView, IModelElement toModelElement, java.lang.Class<?> expected) {
+          ElementView fromView, IModelElement toModelElement, java.lang.Class<?> expected) {
     return "Skipped "
         + fromView.getType()
         + ": "

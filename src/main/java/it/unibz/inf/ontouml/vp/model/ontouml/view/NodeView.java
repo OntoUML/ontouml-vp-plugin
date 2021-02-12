@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public abstract class NodeView<T extends ModelElement, S extends RectangularShape>
-    extends DiagramElement<T, S> {
+    extends ElementView<T, S> {
 
   public NodeView(String id, T element) {
     super(id, element);

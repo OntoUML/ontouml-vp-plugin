@@ -20,14 +20,14 @@ public class ConnectorViewDeserializer {
     Path path = deserializeObjectField(root, "shape", Path.class, codec);
     view.setPath(path);
 
-    DiagramElement<?, ?> source = deserializeConnectorEnd(root, "source", codec);
+    ElementView<?, ?> source = deserializeConnectorEnd(root, "source", codec);
     view.setSource(source);
 
-    DiagramElement<?, ?> target = deserializeConnectorEnd(root, "target", codec);
+    ElementView<?, ?> target = deserializeConnectorEnd(root, "target", codec);
     view.setTarget(target);
   }
 
-  private static DiagramElement<?, ?> deserializeConnectorEnd(
+  private static ElementView<?, ?> deserializeConnectorEnd(
       JsonNode root, String fieldName, ObjectCodec codec) throws IOException {
 
     List<Class<? extends OntoumlElement>> allowedTypes =
@@ -36,6 +36,6 @@ public class ConnectorViewDeserializer {
     OntoumlElement source =
         DeserializerUtils.deserializeObjectField(root, fieldName, allowedTypes, codec);
 
-    return (source instanceof DiagramElement<?, ?>) ? (DiagramElement<?, ?>) source : null;
+    return (source instanceof ElementView<?, ?>) ? (ElementView<?, ?>) source : null;
   }
 }

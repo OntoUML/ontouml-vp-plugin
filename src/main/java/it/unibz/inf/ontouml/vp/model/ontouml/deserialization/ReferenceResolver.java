@@ -6,7 +6,7 @@ import it.unibz.inf.ontouml.vp.model.ontouml.model.*;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.ConnectorView;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Diagram;
-import it.unibz.inf.ontouml.vp.model.ontouml.view.DiagramElement;
+import it.unibz.inf.ontouml.vp.model.ontouml.view.ElementView;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -36,7 +36,7 @@ public class ReferenceResolver {
       resolveOwner(elementMap, diagram);
     }
 
-    for (DiagramElement diagramElement : project.getAllDiagramElements()) {
+    for (ElementView diagramElement : project.getAllDiagramElements()) {
       resolveModelElement(elementMap, diagramElement);
     }
 
@@ -56,25 +56,25 @@ public class ReferenceResolver {
   }
 
   private static void resolveSource(Map<String, OntoumlElement> elementMap, ConnectorView element) {
-    DiagramElement reference = element.getSource();
+    ElementView reference = element.getSource();
 
     if (reference == null) return;
 
-    DiagramElement source = resolve(elementMap, reference, DiagramElement.class);
+    ElementView source = resolve(elementMap, reference, ElementView.class);
     element.setSource(source);
   }
 
   private static void resolveTarget(Map<String, OntoumlElement> elementMap, ConnectorView element) {
-    DiagramElement reference = element.getTarget();
+    ElementView reference = element.getTarget();
 
     if (reference == null) return;
 
-    DiagramElement source = resolve(elementMap, reference, DiagramElement.class);
+    ElementView source = resolve(elementMap, reference, ElementView.class);
     element.setTarget(source);
   }
 
   private static void resolveModelElement(
-      Map<String, OntoumlElement> elementMap, DiagramElement element) {
+      Map<String, OntoumlElement> elementMap, ElementView element) {
     ModelElement reference = element.getModelElement();
 
     if (reference == null) return;

@@ -9,7 +9,6 @@ import com.vp.plugin.diagram.shape.IGeneralizationSetUIModel;
 import com.vp.plugin.diagram.shape.IModelUIModel;
 import com.vp.plugin.diagram.shape.IPackageUIModel;
 import com.vp.plugin.model.*;
-import it.unibz.inf.ontouml.vp.model.ontouml.*;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.*;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Package;
@@ -40,8 +39,8 @@ public class ReferenceTransformer {
     return stub;
   }
 
-  public static DiagramElement<?, ?> transformStub(IDiagramElement source) {
-    DiagramElement<?, ?> stub = null;
+  public static ElementView<?, ?> transformStub(IDiagramElement source) {
+    ElementView<?, ?> stub = null;
 
     if (source instanceof IClassUIModel) {
       stub = new ClassView();

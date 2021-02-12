@@ -6,8 +6,8 @@ import java.util.Optional;
 
 public interface DiagramElementContainer extends ElementContainer {
 
-  default List<DiagramElement> getAllDiagramElements() {
-    return getAllContentsByType(DiagramElement.class);
+  default List<ElementView> getAllDiagramElements() {
+    return getAllContentsByType(ElementView.class);
   }
 
   default List<ConnectorView> getAllConnectorViews() {

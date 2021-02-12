@@ -14,7 +14,7 @@ import com.vp.plugin.model.IModelElement;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.ModelElement;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Package;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Diagram;
-import it.unibz.inf.ontouml.vp.model.ontouml.view.DiagramElement;
+import it.unibz.inf.ontouml.vp.model.ontouml.view.ElementView;
 import java.util.Arrays;
 
 public class IClassDiagramTransformer {
@@ -53,8 +53,8 @@ public class IClassDiagramTransformer {
     return ReferenceTransformer.transformStub(owner);
   }
 
-  public static DiagramElement<?, ?> transfromIDiagramElement(IDiagramElement source) {
-    DiagramElement<?, ?> target = null;
+  public static ElementView<?, ?> transfromIDiagramElement(IDiagramElement source) {
+    ElementView<?, ?> target = null;
 
     if (source instanceof IClassUIModel) {
       target = IClassUIModelTransformer.transform(source);
