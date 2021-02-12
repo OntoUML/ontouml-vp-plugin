@@ -9,7 +9,7 @@ import it.unibz.inf.ontouml.vp.model.ontouml.view.Shape;
 public class IDiagramElementTransformer {
 
   public static <T extends ModelElement, S extends Shape> void transform(
-          IDiagramElement source, ElementView<T, S> target, Class<T> type) {
+      IDiagramElement source, ElementView<T, S> target, Class<T> type) {
 
     String id = source.getId();
     target.setId(id);

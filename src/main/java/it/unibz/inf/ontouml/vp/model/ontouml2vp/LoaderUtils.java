@@ -26,7 +26,7 @@ public class LoaderUtils {
   }
 
   static <T extends IDiagramElement> T getIDiagramElement(
-          IClassDiagramUIModel vpDiagram, ElementView view, java.lang.Class<T> vpType) {
+      IClassDiagramUIModel vpDiagram, ElementView view, java.lang.Class<T> vpType) {
     String targetId = view.getId();
     return vpType.cast(vpDiagram.getDiagramElementById(targetId));
   }
@@ -38,7 +38,7 @@ public class LoaderUtils {
   }
 
   static String getIncompatibleMessage(
-          ElementView fromView, IModelElement toModelElement, java.lang.Class<?> expected) {
+      ElementView fromView, IModelElement toModelElement, java.lang.Class<?> expected) {
     return "Skipped "
         + fromView.getType()
         + ": "

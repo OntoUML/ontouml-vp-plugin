@@ -12,15 +12,14 @@ public class DiagramElementSerializer extends JsonSerializer<ElementView<?, ?>> 
 
   @Override
   public void serialize(
-          ElementView<?, ?> element, JsonGenerator jsonGen, SerializerProvider provider)
+      ElementView<?, ?> element, JsonGenerator jsonGen, SerializerProvider provider)
       throws IOException {
     jsonGen.writeStartObject();
     serializeFields(element, jsonGen);
     jsonGen.writeEndObject();
   }
 
-  static void serializeFields(ElementView<?, ?> element, JsonGenerator jsonGen)
-      throws IOException {
+  static void serializeFields(ElementView<?, ?> element, JsonGenerator jsonGen) throws IOException {
     ElementSerializer.serializeId(element, jsonGen);
     OntoumlElementSerializer.serializeType(element, jsonGen);
     writeNullableReferenceField("modelElement", element.getModelElement(), jsonGen);
