@@ -39,10 +39,10 @@ public class PathDeserializer extends JsonDeserializer<Path> {
       if (!pointNode.isObject()) continue;
 
       JsonNode xNode = pointNode.get("x");
-      double x = (xNode != null) ? xNode.asDouble(0) : 0;
+      int x = (xNode != null) ? xNode.asInt(0) : 0;
 
       JsonNode yNode = pointNode.get("y");
-      double y = (yNode != null) ? yNode.asDouble(0) : 0;
+      int y = (yNode != null) ? yNode.asInt(0) : 0;
 
       Point point = new Point(x, y);
       points.add(point);

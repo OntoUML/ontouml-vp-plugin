@@ -25,35 +25,35 @@ public abstract class NodeView<T extends ModelElement, S extends RectangularShap
     return Arrays.asList(shape);
   }
 
-  public double getX() {
+  public int getX() {
     return shape.getX();
   }
 
-  public void setX(double x) {
+  public void setX(int x) {
     shape.setX(x);
   }
 
-  public double getY() {
+  public int getY() {
     return shape.getY();
   }
 
-  public void setY(double y) {
+  public void setY(int y) {
     shape.setY(y);
   }
 
-  public double getWidth() {
+  public int getWidth() {
     return shape.width;
   }
 
-  public void setWidth(double width) {
+  public void setWidth(int width) {
     shape.setWidth(width);
   }
 
-  public double getHeight() {
+  public int getHeight() {
     return shape.height;
   }
 
-  public void setHeight(double height) {
+  public void setHeight(int height) {
     shape.setHeight(height);
   }
 }

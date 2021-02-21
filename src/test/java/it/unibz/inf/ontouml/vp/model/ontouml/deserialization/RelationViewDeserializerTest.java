@@ -22,8 +22,8 @@ class RelationViewDeserializerTest {
           + "    \"id\": \"pa1\",\n"
           + "    \"type\": \"Path\",\n"
           + "    \"points\": [\n"
-          + "      { \"x\": 642.0, \"y\": 92.0 },\n"
-          + "      { \"x\": 812.0, \"y\": 93.0 }\n"
+          + "      { \"x\": 642, \"y\": 92 },\n"
+          + "      { \"x\": 812, \"y\": 93 }\n"
           + "    ]\n"
           + "  },\n"
           + "  \"source\": { \"id\": \"cv1\", \"type\": \"ClassView\" },\n"
@@ -80,11 +80,11 @@ class RelationViewDeserializerTest {
   @Test
   void shouldDeserializePointsData() {
     Point firstPoint = shape.getPoints().get(0);
-    assertThat(firstPoint.getX()).isEqualTo(642.0);
-    assertThat(firstPoint.getY()).isEqualTo(92.0);
+    assertThat(firstPoint.getX()).isEqualTo(642);
+    assertThat(firstPoint.getY()).isEqualTo(92);
 
     Point secondPoint = shape.getPoints().get(1);
-    assertThat(secondPoint.getX()).isEqualTo(812.0);
-    assertThat(secondPoint.getY()).isEqualTo(93.0);
+    assertThat(secondPoint.getX()).isEqualTo(812);
+    assertThat(secondPoint.getY()).isEqualTo(93);
   }
 }

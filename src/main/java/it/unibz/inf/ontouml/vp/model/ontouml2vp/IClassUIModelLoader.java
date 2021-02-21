@@ -28,9 +28,9 @@ public class IClassUIModelLoader {
 
     toView.resetCaption();
 
-    toView.setX((int) fromView.getX());
-    toView.setY((int) fromView.getY());
-    toView.setWidth((int) fromView.getWidth());
-    toView.setHeight((int) fromView.getHeight());
+    toView.setX(fromView.getX());
+    toView.setY(fromView.getY());
+    toView.setWidth(fromView.getWidth());
+    toView.setHeight(fromView.getHeight());
   }
 }

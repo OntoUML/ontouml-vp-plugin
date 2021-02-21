@@ -58,16 +58,16 @@ public abstract class OntoumlElement extends Element {
   public abstract List<OntoumlElement> getContents();
 
   public List<OntoumlElement> getAllContents() {
-    List<OntoumlElement> directContents = getContents();
+    List<OntoumlElement> children = getContents();
 
-    if (directContents.isEmpty()) return directContents;
+    if (children.isEmpty()) return children;
 
     List<OntoumlElement> childrenContents =
-        directContents.stream()
+        children.stream()
             .flatMap(child -> child.getAllContents().stream())
             .collect(Collectors.toList());
 
-    childrenContents.addAll(directContents);
+    childrenContents.addAll(children);
 
     return childrenContents;
   }

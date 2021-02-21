@@ -1,27 +1,27 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.view;
 
 public class Point {
-  double x;
-  double y;
+  int x;
+  int y;
 
-  public Point(Double x, Double y) {
+  public Point(Integer x, Integer y) {
     setX(x);
     setY(y);
   }
 
-  public double getX() {
+  public int getX() {
     return x;
   }
 
-  public void setX(Double x) {
+  public void setX(Integer x) {
     this.x = (x != null) ? x : 0;
   }
 
-  public double getY() {
+  public int getY() {
     return y;
   }
 
-  public void setY(Double y) {
+  public void setY(Integer y) {
     this.y = (y != null) ? y : 0;
   }
 

@@ -16,10 +16,10 @@ class RectangleDeserializerTest {
       "{\n"
           + "  \"id\": \"r1\",\n"
           + "  \"type\": \"Rectangle\",\n"
-          + "  \"x\": 406.0,\n"
-          + "  \"y\": 285.0,\n"
-          + "  \"width\": 84.0,\n"
-          + "  \"height\": 40.0\n"
+          + "  \"x\": 406,\n"
+          + "  \"y\": 285,\n"
+          + "  \"width\": 84,\n"
+          + "  \"height\": 40\n"
           + "}";
 
   @BeforeAll
@@ -42,21 +42,21 @@ class RectangleDeserializerTest {
 
   @Test
   void shouldDeserializeX() {
-    assertThat(rectangle.getX()).isEqualTo(406.0);
+    assertThat(rectangle.getX()).isEqualTo(406);
   }
 
   @Test
   void shouldDeserializeY() {
-    assertThat(rectangle.getY()).isEqualTo(285.0);
+    assertThat(rectangle.getY()).isEqualTo(285);
   }
 
   @Test
   void shouldDeserializeWidth() {
-    assertThat(rectangle.getWidth()).isEqualTo(84.0);
+    assertThat(rectangle.getWidth()).isEqualTo(84);
   }
 
   @Test
   void shouldDeserializeHeight() {
-    assertThat(rectangle.getHeight()).isEqualTo(40.0);
+    assertThat(rectangle.getHeight()).isEqualTo(40);
   }
 }

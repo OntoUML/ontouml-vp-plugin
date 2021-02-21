@@ -23,10 +23,10 @@ class ClassViewDeserializerTest {
           + "  \"shape\": {\n"
           + "    \"id\": \"re1\",\n"
           + "    \"type\": \"Rectangle\",\n"
-          + "    \"x\": 813.0,\n"
-          + "    \"y\": 72.0,\n"
-          + "    \"width\": 95.0,\n"
-          + "    \"height\": 40.0\n"
+          + "    \"x\": 813,\n"
+          + "    \"y\": 72,\n"
+          + "    \"width\": 95,\n"
+          + "    \"height\": 40\n"
           + "  }\n"
           + "}";
 
@@ -59,22 +59,22 @@ class ClassViewDeserializerTest {
 
   @Test
   void shouldDeserializeX() {
-    assertThat(view.getX()).isEqualTo(813.0);
+    assertThat(view.getX()).isEqualTo(813);
   }
 
   @Test
   void shouldDeserializeY() {
-    assertThat(view.getY()).isEqualTo(72.0);
+    assertThat(view.getY()).isEqualTo(72);
   }
 
   @Test
   void shouldDeserializeWidth() {
-    assertThat(view.getWidth()).isEqualTo(95.0);
+    assertThat(view.getWidth()).isEqualTo(95);
   }
 
   @Test
   void shouldDeserializeHeight() {
-    assertThat(view.getHeight()).isEqualTo(40.0);
+    assertThat(view.getHeight()).isEqualTo(40);
   }
 
   @Test
@@ -84,21 +84,21 @@ class ClassViewDeserializerTest {
 
   @Test
   void shouldDeserializeShapeX() {
-    assertThat(shape.getX()).isEqualTo(813.0);
+    assertThat(shape.getX()).isEqualTo(813);
   }
 
   @Test
   void shouldDeserializeShapeY() {
-    assertThat(shape.getY()).isEqualTo(72.0);
+    assertThat(shape.getY()).isEqualTo(72);
   }
 
   @Test
   void shouldDeserializeShapeWidth() {
-    assertThat(shape.getWidth()).isEqualTo(95.0);
+    assertThat(shape.getWidth()).isEqualTo(95);
   }
 
   @Test
   void shouldDeserializeShapeHeight() {
-    assertThat(shape.getHeight()).isEqualTo(40.0);
+    assertThat(shape.getHeight()).isEqualTo(40);
   }
 }

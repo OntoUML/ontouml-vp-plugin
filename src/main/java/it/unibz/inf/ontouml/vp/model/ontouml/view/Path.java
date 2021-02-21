@@ -32,7 +32,7 @@ public class Path extends Shape {
     return "Path";
   }
 
-  public void moveTo(double x, double y) {
+  public void moveTo(int x, int y) {
     points.add(new Point(x, y));
   }
 

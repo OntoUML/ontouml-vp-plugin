@@ -22,8 +22,8 @@ class GeneralizationViewDeserializerTest {
           + "    \"id\": \"pa1\",\n"
           + "    \"type\": \"Path\",\n"
           + "    \"points\": [\n"
-          + "      { \"x\": 100.0, \"y\": 40.0 },\n"
-          + "      { \"x\": 150.0, \"y\": 42.0 }\n"
+          + "      { \"x\": 100, \"y\": 40 },\n"
+          + "      { \"x\": 150, \"y\": 42 }\n"
           + "    ]\n"
           + "  },\n"
           + "  \"source\": { \"id\": \"cv1\", \"type\": \"ClassView\" },\n"
@@ -80,11 +80,11 @@ class GeneralizationViewDeserializerTest {
   @Test
   void shouldDeserializePointsData() {
     Point firstPoint = shape.getPoints().get(0);
-    assertThat(firstPoint.getX()).isEqualTo(100.0);
-    assertThat(firstPoint.getY()).isEqualTo(40.0);
+    assertThat(firstPoint.getX()).isEqualTo(100);
+    assertThat(firstPoint.getY()).isEqualTo(40);
 
     Point secondPoint = shape.getPoints().get(1);
-    assertThat(secondPoint.getX()).isEqualTo(150.0);
-    assertThat(secondPoint.getY()).isEqualTo(42.0);
+    assertThat(secondPoint.getX()).isEqualTo(150);
+    assertThat(secondPoint.getY()).isEqualTo(42);
   }
 }

@@ -16,10 +16,10 @@ class TextDeserializerTest {
       "{\n"
           + "  \"id\": \"t1\",\n"
           + "  \"type\": \"Text\",\n"
-          + "  \"x\": 130.0,\n"
-          + "  \"y\": 109.0,\n"
-          + "  \"width\": 78.0,\n"
-          + "  \"height\": 42.0\n"
+          + "  \"x\": 130,\n"
+          + "  \"y\": 109,\n"
+          + "  \"width\": 78,\n"
+          + "  \"height\": 42\n"
           + "}";
 
   @BeforeAll
@@ -42,21 +42,21 @@ class TextDeserializerTest {
 
   @Test
   void shouldDeserializeX() {
-    assertThat(text.getX()).isEqualTo(130.0);
+    assertThat(text.getX()).isEqualTo(130);
   }
 
   @Test
   void shouldDeserializeY() {
-    assertThat(text.getY()).isEqualTo(109.0);
+    assertThat(text.getY()).isEqualTo(109);
   }
 
   @Test
   void shouldDeserializeWidth() {
-    assertThat(text.getWidth()).isEqualTo(78.0);
+    assertThat(text.getWidth()).isEqualTo(78);
   }
 
   @Test
   void shouldDeserializeHeight() {
-    assertThat(text.getHeight()).isEqualTo(42.0);
+    assertThat(text.getHeight()).isEqualTo(42);
   }
 }

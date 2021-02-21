@@ -13,7 +13,8 @@ public class IConnectorTransformer {
 
     Path path = new Path();
     path.setId(source.getId() + "_path");
-    Arrays.stream(source.getPoints()).forEachOrdered(p -> path.moveTo(p.getX(), p.getY()));
+    Arrays.stream(source.getPoints())
+        .forEachOrdered(p -> path.moveTo((int) p.getX(), (int) p.getY()));
     target.setPath(path);
 
     IDiagramElement connectorSource = null;

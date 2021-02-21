@@ -1,28 +1,27 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 
-import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeNullableDoubleField;
+import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeNullableIntegerField;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.RectangularShape;
-import java.io.IOException;
 
 public class RectangularShapeDeserializer {
 
-  public static void deserialize(RectangularShape shape, JsonNode node) throws IOException {
+  public static void deserialize(RectangularShape shape, JsonNode node) {
 
     String id = node.get("id").asText();
     shape.setId(id);
 
-    Double x = deserializeNullableDoubleField(node, "x");
+    Integer x = deserializeNullableIntegerField(node, "x");
     shape.setX(x);
 
-    Double y = deserializeNullableDoubleField(node, "y");
+    Integer y = deserializeNullableIntegerField(node, "y");
     shape.setY(y);
 
-    Double width = deserializeNullableDoubleField(node, "width");
+    Integer width = deserializeNullableIntegerField(node, "width");
     shape.setWidth(width);
 
-    Double height = deserializeNullableDoubleField(node, "height");
+    Integer height = deserializeNullableIntegerField(node, "height");
     shape.setHeight(height);
   }
 }
