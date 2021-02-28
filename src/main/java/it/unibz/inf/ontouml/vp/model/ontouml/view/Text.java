@@ -26,6 +26,14 @@ public class Text extends RectangularShape {
     this(null, null);
   }
 
+  public String getValue() {
+    return this.value;
+  }
+
+  public void setValue(String value) {
+    this.value = value;
+  }
+
   @Override
   public List<OntoumlElement> getContents() {
     return new ArrayList<>();

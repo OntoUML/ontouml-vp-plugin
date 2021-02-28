@@ -17,5 +17,6 @@ public class TextSerializer extends JsonSerializer<Text> {
 
   static void serializeFields(Text text, JsonGenerator jsonGen) throws IOException {
     RectangularShapeSerializer.serializeFields(text, jsonGen);
+    Serializer.writeNullableStringField("value", text.getValue(), jsonGen);
   }
 }

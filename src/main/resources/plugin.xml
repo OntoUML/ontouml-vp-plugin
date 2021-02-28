@@ -32,7 +32,7 @@
                     icon="icons/toolbar/check-mark-orange.png"
                     label="Check Diagram"
                     toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#">
-                 <actionController class="it.unibz.inf.ontouml.vp.controllers.DiagramVerificationController" />
+                 <actionController class="it.unibz.inf.ontouml.vp.controllers.ModelVerificationController" />
             </action>
 
             <menu id="it.unibz.inf.ontouml.vp.actionset1.menu1"
@@ -49,16 +49,27 @@
                     menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.JsonImportController" />
             </action>
-            <action 
-                    id="it.unibz.inf.ontouml.vp.actions.JsonExportAction"
-                    actionType="generalAction"
-                    description="Exports the project as a JSON file formatted according to the OntoUML JSON Schema."
-                    style="normal"
-                    tooltip="Exports the project as a JSON file formatted according to the OntoUML JSON Schema."
-                    icon="icons/toolbar/import-export-orange.png"
-                    label="Export to JSON"
-                    menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
+            <action
+              id="it.unibz.inf.ontouml.vp.actions.JsonExportAction"
+              actionType="generalAction"
+              description="Exports the project as a JSON file formatted according to the OntoUML JSON Schema."
+              style="normal"
+              tooltip="Exports the project as a JSON file formatted according to the OntoUML JSON Schema."
+              icon="icons/toolbar/import-export-orange.png"
+              label="Export to JSON"
+              menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
                 <actionController class="it.unibz.inf.ontouml.vp.controllers.JsonExportController" />
+            </action>
+            <action
+              id="it.unibz.inf.ontouml.vp.actions.ModularizationAction"
+              actionType="generalAction"
+              description="Generates diagrams from identified OntoUML modules present in the project."
+              style="normal"
+              tooltip="Generates diagrams from identified OntoUML modules present in the project."
+              icon="icons/toolbar/import-export-orange.png"
+              label="Add Modularized Diagrams"
+              menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
+                <actionController class="it.unibz.inf.ontouml.vp.controllers.ModularizationController" />
             </action>
             <action 
                     id="it.unibz.inf.ontouml.vp.actions.GUFOExportAction"

@@ -1,5 +1,7 @@
 package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 
+import static it.unibz.inf.ontouml.vp.model.ontouml.deserialization.DeserializerUtils.deserializeNullableStringField;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -14,6 +16,10 @@ public class TextDeserializer extends JsonDeserializer<Text> {
     JsonNode root = parser.readValueAsTree();
 
     Text text = new Text();
+
+    String value = deserializeNullableStringField(root, "value");
+    text.setValue(value);
+
     RectangularShapeDeserializer.deserialize(text, root);
 
     return text;

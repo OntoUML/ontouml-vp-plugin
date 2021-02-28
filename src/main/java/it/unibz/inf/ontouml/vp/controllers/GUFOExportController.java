@@ -1,5 +1,9 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
@@ -9,16 +13,14 @@ import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
 import it.unibz.inf.ontouml.vp.model.ServerRequest;
-import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
+import it.unibz.inf.ontouml.vp.model.vp2ontouml.Uml2OntoumlTransformer;
 import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 import it.unibz.inf.ontouml.vp.views.GUFOExportView;
 import it.unibz.inf.ontouml.vp.views.ProgressPanel;
 import java.awt.*;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.stream.Collectors;
 
 /**
  * Implementation of toolbar button Export to gUFO.
@@ -58,26 +60,35 @@ public class GUFOExportController implements VPActionController {
   @Override
   public void update(VPAction action) {}
 
-  private void saveFile(BufferedReader buffer, String exportFormat) throws IOException {
-    final Configurations configs = Configurations.getInstance();
-    final ProjectConfigurations projectConfigurations = configs.getProjectConfigurations();
-    final FileDialog fd =
+  private FileDialog prepareChooseDestinationFileDialog(
+      ProjectConfigurations projectConfigurations, String exportFormatExtension) {
+    final FileDialog fileDialog =
         new FileDialog(
             (Frame) ApplicationManager.instance().getViewManager().getRootFrame(),
             "Choose destination",
             FileDialog.SAVE);
 
-    String suggestedFolderPath = projectConfigurations.getExportGUFOFolderPath();
+    final String suggestedFolderPath = projectConfigurations.getExportGUFOFolderPath();
     String suggestedFileName = projectConfigurations.getExportGUFOFilename();
-    String exportFormatExtension = exportFormat != "Turtle" ? ".nt" : ".ttl";
 
     if (suggestedFileName.isEmpty()) {
       String projectName = ApplicationManager.instance().getProjectManager().getProject().getName();
       suggestedFileName = projectName + exportFormatExtension;
     }
 
-    fd.setDirectory(suggestedFolderPath);
-    fd.setFile(suggestedFileName);
+    fileDialog.setDirectory(suggestedFolderPath);
+    fileDialog.setFile(suggestedFileName);
+
+    return fileDialog;
+  }
+
+  private void saveFile(String responseMessage, String exportFormat) throws IOException {
+    final Configurations configurations = Configurations.getInstance();
+    final ProjectConfigurations projectConfigurations = configurations.getProjectConfigurations();
+    final String exportFormatExtension = !"Turtle".equals(exportFormat) ? ".nt" : ".ttl";
+    final FileDialog fd =
+        prepareChooseDestinationFileDialog(projectConfigurations, exportFormatExtension);
+
     fd.setVisible(true);
 
     if (fd.getDirectory() != null && fd.getFile() != null) {
@@ -86,12 +97,14 @@ public class GUFOExportController implements VPActionController {
           !fd.getFile().endsWith(exportFormatExtension)
               ? fd.getFile() + exportFormatExtension
               : fd.getFile();
-      final String output = buffer.lines().collect(Collectors.joining("\n"));
+      final JsonParser parser = new JsonParser();
+      final JsonObject response = parser.parse(responseMessage).getAsJsonObject();
+      final String fileContents = response.get("result").getAsString();
 
-      Files.write(Paths.get(fileDirectory, fileName), output.getBytes());
+      Files.write(Paths.get(fileDirectory, fileName), fileContents.getBytes());
       projectConfigurations.setExportGUFOFolderPath(fileDirectory);
       projectConfigurations.setExportGUFOFilename(fileName);
-      configs.save();
+      configurations.save();
     }
   }
 
@@ -169,6 +182,37 @@ public class GUFOExportController implements VPActionController {
     final Configurations configs = Configurations.getInstance();
     final ProjectConfigurations projectConfigurations = configs.getProjectConfigurations();
 
+    private String getOptionsObjectAsString() {
+      final JsonObject options = new JsonObject();
+      final Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
+
+      boolean createInverses =
+          Boolean.parseBoolean(projectConfigurations.getExportGUFOInverseBox());
+      boolean createObjectProperty =
+          !Boolean.parseBoolean(projectConfigurations.getExportGUFOObjectBox());
+      boolean preAnalysis = Boolean.parseBoolean(projectConfigurations.getExportGUFOAnalysisBox());
+      boolean prefixPackages =
+          Boolean.parseBoolean(projectConfigurations.getExportGUFOPackagesBox());
+
+      options.addProperty("baseIRI", projectConfigurations.getExportGUFOIRI());
+      options.addProperty("format", projectConfigurations.getExportGUFOFormat());
+      options.addProperty("uriFormatBy", projectConfigurations.getExportGUFOURIFormat());
+      options.addProperty("createInverses", createInverses);
+      options.addProperty("createObjectProperty", createObjectProperty);
+      options.addProperty("preAnalysis", preAnalysis);
+      options.addProperty("prefixPackages", prefixPackages);
+      options.add(
+          "customElementMapping",
+          new Gson()
+              .fromJson(projectConfigurations.getExportGUFOElementMapping(), JsonObject.class));
+      options.add(
+          "customPackageMapping",
+          new Gson()
+              .fromJson(projectConfigurations.getExportGUFOPackageMapping(), JsonObject.class));
+
+      return gson.toJson(options);
+    }
+
     @Override
     public void run() {
       while (keepRunning()) {
@@ -178,26 +222,12 @@ public class GUFOExportController implements VPActionController {
             if (!_exportMenuView.getIsOpen()) {
 
               if (_exportMenuView.getIsToExport()) {
+                final String responseMessage =
+                    OntoUMLServerAccessController.requestProjectTransformationToGufo(
+                        Uml2OntoumlTransformer.transformAndSerialize(), getOptionsObjectAsString());
 
-                loading = new ProgressDialog();
-                ApplicationManager.instance().getViewManager().showDialog(loading);
-
-                final BufferedReader gufo =
-                    OntoUMLServerAccessController.transformToGUFO(
-                        ModelElement.generateModel(_exportMenuView.getSavedElements(), true),
-                        projectConfigurations.getExportGUFOIRI(),
-                        projectConfigurations.getExportGUFOFormat(),
-                        projectConfigurations.getExportGUFOURIFormat(),
-                        projectConfigurations.getExportGUFOInverseBox(),
-                        projectConfigurations.getExportGUFOObjectBox(),
-                        projectConfigurations.getExportGUFOAnalysisBox(),
-                        projectConfigurations.getExportGUFOPackagesBox(),
-                        projectConfigurations.getExportGUFOElementMapping(),
-                        projectConfigurations.getExportGUFOPackageMapping(),
-                        loading);
-
-                if (gufo != null) {
-                  saveFile(gufo, projectConfigurations.getExportGUFOFormat());
+                if (responseMessage != null) {
+                  saveFile(responseMessage, projectConfigurations.getExportGUFOFormat());
                   ViewManagerUtils.cleanAndShowMessage("Model exported successfully.");
                   requestMenu.doStop();
                 } else {

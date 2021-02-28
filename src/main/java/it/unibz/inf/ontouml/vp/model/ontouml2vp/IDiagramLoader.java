@@ -39,6 +39,15 @@ public class IDiagramLoader {
     fromDiagram
         .getAllGeneralizationSetViews()
         .forEach(fromGsView -> IGeneralizationSetUIModelLoader.load(toDiagram, fromGsView));
+
+    // For information about auto layout for VP diagrams see the JavaDoc at
+    // https://www.visual-paradigm.com/support/documents/pluginjavadoc/index.html?com/vp/plugin/diagram/LayoutOption.html
+    // For custom options, I could not make the guide below work so far
+    // https://knowhow.visual-paradigm.com/openapi/layout-diagram/
+    // TODO: enable auto-layout after deciding how not to override user modifications
+    //    if (toDiagram.getName() != null && toDiagram.getName().contains("Cluster of")) {
+    //      diagramManager.layout(toDiagram, DiagramManager.LAYOUT_HIERARCHIC);
+    //    }
   }
 
   private static void transferDiagramProperties(Diagram fromDiagram, IDiagramUIModel toDiagram) {

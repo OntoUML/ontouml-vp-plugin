@@ -18,6 +18,7 @@ class TextDeserializerTest {
           + "  \"type\": \"Text\",\n"
           + "  \"x\": 130,\n"
           + "  \"y\": 109,\n"
+          + "  \"value\": \"Hello World!\",\n"
           + "  \"width\": 78,\n"
           + "  \"height\": 42\n"
           + "}";
@@ -48,6 +49,11 @@ class TextDeserializerTest {
   @Test
   void shouldDeserializeY() {
     assertThat(text.getY()).isEqualTo(109);
+  }
+
+  @Test
+  void shouldDeserializeValue() {
+    assertThat(text.getValue()).isEqualTo("Hello World!");
   }
 
   @Test

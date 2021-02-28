@@ -436,7 +436,7 @@ public class Property implements ModelElement {
 
     Stream.of(redefinedProperties)
         .filter(prop -> prop instanceof IAssociationEnd || prop instanceof IAttribute)
-        .forEach(prop -> associationEnd.addRedefinedProperty(prop));
+        .forEach(prop -> associationEnd.addRedefinedProperty((IAssociationEnd) prop));
   }
 
   public static void addSubsettedProperties(
@@ -446,6 +446,6 @@ public class Property implements ModelElement {
 
     Stream.of(subsettedProperties)
         .filter(prop -> prop instanceof IAssociationEnd || prop instanceof IAttribute)
-        .forEach(prop -> associationEnd.addSubsettedProperty(prop));
+        .forEach(prop -> associationEnd.addSubsettedProperty((IAssociationEnd) prop));
   }
 }

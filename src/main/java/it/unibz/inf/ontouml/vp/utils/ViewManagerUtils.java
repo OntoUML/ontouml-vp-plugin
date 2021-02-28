@@ -153,9 +153,11 @@ public class ViewManagerUtils {
     ArrayList<String> idModelElementList = new ArrayList<String>();
 
     try {
-      JsonArray response = (JsonArray) new JsonParser().parse(responseMessage).getAsJsonArray();
+      JsonParser parser = new JsonParser();
+      JsonObject response = parser.parse(responseMessage).getAsJsonObject();
+      JsonArray verificationIssues = (JsonArray) response.getAsJsonArray("result");
 
-      final int errorCount = errorCountInCurrentDiagram(responseMessage);
+      final int errorCount = verificationIssues.isJsonNull() ? 0 : verificationIssues.size();
       final String diagramName = getCurrentClassDiagramName();
 
       verificationDiagramConcludedDialog(errorCount, diagramName);
@@ -164,9 +166,10 @@ public class ViewManagerUtils {
         errorList.add("No issues were found in diagram \"" + diagramName + "\".");
       }
 
-      for (JsonElement elem : response) {
+      for (JsonElement elem : verificationIssues) {
         final JsonObject error = elem.getAsJsonObject();
-        final String id = error.getAsJsonObject("source").get("id").getAsString();
+        final String id =
+            error.getAsJsonObject("data").getAsJsonObject("source").get("id").getAsString();
 
         if (isElementInCurrentDiagram(id)) {
           final StringBuilder errorMessage = new StringBuilder();
@@ -205,8 +208,10 @@ public class ViewManagerUtils {
     ArrayList<String> errorList = new ArrayList<String>();
     ArrayList<String> idModelElementList = new ArrayList<String>();
     try {
-      JsonArray response = (JsonArray) new JsonParser().parse(responseMessage).getAsJsonArray();
-      final int errorCount = response.size();
+      JsonParser parser = new JsonParser();
+      JsonObject response = parser.parse(responseMessage).getAsJsonObject();
+      JsonArray verificationIssues = (JsonArray) response.getAsJsonArray("result");
+      final int errorCount = verificationIssues.isJsonNull() ? 0 : verificationIssues.size();
 
       verificationConcludedDialog(errorCount);
 
@@ -214,9 +219,10 @@ public class ViewManagerUtils {
         errorList.add("No issues were found in your project.");
       }
 
-      for (JsonElement elem : response) {
+      for (JsonElement elem : verificationIssues) {
         final JsonObject error = elem.getAsJsonObject();
-        final String id = error.getAsJsonObject("source").get("id").getAsString();
+        final String id =
+            error.getAsJsonObject("data").getAsJsonObject("source").get("id").getAsString();
 
         final StringBuilder errorMessage = new StringBuilder();
         errorMessage.append(

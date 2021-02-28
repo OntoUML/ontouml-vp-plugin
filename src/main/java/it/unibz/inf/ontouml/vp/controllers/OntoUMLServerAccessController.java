@@ -2,6 +2,7 @@ package it.unibz.inf.ontouml.vp.controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.vp.plugin.view.IDialogHandler;
@@ -29,6 +30,7 @@ public class OntoUMLServerAccessController {
 
   private static final String TRANSFORM_GUFO_SERVICE_ENDPOINT = "/v1/transform/gufo";
   private static final String VERIFICATION_SERVICE_ENDPOINT = "/v1/verify";
+  private static final String MODULARIZATION_SERVICE_ENDPOINT = "/v1/modularize";
   private static final String USER_MESSAGE_BAD_REQUEST =
       "There was a internal plugin error and the verification could not be completed.";
   private static final String USER_MESSAGE_NOT_FOUND = "Unable to reach the server.";
@@ -39,7 +41,7 @@ public class OntoUMLServerAccessController {
       "Error receiving model verification response.";
 
   public static BufferedReader transformToGUFO(
-      String model,
+      String project,
       String baseIRI,
       String format,
       String uriFormatBy,
@@ -70,7 +72,7 @@ public class OntoUMLServerAccessController {
 
     final JsonObject bodyObj = new JsonObject();
     bodyObj.add("options", optionsObj);
-    bodyObj.add("model", new JsonParser().parse(model).getAsJsonObject());
+    bodyObj.add("project", new JsonParser().parse(project).getAsJsonObject());
 
     final GsonBuilder builder = new GsonBuilder();
     final Gson gson = builder.serializeNulls().setPrettyPrinting().create();
@@ -89,7 +91,7 @@ public class OntoUMLServerAccessController {
     loading.shown();
 
     try {
-      final HttpURLConnection request = request(url, body);
+      final HttpURLConnection request = performRequest(url, body);
       final BufferedReader responseReader =
           request.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST
               ? new BufferedReader(new InputStreamReader(request.getInputStream()))
@@ -105,7 +107,7 @@ public class OntoUMLServerAccessController {
             if (ViewManagerUtils.exportToGUFOIssueDialogWithOption(
                 "Server not found.", HttpURLConnection.HTTP_NOT_FOUND))
               return transformToGUFO(
-                  model,
+                  project,
                   baseIRI,
                   format,
                   uriFormatBy,
@@ -139,7 +141,7 @@ public class OntoUMLServerAccessController {
           if (ViewManagerUtils.exportToGUFOIssueDialogWithOption(
               "Server not found.", HttpURLConnection.HTTP_NOT_FOUND))
             return transformToGUFO(
-                model,
+                project,
                 baseIRI,
                 format,
                 uriFormatBy,
@@ -158,7 +160,7 @@ public class OntoUMLServerAccessController {
           if (ViewManagerUtils.exportToGUFOIssueDialogWithOption(
               "Server error.", HttpURLConnection.HTTP_INTERNAL_ERROR))
             return transformToGUFO(
-                model,
+                project,
                 baseIRI,
                 format,
                 uriFormatBy,
@@ -187,86 +189,190 @@ public class OntoUMLServerAccessController {
     return null;
   }
 
-  public static String requestModelVerification(String serializedModel, IDialogHandler loading) {
-    final ProjectConfigurations configurations =
-        Configurations.getInstance().getProjectConfigurations();
-    final String url;
+  private static String getServiceRequestBody(String project) {
+    return "{\"options\": null, \"project\": " + project + "}";
+  }
 
-    if (configurations.isCustomServerEnabled()) {
-      url = configurations.getServerURL() + VERIFICATION_SERVICE_ENDPOINT;
-    } else {
-      url = ProjectConfigurations.DEFAULT_SERVER_URL + VERIFICATION_SERVICE_ENDPOINT;
+  private static String getServiceRequestBody(String project, String options) {
+    return "{\"options\": " + options + ", \"project\": " + project + "}";
+  }
+
+  private static String getModularizationRequestUrl() {
+    final ProjectConfigurations config = Configurations.getInstance().getProjectConfigurations();
+    return config.isCustomServerEnabled()
+        ? config.getServerURL() + MODULARIZATION_SERVICE_ENDPOINT
+        : ProjectConfigurations.DEFAULT_SERVER_URL + MODULARIZATION_SERVICE_ENDPOINT;
+  }
+
+  private static String getVerificationRequestUrl() {
+    final ProjectConfigurations config = Configurations.getInstance().getProjectConfigurations();
+    return config.isCustomServerEnabled()
+        ? config.getServerURL() + VERIFICATION_SERVICE_ENDPOINT
+        : ProjectConfigurations.DEFAULT_SERVER_URL + VERIFICATION_SERVICE_ENDPOINT;
+  }
+
+  private static String getTransformationToGufoRequestUrl() {
+    final ProjectConfigurations config = Configurations.getInstance().getProjectConfigurations();
+    return config.isCustomServerEnabled()
+        ? config.getServerURL() + TRANSFORM_GUFO_SERVICE_ENDPOINT
+        : ProjectConfigurations.DEFAULT_SERVER_URL + TRANSFORM_GUFO_SERVICE_ENDPOINT;
+  }
+
+  private static String extractConnectionResponseBody(HttpURLConnection connection)
+      throws IOException {
+    final BufferedReader reader =
+        connection.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST
+            ? new BufferedReader(new InputStreamReader(connection.getInputStream()))
+            : new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+
+    return reader.lines().parallel().collect(Collectors.joining("\n"));
+  }
+
+  private static String extractResultFromResponse(String serviceResponse) {
+    final JsonElement result =
+        new JsonParser().parse(serviceResponse).getAsJsonObject().get("result");
+    return new GsonBuilder().create().toJson(result);
+  }
+
+  private static String extractResultFromConnectionResponse(HttpURLConnection connection)
+      throws IOException {
+    final String responseBody = extractConnectionResponseBody(connection);
+    return extractResultFromResponse(responseBody);
+  }
+
+  private static boolean hasJsonContentType(HttpURLConnection connection) {
+    return connection.getContentType().contains("application/json");
+  }
+
+  private static String caseVerificationResponseIsOk(HttpURLConnection connection, String project)
+      throws IOException {
+    if (hasJsonContentType(connection)) {
+      return extractConnectionResponseBody(connection);
     }
 
-    loading.shown();
+    final boolean shouldRetry =
+        ViewManagerUtils.verificationFailedDialogWithOption(
+            USER_MESSAGE_NOT_FOUND, HttpURLConnection.HTTP_NOT_FOUND);
+
+    return shouldRetry ? requestModelVerification(project) : null;
+  }
+
+  private static String caseVerificationResponseIsBadRequest(
+      HttpURLConnection connection, String project) throws IOException {
+    ViewManagerUtils.verificationFailedDialog(USER_MESSAGE_BAD_REQUEST);
+    return null;
+  }
+
+  private static String caseVerificationResponseIsNotFound(
+      HttpURLConnection connection, String project) throws IOException {
+    final boolean shouldRetry =
+        ViewManagerUtils.verificationFailedDialogWithOption(
+            USER_MESSAGE_NOT_FOUND, HttpURLConnection.HTTP_NOT_FOUND);
+
+    return shouldRetry ? requestModelVerification(project) : null;
+  }
+
+  private static String caseVerificationResponseIsInternalError(
+      HttpURLConnection connection, String project) throws IOException {
+    final boolean shouldRetry =
+        ViewManagerUtils.verificationFailedDialogWithOption(
+            USER_MESSAGE_INTERNAL_ERROR, HttpURLConnection.HTTP_INTERNAL_ERROR);
+
+    return shouldRetry ? requestModelVerification(project) : null;
+  }
+
+  private static String caseVerificationResponseIsDefault() throws IOException {
+    ViewManagerUtils.verificationFailedDialog(USER_MESSAGE_UNKNOWN_ERROR_RESPONSE);
+    return null;
+  }
+
+  public static String requestProjectModularization(String project) {
+    final String body = getServiceRequestBody(project);
+    final String url = getModularizationRequestUrl();
 
     try {
+      // I'm renaming 'request' to 'connection' in the variable to avoid some confusion
+      final HttpURLConnection connection = performRequest(url, body);
 
-      final HttpURLConnection request = request(url, serializedModel);
-      final StringBuilder response = new StringBuilder();
-      final BufferedReader reader =
-          request.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST
-              ? new BufferedReader(new InputStreamReader(request.getInputStream()))
-              : new BufferedReader(new InputStreamReader(request.getErrorStream()));
-
-      String line = null;
-
-      while ((line = reader.readLine()) != null) {
-        response.append(line.trim());
-      }
-
-      reader.close();
-
-      loading.canClosed();
-
-      switch (request.getResponseCode()) {
+      switch (connection.getResponseCode()) {
         case HttpURLConnection.HTTP_OK:
-          if (!request.getContentType().equals("text/html")) {
-            return response.toString();
-          } else {
-            if (ViewManagerUtils.verificationFailedDialogWithOption(
-                USER_MESSAGE_NOT_FOUND, HttpURLConnection.HTTP_NOT_FOUND))
-              return requestModelVerification(serializedModel, loading);
+          if (hasJsonContentType(connection)) {
+            return extractResultFromConnectionResponse(connection);
           }
         case HttpURLConnection.HTTP_BAD_REQUEST:
-          ViewManagerUtils.verificationFailedDialog(USER_MESSAGE_BAD_REQUEST);
-          return null;
         case HttpURLConnection.HTTP_NOT_FOUND:
-          if (ViewManagerUtils.verificationFailedDialogWithOption(
-              USER_MESSAGE_NOT_FOUND, HttpURLConnection.HTTP_NOT_FOUND))
-            return requestModelVerification(serializedModel, loading);
-
-          return null;
         case HttpURLConnection.HTTP_INTERNAL_ERROR:
-          if (ViewManagerUtils.verificationFailedDialogWithOption(
-              USER_MESSAGE_INTERNAL_ERROR, HttpURLConnection.HTTP_INTERNAL_ERROR))
-            return requestModelVerification(serializedModel, loading);
-
-          return null;
         default:
-          ViewManagerUtils.verificationFailedDialog(USER_MESSAGE_UNKNOWN_ERROR_RESPONSE);
-          return null;
+          System.err.println("Attention! Modularization request was not processed correctly");
+          System.err.println("Status Code: " + connection.getResponseCode());
       }
+    } catch (IOException ioException) {
+      ioException.printStackTrace();
+    }
 
-    } catch (SocketException e) {
-      loading.canClosed();
-      ViewManagerUtils.verificationFailedDialog(USER_MESSAGE_NOT_FOUND);
-      e.printStackTrace();
-    } catch (IOException e) {
-      loading.canClosed();
-      ViewManagerUtils.verificationFailedDialog(USER_MESSAGE_UNKNOWN_ERROR_RESPONSE);
-      e.printStackTrace();
+    return null;
+  }
+
+  public static String requestModelVerification(String project) {
+    final String url = getVerificationRequestUrl();
+    final String body = getServiceRequestBody(project);
+
+    try {
+      final HttpURLConnection connection = performRequest(url, body);
+
+      switch (connection.getResponseCode()) {
+        case HttpURLConnection.HTTP_OK:
+          return caseVerificationResponseIsOk(connection, project);
+        case HttpURLConnection.HTTP_BAD_REQUEST:
+          return caseVerificationResponseIsBadRequest(connection, project);
+        case HttpURLConnection.HTTP_NOT_FOUND:
+          return caseVerificationResponseIsNotFound(connection, project);
+        case HttpURLConnection.HTTP_INTERNAL_ERROR:
+          return caseVerificationResponseIsInternalError(connection, project);
+        default:
+          return caseVerificationResponseIsDefault();
+      }
     } catch (Exception e) {
-      loading.canClosed();
-      ViewManagerUtils.verificationFailedDialog(USER_MESSAGE_UNKNOWN_ERROR_REQUEST);
+      if (e instanceof SocketException)
+        ViewManagerUtils.verificationFailedDialog(USER_MESSAGE_NOT_FOUND);
+      else if (e instanceof IOException)
+        ViewManagerUtils.verificationFailedDialog(USER_MESSAGE_UNKNOWN_ERROR_RESPONSE);
+      else ViewManagerUtils.verificationFailedDialog(USER_MESSAGE_UNKNOWN_ERROR_REQUEST);
+
       e.printStackTrace();
     }
 
     return null;
   }
 
-  private static HttpURLConnection request(String urlString, String body)
-      throws MalformedURLException, IOException {
+  public static String requestProjectTransformationToGufo(String project, String options) {
+    final String body = getServiceRequestBody(project, options);
+    final String url = getTransformationToGufoRequestUrl();
+
+    try {
+      final HttpURLConnection connection = performRequest(url, body);
+
+      switch (connection.getResponseCode()) {
+        case HttpURLConnection.HTTP_OK:
+          if (hasJsonContentType(connection)) {
+            return extractConnectionResponseBody(connection);
+          }
+        case HttpURLConnection.HTTP_BAD_REQUEST:
+        case HttpURLConnection.HTTP_NOT_FOUND:
+        case HttpURLConnection.HTTP_INTERNAL_ERROR:
+        default:
+          System.err.println("Attention! Transformation request was not processed correctly");
+          System.err.println("Status Code: " + connection.getResponseCode());
+      }
+    } catch (IOException ioException) {
+      ioException.printStackTrace();
+    }
+
+    return null;
+  }
+
+  private static HttpURLConnection performRequest(String urlString, String body)
+      throws IOException {
     final URL url = new URL(urlString);
     final HttpURLConnection request = (HttpURLConnection) url.openConnection();
 

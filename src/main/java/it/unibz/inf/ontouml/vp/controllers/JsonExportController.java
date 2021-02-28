@@ -20,12 +20,6 @@ import java.nio.file.Paths;
  */
 public class JsonExportController implements VPActionController {
 
-  //  private ProgressPanel progressPanel;
-  //  private ProgressDialog loading;
-  //  private IDialog mainDialog;
-
-  //  Thread thread;
-
   /**
    * Performs model export in JSON format.
    *
@@ -99,31 +93,4 @@ public class JsonExportController implements VPActionController {
    */
   @Override
   public void update(VPAction action) {}
-
-  //  protected class ProgressDialog implements IDialogHandler {
-  //
-  //    @Override
-  //    public Component getComponent() {
-  //      progressPanel = new ProgressPanel("Building model...");
-  //      return progressPanel;
-  //    }
-  //
-  //    @Override
-  //    public void prepare(IDialog dialog) {
-  //      mainDialog = dialog;
-  //      mainDialog.setTitle("Export to JSON");
-  //      mainDialog.setModal(false);
-  //      mainDialog.setResizable(false);
-  //      dialog.setSize(progressPanel.getWidth(), progressPanel.getHeight() + 20);
-  //      progressPanel.setContainerDialog(mainDialog);
-  //    }
-  //
-  //    @Override
-  //    public void shown() {}
-  //
-  //    @Override
-  //    public boolean canClosed() {
-  //      return false;
-  //    }
-  //  }
 }
