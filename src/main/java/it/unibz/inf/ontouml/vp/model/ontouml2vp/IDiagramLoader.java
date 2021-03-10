@@ -4,16 +4,19 @@ import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.DiagramManager;
 import com.vp.plugin.diagram.IClassDiagramUIModel;
 import com.vp.plugin.diagram.IDiagramUIModel;
+import com.vp.plugin.diagram.shape.IClassUIModel;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IProject;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Diagram;
+import java.util.stream.Stream;
 
 public class IDiagramLoader {
 
   static IProject vpProject = ApplicationManager.instance().getProjectManager().getProject();
   static DiagramManager diagramManager = ApplicationManager.instance().getDiagramManager();
 
-  public static void load(Diagram fromDiagram) {
+  public static void load(Diagram fromDiagram, boolean shouldOverride, boolean shouldAutoLayout) {
+    if (!shouldOverride && vpDiagramExists(fromDiagram)) return;
 
     IClassDiagramUIModel toDiagram = createIDiagram(fromDiagram);
     transferDiagramProperties(fromDiagram, toDiagram);
@@ -44,10 +47,13 @@ public class IDiagramLoader {
     // https://www.visual-paradigm.com/support/documents/pluginjavadoc/index.html?com/vp/plugin/diagram/LayoutOption.html
     // For custom options, I could not make the guide below work so far
     // https://knowhow.visual-paradigm.com/openapi/layout-diagram/
-    // TODO: enable auto-layout after deciding how not to override user modifications
-    //    if (toDiagram.getName() != null && toDiagram.getName().contains("Cluster of")) {
-    //      diagramManager.layout(toDiagram, DiagramManager.LAYOUT_HIERARCHIC);
-    //    }
+    if (shouldAutoLayout) {
+      Stream.of(toDiagram.toDiagramElementArray())
+          .filter(IClassUIModel.class::isInstance)
+          .map(IClassUIModel.class::cast)
+          .forEach(ele -> ele.fitSize());
+      diagramManager.layout(toDiagram, DiagramManager.LAYOUT_ORTHOGONAL);
+    }
   }
 
   private static void transferDiagramProperties(Diagram fromDiagram, IDiagramUIModel toDiagram) {
@@ -76,5 +82,9 @@ public class IDiagramLoader {
     fromDiagram.setId(toDiagram.getId());
 
     return toDiagram;
+  }
+
+  private static boolean vpDiagramExists(Diagram fromDiagram) {
+    return vpProject.getDiagramById(fromDiagram.getId()) != null;
   }
 }

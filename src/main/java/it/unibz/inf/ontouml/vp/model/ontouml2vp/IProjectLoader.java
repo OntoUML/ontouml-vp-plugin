@@ -14,10 +14,18 @@ public class IProjectLoader {
 
   static IProject vpProject = ApplicationManager.instance().getProjectManager().getProject();
 
-  public static void load(Project project, boolean diagramsOnly) {
-    if (!diagramsOnly) importModel(project);
-
-    project.getDiagrams().forEach(diagram -> IDiagramLoader.load(diagram));
+  public static void load(
+      Project project, boolean shouldOverrideDiagrams, boolean shouldAutoLayoutDiagrams) {
+    System.out.println("Loading model of project " + project.getId() + "...");
+    importModel(project);
+    System.out.println("Model loaded!");
+    System.out.println("Loading diagrams of project " + project.getId() + "...");
+    project
+        .getDiagrams()
+        .forEach(
+            diagram ->
+                IDiagramLoader.load(diagram, shouldOverrideDiagrams, shouldAutoLayoutDiagrams));
+    System.out.println("Diagrams loaded!");
   }
 
   public static void importModel(Project fromProject) {
