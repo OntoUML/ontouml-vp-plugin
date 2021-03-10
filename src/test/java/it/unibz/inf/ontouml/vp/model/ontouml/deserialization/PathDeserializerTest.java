@@ -2,10 +2,10 @@ package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Path;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Point;
+import java.io.IOException;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +17,7 @@ class PathDeserializerTest {
   String json;
 
   @Test
-  void shouldDeserializeId() throws JsonProcessingException {
+  void shouldDeserializeId() throws IOException {
     json = "{\"id\": \"1\", \"type\": \"Path\"}";
     path = mapper.readValue(json, Path.class);
 
@@ -25,7 +25,7 @@ class PathDeserializerTest {
   }
 
   @Test
-  void shouldDeserializePointWithDoubleCoordinates() throws JsonProcessingException {
+  void shouldDeserializePointWithDoubleCoordinates() throws IOException {
     json =
         "{\"id\": \"1\","
             + "\"type\": \"Path\","
@@ -43,7 +43,7 @@ class PathDeserializerTest {
   }
 
   @Test
-  void shouldDeserializePointWithIntegerCoordinates() throws JsonProcessingException {
+  void shouldDeserializePointWithIntegerCoordinates() throws IOException {
     json =
         "{\"id\": \"1\","
             + "\"type\": \"Path\","
@@ -61,7 +61,7 @@ class PathDeserializerTest {
   }
 
   @Test
-  void shouldDeserializeMultiplePoints() throws JsonProcessingException {
+  void shouldDeserializeMultiplePoints() throws IOException {
     json =
         "{\"id\": \"1\","
             + "\"type\": \"Path\","

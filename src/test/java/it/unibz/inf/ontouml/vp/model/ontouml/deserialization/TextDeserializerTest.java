@@ -2,9 +2,9 @@ package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Text;
+import java.io.IOException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -24,12 +24,12 @@ class TextDeserializerTest {
           + "}";
 
   @BeforeAll
-  static void beforeAll() throws JsonProcessingException {
+  static void beforeAll() throws IOException {
     text = mapper.readValue(json, Text.class);
   }
 
   @Test
-  void shouldDeserializeReference() throws JsonProcessingException {
+  void shouldDeserializeReference() throws IOException {
     String json = "{\"id\": \"t1\", \"type\": \"Text\"}";
     Text text = mapper.readValue(json, Text.class);
 

@@ -3,11 +3,11 @@ package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth8.assertThat;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Generalization;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.GeneralizationSet;
+import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -42,7 +42,7 @@ class GeneralizationSetDeserializerTest {
   GeneralizationSet gs;
 
   @BeforeEach
-  void setUp() throws JsonProcessingException {
+  void setUp() throws IOException {
     mapper = new ObjectMapper();
     gs = mapper.readValue(json, GeneralizationSet.class);
   }
@@ -53,7 +53,7 @@ class GeneralizationSetDeserializerTest {
   }
 
   @Test
-  void shouldDeserializeReference() throws JsonProcessingException {
+  void shouldDeserializeReference() throws IOException {
     String json = "{\"id\": \"gs1\", \"type\": \"GeneralizationSet\"}";
     GeneralizationSet gs = mapper.readValue(json, GeneralizationSet.class);
     assertThat(gs.getId()).isEqualTo("gs1");

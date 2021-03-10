@@ -3,12 +3,12 @@ package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth8.assertThat;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.AggregationKind;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Property;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.PropertyStereotype;
+import java.io.IOException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -45,13 +45,13 @@ class PropertyDeserializerTest {
   static Property property;
 
   @BeforeAll
-  static void setUp() throws JsonProcessingException {
+  static void setUp() throws IOException {
     mapper = new ObjectMapper();
     property = mapper.readValue(json, Property.class);
   }
 
   @Test
-  void shouldDeserializeReference() throws JsonProcessingException {
+  void shouldDeserializeReference() throws IOException {
     String jsonReference = "{ \"id\": \"p1\", \"type\":\"Property\"}";
     Property reference = mapper.readValue(jsonReference, Property.class);
 
@@ -114,7 +114,7 @@ class PropertyDeserializerTest {
   }
 
   @Test
-  void shouldDeserializeOntoumlStereotype() throws JsonProcessingException {
+  void shouldDeserializeOntoumlStereotype() throws IOException {
     String json =
         "{\n"
             + "  \"id\": \"p1\",\n"
@@ -128,7 +128,7 @@ class PropertyDeserializerTest {
   }
 
   @Test
-  void shouldDeserializeCustomStereotype() throws JsonProcessingException {
+  void shouldDeserializeCustomStereotype() throws IOException {
     String json =
         "{\n"
             + "  \"id\": \"p1\",\n"

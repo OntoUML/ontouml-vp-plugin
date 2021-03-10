@@ -3,10 +3,10 @@ package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth8.assertThat;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.*;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
+import java.io.IOException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -71,13 +71,13 @@ class RelationDeserializerTest {
   static Relation relation;
 
   @BeforeAll
-  static void setUp() throws JsonProcessingException {
+  static void setUp() throws IOException {
     mapper = new ObjectMapper();
     relation = mapper.readValue(json, Relation.class);
   }
 
   @Test
-  void shouldDeserializeReference() throws JsonProcessingException {
+  void shouldDeserializeReference() throws IOException {
     String jsonReference = "{ \"id\": \"r1\", \"type\":\"Relation\"}";
     Relation relation = mapper.readValue(jsonReference, Relation.class);
 
@@ -149,7 +149,7 @@ class RelationDeserializerTest {
   }
 
   @Test
-  void shouldDeserializeOntoumlStereotype() throws JsonProcessingException {
+  void shouldDeserializeOntoumlStereotype() throws IOException {
     String json =
         "{\n"
             + "  \"id\": \"r1\",\n"
@@ -163,7 +163,7 @@ class RelationDeserializerTest {
   }
 
   @Test
-  void shouldDeserializeCustomStereotype() throws JsonProcessingException {
+  void shouldDeserializeCustomStereotype() throws IOException {
     String json =
         "{\n"
             + "  \"id\": \"r1\",\n"

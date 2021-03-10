@@ -2,10 +2,10 @@ package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.GeneralizationSetView;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Text;
+import java.io.IOException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -34,13 +34,13 @@ class GeneralizationSetViewDeserializerTest {
   static Text shape;
 
   @BeforeAll
-  static void beforeAll() throws JsonProcessingException {
+  static void beforeAll() throws IOException {
     view = mapper.readValue(json, GeneralizationSetView.class);
     shape = view.getShape();
   }
 
   @Test
-  void shouldDeserializeReference() throws JsonProcessingException {
+  void shouldDeserializeReference() throws IOException {
     String json = "{\"id\": \"1\", \"type\": \"GeneralizationSetView\"}";
     GeneralizationSetView view = mapper.readValue(json, GeneralizationSetView.class);
 

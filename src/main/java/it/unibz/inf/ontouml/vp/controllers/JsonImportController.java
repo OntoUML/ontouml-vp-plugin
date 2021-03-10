@@ -58,7 +58,7 @@ public class JsonImportController implements VPActionController {
         if (!fileName.endsWith(".json")) fileName += ".json";
 
         String json = Files.readString(Paths.get(fileDirectory, fileName));
-        Ontouml2UmlLoader.deserializeAndLoad(json, false);
+        Ontouml2UmlLoader.deserializeAndLoad(json, false, false);
         //        projectConfigurations.setExportFolderPath(fileDirectory);
         //        projectConfigurations.setExportFilename(fileName);
         //        configs.save();

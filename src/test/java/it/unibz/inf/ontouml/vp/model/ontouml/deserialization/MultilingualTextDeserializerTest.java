@@ -3,15 +3,15 @@ package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth8.assertThat;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unibz.inf.ontouml.vp.model.ontouml.MultilingualText;
+import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
 class MultilingualTextDeserializerTest {
 
   @Test
-  void deserializeObject() throws JsonProcessingException {
+  void deserializeObject() throws IOException {
     ObjectMapper mapper = new ObjectMapper();
 
     String json = "{\"en\":\"My Project\", \"pt\": \"Meu Projeto\" }";
@@ -23,7 +23,7 @@ class MultilingualTextDeserializerTest {
   }
 
   @Test
-  void deserializeString() throws JsonProcessingException {
+  void deserializeString() throws IOException {
     ObjectMapper mapper = new ObjectMapper();
 
     String json = "\"My Project\"";
@@ -34,7 +34,7 @@ class MultilingualTextDeserializerTest {
   }
 
   @Test
-  void deserializeNull() throws JsonProcessingException {
+  void deserializeNull() throws IOException {
     ObjectMapper mapper = new ObjectMapper();
 
     String json = "null";

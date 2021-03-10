@@ -3,7 +3,6 @@ package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth8.assertThat;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.truth.Truth8;
 import it.unibz.inf.ontouml.vp.model.ontouml.Project;
@@ -12,13 +11,14 @@ import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.ClassView;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.GeneralizationView;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.RelationView;
+import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
 public class ReferenceResolverTest {
   ObjectMapper mapper = new ObjectMapper();
 
   @Test
-  void shouldResolvePropertyTypeReferences() throws JsonProcessingException {
+  void shouldResolvePropertyTypeReferences() throws IOException {
     String json =
         "{\n"
             + "  \"type\": \"Project\",\n"
@@ -55,7 +55,7 @@ public class ReferenceResolverTest {
   }
 
   @Test
-  void shouldResolveSubsettingRedefiningReferences() throws JsonProcessingException {
+  void shouldResolveSubsettingRedefiningReferences() throws IOException {
     String json =
         "{\n"
             + "  \"type\": \"Project\",\n"
@@ -103,7 +103,7 @@ public class ReferenceResolverTest {
   }
 
   @Test
-  void shouldResolveGeneralSpecificReferences() throws JsonProcessingException {
+  void shouldResolveGeneralSpecificReferences() throws IOException {
     String json =
         "{\n"
             + "  \"id\": \"pj1\",\n"
@@ -154,7 +154,7 @@ public class ReferenceResolverTest {
   }
 
   @Test
-  void shouldResolveCategorizerReference() throws JsonProcessingException {
+  void shouldResolveCategorizerReference() throws IOException {
     String json =
         "{\n"
             + "  \"id\": \"pr1\",\n"
@@ -185,7 +185,7 @@ public class ReferenceResolverTest {
   }
 
   @Test
-  void shouldResolveGeneralizationsReferences() throws JsonProcessingException {
+  void shouldResolveGeneralizationsReferences() throws IOException {
     String json =
         "{\n"
             + "  \"id\": \"pr1\",\n"
@@ -236,7 +236,7 @@ public class ReferenceResolverTest {
   }
 
   @Test
-  void shouldResolveClassViewReference() throws JsonProcessingException {
+  void shouldResolveClassViewReference() throws IOException {
     String json =
         "{\n"
             + "  \"id\": \"pj1\",\n"
@@ -270,7 +270,7 @@ public class ReferenceResolverTest {
   }
 
   @Test
-  void shouldResolveRelationViewReferences() throws JsonProcessingException {
+  void shouldResolveRelationViewReferences() throws IOException {
     String json =
         "{\n"
             + "  \"id\": \"pj1\",\n"
@@ -322,7 +322,7 @@ public class ReferenceResolverTest {
   }
 
   @Test
-  void shouldResolveGeneralizationViewReferences() throws JsonProcessingException {
+  void shouldResolveGeneralizationViewReferences() throws IOException {
     String json =
         "{\n"
             + "  \"id\": \"pj1\",\n"

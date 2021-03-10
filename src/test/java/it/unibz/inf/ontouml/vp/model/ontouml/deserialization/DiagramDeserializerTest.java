@@ -3,11 +3,11 @@ package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth8.assertThat;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.ClassView;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Diagram;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Rectangle;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeAll;
@@ -132,7 +132,7 @@ class DiagramDeserializerTest {
   static Diagram diagram;
 
   @BeforeAll
-  static void beforeAll() throws JsonProcessingException {
+  static void beforeAll() throws IOException {
     mapper = new ObjectMapper();
     diagram = mapper.readValue(json, Diagram.class);
   }

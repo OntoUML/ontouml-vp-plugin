@@ -3,12 +3,11 @@ package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth8.assertThat;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import it.unibz.inf.ontouml.vp.model.ontouml.*;
-import it.unibz.inf.ontouml.vp.model.ontouml.model.*;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Package;
+import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
@@ -45,7 +44,7 @@ class ProjectDeserializerTest {
   static Project project;
 
   @BeforeAll
-  static void setUp() throws JsonProcessingException {
+  static void setUp() throws IOException {
     mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
     project = mapper.readValue(json, Project.class);
   }

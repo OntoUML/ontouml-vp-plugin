@@ -3,10 +3,13 @@ package it.unibz.inf.ontouml.vp.model.ontouml.deserialization;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth8.assertThat;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.unibz.inf.ontouml.vp.model.ontouml.model.*;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.ClassStereotype;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Literal;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Nature;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Property;
+import java.io.IOException;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -83,13 +86,13 @@ class ClassDeserializerTest {
   static Class clazz;
 
   @BeforeAll
-  static void setUp() throws JsonProcessingException {
+  static void setUp() throws IOException {
     mapper = new ObjectMapper();
     clazz = mapper.readValue(json, Class.class);
   }
 
   @Test
-  void shouldDeserializeReference() throws JsonProcessingException {
+  void shouldDeserializeReference() throws IOException {
     String jsonReference = "{ \"id\": \"c1\", \"type\":\"Class\"}";
     Class clazz = mapper.readValue(jsonReference, Class.class);
 
@@ -185,7 +188,7 @@ class ClassDeserializerTest {
   }
 
   @Test
-  void shouldDeserializeOntoumlStereotype() throws JsonProcessingException {
+  void shouldDeserializeOntoumlStereotype() throws IOException {
     String json =
         "{\n"
             + "  \"id\": \"c1\",\n"
@@ -199,7 +202,7 @@ class ClassDeserializerTest {
   }
 
   @Test
-  void shouldDeserializeCustomStereotype() throws JsonProcessingException {
+  void shouldDeserializeCustomStereotype() throws IOException {
     String json =
         "{\n"
             + "  \"id\": \"c1\",\n"
