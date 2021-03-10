@@ -5,14 +5,14 @@ import it.unibz.inf.ontouml.vp.views.IssueLogMenu;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
+import java.util.List;
 import javax.swing.*;
 
 public final class IssueLogMenuListener extends MouseAdapter {
-  private ArrayList<String> idModelElementList;
+  private List<String> idModelElementList;
   private JList<Object> messageList;
 
-  public IssueLogMenuListener(ArrayList<String> list, JList<Object> messages) {
+  public IssueLogMenuListener(List<String> list, JList<Object> messages) {
     super();
     idModelElementList = list;
     messageList = messages;

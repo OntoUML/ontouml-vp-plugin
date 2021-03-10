@@ -14,6 +14,8 @@ import it.unibz.inf.ontouml.vp.listeners.IssueLogMenuListener;
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.GitHubRelease;
 import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
+import it.unibz.inf.ontouml.vp.model.ServiceIssue;
+import it.unibz.inf.ontouml.vp.model.VerificationServiceResult;
 import it.unibz.inf.ontouml.vp.views.HTMLEnabledMessage;
 import java.io.File;
 import java.net.HttpURLConnection;
@@ -204,55 +206,38 @@ public class ViewManagerUtils {
     }
   }
 
-  public static void logVerificationResponse(String responseMessage) {
-    ArrayList<String> errorList = new ArrayList<String>();
-    ArrayList<String> idModelElementList = new ArrayList<String>();
-    try {
-      JsonParser parser = new JsonParser();
-      JsonObject response = parser.parse(responseMessage).getAsJsonObject();
-      JsonArray verificationIssues = (JsonArray) response.getAsJsonArray("result");
-      final int errorCount = verificationIssues.isJsonNull() ? 0 : verificationIssues.size();
+  public static void logVerificationResult(VerificationServiceResult result) {
+    final List<ServiceIssue> verificationIssues =
+        result != null ? result.getResult() : new ArrayList<>();
+    final List<String> issuesList = new ArrayList<String>();
+    final List<String> ontoumlElementIdList = new ArrayList<String>();
+    final int errorCount = verificationIssues.size();
 
-      verificationConcludedDialog(errorCount);
-
-      if (errorCount == 0) {
-        errorList.add("No issues were found in your project.");
-      }
-
-      for (JsonElement elem : verificationIssues) {
-        final JsonObject error = elem.getAsJsonObject();
-        final String id =
-            error.getAsJsonObject("data").getAsJsonObject("source").get("id").getAsString();
-
-        final StringBuilder errorMessage = new StringBuilder();
-        errorMessage.append(
-            !error.get("severity").isJsonNull()
-                ? error.get("severity").getAsString().toUpperCase()
-                : "");
-        errorMessage.append(": ");
-        errorMessage.append(
-            !error.get("title").isJsonNull() ? error.get("title").getAsString() : "");
-        errorMessage.append(" ");
-        errorMessage.append(
-            !error.get("description").isJsonNull() ? error.get("description").getAsString() : "");
-
-        errorList.add(timestamp() + errorMessage.toString());
-        idModelElementList.add(id);
-      }
-
-      JList<Object> list = new JList<>(errorList.toArray());
-      IssueLogMenuListener listener = new IssueLogMenuListener(idModelElementList, list);
-      list.addMouseListener(listener);
-      list.addMouseMotionListener(listener);
-
-      JScrollPane parentContainer = new JScrollPane(list);
-      ApplicationManager.instance()
-          .getViewManager()
-          .showMessagePaneComponent(OntoUMLPlugin.PLUGIN_ID, SCOPE_PLUGIN, parentContainer);
-
-    } catch (JsonSyntaxException e) {
-      verificationServerErrorDialog(responseMessage);
+    if (errorCount == 0) {
+      issuesList.add("No issues were found in your project.");
     }
+
+    for (ServiceIssue issue : verificationIssues) {
+      final String message =
+          timestamp()
+              + issue.getSeverity().toUpperCase()
+              + ": "
+              + issue.getTitle()
+              + " "
+              + issue.getDescription();
+      issuesList.add(message);
+      ontoumlElementIdList.add(issue.getSource().getId());
+    }
+
+    JList<Object> list = new JList<>(issuesList.toArray());
+    IssueLogMenuListener listener = new IssueLogMenuListener(ontoumlElementIdList, list);
+    list.addMouseListener(listener);
+    list.addMouseMotionListener(listener);
+
+    JScrollPane parentContainer = new JScrollPane(list);
+    ApplicationManager.instance()
+        .getViewManager()
+        .showMessagePaneComponent(OntoUMLPlugin.PLUGIN_ID, SCOPE_PLUGIN, parentContainer);
   }
 
   private static void verificationServerErrorDialog(String userMessage) {

@@ -1,13 +1,17 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.vp.plugin.view.IDialogHandler;
 import it.unibz.inf.ontouml.vp.model.Configurations;
+import it.unibz.inf.ontouml.vp.model.GufoTransformationServiceResult;
+import it.unibz.inf.ontouml.vp.model.ModularizationServiceResult;
 import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
+import it.unibz.inf.ontouml.vp.model.ServiceResult;
+import it.unibz.inf.ontouml.vp.model.VerificationServiceResult;
 import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -218,36 +222,26 @@ public class OntoUMLServerAccessController {
         : ProjectConfigurations.DEFAULT_SERVER_URL + TRANSFORM_GUFO_SERVICE_ENDPOINT;
   }
 
-  private static String extractConnectionResponseBody(HttpURLConnection connection)
-      throws IOException {
+  private static <T extends ServiceResult<?>> T parseResponse(
+      HttpURLConnection connection, Class<T> _class) throws IOException {
+    if (connection.getResponseCode() >= HttpURLConnection.HTTP_BAD_REQUEST) {
+      return null;
+    }
+
     final BufferedReader reader =
-        connection.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST
-            ? new BufferedReader(new InputStreamReader(connection.getInputStream()))
-            : new BufferedReader(new InputStreamReader(connection.getErrorStream()));
-
-    return reader.lines().parallel().collect(Collectors.joining("\n"));
-  }
-
-  private static String extractResultFromResponse(String serviceResponse) {
-    final JsonElement result =
-        new JsonParser().parse(serviceResponse).getAsJsonObject().get("result");
-    return new GsonBuilder().create().toJson(result);
-  }
-
-  private static String extractResultFromConnectionResponse(HttpURLConnection connection)
-      throws IOException {
-    final String responseBody = extractConnectionResponseBody(connection);
-    return extractResultFromResponse(responseBody);
+        new BufferedReader(new InputStreamReader(connection.getInputStream()));
+    final String json = reader.lines().parallel().collect(Collectors.joining("\n"));
+    return new ObjectMapper().readValue(json, _class);
   }
 
   private static boolean hasJsonContentType(HttpURLConnection connection) {
     return connection.getContentType().contains("application/json");
   }
 
-  private static String caseVerificationResponseIsOk(HttpURLConnection connection, String project)
-      throws IOException {
+  private static VerificationServiceResult caseVerificationResponseIsOk(
+      HttpURLConnection connection, String project) throws IOException {
     if (hasJsonContentType(connection)) {
-      return extractConnectionResponseBody(connection);
+      return parseResponse(connection, VerificationServiceResult.class);
     }
 
     final boolean shouldRetry =
@@ -256,7 +250,7 @@ public class OntoUMLServerAccessController {
 
     return shouldRetry ? requestModelVerification(project) : null;
   }
-
+  /*
   private static String caseVerificationResponseIsBadRequest(
       HttpURLConnection connection, String project) throws IOException {
     ViewManagerUtils.verificationFailedDialog(USER_MESSAGE_BAD_REQUEST);
@@ -285,19 +279,19 @@ public class OntoUMLServerAccessController {
     ViewManagerUtils.verificationFailedDialog(USER_MESSAGE_UNKNOWN_ERROR_RESPONSE);
     return null;
   }
+  */
 
-  public static String requestProjectModularization(String project) {
+  public static ModularizationServiceResult requestProjectModularization(String project) {
     final String body = getServiceRequestBody(project);
     final String url = getModularizationRequestUrl();
 
     try {
-      // I'm renaming 'request' to 'connection' in the variable to avoid some confusion
       final HttpURLConnection connection = performRequest(url, body);
 
       switch (connection.getResponseCode()) {
         case HttpURLConnection.HTTP_OK:
           if (hasJsonContentType(connection)) {
-            return extractResultFromConnectionResponse(connection);
+            return parseResponse(connection, ModularizationServiceResult.class);
           }
         case HttpURLConnection.HTTP_BAD_REQUEST:
         case HttpURLConnection.HTTP_NOT_FOUND:
@@ -313,7 +307,7 @@ public class OntoUMLServerAccessController {
     return null;
   }
 
-  public static String requestModelVerification(String project) {
+  public static VerificationServiceResult requestModelVerification(String project) {
     final String url = getVerificationRequestUrl();
     final String body = getServiceRequestBody(project);
 
@@ -324,13 +318,17 @@ public class OntoUMLServerAccessController {
         case HttpURLConnection.HTTP_OK:
           return caseVerificationResponseIsOk(connection, project);
         case HttpURLConnection.HTTP_BAD_REQUEST:
-          return caseVerificationResponseIsBadRequest(connection, project);
+          // TODO: update
+          //          return caseVerificationResponseIsBadRequest(connection, project);
         case HttpURLConnection.HTTP_NOT_FOUND:
-          return caseVerificationResponseIsNotFound(connection, project);
+          // TODO: update
+          //          return caseVerificationResponseIsNotFound(connection, project);
         case HttpURLConnection.HTTP_INTERNAL_ERROR:
-          return caseVerificationResponseIsInternalError(connection, project);
+          // TODO: update
+          //          return caseVerificationResponseIsInternalError(connection, project);
         default:
-          return caseVerificationResponseIsDefault();
+          // TODO: update
+          //          return caseVerificationResponseIsDefault();
       }
     } catch (Exception e) {
       if (e instanceof SocketException)
@@ -345,7 +343,8 @@ public class OntoUMLServerAccessController {
     return null;
   }
 
-  public static String requestProjectTransformationToGufo(String project, String options) {
+  public static GufoTransformationServiceResult requestProjectTransformationToGufo(
+      String project, String options) {
     final String body = getServiceRequestBody(project, options);
     final String url = getTransformationToGufoRequestUrl();
 
@@ -355,7 +354,7 @@ public class OntoUMLServerAccessController {
       switch (connection.getResponseCode()) {
         case HttpURLConnection.HTTP_OK:
           if (hasJsonContentType(connection)) {
-            return extractConnectionResponseBody(connection);
+            return parseResponse(connection, GufoTransformationServiceResult.class);
           }
         case HttpURLConnection.HTTP_BAD_REQUEST:
         case HttpURLConnection.HTTP_NOT_FOUND:

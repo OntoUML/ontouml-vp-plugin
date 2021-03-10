@@ -3,7 +3,6 @@ package it.unibz.inf.ontouml.vp.controllers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
@@ -11,6 +10,7 @@ import com.vp.plugin.view.IDialog;
 import com.vp.plugin.view.IDialogHandler;
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 import it.unibz.inf.ontouml.vp.model.Configurations;
+import it.unibz.inf.ontouml.vp.model.GufoTransformationServiceResult;
 import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
 import it.unibz.inf.ontouml.vp.model.ServerRequest;
 import it.unibz.inf.ontouml.vp.model.vp2ontouml.Uml2OntoumlTransformer;
@@ -82,7 +82,7 @@ public class GUFOExportController implements VPActionController {
     return fileDialog;
   }
 
-  private void saveFile(String responseMessage, String exportFormat) throws IOException {
+  private void saveFile(String gufoFile, String exportFormat) throws IOException {
     final Configurations configurations = Configurations.getInstance();
     final ProjectConfigurations projectConfigurations = configurations.getProjectConfigurations();
     final String exportFormatExtension = !"Turtle".equals(exportFormat) ? ".nt" : ".ttl";
@@ -97,11 +97,8 @@ public class GUFOExportController implements VPActionController {
           !fd.getFile().endsWith(exportFormatExtension)
               ? fd.getFile() + exportFormatExtension
               : fd.getFile();
-      final JsonParser parser = new JsonParser();
-      final JsonObject response = parser.parse(responseMessage).getAsJsonObject();
-      final String fileContents = response.get("result").getAsString();
 
-      Files.write(Paths.get(fileDirectory, fileName), fileContents.getBytes());
+      Files.write(Paths.get(fileDirectory, fileName), gufoFile.getBytes());
       projectConfigurations.setExportGUFOFolderPath(fileDirectory);
       projectConfigurations.setExportGUFOFilename(fileName);
       configurations.save();
@@ -222,12 +219,14 @@ public class GUFOExportController implements VPActionController {
             if (!_exportMenuView.getIsOpen()) {
 
               if (_exportMenuView.getIsToExport()) {
-                final String responseMessage =
+                final String project = Uml2OntoumlTransformer.transformAndSerialize();
+                final GufoTransformationServiceResult result =
                     OntoUMLServerAccessController.requestProjectTransformationToGufo(
-                        Uml2OntoumlTransformer.transformAndSerialize(), getOptionsObjectAsString());
+                        project, getOptionsObjectAsString());
+                final String gufoFile = result.getResult();
 
-                if (responseMessage != null) {
-                  saveFile(responseMessage, projectConfigurations.getExportGUFOFormat());
+                if (gufoFile != null) {
+                  saveFile(gufoFile, projectConfigurations.getExportGUFOFormat());
                   ViewManagerUtils.cleanAndShowMessage("Model exported successfully.");
                   requestMenu.doStop();
                 } else {
