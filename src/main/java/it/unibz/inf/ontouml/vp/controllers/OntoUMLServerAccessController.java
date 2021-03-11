@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.net.URL;
 import java.util.stream.Collectors;
+import org.apache.poi.ss.formula.functions.T;
 
 /**
  * Class responsible for making requests to the OntoUML Server based on standard end points and
@@ -227,6 +228,10 @@ public class OntoUMLServerAccessController {
       return null;
     }
 
+    if (!hasJsonContentType(connection)) {
+      throw new IOException(USER_MESSAGE_UNKNOWN_ERROR_RESPONSE);
+    }
+
     final BufferedReader reader =
         new BufferedReader(new InputStreamReader(connection.getInputStream()));
     final String json = reader.lines().parallel().collect(Collectors.joining("\n"));
@@ -237,86 +242,31 @@ public class OntoUMLServerAccessController {
     return connection.getContentType().contains("application/json");
   }
 
-  private static VerificationServiceResult caseVerificationResponseIsOk(
-      HttpURLConnection connection, String project) throws IOException {
-    if (hasJsonContentType(connection)) {
-      return parseResponse(connection, VerificationServiceResult.class);
-    }
-
-    final boolean shouldRetry =
-        ViewManagerUtils.verificationFailedDialogWithOption(
-            USER_MESSAGE_NOT_FOUND, HttpURLConnection.HTTP_NOT_FOUND);
-
-    return shouldRetry ? requestModelVerification(project) : null;
-  }
-  /*
-  private static String caseVerificationResponseIsBadRequest(
-      HttpURLConnection connection, String project) throws IOException {
-    ViewManagerUtils.verificationFailedDialog(USER_MESSAGE_BAD_REQUEST);
-    return null;
-  }
-
-  private static String caseVerificationResponseIsNotFound(
-      HttpURLConnection connection, String project) throws IOException {
-    final boolean shouldRetry =
-        ViewManagerUtils.verificationFailedDialogWithOption(
-            USER_MESSAGE_NOT_FOUND, HttpURLConnection.HTTP_NOT_FOUND);
-
-    return shouldRetry ? requestModelVerification(project) : null;
-  }
-
-  private static String caseVerificationResponseIsInternalError(
-      HttpURLConnection connection, String project) throws IOException {
-    final boolean shouldRetry =
-        ViewManagerUtils.verificationFailedDialogWithOption(
-            USER_MESSAGE_INTERNAL_ERROR, HttpURLConnection.HTTP_INTERNAL_ERROR);
-
-    return shouldRetry ? requestModelVerification(project) : null;
-  }
-
-  private static String caseVerificationResponseIsDefault() throws IOException {
-    ViewManagerUtils.verificationFailedDialog(USER_MESSAGE_UNKNOWN_ERROR_RESPONSE);
-    return null;
-  }
-  */
-
-  public static ModularizationServiceResult requestProjectModularization(String project) {
+  public static ModularizationServiceResult requestProjectModularization(String project)
+      throws IOException {
     final String body = getServiceRequestBody(project);
     final String url = getModularizationRequestUrl();
+    final HttpURLConnection connection = request(url, body);
 
-    try {
-      final HttpURLConnection connection = performRequest(url, body);
-
-      switch (connection.getResponseCode()) {
-        case HttpURLConnection.HTTP_OK:
-          if (hasJsonContentType(connection)) {
-            return parseResponse(connection, ModularizationServiceResult.class);
-          }
-        case HttpURLConnection.HTTP_BAD_REQUEST:
-        case HttpURLConnection.HTTP_NOT_FOUND:
-        case HttpURLConnection.HTTP_INTERNAL_ERROR:
-        default:
-          System.err.println("Attention! Modularization request was not processed correctly");
-          System.err.println("Status Code: " + connection.getResponseCode());
-      }
-    } catch (IOException ioException) {
-      ioException.printStackTrace();
-    }
-
-    return null;
+    return parseResponse(connection, ModularizationServiceResult.class);
   }
 
   public static VerificationServiceResult requestModelVerification(String project)
       throws IOException {
-    try {
-      final String url = getVerificationRequestUrl();
-      final String body = getServiceRequestBody(project);
+    final String url = getVerificationRequestUrl();
+    final String body = getServiceRequestBody(project);
+    final HttpURLConnection connection = request(url, body);
 
+    return parseResponse(connection, VerificationServiceResult.class);
+  }
+
+  private static HttpURLConnection request(String url, String body) throws IOException {
+    try {
       final HttpURLConnection connection = performRequest(url, body);
 
       switch (connection.getResponseCode()) {
         case HttpURLConnection.HTTP_OK:
-          return caseVerificationResponseIsOk(connection, project);
+          return connection;
         case HttpURLConnection.HTTP_BAD_REQUEST:
           throw new IOException(USER_MESSAGE_BAD_REQUEST);
         case HttpURLConnection.HTTP_NOT_FOUND:

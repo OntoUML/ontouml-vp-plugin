@@ -12,4 +12,9 @@ public class ModularizationServiceResult extends ServiceResult<Project> {
   public ModularizationServiceResult(Project result, List<ServiceIssue> issues) {
     super(result, issues);
   }
+
+  @Override
+  public String getMessage() {
+    return "The modularization request has concluded";
+  }
 }

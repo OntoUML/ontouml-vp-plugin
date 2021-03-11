@@ -33,4 +33,9 @@ public abstract class ServiceResult<T> {
   public void setIssues(List<ServiceIssue> issues) {
     this.issues = issues != null ? issues : new ArrayList<>();
   }
+
+  /**
+   * @return - a message string to be displayed to the user after the service request is concluded.
+   */
+  public abstract String getMessage();
 }

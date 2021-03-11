@@ -11,4 +11,9 @@ public class GufoTransformationServiceResult extends ServiceResult<String> {
   public GufoTransformationServiceResult() {
     super();
   }
+
+  @Override
+  public String getMessage() {
+    return "The export request to GUFO has concluded";
+  }
 }
