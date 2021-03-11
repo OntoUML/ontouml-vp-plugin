@@ -24,7 +24,8 @@ public class IProjectLoader {
         .getDiagrams()
         .forEach(
             diagram ->
-                IDiagramLoader.load(diagram, shouldOverrideDiagrams, shouldAutoLayoutDiagrams));
+                IClassDiagramLoader.load(
+                    diagram, shouldOverrideDiagrams, shouldAutoLayoutDiagrams));
     System.out.println("Diagrams loaded!");
   }
 

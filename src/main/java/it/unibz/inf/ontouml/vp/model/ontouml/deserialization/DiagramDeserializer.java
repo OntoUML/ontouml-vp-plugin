@@ -50,6 +50,7 @@ public class DiagramDeserializer extends JsonDeserializer<Diagram> {
             "contents",
             List.of(
                 ClassView.class,
+                PackageView.class,
                 RelationView.class,
                 GeneralizationView.class,
                 GeneralizationSetView.class),

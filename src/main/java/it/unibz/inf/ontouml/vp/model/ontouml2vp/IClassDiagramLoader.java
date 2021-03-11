@@ -10,7 +10,7 @@ import com.vp.plugin.model.IProject;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Diagram;
 import java.util.stream.Stream;
 
-public class IDiagramLoader {
+public class IClassDiagramLoader {
 
   static IProject vpProject = ApplicationManager.instance().getProjectManager().getProject();
   static DiagramManager diagramManager = ApplicationManager.instance().getDiagramManager();
@@ -24,6 +24,10 @@ public class IDiagramLoader {
     fromDiagram
         .getAllClassViews()
         .forEach(fromClassView -> IClassUIModelLoader.load(toDiagram, fromClassView));
+
+    fromDiagram
+        .getAllPackageViews()
+        .forEach(fromView -> IPackageUIModelLoader.load(toDiagram, fromView));
 
     fromDiagram.getAllRelationViews().stream()
         .filter(view -> view.getModelElement() != null)
