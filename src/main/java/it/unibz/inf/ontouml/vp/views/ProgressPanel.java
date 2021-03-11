@@ -28,8 +28,6 @@ public class ProgressPanel extends JPanel {
   private JButton btnCancel;
   private IDialog _dialog;
 
-  private ActionListener btnCancelActionListener = null;
-
   public ProgressPanel() {
     super();
     setSize(200, 200);
@@ -40,9 +38,7 @@ public class ProgressPanel extends JPanel {
     add(label);
 
     progressBar = new JProgressBar();
-    //    progressBar.setIndeterminate(true);
     progressBar.setStringPainted(true);
-    progressBar.setString("...");
     progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
     add(progressBar);
 
@@ -64,7 +60,7 @@ public class ProgressPanel extends JPanel {
         int index = 0;
         int times = 0;
 
-        while (!shouldStop.get() && times < 300) {
+        while (!shouldStop.get() && times < 60000) {
           publish(circles.get(index));
           index = (index + 1) % circles.size();
           times++;
@@ -82,10 +78,13 @@ public class ProgressPanel extends JPanel {
   }
 
   public void setCancelAction(ActionListener cancelAction) {
-    if (btnCancelActionListener != null) btnCancel.removeActionListener(btnCancelActionListener);
+    ActionListener[] listeners = btnCancel.getActionListeners();
+
+    for (int i = 0; listeners != null && i < listeners.length; i++) {
+      btnCancel.removeActionListener(listeners[i]);
+    }
 
     btnCancel.addActionListener(cancelAction);
-    btnCancelActionListener = cancelAction;
   }
 
   public ProgressPanel(String text) {

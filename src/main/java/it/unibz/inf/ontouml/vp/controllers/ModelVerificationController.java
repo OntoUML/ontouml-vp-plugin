@@ -9,6 +9,7 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 import it.unibz.inf.ontouml.vp.model.ServiceIssue;
 import it.unibz.inf.ontouml.vp.model.VerificationServiceResult;
 import it.unibz.inf.ontouml.vp.model.vp2ontouml.Uml2OntoumlTransformer;
+import it.unibz.inf.ontouml.vp.utils.SimpleServiceWorker;
 import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 import java.io.IOException;
 import java.util.Arrays;
@@ -29,6 +30,17 @@ public class ModelVerificationController implements VPActionController {
   private static final String DIAGRAM_VERIFICATION_ACTION =
       "it.unibz.inf.ontouml.vp.actions.DiagramVerificationAction";
 
+  private VPAction action;
+
+  /**
+   * Called when the menu containing the button is accessed allowing for action manipulation, such
+   * as enable/disable or selecting the button.
+   *
+   * <p>OBS: DOES NOT apply to this class.
+   */
+  @Override
+  public void update(VPAction action) {}
+
   /**
    * Performs OntoUML model verification.
    *
@@ -36,22 +48,37 @@ public class ModelVerificationController implements VPActionController {
    */
   @Override
   public void performAction(VPAction action) {
+    this.action = action;
+    final SimpleServiceWorker worker = new SimpleServiceWorker(this::task);
+    worker.execute();
+  }
+
+  private List<String> task(SimpleServiceWorker context) {
     try {
       final String project = Uml2OntoumlTransformer.transformAndSerialize();
       final VerificationServiceResult result =
           OntoUMLServerAccessController.requestModelVerification(project);
 
       if (DIAGRAM_VERIFICATION_ACTION.equals(action.getActionId())) {
-        filterDiagramIssueOnly(result);
+        retainDiagramIssues(result);
       }
 
-      ViewManagerUtils.logVerificationResult(result);
+      if (!context.isCancelled()) {
+        ViewManagerUtils.log(result);
+      }
+
+      return List.of(result.getMessage());
     } catch (IOException e) {
+      if (!context.isCancelled()) {
+        ViewManagerUtils.log(e.getMessage());
+      }
+
       e.printStackTrace();
+      return List.of(e.getMessage());
     }
   }
 
-  private void filterDiagramIssueOnly(VerificationServiceResult result) {
+  private void retainDiagramIssues(VerificationServiceResult result) {
     if (result == null) {
       return;
     }
@@ -81,13 +108,4 @@ public class ModelVerificationController implements VPActionController {
 
     result.setResult(filteredVerificationIssues);
   }
-
-  /**
-   * Called when the menu containing the button is accessed allowing for action manipulation, such
-   * as enable/disable or selecting the button.
-   *
-   * <p>OBS: DOES NOT apply to this class.
-   */
-  @Override
-  public void update(VPAction action) {}
 }

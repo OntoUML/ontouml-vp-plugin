@@ -60,10 +60,6 @@ public class ViewManagerUtils {
   public static final String ATTRIBUTE_LOGO = "attribute";
   public static final String ATTRIBUTE_LOGO_FILENAME = "attribute.png";
 
-  public static void simpleLog(String message) {
-    ApplicationManager.instance().getViewManager().showMessage(message);
-  }
-
   public static void simpleDialog(String title, String message) {
     ApplicationManager.instance()
         .getViewManager()
@@ -84,11 +80,7 @@ public class ViewManagerUtils {
     ArrayList<String> messageList = new ArrayList<String>();
     messageList.add(timestamp() + message);
     JList<Object> list = new JList<>(messageList.toArray());
-    JScrollPane parentContainer = new JScrollPane(list);
-    ApplicationManager.instance()
-        .getViewManager()
-        .showMessagePaneComponent(
-            OntoUMLPlugin.PLUGIN_ID, ViewManagerUtils.SCOPE_PLUGIN, parentContainer);
+    log(list);
   }
 
   private static String timestamp() {
@@ -150,63 +142,7 @@ public class ViewManagerUtils {
     }
   }
 
-  public static void logDiagramVerificationResponse(String responseMessage) {
-    ArrayList<String> errorList = new ArrayList<String>();
-    ArrayList<String> idModelElementList = new ArrayList<String>();
-
-    try {
-      JsonParser parser = new JsonParser();
-      JsonObject response = parser.parse(responseMessage).getAsJsonObject();
-      JsonArray verificationIssues = (JsonArray) response.getAsJsonArray("result");
-
-      final int errorCount = verificationIssues.isJsonNull() ? 0 : verificationIssues.size();
-      final String diagramName = getCurrentClassDiagramName();
-
-      verificationDiagramConcludedDialog(errorCount, diagramName);
-
-      if (errorCount == 0) {
-        errorList.add("No issues were found in diagram \"" + diagramName + "\".");
-      }
-
-      for (JsonElement elem : verificationIssues) {
-        final JsonObject error = elem.getAsJsonObject();
-        final String id =
-            error.getAsJsonObject("data").getAsJsonObject("source").get("id").getAsString();
-
-        if (isElementInCurrentDiagram(id)) {
-          final StringBuilder errorMessage = new StringBuilder();
-          errorMessage.append(
-              !error.get("severity").isJsonNull()
-                  ? error.get("severity").getAsString().toUpperCase()
-                  : "");
-          errorMessage.append(": ");
-          errorMessage.append(
-              !error.get("title").isJsonNull() ? error.get("title").getAsString() : "");
-          errorMessage.append(" ");
-          errorMessage.append(
-              !error.get("description").isJsonNull() ? error.get("description").getAsString() : "");
-
-          errorList.add(timestamp() + errorMessage.toString());
-          idModelElementList.add(id);
-        }
-      }
-
-      JList<Object> list = new JList<>(errorList.toArray());
-      IssueLogMenuListener listener = new IssueLogMenuListener(idModelElementList, list);
-      list.addMouseListener(listener);
-      list.addMouseMotionListener(listener);
-
-      JScrollPane parentContainer = new JScrollPane(list);
-      ApplicationManager.instance()
-          .getViewManager()
-          .showMessagePaneComponent(OntoUMLPlugin.PLUGIN_ID, SCOPE_PLUGIN, parentContainer);
-
-    } catch (JsonSyntaxException e) {
-      verificationServerErrorDialog(responseMessage);
-    }
-  }
-
-  public static void logVerificationResult(VerificationServiceResult result) {
+  public static void log(VerificationServiceResult result) {
     final List<ServiceIssue> verificationIssues =
         result != null ? result.getResult() : new ArrayList<>();
     final List<String> issuesList = new ArrayList<String>();
@@ -214,7 +150,7 @@ public class ViewManagerUtils {
     final int errorCount = verificationIssues.size();
 
     if (errorCount == 0) {
-      issuesList.add("No issues were found in your project.");
+      issuesList.add("No syntactical issues were found.");
     }
 
     for (ServiceIssue issue : verificationIssues) {
@@ -234,10 +170,23 @@ public class ViewManagerUtils {
     list.addMouseListener(listener);
     list.addMouseMotionListener(listener);
 
+    log(list);
+  }
+
+  public static void log(JList<?> list) {
     JScrollPane parentContainer = new JScrollPane(list);
     ApplicationManager.instance()
         .getViewManager()
         .showMessagePaneComponent(OntoUMLPlugin.PLUGIN_ID, SCOPE_PLUGIN, parentContainer);
+  }
+
+  public static void log(List<?> list) {
+    JList<?> jList = new JList<>(list.toArray());
+    log(jList);
+  }
+
+  public static void log(String message) {
+    log(List.of(message));
   }
 
   private static void verificationServerErrorDialog(String userMessage) {

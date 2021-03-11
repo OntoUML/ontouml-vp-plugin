@@ -36,13 +36,12 @@ public class OntoUMLServerAccessController {
   private static final String VERIFICATION_SERVICE_ENDPOINT = "/v1/verify";
   private static final String MODULARIZATION_SERVICE_ENDPOINT = "/v1/modularize";
   private static final String USER_MESSAGE_BAD_REQUEST =
-      "There was a internal plugin error and the verification could not be completed.";
-  private static final String USER_MESSAGE_NOT_FOUND = "Unable to reach the server.";
+      "There was a internal plugin error and the service could not be completed.";
+  private static final String USER_MESSAGE_NOT_FOUND = "Server not found.";
+  private static final String USER_MESSAGE_CONNECTION_ERROR = "Unable to reach the server.";
   private static final String USER_MESSAGE_INTERNAL_ERROR = "Internal server error.";
-  private static final String USER_MESSAGE_UNKNOWN_ERROR_REQUEST =
-      "Error sending model verification to the server.";
   private static final String USER_MESSAGE_UNKNOWN_ERROR_RESPONSE =
-      "Error receiving model verification response.";
+      "Error receiving service response.";
 
   public static BufferedReader transformToGUFO(
       String project,
@@ -307,40 +306,33 @@ public class OntoUMLServerAccessController {
     return null;
   }
 
-  public static VerificationServiceResult requestModelVerification(String project) {
-    final String url = getVerificationRequestUrl();
-    final String body = getServiceRequestBody(project);
-
+  public static VerificationServiceResult requestModelVerification(String project)
+      throws IOException {
     try {
+      final String url = getVerificationRequestUrl();
+      final String body = getServiceRequestBody(project);
+
       final HttpURLConnection connection = performRequest(url, body);
 
       switch (connection.getResponseCode()) {
         case HttpURLConnection.HTTP_OK:
           return caseVerificationResponseIsOk(connection, project);
         case HttpURLConnection.HTTP_BAD_REQUEST:
-          // TODO: update
-          //          return caseVerificationResponseIsBadRequest(connection, project);
+          throw new IOException(USER_MESSAGE_BAD_REQUEST);
         case HttpURLConnection.HTTP_NOT_FOUND:
-          // TODO: update
-          //          return caseVerificationResponseIsNotFound(connection, project);
+          throw new IOException(USER_MESSAGE_NOT_FOUND);
         case HttpURLConnection.HTTP_INTERNAL_ERROR:
-          // TODO: update
-          //          return caseVerificationResponseIsInternalError(connection, project);
+          throw new IOException(USER_MESSAGE_INTERNAL_ERROR);
         default:
-          // TODO: update
-          //          return caseVerificationResponseIsDefault();
+          throw new IOException(USER_MESSAGE_UNKNOWN_ERROR_RESPONSE);
       }
+    } catch (SocketException e) {
+      throw new IOException(USER_MESSAGE_CONNECTION_ERROR);
+    } catch (IOException e) {
+      throw e;
     } catch (Exception e) {
-      if (e instanceof SocketException)
-        ViewManagerUtils.verificationFailedDialog(USER_MESSAGE_NOT_FOUND);
-      else if (e instanceof IOException)
-        ViewManagerUtils.verificationFailedDialog(USER_MESSAGE_UNKNOWN_ERROR_RESPONSE);
-      else ViewManagerUtils.verificationFailedDialog(USER_MESSAGE_UNKNOWN_ERROR_REQUEST);
-
-      e.printStackTrace();
+      throw new IOException(USER_MESSAGE_UNKNOWN_ERROR_RESPONSE);
     }
-
-    return null;
   }
 
   public static GufoTransformationServiceResult requestProjectTransformationToGufo(

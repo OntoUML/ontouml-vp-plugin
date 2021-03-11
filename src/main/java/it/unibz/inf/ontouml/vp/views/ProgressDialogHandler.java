@@ -15,17 +15,19 @@ public class ProgressDialogHandler implements IDialogHandler {
   private boolean wasShown = false;
   private boolean wasClosed = false;
 
+  public ProgressDialogHandler() {
+    _progressPanel = new ProgressPanel();
+    onCancel(e -> System.out.println("Cancelling dialog with default behaviour."));
+  }
+
   @Override
   public Component getComponent() {
-    _progressPanel = new ProgressPanel();
     return _progressPanel;
   }
 
   @Override
   public void prepare(IDialog dialog) {
     _dialog = dialog;
-
-    onCancel(e -> System.out.println("Cancelling dialog with default behaviour."));
 
     _dialog.setSize(_progressPanel.getSize());
     _dialog.setModal(true);
@@ -58,8 +60,8 @@ public class ProgressDialogHandler implements IDialogHandler {
   public void closeDialog() {
     if (wasShown && !wasClosed) {
       _dialog.close();
-      wasClosed = true;
     }
+    wasClosed = true;
   }
 
   public void onCancel(Consumer<ActionEvent> cancelAction) {
