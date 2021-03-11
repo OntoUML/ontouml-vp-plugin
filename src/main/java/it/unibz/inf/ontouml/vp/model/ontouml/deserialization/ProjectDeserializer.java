@@ -19,6 +19,8 @@ public class ProjectDeserializer extends JsonDeserializer<Project> {
 
   @Override
   public Project deserialize(JsonParser parser, DeserializationContext context) throws IOException {
+    System.out.println("Deserializing project...");
+
     ObjectCodec codec = parser.getCodec();
     JsonNode root = parser.readValueAsTree();
 

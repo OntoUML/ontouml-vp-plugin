@@ -18,6 +18,10 @@ public interface DiagramElementContainer extends ElementContainer {
     return getAllContentsByType(ClassView.class);
   }
 
+  default List<PackageView> getAllPackageViews() {
+    return getAllContentsByType(PackageView.class);
+  }
+
   default List<RelationView> getAllRelationViews() {
     return getAllContentsByType(RelationView.class);
   }
