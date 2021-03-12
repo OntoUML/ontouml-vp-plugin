@@ -1,12 +1,9 @@
 package it.unibz.inf.ontouml.vp.utils;
 
-import com.google.gson.*;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.DiagramManager;
 import com.vp.plugin.ViewManager;
-import com.vp.plugin.diagram.IClassDiagramUIModel;
 import com.vp.plugin.diagram.IDiagramElement;
-import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IProject;
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
@@ -21,8 +18,19 @@ import java.io.File;
 import java.net.HttpURLConnection;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
-import java.util.*;
-import javax.swing.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -34,8 +42,6 @@ import javax.swing.border.EmptyBorder;
 public class ViewManagerUtils {
 
   public static final String SCOPE_PLUGIN = "OntoUML";
-  public static final String SCOPE_VERIFICATION = "Verification Log";
-  public static final String SCOPE_DEVELOPMENT_LOG = "DevLog";
 
   public static final String SIMPLE_LOGO = "simple_logo";
   public static final String SIMPLE_LOGO_FILENAME = "ontouml-simple-logo.png";
@@ -60,16 +66,29 @@ public class ViewManagerUtils {
   public static final String ATTRIBUTE_LOGO = "attribute";
   public static final String ATTRIBUTE_LOGO_FILENAME = "attribute.png";
 
-  public static void simpleDialog(String title, String message) {
+  public static void simpleDialog(String message) {
     ApplicationManager.instance()
         .getViewManager()
         .showConfirmDialog(
             null,
             message,
-            title,
+            OntoUMLPlugin.PLUGIN_NAME,
             JOptionPane.DEFAULT_OPTION,
             JOptionPane.INFORMATION_MESSAGE,
             new ImageIcon(getFilePath(SIMPLE_LOGO)));
+  }
+
+  public static boolean warningDialog(String message) {
+    final ViewManager vm = ApplicationManager.instance().getViewManager();
+    int selectedOption =
+        vm.showConfirmDialog(
+            vm.getRootFrame(),
+            message,
+            SCOPE_PLUGIN,
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE,
+            new ImageIcon((getFilePath(SIMPLE_LOGO))));
+    return JOptionPane.YES_OPTION == selectedOption;
   }
 
   public static void cleanAndShowMessage(String message) {
@@ -77,7 +96,7 @@ public class ViewManagerUtils {
         .getViewManager()
         .removeMessagePaneComponent(OntoUMLPlugin.PLUGIN_ID);
 
-    ArrayList<String> messageList = new ArrayList<String>();
+    ArrayList<String> messageList = new ArrayList<>();
     messageList.add(timestamp() + message);
     JList<Object> list = new JList<>(messageList.toArray());
     log(list);
@@ -145,8 +164,8 @@ public class ViewManagerUtils {
   public static void log(VerificationServiceResult result) {
     final List<ServiceIssue> verificationIssues =
         result != null ? result.getResult() : new ArrayList<>();
-    final List<String> issuesList = new ArrayList<String>();
-    final List<String> ontoumlElementIdList = new ArrayList<String>();
+    final List<String> issuesList = new ArrayList<>();
+    final List<String> ontoumlElementIdList = new ArrayList<>();
     final int errorCount = verificationIssues.size();
 
     if (errorCount == 0) {
@@ -187,123 +206,6 @@ public class ViewManagerUtils {
 
   public static void log(String message) {
     log(List.of(message));
-  }
-
-  private static void verificationServerErrorDialog(String userMessage) {
-    ApplicationManager.instance()
-        .getViewManager()
-        .showConfirmDialog(
-            null,
-            userMessage,
-            "Verification Service",
-            JOptionPane.DEFAULT_OPTION,
-            JOptionPane.ERROR_MESSAGE,
-            new ImageIcon(getFilePath(SIMPLE_LOGO)));
-  }
-
-  private static void verificationConcludedDialog(int nIssues) {
-    if (nIssues > 0) {
-      ApplicationManager.instance()
-          .getViewManager()
-          .showConfirmDialog(
-              null,
-              "Issues found in your project: "
-                  + nIssues
-                  + ".\n"
-                  + "For details, click on the \"Show Message\" icon on the bottom right corner of"
-                  + " the app.",
-              "Verification Service",
-              JOptionPane.DEFAULT_OPTION,
-              JOptionPane.WARNING_MESSAGE,
-              new ImageIcon(getFilePath(SIMPLE_LOGO)));
-    } else {
-      ApplicationManager.instance()
-          .getViewManager()
-          .showConfirmDialog(
-              null,
-              "No issues were found in your project.",
-              "Verification Service",
-              JOptionPane.DEFAULT_OPTION,
-              JOptionPane.INFORMATION_MESSAGE,
-              new ImageIcon(getFilePath(SIMPLE_LOGO)));
-    }
-  }
-
-  private static void verificationDiagramConcludedDialog(int nIssues, String diagramName) {
-    if (nIssues > 0) {
-      ApplicationManager.instance()
-          .getViewManager()
-          .showConfirmDialog(
-              null,
-              "Issues found in diagram \""
-                  + diagramName
-                  + "\": "
-                  + nIssues
-                  + ".\n"
-                  + "For details, click on the \"Show Message\" icon on the bottom right corner of"
-                  + " the app.",
-              "Verification Service",
-              JOptionPane.DEFAULT_OPTION,
-              JOptionPane.WARNING_MESSAGE,
-              new ImageIcon(getFilePath(SIMPLE_LOGO)));
-    } else {
-      ApplicationManager.instance()
-          .getViewManager()
-          .showConfirmDialog(
-              null,
-              "No issues were found in diagram \""
-                  + diagramName
-                  + "\".\n"
-                  + "Other issues may still exist in your project.",
-              "Verification Service",
-              JOptionPane.DEFAULT_OPTION,
-              JOptionPane.INFORMATION_MESSAGE,
-              new ImageIcon(getFilePath(SIMPLE_LOGO)));
-    }
-  }
-
-  public static void verificationFailedDialog(String msg) {
-    ApplicationManager.instance()
-        .getViewManager()
-        .showConfirmDialog(
-            null,
-            msg,
-            "Verification Service",
-            JOptionPane.DEFAULT_OPTION,
-            JOptionPane.ERROR_MESSAGE,
-            new ImageIcon(getFilePath(SIMPLE_LOGO)));
-  }
-
-  public static boolean verificationFailedDialogWithOption(String msg, int httpCode) {
-    final ProjectConfigurations configurations =
-        Configurations.getInstance().getProjectConfigurations();
-
-    if (configurations.isCustomServerEnabled()
-        && (httpCode == HttpURLConnection.HTTP_NOT_FOUND
-            || httpCode == HttpURLConnection.HTTP_INTERNAL_ERROR)) {
-
-      int option =
-          ApplicationManager.instance()
-              .getViewManager()
-              .showConfirmDialog(
-                  null,
-                  msg + "\nDo you want to retry using the default server?",
-                  "Verification Service",
-                  JOptionPane.YES_NO_OPTION,
-                  JOptionPane.INFORMATION_MESSAGE,
-                  new ImageIcon(getFilePath(SIMPLE_LOGO)));
-
-      if (option == JOptionPane.OK_OPTION) {
-        configurations.setCustomServerEnabled(false);
-        return true;
-      } else {
-        return false;
-      }
-
-    } else {
-      verificationFailedDialog(msg);
-      return false;
-    }
   }
 
   public static void exportToGUFOIssueDialog(String msg) {
@@ -350,82 +252,6 @@ public class ViewManagerUtils {
     }
   }
 
-  private static String getCurrentClassDiagramName() {
-    final IDiagramUIModel[] diagramArray =
-        ApplicationManager.instance().getProjectManager().getProject().toDiagramArray();
-
-    if (diagramArray == null) {
-      return null;
-    }
-
-    for (IDiagramUIModel diagram : diagramArray) {
-      if (diagram instanceof IClassDiagramUIModel && diagram.isOpened()) {
-        return diagram.getName();
-      }
-    }
-
-    return null;
-  }
-
-  private static String getCurrentClassDiagramId() {
-    final IDiagramUIModel[] diagramArray =
-        ApplicationManager.instance().getProjectManager().getProject().toDiagramArray();
-
-    if (diagramArray == null) {
-      return null;
-    }
-
-    for (IDiagramUIModel diagram : diagramArray) {
-      if (diagram instanceof IClassDiagramUIModel && diagram.isOpened()) {
-        return diagram.getId();
-      }
-    }
-
-    return null;
-  }
-
-  private static IDiagramUIModel getCurrentClassDiagram() {
-
-    return ApplicationManager.instance()
-        .getProjectManager()
-        .getProject()
-        .getDiagramById(getCurrentClassDiagramId());
-  }
-
-  private static boolean isElementInCurrentDiagram(String id) {
-
-    if (getCurrentClassDiagram() == null) {
-      return false;
-    }
-
-    for (IDiagramElement element : getCurrentClassDiagram().toDiagramElementArray()) {
-      if (element.getModelElement().getId().equals(id)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  private static int errorCountInCurrentDiagram(String responseMessage) {
-    int errorCount = 0;
-
-    try {
-      JsonArray response = (JsonArray) new JsonParser().parse(responseMessage).getAsJsonArray();
-
-      for (JsonElement elem : response) {
-        if (isElementInCurrentDiagram(
-            elem.getAsJsonObject().getAsJsonObject("source").get("id").getAsString())) {
-          errorCount++;
-        }
-      }
-    } catch (JsonSyntaxException e) {
-      return 0;
-    }
-
-    return errorCount;
-  }
-
   public static boolean isElementInAnyDiagram(String elementId) {
     final IProject project = ApplicationManager.instance().getProjectManager().getProject();
     final IModelElement element = project.getModelElementById(elementId);
@@ -466,7 +292,7 @@ public class ViewManagerUtils {
       }
 
       firstView = firstView == null ? diagramElement : firstView;
-      activeView = diagramElement.getDiagramUIModel().isOpened() ? diagramElement : activeView;
+      activeView = diagramElement.getDiagramUIModel().isOpened() ? diagramElement : null;
       masterView = diagramElement.isMasterView() ? diagramElement : masterView;
 
       if (activeView != null) {
@@ -533,7 +359,6 @@ public class ViewManagerUtils {
           "\n"
               + "Be aware that \"alpha\" releases provide experimental new features that may not"
               + " be fully integrated to the plugin.");
-      msg.append("\n\nThe procedure may take a couple of seconds.");
     } else {
       options = new String[3];
       options[0] = "Cancel";
@@ -542,10 +367,9 @@ public class ViewManagerUtils {
 
       initialSelection = options[2];
 
-      msg.append(
-          "The latest stable release of the plugin is the version "
-              + lastestRelease.getTagName()
-              + ".");
+      msg.append("The latest stable release of the plugin is the version ")
+          .append(lastestRelease.getTagName())
+          .append(".");
       msg.append(
           "\n"
               + "To install this update, click on  \"Install latest release\", or click on"
@@ -554,8 +378,8 @@ public class ViewManagerUtils {
           "\n"
               + "Be aware that \"alpha\" releases are provide experimental new features that may"
               + " present some issues.");
-      msg.append("\n\nThe procedure may take a couple of seconds.");
     }
+    msg.append("\n\nThe procedure may take a couple of seconds.");
 
     final ViewManager vm = ApplicationManager.instance().getViewManager();
     int selectedOption =
@@ -596,20 +420,18 @@ public class ViewManagerUtils {
 
   public static void updateErrorDialog() {
     final ViewManager vm = ApplicationManager.instance().getViewManager();
-    final StringBuilder builder = new StringBuilder();
-    builder.append("Something went wrong during the update. Please verify your connection.<br>");
-    builder.append(
-        "In case your plugin becomes unavailable, you may find instructions at <a href=\""
+
+    String message =
+        "Something went wrong during the update. Please verify your connection.<br>"
+            + "In case your plugin becomes unavailable, you may find instructions at <a href=\""
             + OntoUMLPlugin.PLUGIN_REPO
             + "\">"
             + OntoUMLPlugin.PLUGIN_REPO
-            + "</a>.<br>");
-    builder.append(
-        "In this page you can also report this error and help us to improve our plugin.");
-
+            + "</a>.<br>"
+            + "In this page you can also report this error and help us to improve our plugin.";
     vm.showConfirmDialog(
         null,
-        new HTMLEnabledMessage(builder.toString()),
+        new HTMLEnabledMessage(message),
         "Plugin Update Error",
         JOptionPane.DEFAULT_OPTION,
         JOptionPane.ERROR_MESSAGE,
@@ -630,7 +452,7 @@ public class ViewManagerUtils {
               String releaseTagName = release.getTagName();
 
               releaseTagName =
-                  installedReleaseTagName != null && releaseTagName.equals(installedReleaseTagName)
+                  releaseTagName.equals(installedReleaseTagName)
                       ? releaseTagName + " (installed version)"
                       : releaseTagName;
 
@@ -638,7 +460,7 @@ public class ViewManagerUtils {
             });
 
     ViewManager vm = ApplicationManager.instance().getViewManager();
-    List<String> keys = new ArrayList<String>(map.keySet());
+    List<String> keys = new ArrayList<>(map.keySet());
     keys.sort(Comparator.reverseOrder());
     Object[] keysArray = new String[keys.size()];
     keys.toArray(keysArray);

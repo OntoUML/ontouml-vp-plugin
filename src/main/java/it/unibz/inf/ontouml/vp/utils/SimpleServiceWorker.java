@@ -1,6 +1,5 @@
 package it.unibz.inf.ontouml.vp.utils;
 
-import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 import it.unibz.inf.ontouml.vp.views.ProgressDialogHandler;
 import java.util.List;
 import java.util.function.Function;
@@ -41,17 +40,19 @@ public class SimpleServiceWorker extends SwingWorker<List<String>, String> {
     }
 
     try {
-      String message = get().get(0);
-      ViewManagerUtils.simpleDialog(OntoUMLPlugin.PLUGIN_NAME, message);
+      if (!get().isEmpty()) {
+        String message = get().get(0);
+        ViewManagerUtils.simpleDialog(message);
+      }
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
   @Override
-  protected List<String> doInBackground() throws Exception {
+  protected List<String> doInBackground() {
     dialogHandler.showDialog();
-    List<String> messages = List.of("The service implementation did not provided a message");
+    List<String> messages;
 
     try {
       messages = task.apply(this);
