@@ -110,7 +110,7 @@
         icon="icons/logo/ontouml-simple-logo-small.png"
         label="Export to gUFO"
         menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
-        <actionController class="it.unibz.inf.ontouml.vp.controllers.GUFOExportController"/>
+        <actionController class="it.unibz.inf.ontouml.vp.controllers.GufoExportController"/>
       </action>
 
       <action
@@ -122,7 +122,7 @@
         icon="icons/logo/ontouml-simple-logo-small.png"
         label="Export to gUFO"
         ribbonPath="Project/Export/#">
-        <actionController class="it.unibz.inf.ontouml.vp.controllers.GUFOExportController"/>
+        <actionController class="it.unibz.inf.ontouml.vp.controllers.GufoExportController"/>
       </action>
 
       <separator id="project.export.ontouml" ribbonPath="Project/Export/#"/>

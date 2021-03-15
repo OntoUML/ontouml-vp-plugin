@@ -8,8 +8,6 @@ import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 
 public class ReloadClassesController implements VPActionController {
 
-  private static int time = 5000;
-
   @Override
   public void performAction(VPAction action) {
     reloadPlugin();

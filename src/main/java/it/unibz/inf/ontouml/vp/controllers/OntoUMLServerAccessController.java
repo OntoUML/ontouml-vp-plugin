@@ -105,6 +105,15 @@ public class OntoUMLServerAccessController {
     return parseResponse(connection, VerificationServiceResult.class);
   }
 
+  public static GufoTransformationServiceResult requestModelTransformationToGufo(
+      String project, String options) throws IOException {
+    final String url = getTransformationToGufoRequestUrl();
+    final String body = getServiceRequestBody(project, options);
+    final HttpURLConnection connection = request(url, body);
+
+    return parseResponse(connection, GufoTransformationServiceResult.class);
+  }
+
   private static HttpURLConnection request(String url, String body) throws IOException {
     try {
       final HttpURLConnection connection = performRequest(url, body);
@@ -135,32 +144,32 @@ public class OntoUMLServerAccessController {
     }
   }
 
-  public static GufoTransformationServiceResult requestProjectTransformationToGufo(
-      String project, String options) {
-    final String body = getServiceRequestBody(project, options);
-    final String url = getTransformationToGufoRequestUrl();
-
-    try {
-      final HttpURLConnection connection = performRequest(url, body);
-
-      switch (connection.getResponseCode()) {
-        case HttpURLConnection.HTTP_OK:
-          if (hasJsonContentType(connection)) {
-            return parseResponse(connection, GufoTransformationServiceResult.class);
-          }
-        case HttpURLConnection.HTTP_BAD_REQUEST:
-        case HttpURLConnection.HTTP_NOT_FOUND:
-        case HttpURLConnection.HTTP_INTERNAL_ERROR:
-        default:
-          System.err.println("Attention! Transformation request was not processed correctly");
-          System.err.println("Status Code: " + connection.getResponseCode());
-      }
-    } catch (IOException ioException) {
-      ioException.printStackTrace();
-    }
-
-    return null;
-  }
+  //  public static GufoTransformationServiceResult requestProjectTransformationToGufo(
+  //      String project, String options) {
+  //    final String body = getServiceRequestBody(project, options);
+  //    final String url = getTransformationToGufoRequestUrl();
+  //
+  //    try {
+  //      final HttpURLConnection connection = performRequest(url, body);
+  //
+  //      switch (connection.getResponseCode()) {
+  //        case HttpURLConnection.HTTP_OK:
+  //          if (hasJsonContentType(connection)) {
+  //            return parseResponse(connection, GufoTransformationServiceResult.class);
+  //          }
+  //        case HttpURLConnection.HTTP_BAD_REQUEST:
+  //        case HttpURLConnection.HTTP_NOT_FOUND:
+  //        case HttpURLConnection.HTTP_INTERNAL_ERROR:
+  //        default:
+  //          System.err.println("Attention! Transformation request was not processed correctly");
+  //          System.err.println("Status Code: " + connection.getResponseCode());
+  //      }
+  //    } catch (IOException ioException) {
+  //      ioException.printStackTrace();
+  //    }
+  //
+  //    return null;
+  //  }
 
   private static HttpURLConnection performRequest(String urlString, String body)
       throws IOException {

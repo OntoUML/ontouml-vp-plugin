@@ -41,11 +41,7 @@ public class ModelVerificationController implements VPActionController {
   @Override
   public void update(VPAction action) {}
 
-  /**
-   * Performs OntoUML model verification.
-   *
-   * @param action
-   */
+  /** Performs OntoUML model verification. */
   @Override
   public void performAction(VPAction action) {
     this.action = action;

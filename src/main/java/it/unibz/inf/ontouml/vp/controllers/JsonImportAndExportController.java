@@ -29,6 +29,8 @@ public class JsonImportAndExportController implements VPActionController {
   private static final String EXPORT_ACTION_ID = "it.unibz.inf.ontouml.vp.actions.JsonExportAction";
   private static final String PROJECT_EXPORT_ACTION_ID = "project.export.JsonExportAction";
 
+  private static final String FILE_FORMAT = ".json";
+
   private static final String MESSAGE_IMPORT_WARNING =
       "Warning: this action may override elements in your project. Do you wish to continue?";
   private static final String MESSAGE_MODEL_EXPORTED = "Model exported successfully.";
@@ -38,20 +40,16 @@ public class JsonImportAndExportController implements VPActionController {
   private static final String MESSAGE_MODEL_IMPORT_INVALID_FILE_ERROR =
       "Unable to import: invalid file.";
   private static final String MESSAGE_MODEL_EXPORT_UNEXPECTED_ERROR =
-      "Unable to export model due to an unexpected error.";
+      "Unable to export: unexpected error.";
   private static final String MESSAGE_MODEL_IMPORT_UNEXPECTED_ERROR =
-      "Unable to import model due to an unexpected error.";
+      "Unable to import: unexpected error.";
 
   private Configurations configs;
   private ProjectConfigurations projectConfigurations;
   private VPAction action;
   private Path filePath;
 
-  /**
-   * Performs model export in JSON format.
-   *
-   * @param action
-   */
+  /** Called when a button is clicked. */
   @Override
   public void performAction(VPAction action) {
     this.action = action;
@@ -116,7 +114,7 @@ public class JsonImportAndExportController implements VPActionController {
     fileDialog.setFile(suggestedFileName);
     fileDialog.setDirectory(suggestedFolderPath);
     fileDialog.setMultipleMode(false);
-    fileDialog.setFilenameFilter((dir, name) -> name != null && name.endsWith(".json"));
+    fileDialog.setFilenameFilter((dir, name) -> name != null && name.endsWith(FILE_FORMAT));
 
     fileDialog.setVisible(true);
 
@@ -124,9 +122,9 @@ public class JsonImportAndExportController implements VPActionController {
     final String fileName = fileDialog.getFile();
 
     if (fileDirectory != null && fileName != null) {
-      return fileName.endsWith(".json")
+      return fileName.endsWith(FILE_FORMAT)
           ? Paths.get(fileDirectory, fileName)
-          : Paths.get(fileDirectory, fileName + ".json");
+          : Paths.get(fileDirectory, fileName + FILE_FORMAT);
     }
 
     return null;

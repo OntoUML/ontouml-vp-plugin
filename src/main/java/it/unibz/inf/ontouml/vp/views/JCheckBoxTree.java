@@ -182,7 +182,7 @@ public class JCheckBoxTree extends JTree {
   }
 
   private String getNameNode(ElementNode node) {
-    return GUFOExportView.getDisplayName(node.getUserObject());
+    return GufoExportView.getDisplayName(node.getUserObject());
   }
 
   public JCheckBoxTree(String type) {

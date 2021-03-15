@@ -4,26 +4,44 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.diagram.IDiagramUIModel;
-import com.vp.plugin.model.*;
+import com.vp.plugin.model.IAssociation;
+import com.vp.plugin.model.IAssociationClass;
+import com.vp.plugin.model.IAssociationEnd;
+import com.vp.plugin.model.IAttribute;
+import com.vp.plugin.model.IGeneralization;
+import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.IProject;
 import com.vp.plugin.model.factory.IModelElementFactory;
 import com.vp.plugin.view.IDialog;
-import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
-import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
-import it.unibz.inf.ontouml.vp.model.ServerRequest;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Vector;
-import javax.swing.*;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
-public class GUFOExportView extends JPanel {
+public class GufoExportView extends JPanel {
   private static final long serialVersionUID = 1L;
 
   private JTextField IRItxt;
@@ -52,8 +70,7 @@ public class GUFOExportView extends JPanel {
 
   private IDialog _dialog;
 
-  private boolean isToExport;
-  private boolean isOpen;
+  private boolean wasCancelled = false;
 
   private HashSet<String> elementsPackageTree = new HashSet<>();
   private HashSet<String> elementsDiagramTree = new HashSet<>();
@@ -61,7 +78,7 @@ public class GUFOExportView extends JPanel {
   private IModelElement[] elementsMapping;
   private IModelElement[] packagesMapping;
 
-  public GUFOExportView(ProjectConfigurations configurations, ServerRequest request) {
+  public GufoExportView(ProjectConfigurations configurations) {
     setSize(new Dimension(680, 550));
     setLayout(new GridLayout(1, 1));
 
@@ -194,9 +211,10 @@ public class GUFOExportView extends JPanel {
     objectBox = new JComboBox<>(objectBoxString);
     ((JLabel) objectBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
 
-    String[] analysisBoxString = {"true", "false"};
+    String[] analysisBoxString = {"false", "true"};
     analysisBox = new JComboBox<>(analysisBoxString);
     ((JLabel) analysisBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
+    analysisBox.setSelectedItem("true");
 
     String[] packagesBoxString = {"false", "true"};
     packagesBox = new JComboBox<>(packagesBoxString);
@@ -297,29 +315,6 @@ public class GUFOExportView extends JPanel {
 
     btnExport.setPreferredSize(new Dimension(80, 35));
     btnCancel.setPreferredSize(new Dimension(80, 35));
-
-    btnExport.addActionListener(
-        actionEvent -> {
-          if (tabbedPane.getSelectedIndex() == 0) saveSelectedElements("Package Tree");
-          else saveSelectedElements("Diagram Tree");
-
-          updateConfigurationsValues(configurations);
-          Configurations.getInstance().save();
-          isToExport = true;
-          isOpen = false;
-          _dialog.close();
-          Thread thread = new Thread(request);
-          thread.start();
-        });
-
-    btnCancel.addActionListener(
-        actionEvent -> {
-          isToExport = false;
-          isOpen = false;
-          request.doStop();
-          _dialog.close();
-          OntoUMLPlugin.setExportToGUFOWindowOpen(false);
-        });
 
     GridBagConstraints gbc_buttonsPanel = new GridBagConstraints();
     gbc_buttonsPanel.fill = GridBagConstraints.HORIZONTAL;
@@ -701,12 +696,8 @@ public class GUFOExportView extends JPanel {
     return panel;
   }
 
-  public boolean getIsToExport() {
-    return isToExport;
-  }
-
-  public boolean getIsOpen() {
-    return isOpen;
+  public boolean getWasCancelled() {
+    return wasCancelled;
   }
 
   private static String[] getLanguagesCode() {
@@ -734,14 +725,17 @@ public class GUFOExportView extends JPanel {
   }
 
   /** Updates project configurations with components' information. */
-  private void updateConfigurationsValues(ProjectConfigurations configurations) {
+  public void updateConfigurationsValues(ProjectConfigurations configurations) {
+    if (tabbedPane.getSelectedIndex() == 0) saveSelectedElements("Package Tree");
+    else saveSelectedElements("Diagram Tree");
+
     configurations.setExportGUFOIRI(IRItxt.getText());
     configurations.setExportGUFOFormat(formatBox.getSelectedItem().toString());
     configurations.setExportGUFOURIFormat(uriFormatBox.getSelectedItem().toString());
-    configurations.setExportGUFOInverseBox(inverseBox.getSelectedItem().toString());
-    configurations.setExportGUFOObjectBox(objectBox.getSelectedItem().toString());
-    configurations.setExportGUFOAnalysisBox(analysisBox.getSelectedItem().toString());
-    configurations.setExportGUFOPackagesBox(packagesBox.getSelectedItem().toString());
+    configurations.setExportGUFOInverseBox("true".equals(inverseBox.getSelectedItem()));
+    configurations.setExportGUFOObjectBox("true".equals(objectBox.getSelectedItem()));
+    configurations.setExportGUFOAnalysisBox("true".equals(analysisBox.getSelectedItem()));
+    configurations.setExportGUFOPackagesBox("true".equals(packagesBox.getSelectedItem()));
     configurations.setExportGUFOElementMapping(getTableElementMapping());
     configurations.setExportGUFOPackageMapping(getTablePackageMapping());
 
@@ -774,17 +768,12 @@ public class GUFOExportView extends JPanel {
     if (configurations.getExportGUFOElementsDiagramTree() != null)
       diagramTree.setNodesCheck(configurations.getExportGUFOElementsDiagramTree());
 
-    if (configurations.getExportGUFOInverseBox() != null)
-      inverseBox.setSelectedItem(configurations.getExportGUFOInverseBox());
-
-    if (configurations.getExportGUFOObjectBox() != null)
-      objectBox.setSelectedItem(configurations.getExportGUFOObjectBox());
-
-    if (configurations.getExportGUFOAnalysisBox() != null)
-      analysisBox.setSelectedItem(configurations.getExportGUFOAnalysisBox());
-
-    if (configurations.getExportGUFOPackagesBox() != null)
-      packagesBox.setSelectedItem(configurations.getExportGUFOPackagesBox());
+    // "false" is add first, so its index is 0. This is a cheap workaround due to issue on string
+    // comparison, let's just use check boxes next time
+    inverseBox.setSelectedIndex(configurations.getExportGUFOInverseBox() ? 1 : 0);
+    objectBox.setSelectedIndex(configurations.getExportGUFOObjectBox() ? 1 : 0);
+    analysisBox.setSelectedIndex(configurations.getExportGUFOAnalysisBox() ? 1 : 0);
+    packagesBox.setSelectedIndex(configurations.getExportGUFOPackagesBox() ? 1 : 0);
   }
 
   private void saveSelectedElements(String tree) {
@@ -825,8 +814,7 @@ public class GUFOExportView extends JPanel {
   }
 
   public String getTableElementMapping() {
-    HashMap<String, HashMap<String, HashMap<String, String>>> results =
-        new HashMap<String, HashMap<String, HashMap<String, String>>>();
+    HashMap<String, HashMap<String, HashMap<String, String>>> results = new HashMap<>();
     String elementId = "";
 
     for (int row = 0; row < table.getRowCount(); row++) {
@@ -861,6 +849,7 @@ public class GUFOExportView extends JPanel {
       content.put(language, text);
     }
 
+    // TODO: replace Gson with fasterxml
     Gson gson = new Gson();
     String json = gson.toJson(results);
 
@@ -903,6 +892,7 @@ public class GUFOExportView extends JPanel {
       content.put("uri", uri);
     }
 
+    // TODO: replace Gson with fasterxml
     Gson gson = new Gson();
     String json = gson.toJson(results);
 
@@ -980,5 +970,25 @@ public class GUFOExportView extends JPanel {
     }
 
     return "Element";
+  }
+
+  public void onExport(ActionListener onExportAction) {
+    ActionListener[] currentListeners = btnExport.getActionListeners();
+
+    for (int i = 0; currentListeners != null && i < currentListeners.length; i++) {
+      btnExport.removeActionListener(currentListeners[i]);
+    }
+
+    btnExport.addActionListener(onExportAction);
+  }
+
+  public void onCancel(ActionListener onCancelAction) {
+    ActionListener[] currentListeners = btnCancel.getActionListeners();
+
+    for (int i = 0; currentListeners != null && i < currentListeners.length; i++) {
+      btnCancel.removeActionListener(currentListeners[i]);
+    }
+
+    btnCancel.addActionListener(onCancelAction);
   }
 }
