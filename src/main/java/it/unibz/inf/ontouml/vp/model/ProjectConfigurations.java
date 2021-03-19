@@ -20,6 +20,7 @@ public class ProjectConfigurations {
   public static final boolean DEFAULT_IS_AUTOMATIC_MODELLING_ENABLED = true;
   public static final boolean DEFAULT_IGNORE_ASSOCIATION_INVERSION_WARNING = false;
   public static final String DEFAULT_SERVER_URL = "http://api.ontouml.org";
+  //  public static final String DEFAULT_SERVER_URL = "http://api.ontouml.org:3000";
   public static final String DEFAULT_EXPORT_PATH = System.getProperty("user.home");
   public static final String DEFAULT_EXPORT_FILENAME = "";
   public static final String DEFAULT_GUFO_EXPORT_PATH = System.getProperty("user.home");
@@ -79,19 +80,19 @@ public class ProjectConfigurations {
 
   @SerializedName("exportGUFOInverseBox")
   @Expose()
-  private String exportGUFOInverseBox;
+  private boolean exportGUFOInverseBox;
 
   @SerializedName("exportGUFOObjectBox")
   @Expose()
-  private String exportGUFOObjectBox;
+  private boolean exportGUFOObjectBox;
 
   @SerializedName("exportGUFOAnalysisBox")
   @Expose()
-  private String exportGUFOAnalysisBox;
+  private boolean exportGUFOAnalysisBox;
 
   @SerializedName("exportGUFOPackagesBox")
   @Expose()
-  private String exportGUFOPackagesBox;
+  private boolean exportGUFOPackagesBox;
 
   @SerializedName("exportGUFOElementMapping")
   @Expose()
@@ -312,35 +313,35 @@ public class ProjectConfigurations {
     this.exportGUFOElementsPackageTree = exportGUFOElementsPackageTree;
   }
 
-  public String getExportGUFOInverseBox() {
+  public boolean getExportGUFOInverseBox() {
     return exportGUFOInverseBox;
   }
 
-  public void setExportGUFOInverseBox(String exportGUFOInverseBox) {
+  public void setExportGUFOInverseBox(boolean exportGUFOInverseBox) {
     this.exportGUFOInverseBox = exportGUFOInverseBox;
   }
 
-  public String getExportGUFOObjectBox() {
+  public boolean getExportGUFOObjectBox() {
     return exportGUFOObjectBox;
   }
 
-  public void setExportGUFOObjectBox(String exportGUFOObjectBox) {
+  public void setExportGUFOObjectBox(boolean exportGUFOObjectBox) {
     this.exportGUFOObjectBox = exportGUFOObjectBox;
   }
 
-  public String getExportGUFOAnalysisBox() {
+  public boolean getExportGUFOAnalysisBox() {
     return exportGUFOAnalysisBox;
   }
 
-  public void setExportGUFOAnalysisBox(String exportGUFOAnalysisBox) {
+  public void setExportGUFOAnalysisBox(boolean exportGUFOAnalysisBox) {
     this.exportGUFOAnalysisBox = exportGUFOAnalysisBox;
   }
 
-  public String getExportGUFOPackagesBox() {
+  public boolean getExportGUFOPackagesBox() {
     return exportGUFOPackagesBox;
   }
 
-  public void setExportGUFOPackagesBox(String exportGUFOPackagesBox) {
+  public void setExportGUFOPackagesBox(boolean exportGUFOPackagesBox) {
     this.exportGUFOPackagesBox = exportGUFOPackagesBox;
   }
 

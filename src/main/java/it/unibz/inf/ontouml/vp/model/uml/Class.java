@@ -6,28 +6,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.vp.plugin.model.IAttribute;
-import com.vp.plugin.model.IClass;
-import com.vp.plugin.model.IDataType;
-import com.vp.plugin.model.IEnumerationLiteral;
-import com.vp.plugin.model.IGeneralization;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.ISimpleRelationship;
-import com.vp.plugin.model.ITaggedValue;
-import com.vp.plugin.model.ITaggedValueContainer;
+import com.vp.plugin.model.*;
 import it.unibz.inf.ontouml.vp.utils.RestrictedTo;
 import it.unibz.inf.ontouml.vp.utils.Stereotype;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -453,7 +436,7 @@ public class Class implements ModelElement {
       return;
     }
 
-    System.out.println("WILL TRY TO SET VALUE: " + restrictions);
+    System.out.println("Class '" + _class.getName() + "': Setting restrictedTo to " + restrictions);
 
     Iterator<?> values = _class.getTaggedValues().taggedValueIterator();
 
@@ -473,7 +456,8 @@ public class Class implements ModelElement {
           value.setValue(newRestrictions);
         }
 
-        System.out.println("NEW VALUE: " + value.getValueAsText());
+        System.out.println(
+            "Class '" + _class.getName() + "': restrictedTo set to " + value.getValueAsText());
 
         return;
       }

@@ -3,13 +3,19 @@ package it.unibz.inf.ontouml.vp.controllers;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
-import com.vp.plugin.view.IDialog;
-import com.vp.plugin.view.IDialogHandler;
-import it.unibz.inf.ontouml.vp.model.ServerRequest;
-import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
+import com.vp.plugin.diagram.IBaseDiagramElement;
+import com.vp.plugin.diagram.IDiagramElement;
+import com.vp.plugin.diagram.IDiagramUIModel;
+import it.unibz.inf.ontouml.vp.model.ServiceIssue;
+import it.unibz.inf.ontouml.vp.model.VerificationServiceResult;
+import it.unibz.inf.ontouml.vp.model.vp2ontouml.Uml2OntoumlTransformer;
+import it.unibz.inf.ontouml.vp.utils.SimpleServiceWorker;
 import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
-import it.unibz.inf.ontouml.vp.views.ProgressPanel;
-import java.awt.Component;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of toolbar button action responsible for performing model verification.
@@ -19,27 +25,12 @@ import java.awt.Component;
  */
 public class ModelVerificationController implements VPActionController {
 
-  private ProgressPanel progressPanel;
-  private ProgressDialog loading;
-  private IDialog mainDialog;
-  ModelVerificationRequest request;
+  private static final String MODEL_VERIFICATION_ACTION =
+      "it.unibz.inf.ontouml.vp.actions.ModelVerificationAction";
+  private static final String DIAGRAM_VERIFICATION_ACTION =
+      "it.unibz.inf.ontouml.vp.actions.DiagramVerificationAction";
 
-  /**
-   * Performs OntoUML model verification.
-   *
-   * @param action
-   */
-  @Override
-  public void performAction(VPAction action) {
-
-    request = new ModelVerificationRequest();
-
-    loading = new ProgressDialog();
-    ApplicationManager.instance().getViewManager().showDialog(loading);
-
-    Thread thread = new Thread(request);
-    thread.start();
-  }
+  private VPAction action;
 
   /**
    * Called when the menu containing the button is accessed allowing for action manipulation, such
@@ -50,63 +41,67 @@ public class ModelVerificationController implements VPActionController {
   @Override
   public void update(VPAction action) {}
 
-  protected class ProgressDialog implements IDialogHandler {
+  /** Performs OntoUML model verification. */
+  @Override
+  public void performAction(VPAction action) {
+    this.action = action;
+    final SimpleServiceWorker worker = new SimpleServiceWorker(this::task);
+    worker.execute();
+  }
 
-    @Override
-    public Component getComponent() {
-      progressPanel = new ProgressPanel(request);
-      return progressPanel;
-    }
+  private List<String> task(SimpleServiceWorker context) {
+    try {
+      final String project = Uml2OntoumlTransformer.transformAndSerialize();
+      final VerificationServiceResult result =
+          OntoUMLServerAccessController.requestModelVerification(project);
 
-    @Override
-    public void prepare(IDialog dialog) {
-      mainDialog = dialog;
-      mainDialog.setTitle("Verification Service");
-      mainDialog.setModal(false);
-      mainDialog.setResizable(false);
-      dialog.setSize(progressPanel.getWidth(), progressPanel.getHeight() + 20);
-      progressPanel.setContainerDialog(mainDialog);
-    }
+      if (DIAGRAM_VERIFICATION_ACTION.equals(action.getActionId())) {
+        retainDiagramIssues(result);
+      }
 
-    @Override
-    public void shown() {}
+      if (!context.isCancelled()) {
+        ViewManagerUtils.log(result);
+      }
 
-    @Override
-    public boolean canClosed() {
-      mainDialog.close();
-      return true;
+      return List.of(result.getMessage());
+    } catch (IOException e) {
+      if (!context.isCancelled()) {
+        ViewManagerUtils.log(e.getMessage());
+      }
+
+      e.printStackTrace();
+      return List.of(e.getMessage());
     }
   }
 
-  public class ModelVerificationRequest extends ServerRequest {
-
-    @Override
-    public void run() {
-      while (keepRunning()) {
-        try {
-          final String response =
-              OntoUMLServerAccessController.requestModelVerification(
-                  ModelElement.generateModel(true), loading);
-
-          if (keepRunning()) {
-            if (response != null) {
-              loading.canClosed();
-              request.doStop();
-              ViewManagerUtils.logVerificationResponse(response);
-            } else {
-              loading.canClosed();
-              request.doStop();
-            }
-          } else {
-            loading.canClosed();
-            request.doStop();
-            ViewManagerUtils.cleanAndShowMessage("Request cancelled by the user.");
-          }
-
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
+  private void retainDiagramIssues(VerificationServiceResult result) {
+    if (result == null) {
+      return;
     }
+
+    final IDiagramUIModel activeDiagram =
+        ApplicationManager.instance().getDiagramManager().getActiveDiagram();
+    final IDiagramElement[] diagramElements = activeDiagram.toDiagramElementArray();
+
+    if (diagramElements == null) {
+      result.setResult(null);
+      return;
+    }
+
+    final List<ServiceIssue> verificationIssues = result.getResult();
+    final Set<String> presentModelElementsIds =
+        Arrays.stream(diagramElements)
+            .map(IBaseDiagramElement::getModelElement)
+            .map(modelElement -> modelElement != null ? modelElement.getId() : null)
+            .collect(Collectors.toSet());
+    final List<ServiceIssue> filteredVerificationIssues =
+        verificationIssues.stream()
+            .filter(
+                issue ->
+                    issue.getSource() != null
+                        && presentModelElementsIds.contains(issue.getSource().getId()))
+            .collect(Collectors.toList());
+
+    result.setResult(filteredVerificationIssues);
   }
 }

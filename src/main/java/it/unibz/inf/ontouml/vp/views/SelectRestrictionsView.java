@@ -5,15 +5,9 @@ import com.vp.plugin.view.IDialogHandler;
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.utils.RestrictedTo;
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.util.List;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 public class SelectRestrictionsView implements IDialogHandler {

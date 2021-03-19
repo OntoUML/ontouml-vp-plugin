@@ -4,19 +4,12 @@ import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.view.IDialog;
 import com.vp.plugin.view.IDialogHandler;
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.nio.file.Paths;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 public class SetOrderView implements IDialogHandler {
