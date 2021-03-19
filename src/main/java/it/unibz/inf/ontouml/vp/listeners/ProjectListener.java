@@ -67,12 +67,12 @@ public class ProjectListener implements IProjectListener {
 
         if (!upToDate) {
           System.out.println("New updates are available.");
-          ViewManagerUtils.simpleLog(
+          ViewManagerUtils.log(
               "New updates are available. Go to \"Update Plugin\" to get the latest version of the"
                   + " OntoUML Plugin for Visual Paradigm.");
         } else {
           System.out.println("No new updates available.");
-          ViewManagerUtils.simpleLog(
+          ViewManagerUtils.log(
               "Your OntoUML Plugin for Visual Paradigm is up to date with our latest release.");
         }
       } else {

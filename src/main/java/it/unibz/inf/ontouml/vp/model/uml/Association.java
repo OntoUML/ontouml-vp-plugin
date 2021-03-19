@@ -8,8 +8,6 @@ import com.vp.plugin.diagram.connector.IAssociationUIModel;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IClass;
-import it.unibz.inf.ontouml.vp.model.AssociationModelDescription;
-import it.unibz.inf.ontouml.vp.model.PropertyDescription;
 import it.unibz.inf.ontouml.vp.utils.Stereotype;
 import java.util.ArrayList;
 import java.util.HashSet;

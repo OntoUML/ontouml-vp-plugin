@@ -4,44 +4,14 @@ import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.diagram.IClassDiagramUIModel;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
-import com.vp.plugin.model.IAssociation;
-import com.vp.plugin.model.IAssociationClass;
-import com.vp.plugin.model.IAssociationEnd;
-import com.vp.plugin.model.IAttribute;
-import com.vp.plugin.model.IClass;
-import com.vp.plugin.model.IDataType;
-import com.vp.plugin.model.IGeneralization;
-import com.vp.plugin.model.IGeneralizationSet;
-import com.vp.plugin.model.IModel;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IPackage;
-import com.vp.plugin.model.IProject;
+import com.vp.plugin.model.*;
 import com.vp.plugin.model.factory.IModelElementFactory;
 import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.EventListener;
-import java.util.EventObject;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTree;
+import java.awt.*;
+import java.util.*;
+import javax.swing.*;
 import javax.swing.event.EventListenerList;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.DefaultTreeSelectionModel;
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreeCellRenderer;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
+import javax.swing.tree.*;
 
 public class JCheckBoxTree extends JTree {
 
@@ -205,6 +175,9 @@ public class JCheckBoxTree extends JTree {
       checkBox.setSelected(cn.isSelected);
       checkBox.setText(getNameNode(node));
 
+      // TODO: enable checkboxes
+      checkBox.setEnabled(false);
+
       checkBox.setOpaque(cn.isSelected && cn.hasChildren && !cn.allChildrenSelected);
 
       return this;
@@ -212,7 +185,7 @@ public class JCheckBoxTree extends JTree {
   }
 
   private String getNameNode(ElementNode node) {
-    return GUFOExportView.getDisplayName(node.getUserObject());
+    return GufoExportView.getDisplayName(node.getUserObject());
   }
 
   public JCheckBoxTree(String type) {
