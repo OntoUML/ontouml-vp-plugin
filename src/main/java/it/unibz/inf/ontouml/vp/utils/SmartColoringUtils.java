@@ -11,7 +11,6 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Implementation of the coloring feature
@@ -34,16 +33,16 @@ public class SmartColoringUtils {
   private static final Color PURPLE = new Color(211, 211, 252);
   private static final Color GREY = new Color(224, 224, 224);
 
-  private static final Color COLOR_RELATOR = GREEN;
-  private static final Color COLOR_RELATOR_ALTERNATIVE = LIGHT_GREEN;
-  private static final Color COLOR_EXTRINSIC_MODE = GREEN;
-  private static final Color COLOR_EXTRINSIC_MODE_ALTERNATIVE = LIGHT_GREEN;
   private static final Color COLOR_FUNCTIONAL_COMPLEX = PINK;
   private static final Color COLOR_FUNCTIONAL_COMPLEX_ALTERNATIVE = LIGHT_PINK;
   private static final Color COLOR_COLLECTIVE = PINK;
   private static final Color COLOR_COLLECTIVE_ALTERNATIVE = LIGHT_PINK;
   private static final Color COLOR_QUANTITY = PINK;
   private static final Color COLOR_QUANTITY_ALTERNATIVE = LIGHT_PINK;
+  private static final Color COLOR_RELATOR = GREEN;
+  private static final Color COLOR_RELATOR_ALTERNATIVE = LIGHT_GREEN;
+  private static final Color COLOR_EXTRINSIC_MODE = BLUE;
+  private static final Color COLOR_EXTRINSIC_MODE_ALTERNATIVE = LIGHT_BLUE;
   private static final Color COLOR_INTRINSIC_MODE = BLUE;
   private static final Color COLOR_INTRINSIC_MODE_ALTERNATIVE = LIGHT_BLUE;
   private static final Color COLOR_QUALITY = BLUE;
@@ -93,27 +92,35 @@ public class SmartColoringUtils {
    */
   private static Color getColor(IClass _class) {
     final String stereotype = ModelElement.getUniqueStereotypeName(_class);
-    final List<String> restrictedTo = Class.getRestrictedToList(_class);
-
     final List<String> allStereotypes = Stereotype.getOntoUMLClassStereotypeNames();
-    if (restrictedTo.isEmpty()) {
-      return allStereotypes.contains(stereotype) ? COLOR_NON_SPECIFIC : null;
+
+    if (!allStereotypes.contains(stereotype)) {
+      return null;
     }
 
+    final List<String> restrictedTo = Class.getRestrictedToList(_class);
     final boolean isUltimateSortal =
         Stereotype.getUltimateSortalStereotypeNames().contains(stereotype);
-    if (restrictedTo.size() == 1) {
-      String nature = restrictedTo.get(0);
-      return isUltimateSortal ? mainColorMap.get(nature) : alternativeColorMap.get(nature);
+
+    if (restrictedTo.isEmpty()) {
+      return COLOR_NON_SPECIFIC;
     }
 
-    final List<Color> differentColors =
-        restrictedTo.stream()
-            .map(s -> isUltimateSortal ? mainColorMap.get(s) : alternativeColorMap.get(s))
-            .distinct()
-            .collect(Collectors.toList());
-
-    return differentColors.size() == 1 ? differentColors.get(0) : COLOR_NON_SPECIFIC;
+    return restrictedTo.stream()
+        .map(
+            restriction ->
+                isUltimateSortal
+                    ? mainColorMap.get(restriction)
+                    : alternativeColorMap.get(restriction))
+        .reduce(
+            null,
+            (previousColor, currentColor) -> {
+              if (previousColor == null) {
+                return currentColor;
+              } else {
+                return previousColor.equals(currentColor) ? currentColor : COLOR_NON_SPECIFIC;
+              }
+            });
   }
 
   /**
