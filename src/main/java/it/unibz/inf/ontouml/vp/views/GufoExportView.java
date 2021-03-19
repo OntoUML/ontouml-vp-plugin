@@ -280,6 +280,10 @@ public class GufoExportView extends JPanel {
     packageTree = new JCheckBoxTree("package");
     diagramTree = new JCheckBoxTree("diagram");
 
+    // TODO: enable selection trees
+    packageTree.setEnabled(false);
+    diagramTree.setEnabled(false);
+
     JScrollPane scrollableTextAreaPackage = new JScrollPane(packageTree);
     JScrollPane scrollableTextAreaDiagram = new JScrollPane(diagramTree);
 

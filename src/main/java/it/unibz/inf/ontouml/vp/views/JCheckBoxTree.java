@@ -175,6 +175,9 @@ public class JCheckBoxTree extends JTree {
       checkBox.setSelected(cn.isSelected);
       checkBox.setText(getNameNode(node));
 
+      // TODO: enable checkboxes
+      checkBox.setEnabled(false);
+
       checkBox.setOpaque(cn.isSelected && cn.hasChildren && !cn.allChildrenSelected);
 
       return this;
