@@ -25,19 +25,21 @@ public class Trace {
   }
 
   public Object getSource(String id) {
-    return map.get(id).getSource();
+    Correspondence correspondence = map.get(id);
+    return correspondence != null ? correspondence.getSource() : null;
   }
 
   public Object getSource(OntoumlElement target) {
-    return getSource(target.getId());
+    return target != null ? getSource(target.getId()) : null;
   }
 
   public OntoumlElement getTarget(String id) {
-    return map.get(id).getTarget();
+    Correspondence correspondence = map.get(id);
+    return correspondence != null ? correspondence.getTarget() : null;
   }
 
   public OntoumlElement getTarget(IModelElement source) {
-    return getTarget(source.getId());
+    return source != null ? getTarget(source.getId()) : null;
   }
 
   public static Trace getInstance() {

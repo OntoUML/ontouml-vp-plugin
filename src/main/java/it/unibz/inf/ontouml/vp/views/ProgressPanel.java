@@ -50,13 +50,11 @@ public class ProgressPanel extends JPanel {
         List<String> circles =
             new ArrayList<>(Arrays.asList("\u25F4", "\u25F7", "\u25F6", "\u25F5"));
         int index = 0;
-        int times = 0;
 
-        while (!shouldStop.get() && times < 60000) {
+        while (!shouldStop.get() || isCancelled()) {
           publish(circles.get(index));
           index = (index + 1) % circles.size();
-          times++;
-          Thread.sleep(100);
+          Thread.sleep(200);
         }
 
         return circles;
