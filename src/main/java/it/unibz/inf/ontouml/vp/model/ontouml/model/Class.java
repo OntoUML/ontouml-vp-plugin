@@ -14,6 +14,10 @@ import java.util.stream.Stream;
 @JsonSerialize(using = ClassSerializer.class)
 @JsonDeserialize(using = ClassDeserializer.class)
 public final class Class extends Classifier<Class, ClassStereotype> {
+
+  public static Integer ORDERLESS = Integer.MAX_VALUE;
+  public static String ORDERLESS_STRING = "*";
+
   protected Boolean isExtensional;
   protected Boolean isPowertype;
   protected Integer order;
@@ -84,6 +88,14 @@ public final class Class extends Classifier<Class, ClassStereotype> {
 
   public void setOrder(Integer value) {
     order = value;
+  }
+
+  public Optional<String> getOrderAsString() {
+    if (order == null) return Optional.empty();
+    else
+      return ORDERLESS.equals(order)
+          ? Optional.of(ORDERLESS_STRING)
+          : Optional.of(order.toString());
   }
 
   public Set<Nature> getRestrictedTo() {
