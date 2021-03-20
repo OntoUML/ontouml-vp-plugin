@@ -22,7 +22,7 @@ public class ClassSerializer extends JsonSerializer<Class> {
     Serializer.writeNullableBooleanField(
         "isExtensional", clazz.isExtensional().orElse(null), jsonGen);
     Serializer.writeNullableBooleanField("isPowertype", clazz.isPowertype().orElse(null), jsonGen);
-    Serializer.writeNullableNumberField("order", clazz.getOrder().orElse(null), jsonGen);
+    Serializer.writeNullableStringField("order", clazz.getOrderAsString().orElse(null), jsonGen);
     Serializer.writeNullableArrayField("literals", clazz.getLiterals(), jsonGen);
 
     if (!clazz.getRestrictedTo().isEmpty()) {

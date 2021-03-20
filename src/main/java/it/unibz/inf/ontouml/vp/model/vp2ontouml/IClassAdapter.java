@@ -1,6 +1,7 @@
 package it.unibz.inf.ontouml.vp.model.vp2ontouml;
 
 import com.vp.plugin.model.*;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.Class;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
 
 public class IClassAdapter implements IAdapter {
@@ -82,9 +83,14 @@ public class IClassAdapter implements IAdapter {
     Integer order = null;
 
     try {
-      order = value instanceof String ? Integer.parseInt((String) value) : null;
+      if (value instanceof String) {
+        order =
+            Class.ORDERLESS_STRING.equals(value)
+                ? Class.ORDERLESS
+                : Integer.parseInt((String) value);
+      }
     } catch (NumberFormatException ignored) {
-      System.out.println("Order is is an integer!");
+      System.out.println("Order cannot be converted to an integer or orderless!");
     }
 
     return order;

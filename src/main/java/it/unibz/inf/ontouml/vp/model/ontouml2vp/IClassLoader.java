@@ -32,7 +32,7 @@ public class IClassLoader {
 
     fromClass.isExtensional().ifPresent(aBoolean -> setIsExtensional(toClass, aBoolean));
     fromClass.isPowertype().ifPresent(aBoolean -> setIsPowertype(toClass, aBoolean));
-    fromClass.getOrder().ifPresent(anInteger -> setOrder(toClass, anInteger.toString()));
+    fromClass.getOrderAsString().ifPresent(aString -> setOrder(toClass, aString));
 
     String restrictedTo = getRestrictedToString(fromClass);
     setRestrictedTo(toClass, restrictedTo);
