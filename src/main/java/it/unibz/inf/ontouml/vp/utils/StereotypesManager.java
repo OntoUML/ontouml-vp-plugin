@@ -1,20 +1,9 @@
 package it.unibz.inf.ontouml.vp.utils;
 
 import com.vp.plugin.ApplicationManager;
-import com.vp.plugin.model.IClass;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IProject;
-import com.vp.plugin.model.IStereotype;
-import com.vp.plugin.model.ITaggedValue;
-import com.vp.plugin.model.ITaggedValueContainer;
-import com.vp.plugin.model.ITaggedValueDefinition;
-import com.vp.plugin.model.ITaggedValueDefinitionContainer;
+import com.vp.plugin.model.*;
 import com.vp.plugin.model.factory.IModelElementFactory;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class StereotypesManager {
 
@@ -26,10 +15,9 @@ public class StereotypesManager {
   public static final String PROPERTY_IS_POWERTYPE = "isPowertype";
   public static final String PROPERTY_ORDER = "order";
 
-  public static List<String> getOntoUMLTaggedValues() {
-    return Arrays.asList(
-        PROPERTY_RESTRICTED_TO, PROPERTY_IS_EXTENSIONAL, PROPERTY_IS_POWERTYPE, PROPERTY_ORDER);
-  }
+  public static Set<String> CLASS_TAGGED_VALUES =
+      Set.of(
+          PROPERTY_RESTRICTED_TO, PROPERTY_IS_EXTENSIONAL, PROPERTY_IS_POWERTYPE, PROPERTY_ORDER);
 
   /** Method to be called whenever a project is opened to properly install all stereotypes. */
   public static void generate() {
@@ -171,7 +159,7 @@ public class StereotypesManager {
       return;
     }
 
-    System.out.println("\nStereotype: " + stereotype.getName());
+    System.out.println("Applying stereotype: " + stereotype.getName());
     ITaggedValueDefinitionContainer definitionContainer = stereotype.getTaggedValueDefinitions();
     if (definitionContainer != null) {
       Iterator<?> iterator = definitionContainer.taggedValueDefinitionIterator();
@@ -198,7 +186,7 @@ public class StereotypesManager {
       // 1. Saves and deletes tagged values associated to a stereotype
       for (ITaggedValue tv : taggedValues) {
         final boolean isAllowedTag = tv.getName().equals("allowed");
-        final boolean isOntoUMLTag = getOntoUMLTaggedValues().contains(tv.getName());
+        final boolean isOntoUMLTag = CLASS_TAGGED_VALUES.contains(tv.getName());
         final boolean isAssociatedToStereotype = tv.getTagDefinition() != null;
 
         if (isAllowedTag) {

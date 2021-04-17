@@ -3,7 +3,7 @@ package it.unibz.inf.ontouml.vp.controllers;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
-import java.awt.Desktop;
+import java.awt.*;
 import java.net.URI;
 
 public class ReportErrorController implements VPActionController {

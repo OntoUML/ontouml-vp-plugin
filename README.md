@@ -75,6 +75,13 @@ Users must select the elements that shall be exported to gUFO either selecting f
 
 ![A screenshot showing the "transformation to gUFO" window](./docs/feature-gufo.png)
 
+### Automatic Diagram Generation
+
+Diagram generation allows users to include into their projects automatically generated diagrams that advantage from OntoUML features to create meaningful views of their ontologies.
+
+![A gif demonstrating the diagram generation feature.](./docs/feature-diagram-generation.gif)
+
+
 #### Continuous Updates
 
 The cloud-based features offered in the plugin are periodically updated. Updates in these features usually do not require updates in the Visual Paradigm plugin.

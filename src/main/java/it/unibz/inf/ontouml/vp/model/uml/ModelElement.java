@@ -6,15 +6,7 @@ import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.DiagramManager;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
-import com.vp.plugin.model.IAssociation;
-import com.vp.plugin.model.IAssociationEnd;
-import com.vp.plugin.model.IAttribute;
-import com.vp.plugin.model.IClass;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IMultiplicity;
-import com.vp.plugin.model.IStereotype;
-import com.vp.plugin.model.ITaggedValue;
-import com.vp.plugin.model.ITaggedValueContainer;
+import com.vp.plugin.model.*;
 import com.vp.plugin.model.factory.IModelElementFactory;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
 import java.util.Arrays;
@@ -157,10 +149,8 @@ public interface ModelElement {
     ITaggedValue[] lTaggedValues = lContainer.toTaggedValueArray();
     List<String> ignoredClassValues =
         Arrays.asList(
-            new String[] {
-              StereotypesManager.PROPERTY_RESTRICTED_TO, StereotypesManager.PROPERTY_IS_EXTENSIONAL,
-              StereotypesManager.PROPERTY_IS_POWERTYPE, StereotypesManager.PROPERTY_ORDER
-            });
+            StereotypesManager.PROPERTY_RESTRICTED_TO, StereotypesManager.PROPERTY_IS_EXTENSIONAL,
+            StereotypesManager.PROPERTY_IS_POWERTYPE, StereotypesManager.PROPERTY_ORDER);
 
     for (int i = 0; lTaggedValues != null && i < lTaggedValues.length; i++) {
       if (ignoredClassValues.contains(lTaggedValues[i].getName())) {
@@ -308,7 +298,7 @@ public interface ModelElement {
         {
           final IAttribute attribute = (IAttribute) element;
           final IMultiplicity multiplicity = attribute.getMultiplicityDetail();
-          return multiplicity != null ? multiplicity.isOrdered() : false;
+          return multiplicity != null && multiplicity.isOrdered();
         }
 
       default:
@@ -396,9 +386,8 @@ public interface ModelElement {
     }
   }
 
-  @SuppressWarnings("unchecked")
-  public static <T extends IModelElement> void forEachSelectedElement(
-      T element, Consumer<T> consumer) {
+  // TODO: CHECKME!
+  static <T extends IModelElement> void forEachSelectedElement(T element, Consumer<T> consumer) {
     if (element == null) {
       return;
     }
@@ -420,7 +409,7 @@ public interface ModelElement {
             selectedElement ->
                 selectedElement != null
                     && selectedElementType.equals(selectedElement.getModelType()))
-        .forEach((Consumer<? super IModelElement>) consumer);
+        .forEach((Consumer<IModelElement>) consumer);
     ;
   }
 }
