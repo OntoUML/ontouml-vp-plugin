@@ -75,20 +75,20 @@ public class OntoUMLPlugin implements VPPlugin {
   public static boolean getConfigWindowOpen() {
     return isConfigWindowOpen;
   }
-  
+
   public static boolean getDBExportWindowOpen() {
-	  return isDBExportWindowOpen;
+    return isDBExportWindowOpen;
   }
-  
+
   public static void setDBExportWindowOpen(boolean open) {
-	  isDBExportWindowOpen = open;
+    isDBExportWindowOpen = open;
   }
-  
+
   public static boolean getOBDAExportWindowOpen() {
-	  return isOBDAExportWindowOpen;
+    return isOBDAExportWindowOpen;
   }
-  
+
   public static void setOBDAExportWindowOpen(boolean open) {
-	  isOBDAExportWindowOpen = open;
+    isOBDAExportWindowOpen = open;
   }
 }

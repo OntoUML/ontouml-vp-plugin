@@ -38,7 +38,22 @@ public class OntoUMLServerAccessController {
   private static final String USER_MESSAGE_CONNECTION_ERROR = "Unable to reach the server.";
   private static final String USER_MESSAGE_INTERNAL_ERROR = "Internal server error.";
   private static final String USER_MESSAGE_UNKNOWN_ERROR_RESPONSE =
-      "Error receiving service response.";
+      "Error receiving model verification response.";
+
+  public static BufferedReader transformToGUFO(
+      String model,
+      String baseIRI,
+      String format,
+      String uriFormatBy,
+      String inverse,
+      String object,
+      String analysis,
+      String packages,
+      String elementMapping,
+      String packageMapping,
+      IDialogHandler loading)
+      throws Exception {
+    final JsonObject optionsObj = new JsonObject();
 
   private static String getServiceRequestBody(String project) {
     return "{\"options\": null, \"project\": " + project + "}";
@@ -79,11 +94,13 @@ public class OntoUMLServerAccessController {
       throw new IOException(USER_MESSAGE_UNKNOWN_ERROR_RESPONSE);
     }
 
-    final BufferedReader reader =
-        new BufferedReader(new InputStreamReader(connection.getInputStream()));
-    final String json = reader.lines().parallel().collect(Collectors.joining("\n"));
-    return new ObjectMapper().readValue(json, _class);
-  }
+    try {
+
+      final HttpURLConnection request = request(url, body);
+      final BufferedReader responseReader =
+          request.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST
+              ? new BufferedReader(new InputStreamReader(request.getInputStream()))
+              : new BufferedReader(new InputStreamReader(request.getErrorStream()));
 
   private static boolean hasJsonContentType(HttpURLConnection connection) {
     return connection.getContentType().contains("application/json");
@@ -192,180 +209,184 @@ public class OntoUMLServerAccessController {
 
     return request;
   }
-  
 
-  
   public static BufferedReader transformToDB(
-		  String model,
-	      String mappingStrategy,
-	      String targetDBMS,
-	      boolean isStandardizeNames)  throws Exception {
-	  	  
-	  final JsonObject optionsObj = new JsonObject();
+      String model, String mappingStrategy, String targetDBMS, boolean isStandardizeNames)
+      throws Exception {
 
-	  optionsObj.addProperty("mappingStrategy", mappingStrategy);
-	  optionsObj.addProperty("targetDBMS", targetDBMS);
-	  optionsObj.addProperty("isStandardizeNames", isStandardizeNames);
+    final JsonObject optionsObj = new JsonObject();
 
-	  final JsonObject bodyObj = new JsonObject();
-	  bodyObj.add("options", optionsObj);
-	  bodyObj.add("model", new JsonParser().parse(model).getAsJsonObject());
+    optionsObj.addProperty("mappingStrategy", mappingStrategy);
+    optionsObj.addProperty("targetDBMS", targetDBMS);
+    optionsObj.addProperty("isStandardizeNames", isStandardizeNames);
 
-	  final GsonBuilder builder = new GsonBuilder();
-	  final Gson gson = builder.serializeNulls().setPrettyPrinting().create();
-	  final String body = gson.toJson(bodyObj);
+    final JsonObject bodyObj = new JsonObject();
+    bodyObj.add("options", optionsObj);
+    bodyObj.add("model", new JsonParser().parse(model).getAsJsonObject());
 
-	  final ProjectConfigurations configurations = Configurations.getInstance().getProjectConfigurations();
-	  final String url;
+    final GsonBuilder builder = new GsonBuilder();
+    final Gson gson = builder.serializeNulls().setPrettyPrinting().create();
+    final String body = gson.toJson(bodyObj);
 
-	  if (configurations.isCustomServerEnabled()) {
-		  url = configurations.getServerURL() + TRANSFORM_DB_SERVICE_ENDPOINT;
-	  } else {
-		  url = ProjectConfigurations.DEFAULT_SERVER_URL + TRANSFORM_DB_SERVICE_ENDPOINT;
-	  }
+    final ProjectConfigurations configurations =
+        Configurations.getInstance().getProjectConfigurations();
+    final String url;
 
-	  try {    	
-		  final HttpURLConnection request = request(url, body);
-		  final BufferedReader responseReader =
-		          request.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST
-		              ? new BufferedReader(new InputStreamReader(request.getInputStream()))
-		              : new BufferedReader(new InputStreamReader(request.getErrorStream()));
-      
-		  switch (request.getResponseCode()) {
-		  		case HttpURLConnection.HTTP_OK:
-		  					if (!request.getContentType().equals("text/html")) {
-		  							return responseReader;
-		  					} else {	
-		  						System.out.println(responseReader.lines().collect(Collectors.joining()));
-		  						new Exception("Server not found.").printStackTrace();
-		  						return null;
-		  					}
-		  		case HttpURLConnection.HTTP_BAD_REQUEST:
-		  				ViewManagerUtils.exportToGUFOIssueDialog(
-		  						"Unable to transform the model due to an unexpected error.\n"+
-					            "Please check the model for any syntactical errors.\n\n"+
-					            "Warning: partially exporting models to gUFO may introduce syntactical errors.");
-		  				System.out.println(responseReader.lines().collect(Collectors.joining()));
-		  				new Exception(
-		  						"Unable to transform the model due to an unexpected error.\n"+
-				                "Please check the model for any syntactical errors.\n\n"+
-				                "Warning: partially exporting models to gUFO may introduce syntactical errors.")
-		  						.printStackTrace();
-				        return null;
-		  		case HttpURLConnection.HTTP_NOT_FOUND:
-		  				System.out.println(responseReader.lines().collect(Collectors.joining()));
-		  				new Exception("Server not found.").printStackTrace();
-		  				return null;
-		  		case HttpURLConnection.HTTP_INTERNAL_ERROR: //500
-		  				System.out.println(responseReader.lines().collect(Collectors.joining()));
-		  				ViewManagerUtils.exportToGUFOIssueDialog("Oops! Something went wrong. \n"
-		  						+ "Please check the model for any syntactical errors.\n"
-		  						//+ "If the problem persists, open a ticket with a case that simulates this problem."
-		  						);
-		  				new Exception("Server error" ).printStackTrace();
-		  				return null;
-		  		default:
-		  				ViewManagerUtils.exportToGUFOIssueDialog("Unexpected error.");
-		  				throw new Exception("Unknown error");
-		  }
-	  } catch (MalformedURLException e) {
-		  ViewManagerUtils.exportToGUFOIssueDialog("Server error.");
-		  e.printStackTrace();
-	  } catch (IOException e) {
-		  e.printStackTrace();
-	  }
-	  return null;
+    if (configurations.isCustomServerEnabled()) {
+      url = configurations.getServerURL() + TRANSFORM_DB_SERVICE_ENDPOINT;
+    } else {
+      url = ProjectConfigurations.DEFAULT_SERVER_URL + TRANSFORM_DB_SERVICE_ENDPOINT;
+    }
+
+    try {
+      final HttpURLConnection request = request(url, body);
+      final BufferedReader responseReader =
+          request.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST
+              ? new BufferedReader(new InputStreamReader(request.getInputStream()))
+              : new BufferedReader(new InputStreamReader(request.getErrorStream()));
+
+      switch (request.getResponseCode()) {
+        case HttpURLConnection.HTTP_OK:
+          if (!request.getContentType().equals("text/html")) {
+            return responseReader;
+          } else {
+            System.out.println(responseReader.lines().collect(Collectors.joining()));
+            new Exception("Server not found.").printStackTrace();
+            return null;
+          }
+        case HttpURLConnection.HTTP_BAD_REQUEST:
+          ViewManagerUtils.exportToGUFOIssueDialog(
+              "Unable to transform the model due to an unexpected error.\n"
+                  + "Please check the model for any syntactical errors.\n\n"
+                  + "Warning: partially exporting models to gUFO may introduce syntactical"
+                  + " errors.");
+          System.out.println(responseReader.lines().collect(Collectors.joining()));
+          new Exception(
+                  "Unable to transform the model due to an unexpected error.\n"
+                      + "Please check the model for any syntactical errors.\n\n"
+                      + "Warning: partially exporting models to gUFO may introduce syntactical"
+                      + " errors.")
+              .printStackTrace();
+          return null;
+        case HttpURLConnection.HTTP_NOT_FOUND:
+          System.out.println(responseReader.lines().collect(Collectors.joining()));
+          new Exception("Server not found.").printStackTrace();
+          return null;
+        case HttpURLConnection.HTTP_INTERNAL_ERROR: // 500
+          System.out.println(responseReader.lines().collect(Collectors.joining()));
+          ViewManagerUtils.exportToGUFOIssueDialog(
+              "Oops! Something went wrong. \n"
+                  + "Please check the model for any syntactical errors.\n"
+              // + "If the problem persists, open a ticket with a case that simulates this problem."
+              );
+          new Exception("Server error").printStackTrace();
+          return null;
+        default:
+          ViewManagerUtils.exportToGUFOIssueDialog("Unexpected error.");
+          throw new Exception("Unknown error");
+      }
+    } catch (MalformedURLException e) {
+      ViewManagerUtils.exportToGUFOIssueDialog("Server error.");
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 
   public static BufferedReader generateODBAFile(
-		  String model,
-	      String mappingStrategy,
-	      String targetDBMS,
-	      boolean isStandardizeNames,
-	      String baseIRI,
-	      boolean isGenerateSchema,
-	      boolean generateConnection,
-	      String hostName,
-	      String databaseName,
-	      String userConnection,
-	      String passwordConnection)  throws Exception {
-	  
-	  final JsonObject optionsObj = new JsonObject();
+      String model,
+      String mappingStrategy,
+      String targetDBMS,
+      boolean isStandardizeNames,
+      String baseIRI,
+      boolean isGenerateSchema,
+      boolean generateConnection,
+      String hostName,
+      String databaseName,
+      String userConnection,
+      String passwordConnection)
+      throws Exception {
 
-	  optionsObj.addProperty("mappingStrategy", mappingStrategy);
-	  optionsObj.addProperty("targetDBMS", targetDBMS);
-	  optionsObj.addProperty("isStandardizeNames", isStandardizeNames);
-	  optionsObj.addProperty("baseIri", baseIRI);
-	  optionsObj.addProperty("isGenerateSchema", isGenerateSchema);
-	  optionsObj.addProperty("generateConnection", generateConnection);
-	  optionsObj.addProperty("hostName", hostName);
-	  optionsObj.addProperty("databaseName", databaseName);
-	  optionsObj.addProperty("userConnection", userConnection);
-	  optionsObj.addProperty("passwordConnection", passwordConnection);
+    final JsonObject optionsObj = new JsonObject();
 
-	  final JsonObject bodyObj = new JsonObject();
-	  bodyObj.add("options", optionsObj);
-	  bodyObj.add("model", new JsonParser().parse(model).getAsJsonObject());
+    optionsObj.addProperty("mappingStrategy", mappingStrategy);
+    optionsObj.addProperty("targetDBMS", targetDBMS);
+    optionsObj.addProperty("isStandardizeNames", isStandardizeNames);
+    optionsObj.addProperty("baseIri", baseIRI);
+    optionsObj.addProperty("isGenerateSchema", isGenerateSchema);
+    optionsObj.addProperty("generateConnection", generateConnection);
+    optionsObj.addProperty("hostName", hostName);
+    optionsObj.addProperty("databaseName", databaseName);
+    optionsObj.addProperty("userConnection", userConnection);
+    optionsObj.addProperty("passwordConnection", passwordConnection);
 
-	  final GsonBuilder builder = new GsonBuilder();
-	  final Gson gson = builder.serializeNulls().setPrettyPrinting().create();
-	  final String body = gson.toJson(bodyObj);
-	  
-	  final ProjectConfigurations configurations = Configurations.getInstance().getProjectConfigurations();
-	  final String url;
+    final JsonObject bodyObj = new JsonObject();
+    bodyObj.add("options", optionsObj);
+    bodyObj.add("model", new JsonParser().parse(model).getAsJsonObject());
 
-	  if (configurations.isCustomServerEnabled()) {
-		  url = configurations.getServerURL() + TRANSFORM_OBDA_SERVICE_ENDPOINT;
-	  } else {
-		  url = ProjectConfigurations.DEFAULT_SERVER_URL + TRANSFORM_OBDA_SERVICE_ENDPOINT;
-	  }
-	  try {    	
-		  final HttpURLConnection request = request(url, body);
-		  final BufferedReader responseReader =
-		          request.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST
-		              ? new BufferedReader(new InputStreamReader(request.getInputStream()))
-		              : new BufferedReader(new InputStreamReader(request.getErrorStream()));
-      
-		  switch (request.getResponseCode()) {
-		  		case HttpURLConnection.HTTP_OK:
-		  					if (!request.getContentType().equals("text/html")) {
-		  							return responseReader;
-		  					} else {	
-		  						System.out.println(responseReader.lines().collect(Collectors.joining()));
-		  						new Exception("Server not found.").printStackTrace();
-		  						return null;
-		  					}
-		  		case HttpURLConnection.HTTP_BAD_REQUEST:
-		  				ViewManagerUtils.exportToGUFOIssueDialog(
-		  						"Unable to transform the model due to an unexpected error.\n"+
-					            "Please check the model for any syntactical errors.\n\n"+
-					            "Warning: partially exporting models to gUFO may introduce syntactical errors.");
-		  				System.out.println(responseReader.lines().collect(Collectors.joining()));
-		  				new Exception(
-		  						"Unable to transform the model due to an unexpected error.\n"+
-				                "Please check the model for any syntactical errors.\n\n"+
-				                "Warning: partially exporting models to gUFO may introduce syntactical errors.")
-		  						.printStackTrace();
-				        return null;
-		  		case HttpURLConnection.HTTP_NOT_FOUND:
-		  				System.out.println(responseReader.lines().collect(Collectors.joining()));
-		  				new Exception("Server not found.").printStackTrace();
-		  				return null;
-		  		case HttpURLConnection.HTTP_INTERNAL_ERROR:
-		  				System.out.println(responseReader.lines().collect(Collectors.joining()));
-		  				new Exception("Server error.").printStackTrace();
-		  				return null;
-		  		default:
-		  				ViewManagerUtils.exportToGUFOIssueDialog("Unexpected error.");
-		  				throw new Exception("Unknown error");
-		  }
-	  } catch (MalformedURLException e) {
-		  ViewManagerUtils.exportToGUFOIssueDialog("Server error.");
-		  e.printStackTrace();
-	  } catch (IOException e) {
-		  e.printStackTrace();
-	  }
-	  
-	  return null;
+    final GsonBuilder builder = new GsonBuilder();
+    final Gson gson = builder.serializeNulls().setPrettyPrinting().create();
+    final String body = gson.toJson(bodyObj);
+
+    final ProjectConfigurations configurations =
+        Configurations.getInstance().getProjectConfigurations();
+    final String url;
+
+    if (configurations.isCustomServerEnabled()) {
+      url = configurations.getServerURL() + TRANSFORM_OBDA_SERVICE_ENDPOINT;
+    } else {
+      url = ProjectConfigurations.DEFAULT_SERVER_URL + TRANSFORM_OBDA_SERVICE_ENDPOINT;
+    }
+    try {
+      final HttpURLConnection request = request(url, body);
+      final BufferedReader responseReader =
+          request.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST
+              ? new BufferedReader(new InputStreamReader(request.getInputStream()))
+              : new BufferedReader(new InputStreamReader(request.getErrorStream()));
+
+      switch (request.getResponseCode()) {
+        case HttpURLConnection.HTTP_OK:
+          if (!request.getContentType().equals("text/html")) {
+            return responseReader;
+          } else {
+            System.out.println(responseReader.lines().collect(Collectors.joining()));
+            new Exception("Server not found.").printStackTrace();
+            return null;
+          }
+        case HttpURLConnection.HTTP_BAD_REQUEST:
+          ViewManagerUtils.exportToGUFOIssueDialog(
+              "Unable to transform the model due to an unexpected error.\n"
+                  + "Please check the model for any syntactical errors.\n\n"
+                  + "Warning: partially exporting models to gUFO may introduce syntactical"
+                  + " errors.");
+          System.out.println(responseReader.lines().collect(Collectors.joining()));
+          new Exception(
+                  "Unable to transform the model due to an unexpected error.\n"
+                      + "Please check the model for any syntactical errors.\n\n"
+                      + "Warning: partially exporting models to gUFO may introduce syntactical"
+                      + " errors.")
+              .printStackTrace();
+          return null;
+        case HttpURLConnection.HTTP_NOT_FOUND:
+          System.out.println(responseReader.lines().collect(Collectors.joining()));
+          new Exception("Server not found.").printStackTrace();
+          return null;
+        case HttpURLConnection.HTTP_INTERNAL_ERROR:
+          System.out.println(responseReader.lines().collect(Collectors.joining()));
+          new Exception("Server error.").printStackTrace();
+          return null;
+        default:
+          ViewManagerUtils.exportToGUFOIssueDialog("Unexpected error.");
+          throw new Exception("Unknown error");
+      }
+    } catch (MalformedURLException e) {
+      ViewManagerUtils.exportToGUFOIssueDialog("Server error.");
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return null;
   }
 }
