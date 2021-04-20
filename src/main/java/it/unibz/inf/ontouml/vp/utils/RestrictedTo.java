@@ -82,7 +82,7 @@ public class RestrictedTo {
     }
   }
 
-  public static boolean shouldOverrideRestrictedTo(String stereotype, String restrictedTo) {
+  public static boolean shouldOverrideRestrictedTo(String stereotype, List<String> restrictedTo) {
     switch (stereotype) {
       case Stereotype.TYPE:
       case Stereotype.EVENT:
@@ -92,11 +92,15 @@ public class RestrictedTo {
       case Stereotype.QUANTITY:
       case Stereotype.RELATOR:
       case Stereotype.QUALITY:
-      case Stereotype.MODE:
       case Stereotype.ENUMERATION:
       case Stereotype.DATATYPE:
       case Stereotype.ABSTRACT:
         return true;
+      case Stereotype.MODE:
+        return restrictedTo.stream()
+            .anyMatch(
+                restriction ->
+                    !INTRINSIC_MODE.equals(restriction) && !EXTRINSIC_MODE.equals(restriction));
       case Stereotype.CATEGORY:
       case Stereotype.MIXIN:
       case Stereotype.ROLE_MIXIN:
