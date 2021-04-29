@@ -70,13 +70,11 @@ public class OntoUMLServerAccessController {
   }
 
   private static String getMappingToErRequestUrl() {
-	    final ProjectConfigurations config = Configurations.getInstance().getProjectConfigurations();
-	    return config.isCustomServerEnabled()
-	        ? config.getServerURL() + MAPPING_TO_DB_SERVICE_ENDPOINT
-	        : ProjectConfigurations.DEFAULT_SERVER_URL + MAPPING_TO_DB_SERVICE_ENDPOINT;
-	  }
-
-  
+    final ProjectConfigurations config = Configurations.getInstance().getProjectConfigurations();
+    return config.isCustomServerEnabled()
+        ? config.getServerURL() + MAPPING_TO_DB_SERVICE_ENDPOINT
+        : ProjectConfigurations.DEFAULT_SERVER_URL + MAPPING_TO_DB_SERVICE_ENDPOINT;
+  }
 
   private static <T extends ServiceResult<?>> T parseResponse(
       HttpURLConnection connection, Class<T> _class) throws IOException {
@@ -124,14 +122,14 @@ public class OntoUMLServerAccessController {
 
     return parseResponse(connection, GufoTransformationServiceResult.class);
   }
-  
-  public static DbMappingToDbServiceResult requestMappingToDB(
-     String project, String options) throws IOException {
-	 final String url = getMappingToErRequestUrl();
-	 final String body = getServiceRequestBody(project, options);
-	 final HttpURLConnection connection = request(url, body);
-	
-	 return parseResponse(connection, DbMappingToDbServiceResult.class);
+
+  public static DbMappingToDbServiceResult requestMappingToDB(String project, String options)
+      throws IOException {
+    final String url = getMappingToErRequestUrl();
+    final String body = getServiceRequestBody(project, options);
+    final HttpURLConnection connection = request(url, body);
+
+    return parseResponse(connection, DbMappingToDbServiceResult.class);
   }
 
   private static HttpURLConnection request(String url, String body) throws IOException {

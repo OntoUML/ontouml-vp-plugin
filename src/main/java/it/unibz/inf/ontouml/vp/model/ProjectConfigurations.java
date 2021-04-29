@@ -162,20 +162,18 @@ public class ProjectConfigurations {
   @SerializedName("passwordConnectino")
   @Expose()
   private String passwordConnectino;
-  
+
   @SerializedName("dbMappingFileName")
   @Expose()
   private String dbMappingFileName;
-   
+
   @SerializedName("dbMappingFolderPath")
   @Expose()
   private String dbMappingFolderPath;
-  
+
   @SerializedName("enumFieldToLookupTable")
   @Expose()
   private boolean enumFieldToLookupTable;
-  
-  
 
   /** Constructor without args to be called when deserializing project settings. */
   public ProjectConfigurations() {
@@ -223,7 +221,7 @@ public class ProjectConfigurations {
     this.dbMappingFileName = ProjectConfigurations.DEFAULT_DB_MAPPING_FILE_NAME;
     this.dbMappingFolderPath = ProjectConfigurations.DEFAULT_DB_MAPPING_PATH;
     this.enumFieldToLookupTable = ProjectConfigurations.DEFAULT_IS_ENUMARATION_TO_LOOKUP_TABLE;
-  } 
+  }
 
   /**
    * Returns the related project's ID.
@@ -656,60 +654,59 @@ public class ProjectConfigurations {
   public void setPassword(String password) {
     this.passwordConnectino = password;
   }
-  
+
   /**
    * Returns the file name for mapping to ER.
    *
-   * @return 
+   * @return
    */
   public String getDbMappingFileName() {
-	  return this.dbMappingFileName;
-  };
-  
+    return this.dbMappingFileName;
+  }
+  ;
+
   /**
    * Informs the file name for mapping to ER.
    *
    * @param string
    */
   public void setDbMappingFileName(String dbMappingFileName) {
-	  this.dbMappingFileName = dbMappingFileName;
+    this.dbMappingFileName = dbMappingFileName;
   }
-  
+
   /**
    * Returns the directory to save the files mapping.
    *
    * @return String
    */
   public String getDbMappingFolderPath() {
-	  return this.dbMappingFolderPath;
+    return this.dbMappingFolderPath;
   }
-  
+
   /**
    * Informs the directory for mapping to ER.
    *
    * @param string
    */
   public void setDbMappingFolderPath(String dbMappingFolderPath) {
-	  this.dbMappingFolderPath = dbMappingFolderPath;
+    this.dbMappingFolderPath = dbMappingFolderPath;
   }
-  
+
   /**
    * Returns if it is necessary to generate a table for the enumeration type fields.
    *
-   * @return boolean 
+   * @return boolean
    */
   public boolean isEnumFieldToLookupTable() {
-	  return this.enumFieldToLookupTable;
+    return this.enumFieldToLookupTable;
   }
-  
+
   /**
    * Informs if it is necessary to generate a table for the enumeration type fields.
    *
-   * @param boolean 
+   * @param boolean
    */
   public void setEnumFieldToLookupTable(boolean isEnumFieldToLookupTable) {
-	  this.enumFieldToLookupTable = isEnumFieldToLookupTable;
+    this.enumFieldToLookupTable = isEnumFieldToLookupTable;
   }
-  
-  
 }
