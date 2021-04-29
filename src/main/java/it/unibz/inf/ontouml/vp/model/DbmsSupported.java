@@ -1,6 +1,6 @@
 package it.unibz.inf.ontouml.vp.model;
 
-public enum DBMSSuported {
+public enum DbmsSupported {
   GENERIC_SCHEMA("Generic Schema"),
   MYSQL("MySql"),
   H2("H2"),
@@ -10,7 +10,7 @@ public enum DBMSSuported {
 
   private final String display;
 
-  private DBMSSuported(String s) {
+  private DbmsSupported(String s) {
     display = s;
   }
 

@@ -124,6 +124,30 @@
         ribbonPath="Project/Export/#">
         <actionController class="it.unibz.inf.ontouml.vp.controllers.GufoExportController"/>
       </action>
+      
+      <action
+        id="it.unibz.inf.ontouml.vp.actions.DBMappingAction"
+        actionType="generalAction"
+        description="Mapping the OntoUML ontology to Relatinal Schema or OBDA file."
+        style="normal"
+        tooltip="Mapping the OntoUML ontology to Relatinal Schema or OBDA file.."
+        icon="icons/logo/ontouml-simple-logo-small.png"
+        label="Mapping to ER"
+        menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
+        <actionController class="it.unibz.inf.ontouml.vp.controllers.DbMappingController"/>
+      </action>
+
+      <action
+        id="project.export.DBMappingAction"
+        actionType="generalAction"
+        description="Mapping the OntoUML ontology to Relatinal Schema or OBDA file."
+        style="normal"
+        tooltip="Mapping the OntoUML ontology to Relatinal Schema or OBDA file."
+        icon="icons/logo/ontouml-simple-logo-small.png"
+        label="Mapping to ER"
+        ribbonPath="Project/Export/#">
+        <actionController class="it.unibz.inf.ontouml.vp.controllers.DbMappingController"/>
+      </action>
 
       <separator id="project.export.ontouml" ribbonPath="Project/Export/#"/>
 

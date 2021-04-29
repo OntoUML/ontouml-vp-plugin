@@ -25,11 +25,14 @@ public class ProjectConfigurations {
   public static final String DEFAULT_EXPORT_FILENAME = "";
   public static final String DEFAULT_GUFO_EXPORT_PATH = System.getProperty("user.home");
   public static final String DEFAULT_GUFO_EXPORT_FILENAME = "";
-  public static final DBMSSuported DEFAULT_DBMS = DBMSSuported.GENERIC_SCHEMA;
+  public static final DbmsSupported DEFAULT_DBMS = DbmsSupported.GENERIC_SCHEMA;
   public static final MappingStrategy DEFAULT_MAPPING_STRATEGY = MappingStrategy.ONE_TABLE_PER_KIND;
   public static final boolean DEFAULT_STANTDARDIZE_NAMES = true;
   public static final boolean DEFAULT_GENERATE_SCHEMA = true;
   public static final boolean DEFAULT_GENERATE_CONNECTION = false;
+  public static final String DEFAULT_DB_MAPPING_PATH = System.getProperty("user.home");
+  public static final String DEFAULT_DB_MAPPING_FILE_NAME = "";
+  public static final boolean DEFAULT_IS_ENUMARATION_TO_LOOKUP_TABLE = false;
 
   @SerializedName("projectId")
   @Expose()
@@ -130,7 +133,7 @@ public class ProjectConfigurations {
 
   @SerializedName("targetDBMS")
   @Expose()
-  private DBMSSuported targetDBMS;
+  private DbmsSupported targetDBMS;
 
   @SerializedName("standarizeNames")
   @Expose()
@@ -159,6 +162,20 @@ public class ProjectConfigurations {
   @SerializedName("passwordConnectino")
   @Expose()
   private String passwordConnectino;
+  
+  @SerializedName("dbMappingFileName")
+  @Expose()
+  private String dbMappingFileName;
+   
+  @SerializedName("dbMappingFolderPath")
+  @Expose()
+  private String dbMappingFolderPath;
+  
+  @SerializedName("enumFieldToLookupTable")
+  @Expose()
+  private boolean enumFieldToLookupTable;
+  
+  
 
   /** Constructor without args to be called when deserializing project settings. */
   public ProjectConfigurations() {
@@ -203,7 +220,10 @@ public class ProjectConfigurations {
     this.standardizeNames = ProjectConfigurations.DEFAULT_STANTDARDIZE_NAMES;
     this.generateSchema = ProjectConfigurations.DEFAULT_GENERATE_SCHEMA;
     this.generateConnection = ProjectConfigurations.DEFAULT_GENERATE_CONNECTION;
-  }
+    this.dbMappingFileName = ProjectConfigurations.DEFAULT_DB_MAPPING_FILE_NAME;
+    this.dbMappingFolderPath = ProjectConfigurations.DEFAULT_DB_MAPPING_PATH;
+    this.enumFieldToLookupTable = ProjectConfigurations.DEFAULT_IS_ENUMARATION_TO_LOOKUP_TABLE;
+  } 
 
   /**
    * Returns the related project's ID.
@@ -516,7 +536,7 @@ public class ProjectConfigurations {
    *
    * @return DBMSSuported
    */
-  public DBMSSuported getTargetDBMS() {
+  public DbmsSupported getTargetDBMS() {
     return targetDBMS;
   }
 
@@ -525,7 +545,7 @@ public class ProjectConfigurations {
    *
    * @param targetDBMS
    */
-  public void setTargetDBMS(DBMSSuported targetDBMS) {
+  public void setTargetDBMS(DbmsSupported targetDBMS) {
     this.targetDBMS = targetDBMS;
   }
 
@@ -636,4 +656,60 @@ public class ProjectConfigurations {
   public void setPassword(String password) {
     this.passwordConnectino = password;
   }
+  
+  /**
+   * Returns the file name for mapping to ER.
+   *
+   * @return 
+   */
+  public String getDbMappingFileName() {
+	  return this.dbMappingFileName;
+  };
+  
+  /**
+   * Informs the file name for mapping to ER.
+   *
+   * @param string
+   */
+  public void setDbMappingFileName(String dbMappingFileName) {
+	  this.dbMappingFileName = dbMappingFileName;
+  }
+  
+  /**
+   * Returns the directory to save the files mapping.
+   *
+   * @return String
+   */
+  public String getDbMappingFolderPath() {
+	  return this.dbMappingFolderPath;
+  }
+  
+  /**
+   * Informs the directory for mapping to ER.
+   *
+   * @param string
+   */
+  public void setDbMappingFolderPath(String dbMappingFolderPath) {
+	  this.dbMappingFolderPath = dbMappingFolderPath;
+  }
+  
+  /**
+   * Returns if it is necessary to generate a table for the enumeration type fields.
+   *
+   * @return boolean 
+   */
+  public boolean isEnumFieldToLookupTable() {
+	  return this.enumFieldToLookupTable;
+  }
+  
+  /**
+   * Informs if it is necessary to generate a table for the enumeration type fields.
+   *
+   * @param boolean 
+   */
+  public void setEnumFieldToLookupTable(boolean isEnumFieldToLookupTable) {
+	  this.enumFieldToLookupTable = isEnumFieldToLookupTable;
+  }
+  
+  
 }

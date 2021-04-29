@@ -17,13 +17,8 @@ public class ProgressPanel extends JPanel {
 
   private static final long serialVersionUID = 1L;
 
-  private JLabel label;
-  private JProgressBar progressBar;
-  private JButton btnCancel;
-  private IDialog _dialog;
-
-  public ProgressPanel(String text) {
-    setSize(new Dimension(200, 100));
+  private final JProgressBar progressBar;
+  private final JButton btnCancel;
 
   public ProgressPanel() {
     super();
@@ -44,9 +39,12 @@ public class ProgressPanel extends JPanel {
     add(btnCancel);
   }
 
-  public ProgressPanel(ServerRequest request) {
-    this("Contacting Server...");
-    setSize(new Dimension(200, 120)); // Add 20 to the height because add a button
+  public void startUpdatingProgressBarString(Supplier<Boolean> shouldStop) {
+    new SwingWorker<List<String>, String>() {
+      protected void process(List<String> chunks) {
+        String latest = chunks.get(chunks.size() - 1);
+        progressBar.setString(latest);
+      }
 
       protected List<String> doInBackground() throws Exception {
         List<String> circles =
