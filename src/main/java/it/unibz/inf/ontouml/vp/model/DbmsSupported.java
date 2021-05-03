@@ -1,5 +1,7 @@
 package it.unibz.inf.ontouml.vp.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum DbmsSupported {
   GENERIC_SCHEMA("Generic Schema"),
   MYSQL("MySql"),
@@ -14,6 +16,7 @@ public enum DbmsSupported {
     display = s;
   }
 
+  @JsonValue
   @Override
   public String toString() {
     return display;

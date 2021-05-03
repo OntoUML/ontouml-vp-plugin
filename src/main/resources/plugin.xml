@@ -128,11 +128,11 @@
       <action
         id="it.unibz.inf.ontouml.vp.actions.DBMappingAction"
         actionType="generalAction"
-        description="Mapping the OntoUML ontology to Relatinal Schema or OBDA file."
+        description="Generates input files for relational databases and ODBA solutions."
         style="normal"
-        tooltip="Mapping the OntoUML ontology to Relatinal Schema or OBDA file.."
+        tooltip="Generates input files for relational databases and ODBA solutions."
         icon="icons/logo/ontouml-simple-logo-small.png"
-        label="Mapping to ER"
+        label="Export to DB"
         menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
         <actionController class="it.unibz.inf.ontouml.vp.controllers.DbMappingController"/>
       </action>
@@ -188,6 +188,7 @@
       </action>
 
       <!--
+      -->
       <action
         id="it.unibz.inf.ontouml.vp.actions.ReloadClassesAction"
         actionType="generalAction"
@@ -197,7 +198,6 @@
         menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
         <actionController class="it.unibz.inf.ontouml.vp.controllers.ReloadClassesController"/>
       </action>
-      -->
 
     </actionSet>
 

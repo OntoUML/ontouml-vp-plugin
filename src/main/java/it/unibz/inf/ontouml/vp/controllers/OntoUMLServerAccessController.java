@@ -2,9 +2,9 @@ package it.unibz.inf.ontouml.vp.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unibz.inf.ontouml.vp.model.Configurations;
-import it.unibz.inf.ontouml.vp.model.DbMappingToDbServiceResult;
 import it.unibz.inf.ontouml.vp.model.GufoTransformationServiceResult;
 import it.unibz.inf.ontouml.vp.model.ModularizationServiceResult;
+import it.unibz.inf.ontouml.vp.model.Ontouml2DbServiceResult;
 import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
 import it.unibz.inf.ontouml.vp.model.ServiceResult;
 import it.unibz.inf.ontouml.vp.model.VerificationServiceResult;
@@ -26,10 +26,11 @@ import java.util.stream.Collectors;
  */
 public class OntoUMLServerAccessController {
 
-  private static final String TRANSFORM_GUFO_SERVICE_ENDPOINT = "/v1/transform/gufo";
-  private static final String VERIFICATION_SERVICE_ENDPOINT = "/v1/verify";
   private static final String MODULARIZATION_SERVICE_ENDPOINT = "/v1/modularize";
-  private static final String MAPPING_TO_DB_SERVICE_ENDPOINT = "/v1/mapping/db";
+  private static final String TRANSFORM_GUFO_SERVICE_ENDPOINT = "/v1/transform/gufo";
+  private static final String TRANSFORM_DB_SERVICE_ENDPOINT = "/v1/transform/db";
+  private static final String VERIFICATION_SERVICE_ENDPOINT = "/v1/verify";
+
   private static final String USER_MESSAGE_BAD_REQUEST =
       "There was a internal plugin error and the service could not be completed.";
   private static final String USER_MESSAGE_REQUEST_WITH_SYNTACTICAL_ERRORS =
@@ -48,32 +49,27 @@ public class OntoUMLServerAccessController {
     return "{\"options\": " + options + ", \"project\": " + project + "}";
   }
 
-  private static String getModularizationRequestUrl() {
+  private static String getServerUrl() {
     final ProjectConfigurations config = Configurations.getInstance().getProjectConfigurations();
     return config.isCustomServerEnabled()
-        ? config.getServerURL() + MODULARIZATION_SERVICE_ENDPOINT
-        : ProjectConfigurations.DEFAULT_SERVER_URL + MODULARIZATION_SERVICE_ENDPOINT;
+        ? config.getServerURL()
+        : ProjectConfigurations.DEFAULT_SERVER_URL;
+  }
+
+  private static String getModularizationRequestUrl() {
+    return getServerUrl() + MODULARIZATION_SERVICE_ENDPOINT;
   }
 
   private static String getVerificationRequestUrl() {
-    final ProjectConfigurations config = Configurations.getInstance().getProjectConfigurations();
-    return config.isCustomServerEnabled()
-        ? config.getServerURL() + VERIFICATION_SERVICE_ENDPOINT
-        : ProjectConfigurations.DEFAULT_SERVER_URL + VERIFICATION_SERVICE_ENDPOINT;
+    return getServerUrl() + VERIFICATION_SERVICE_ENDPOINT;
   }
 
   private static String getTransformationToGufoRequestUrl() {
-    final ProjectConfigurations config = Configurations.getInstance().getProjectConfigurations();
-    return config.isCustomServerEnabled()
-        ? config.getServerURL() + TRANSFORM_GUFO_SERVICE_ENDPOINT
-        : ProjectConfigurations.DEFAULT_SERVER_URL + TRANSFORM_GUFO_SERVICE_ENDPOINT;
+    return getServerUrl() + TRANSFORM_GUFO_SERVICE_ENDPOINT;
   }
 
   private static String getMappingToErRequestUrl() {
-    final ProjectConfigurations config = Configurations.getInstance().getProjectConfigurations();
-    return config.isCustomServerEnabled()
-        ? config.getServerURL() + MAPPING_TO_DB_SERVICE_ENDPOINT
-        : ProjectConfigurations.DEFAULT_SERVER_URL + MAPPING_TO_DB_SERVICE_ENDPOINT;
+    return getServerUrl() + TRANSFORM_DB_SERVICE_ENDPOINT;
   }
 
   private static <T extends ServiceResult<?>> T parseResponse(
@@ -123,13 +119,13 @@ public class OntoUMLServerAccessController {
     return parseResponse(connection, GufoTransformationServiceResult.class);
   }
 
-  public static DbMappingToDbServiceResult requestMappingToDB(String project, String options)
-      throws IOException {
+  public static Ontouml2DbServiceResult requestModelTransformationToDb(
+      String project, String options) throws IOException {
     final String url = getMappingToErRequestUrl();
     final String body = getServiceRequestBody(project, options);
     final HttpURLConnection connection = request(url, body);
 
-    return parseResponse(connection, DbMappingToDbServiceResult.class);
+    return parseResponse(connection, Ontouml2DbServiceResult.class);
   }
 
   private static HttpURLConnection request(String url, String body) throws IOException {
@@ -161,33 +157,6 @@ public class OntoUMLServerAccessController {
       throw new IOException(USER_MESSAGE_UNKNOWN_ERROR_RESPONSE);
     }
   }
-
-  //  public static GufoTransformationServiceResult requestProjectTransformationToGufo(
-  //      String project, String options) {
-  //    final String body = getServiceRequestBody(project, options);
-  //    final String url = getTransformationToGufoRequestUrl();
-  //
-  //    try {
-  //      final HttpURLConnection connection = performRequest(url, body);
-  //
-  //      switch (connection.getResponseCode()) {
-  //        case HttpURLConnection.HTTP_OK:
-  //          if (hasJsonContentType(connection)) {
-  //            return parseResponse(connection, GufoTransformationServiceResult.class);
-  //          }
-  //        case HttpURLConnection.HTTP_BAD_REQUEST:
-  //        case HttpURLConnection.HTTP_NOT_FOUND:
-  //        case HttpURLConnection.HTTP_INTERNAL_ERROR:
-  //        default:
-  //          System.err.println("Attention! Transformation request was not processed correctly");
-  //          System.err.println("Status Code: " + connection.getResponseCode());
-  //      }
-  //    } catch (IOException ioException) {
-  //      ioException.printStackTrace();
-  //    }
-  //
-  //    return null;
-  //  }
 
   private static HttpURLConnection performRequest(String urlString, String body)
       throws IOException {

@@ -3,7 +3,6 @@ package it.unibz.inf.ontouml.vp.model;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 
 public class DbMappingOptions {
 
@@ -34,15 +33,10 @@ public class DbMappingOptions {
     this.databaseName = projectConfigurations.getDatabaseNameConnection();
     this.userConnection = projectConfigurations.getUserNameConnection();
     this.passwordConnection = projectConfigurations.getPassword();
-    this.enumFieldToLookupTable = projectConfigurations.isEnumFieldToLookupTable();
+    //    this.enumFieldToLookupTable = projectConfigurations.isEnumFieldToLookupTable();
+    this.enumFieldToLookupTable = true;
 
-    ObjectMapper mapper = new ObjectMapper();
-    try {
-      customElementMapping = mapper.readTree(projectConfigurations.getExportGUFOElementMapping());
-    } catch (IOException e) {
-      System.err.println("Unable to read project configurations.");
-      e.printStackTrace();
-    }
+    // TODO: re-introduce element mapping when partial export is available again
   }
 
   public MappingStrategy getMappingStrategy() {

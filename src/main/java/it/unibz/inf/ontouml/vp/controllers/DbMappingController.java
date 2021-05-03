@@ -5,7 +5,7 @@ import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.DbMappingOptions;
-import it.unibz.inf.ontouml.vp.model.DbMappingToDbServiceResult;
+import it.unibz.inf.ontouml.vp.model.Ontouml2DbServiceResult;
 import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
 import it.unibz.inf.ontouml.vp.model.vp2ontouml.Uml2OntoumlTransformer;
 import it.unibz.inf.ontouml.vp.utils.SimpleServiceWorker;
@@ -60,16 +60,13 @@ public class DbMappingController implements VPActionController {
 
       final String project = Uml2OntoumlTransformer.transformAndSerialize();
       final String options = new DbMappingOptions(projectConfigurations).toJson();
-      final DbMappingToDbServiceResult result =
-          OntoUMLServerAccessController.requestMappingToDB(project, options);
+      final Ontouml2DbServiceResult serviceResult =
+          OntoUMLServerAccessController.requestModelTransformationToDb(project, options);
 
       if (!context.isCancelled()) {
-        // Files.write(schemaFilePath, "schema".getBytes());
-        // Files.write(obdaFilePath, "OBDA".getBytes());
-        // Files.write(propertiesFilePath, "properties".getBytes());
-        Files.write(schemaFilePath, result.getSchema().getBytes());
-        Files.write(obdaFilePath, result.getObda().getBytes());
-        Files.write(propertiesFilePath, result.getProperties().getBytes());
+        Files.write(schemaFilePath, serviceResult.getResult().getSchema().getBytes());
+        Files.write(obdaFilePath, serviceResult.getResult().getObda().getBytes());
+        Files.write(propertiesFilePath, serviceResult.getResult().getConnection().getBytes());
         saveFilePath();
         ViewManagerUtils.log(MESSAGE_MODEL_EXPORTED);
         return List.of(MESSAGE_MODEL_EXPORTED);
