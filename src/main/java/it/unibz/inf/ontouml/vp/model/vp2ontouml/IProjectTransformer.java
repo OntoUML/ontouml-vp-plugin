@@ -10,6 +10,7 @@ import it.unibz.inf.ontouml.vp.model.ontouml.Project;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.ModelElement;
 import it.unibz.inf.ontouml.vp.model.ontouml.model.Package;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.Diagram;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -32,13 +33,13 @@ public class IProjectTransformer {
 
     List<ModelElement> targetElements =
         getElementStream(sourceProject)
-            .map(element -> transformModelElement(element))
+            .map(IProjectTransformer::transformModelElement)
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
 
     List<ModelElement> targetDatatypes =
         getUsedDatatypes(sourceProject).stream()
-            .map(element -> transformModelElement(element))
+            .map(IProjectTransformer::transformModelElement)
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
 
@@ -61,7 +62,7 @@ public class IProjectTransformer {
         .collect(Collectors.toList());
   }
 
-  private static Stream<IModelElement> getElementStream(IProject source) {
+  private static Stream<IModelElement> getElementStream(IProject project) {
     final String[] elementTypes = {
       IModelElementFactory.MODEL_TYPE_PACKAGE,
       IModelElementFactory.MODEL_TYPE_MODEL,
@@ -72,8 +73,28 @@ public class IProjectTransformer {
       IModelElementFactory.MODEL_TYPE_ASSOCIATION_CLASS,
     };
 
-    IModelElement[] sourceContents = source.toAllLevelModelElementArray(elementTypes);
-    return Stream.of(sourceContents);
+    IModelElement[] sourceContents = project.toAllLevelModelElementArray(elementTypes);
+
+    // Relationships may connect other types of model elements and these need to be filtered out
+    // the code also filters out relationships connected to null
+    return Stream.of(sourceContents)
+        .filter(
+            element -> {
+              if (!(element instanceof IRelationship)) {
+                return true;
+              }
+
+              var source = ((IRelationship) element).getFrom();
+              var target = ((IRelationship) element).getTo();
+              var sourceType = source != null ? source.getModelType() : null;
+              var targetType = target != null ? target.getModelType() : null;
+              var desiredTypes =
+                  Arrays.asList(
+                      IModelElementFactory.MODEL_TYPE_ASSOCIATION,
+                      IModelElementFactory.MODEL_TYPE_CLASS);
+
+              return desiredTypes.contains(sourceType) && desiredTypes.contains(targetType);
+            });
   }
 
   private static void resolveContainer(ModelElement targetElement, Package root) {
