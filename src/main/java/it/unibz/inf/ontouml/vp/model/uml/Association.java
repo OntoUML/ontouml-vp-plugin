@@ -265,9 +265,9 @@ public class Association implements ModelElement {
 
     setNavigability(association);
 
-    for (AssociationModelDescription originalAssociationsDecription :
+    for (AssociationModelDescription originalAssociationsDescription :
         originalAssociationsDecriptions) {
-      originalAssociationsDecription.recreateInvertedAssociationModel();
+      originalAssociationsDescription.recreateInvertedAssociationModel();
     }
   }
 
@@ -336,10 +336,9 @@ public class Association implements ModelElement {
       targetEnd.setAggregationKind(aggregationKind);
     } else {
       // By not forcing override we keep user-defined aggregation (e.g., "shared")
-      final String currentAggregationkind = targetEnd.getAggregationKind();
+      final String currentAggregationKind = targetEnd.getAggregationKind();
 
-      if (IAssociationEnd.AGGREGATION_KIND_NONE.equals(currentAggregationkind)) {
-        sourceEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
+      if (IAssociationEnd.AGGREGATION_KIND_NONE.equals(currentAggregationKind)) {
         targetEnd.setAggregationKind(aggregationKind);
       }
     }
