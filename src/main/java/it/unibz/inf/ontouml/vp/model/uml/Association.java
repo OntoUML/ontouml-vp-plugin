@@ -534,4 +534,14 @@ public class Association implements ModelElement {
         || IAssociationEnd.AGGREGATION_KIND_COMPOSITED.equals(aggregationKind)
         || "Shared".equals(aggregationKind);
   }
+
+  public static boolean hasAggregationSetOnTarget(IAssociation association) {
+    var aggregationKind = getTargetEnd(association).getAggregationKind();
+
+    // TODO: remove direct comparison to "Shared" once IAssociationEnd.AGGREGATION_KIND_SHARED is
+    // fixed by VP
+    return IAssociationEnd.AGGREGATION_KIND_SHARED.equals(aggregationKind)
+        || IAssociationEnd.AGGREGATION_KIND_COMPOSITED.equals(aggregationKind)
+        || "Shared".equals(aggregationKind);
+  }
 }

@@ -324,7 +324,8 @@ public class ApplyStereotypeController implements VPContextActionController {
         break;
       case ActionIdManager.PARTICIPATIONAL:
       case ActionIdManager.PARTICIPATIONAL_FIXED:
-        if (Association.hasAggregationSetOnSource((IAssociation) element))
+        if (Association.hasAggregationSetOnSource((IAssociation) element)
+            && !Association.hasAggregationSetOnTarget((IAssociation) element))
           Association.invertAssociation((IAssociation) element, true);
         StereotypesManager.applyStereotype(element, Stereotype.PARTICIPATIONAL);
         break;
@@ -374,25 +375,29 @@ public class ApplyStereotypeController implements VPContextActionController {
         break;
       case ActionIdManager.COMPONENT_OF:
       case ActionIdManager.COMPONENT_OF_FIXED:
-        if (Association.hasAggregationSetOnSource((IAssociation) element))
+        if (Association.hasAggregationSetOnSource((IAssociation) element)
+            && !Association.hasAggregationSetOnTarget((IAssociation) element))
           Association.invertAssociation((IAssociation) element, true);
         StereotypesManager.applyStereotype(element, Stereotype.COMPONENT_OF);
         break;
       case ActionIdManager.MEMBER_OF:
       case ActionIdManager.MEMBER_OF_FIXED:
-        if (Association.hasAggregationSetOnSource((IAssociation) element))
+        if (Association.hasAggregationSetOnSource((IAssociation) element)
+            && !Association.hasAggregationSetOnTarget((IAssociation) element))
           Association.invertAssociation((IAssociation) element, true);
         StereotypesManager.applyStereotype(element, Stereotype.MEMBER_OF);
         break;
       case ActionIdManager.SUB_COLLECTION_OF:
       case ActionIdManager.SUB_COLLECTION_OF_FIXED:
-        if (Association.hasAggregationSetOnSource((IAssociation) element))
+        if (Association.hasAggregationSetOnSource((IAssociation) element)
+            && !Association.hasAggregationSetOnTarget((IAssociation) element))
           Association.invertAssociation((IAssociation) element, true);
         StereotypesManager.applyStereotype(element, Stereotype.SUB_COLLECTION_OF);
         break;
       case ActionIdManager.SUB_QUANTITY_OF:
       case ActionIdManager.SUB_QUANTITY_OF_FIXED:
-        if (Association.hasAggregationSetOnSource((IAssociation) element))
+        if (Association.hasAggregationSetOnSource((IAssociation) element)
+            && !Association.hasAggregationSetOnTarget((IAssociation) element))
           Association.invertAssociation((IAssociation) element, true);
         StereotypesManager.applyStereotype(element, Stereotype.SUB_QUANTITY_OF);
         break;
