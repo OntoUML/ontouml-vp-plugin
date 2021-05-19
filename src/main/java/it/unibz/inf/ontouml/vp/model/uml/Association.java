@@ -249,7 +249,7 @@ public class Association implements ModelElement {
     final IAssociationEnd originalTargetEnd = getTargetEnd(association);
     final PropertyDescription sourceEndDescription = new PropertyDescription(originalSourceEnd);
     final PropertyDescription targetEndDescription = new PropertyDescription(originalTargetEnd);
-    final List<AssociationModelDescription> originalAssociationsDecriptions =
+    final List<AssociationModelDescription> originalAssociationsDescriptions =
         retrieveAndDeleteAssociationModels(association);
 
     setSource(association, originalTarget);
@@ -266,7 +266,7 @@ public class Association implements ModelElement {
     setNavigability(association);
 
     for (AssociationModelDescription originalAssociationsDescription :
-        originalAssociationsDecriptions) {
+        originalAssociationsDescriptions) {
       originalAssociationsDescription.recreateInvertedAssociationModel();
     }
   }
@@ -523,5 +523,15 @@ public class Association implements ModelElement {
   public static boolean hasValidStereotype(IAssociation association) {
     final String stereotype = ModelElement.getUniqueStereotypeName(association);
     return Stereotype.getOntoUMLAssociationStereotypeNames().contains(stereotype);
+  }
+
+  public static boolean hasAggregationSetOnSource(IAssociation association) {
+    var aggregationKind = getSourceEnd(association).getAggregationKind();
+
+    // TODO: remove direct comparison to "Shared" once IAssociationEnd.AGGREGATION_KIND_SHARED is
+    // fixed by VP
+    return IAssociationEnd.AGGREGATION_KIND_SHARED.equals(aggregationKind)
+        || IAssociationEnd.AGGREGATION_KIND_COMPOSITED.equals(aggregationKind)
+        || "Shared".equals(aggregationKind);
   }
 }
