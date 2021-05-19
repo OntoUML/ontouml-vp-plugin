@@ -465,7 +465,7 @@ public class Class implements ModelElement {
   }
 
   private static void setDefaultRestrictedTo(IClass element, String stereotypeName) {
-    String currentRestrictedTo = getRestrictedTo(element);
+    List<String> currentRestrictedTo = getRestrictedToList(element);
 
     if (RestrictedTo.shouldOverrideRestrictedTo(stereotypeName, currentRestrictedTo)) {
       final String defaultNature = RestrictedTo.getDefaultRestrictedTo(stereotypeName);
