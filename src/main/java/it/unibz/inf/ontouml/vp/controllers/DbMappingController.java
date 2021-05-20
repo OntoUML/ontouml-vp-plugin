@@ -45,18 +45,18 @@ public class DbMappingController implements VPActionController {
       ViewManagerUtils.log("Request cancelled by the user.");
       return;
     }
-
     putFilePath();
-
     new SimpleServiceWorker(this::task).execute();
   }
 
   private List<String> task(SimpleServiceWorker context) {
-    try {
+    try {      
       if (schemaFilePath == null) {
         context.cancel(true);
         return List.of();
       }
+      
+      saveFilePath();
 
       final String project = Uml2OntoumlTransformer.transformAndSerialize();
       final String options = new DbMappingOptions(projectConfigurations).toJson();
@@ -64,12 +64,17 @@ public class DbMappingController implements VPActionController {
           OntoUMLServerAccessController.requestModelTransformationToDb(project, options);
 
       if (!context.isCancelled()) {
-        Files.write(schemaFilePath, serviceResult.getResult().getSchema().getBytes());
-        Files.write(obdaFilePath, serviceResult.getResult().getObda().getBytes());
-        Files.write(propertiesFilePath, serviceResult.getResult().getConnection().getBytes());
-        saveFilePath();
-        ViewManagerUtils.log(MESSAGE_MODEL_EXPORTED);
-        return List.of(MESSAGE_MODEL_EXPORTED);
+    	  if(projectConfigurations.isGenerateSchema()) {
+    		  Files.write(schemaFilePath, serviceResult.getResult().getSchema().getBytes());
+    	  }
+    	  if(projectConfigurations.isGenerateObda()) {
+    		  Files.write(obdaFilePath, serviceResult.getResult().getObda().getBytes());
+    	  }
+    	  if(projectConfigurations.isGenerateConnection()) {
+    		  Files.write(propertiesFilePath, serviceResult.getResult().getConnection().getBytes());
+    	  }
+    	  ViewManagerUtils.log(MESSAGE_MODEL_EXPORTED);
+    	  return List.of(MESSAGE_MODEL_EXPORTED);
       }
 
       return List.of();
@@ -83,7 +88,7 @@ public class DbMappingController implements VPActionController {
     }
   }
 
-  private void putFilePath() {
+  private boolean putFilePath() {
     final FileDialog fileDialog;
     final Frame rootFrame = (Frame) ApplicationManager.instance().getViewManager().getRootFrame();
     final String suggestedFolderPath = projectConfigurations.getDbMappingFolderPath();
@@ -102,19 +107,22 @@ public class DbMappingController implements VPActionController {
     fileDialog.setVisible(true);
 
     final String fileDirectory = fileDialog.getDirectory();
-    final String fileName = fileDialog.getFile();
+    final String fileName = removeFileExtension(fileDialog.getFile());
 
     if (fileDirectory != null && fileName != null) {
       schemaFilePath = Paths.get(fileDirectory, fileName + schemaFormat);
       obdaFilePath = Paths.get(fileDirectory, fileName + obdaFormat);
       propertiesFilePath = Paths.get(fileDirectory, fileName + propertiesFormat);
+      return true;
+    }else {
+    	return false;
     }
   }
 
   private void saveFilePath() {
     final Path directoryPath = schemaFilePath.getParent();
     final String directoryPathName = directoryPath.toAbsolutePath().getFileName().toString();
-    final String filePathName = schemaFilePath.getFileName().toString();
+    final String filePathName = removeFileExtension(schemaFilePath.getFileName().toString());
 
     projectConfigurations.setDbMappingFolderPath(directoryPathName);
     projectConfigurations.setDbMappingFileName(filePathName);
@@ -129,4 +137,10 @@ public class DbMappingController implements VPActionController {
    */
   @Override
   public void update(VPAction action) {}
+  
+  private String removeFileExtension(String fileName) {
+	  if(fileName.lastIndexOf('.') > 0)
+		  return fileName.substring(0, fileName.lastIndexOf('.'));
+	  else return fileName;
+  }
 }

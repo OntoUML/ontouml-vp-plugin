@@ -25,9 +25,11 @@ public class DbMappingDialogHandler implements IDialogHandler {
 
     view.onExport(
         e -> {
-          view.updateConfigurationsValues(projectConfigurations);
-          Configurations.getInstance().save();
-          closeDialog();
+        	if(view.checkValidParamters()){
+        		view.updateConfigurationsValues(projectConfigurations);
+        		Configurations.getInstance().save();
+        		closeDialog();
+        	}
         });
     view.onCancel(
         e -> {

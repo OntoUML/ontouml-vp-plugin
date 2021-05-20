@@ -11,11 +11,19 @@ import it.unibz.inf.ontouml.vp.model.VerificationServiceResult;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.Socket;
 import java.net.SocketException;
 import java.net.URL;
 import java.util.stream.Collectors;
+
+
+import com.mashape.unirest.http.*;
+import com.mashape.unirest.http.exceptions.UnirestException;
+
+import java.io.*;
 
 /**
  * Class responsible for making requests to the OntoUML Server based on standard end points and
@@ -130,6 +138,8 @@ public class OntoUMLServerAccessController {
 
   private static HttpURLConnection request(String url, String body) throws IOException {
     try {
+    	System.out.println(body);
+    
       final HttpURLConnection connection = performRequest(url, body);
 
       switch (connection.getResponseCode()) {
@@ -137,7 +147,7 @@ public class OntoUMLServerAccessController {
           return connection;
         case HttpURLConnection.HTTP_BAD_REQUEST:
           if (!url.contains("verify")) {
-            // failed because the project contains syntactical errors
+            // failed because the project contains syntactical errors  
             throw new IOException(USER_MESSAGE_REQUEST_WITH_SYNTACTICAL_ERRORS);
           } else {
             throw new IOException(USER_MESSAGE_BAD_REQUEST);
@@ -150,6 +160,7 @@ public class OntoUMLServerAccessController {
           throw new IOException(USER_MESSAGE_UNKNOWN_ERROR_RESPONSE);
       }
     } catch (SocketException e) {
+    	
       throw new IOException(USER_MESSAGE_CONNECTION_ERROR);
     } catch (IOException e) {
       throw e;
@@ -159,8 +170,10 @@ public class OntoUMLServerAccessController {
   }
 
   private static HttpURLConnection performRequest(String urlString, String body)
-      throws IOException {
+      throws IOException, UnirestException {
+    
     final URL url = new URL(urlString);
+    
     final HttpURLConnection request = (HttpURLConnection) url.openConnection();
 
     request.setRequestMethod("POST");

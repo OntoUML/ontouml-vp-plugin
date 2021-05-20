@@ -25,15 +25,19 @@ public class ProjectConfigurations {
   public static final String DEFAULT_EXPORT_FILENAME = "";
   public static final String DEFAULT_GUFO_EXPORT_PATH = System.getProperty("user.home");
   public static final String DEFAULT_GUFO_EXPORT_FILENAME = "";
+  //***** DAFAULTS por Export to DB ***************
   public static final DbmsSupported DEFAULT_DBMS = DbmsSupported.GENERIC_SCHEMA;
   public static final MappingStrategy DEFAULT_MAPPING_STRATEGY = MappingStrategy.ONE_TABLE_PER_KIND;
   public static final boolean DEFAULT_STANTDARDIZE_NAMES = true;
+  public static final boolean DEFAULT_GENERATE_INDEXES = false;
   public static final boolean DEFAULT_GENERATE_SCHEMA = true;
+  public static final boolean DEFAULT_GENERATE_OBDA = true;
   public static final boolean DEFAULT_GENERATE_CONNECTION = false;
   public static final String DEFAULT_DB_MAPPING_PATH = System.getProperty("user.home");
   public static final String DEFAULT_DB_MAPPING_FILE_NAME = "";
   public static final boolean DEFAULT_IS_ENUMARATION_TO_LOOKUP_TABLE = false;
-
+//***********************************************
+  
   @SerializedName("projectId")
   @Expose()
   private String id;
@@ -143,6 +147,10 @@ public class ProjectConfigurations {
   @Expose()
   private boolean generateSchema;
 
+  @SerializedName("generateObda")
+  @Expose()
+  private boolean generateObda;
+  
   @SerializedName("generateConnection")
   @Expose()
   private boolean generateConnection;
@@ -174,6 +182,12 @@ public class ProjectConfigurations {
   @SerializedName("enumFieldToLookupTable")
   @Expose()
   private boolean enumFieldToLookupTable;
+  
+  @SerializedName("generateIndexes")
+  @Expose()
+  private boolean generateIndexes;
+  
+  
 
   /** Constructor without args to be called when deserializing project settings. */
   public ProjectConfigurations() {
@@ -216,7 +230,9 @@ public class ProjectConfigurations {
     this.targetDBMS = ProjectConfigurations.DEFAULT_DBMS;
     this.mappingStrategy = ProjectConfigurations.DEFAULT_MAPPING_STRATEGY;
     this.standardizeNames = ProjectConfigurations.DEFAULT_STANTDARDIZE_NAMES;
+    this.generateIndexes = ProjectConfigurations.DEFAULT_GENERATE_INDEXES;
     this.generateSchema = ProjectConfigurations.DEFAULT_GENERATE_SCHEMA;
+    this.generateObda = ProjectConfigurations.DEFAULT_GENERATE_OBDA;
     this.generateConnection = ProjectConfigurations.DEFAULT_GENERATE_CONNECTION;
     this.dbMappingFileName = ProjectConfigurations.DEFAULT_DB_MAPPING_FILE_NAME;
     this.dbMappingFolderPath = ProjectConfigurations.DEFAULT_DB_MAPPING_PATH;
@@ -553,7 +569,7 @@ public class ProjectConfigurations {
    * @return boolean
    */
   public boolean isGenerateSchema() {
-    return generateSchema;
+    return this.generateSchema;
   }
 
   /**
@@ -565,6 +581,24 @@ public class ProjectConfigurations {
     this.generateSchema = generateSchema;
   }
 
+  /**
+   * Returns if it is necessary to generate the OBDA file for the ontology.
+   *
+   * @return boolean
+   */
+  public boolean isGenerateObda() {
+    return this.generateObda;
+  }
+
+  /**
+   * Informs if it is necessary to generate the OBDA file for the ontology.
+   *
+   * @param generateSchema
+   */
+  public void setGenerateObda(boolean generateObda) {
+    this.generateObda = generateObda;
+  }
+  
   /**
    * Returns if it is necessary to generate the connection for the database.
    *
@@ -693,7 +727,7 @@ public class ProjectConfigurations {
   }
 
   /**
-   * Returns if it is necessary to generate a table for the enumeration type fields.
+   * Returns if it is necessary generate a table for the enumeration type fields.
    *
    * @return boolean
    */
@@ -702,11 +736,31 @@ public class ProjectConfigurations {
   }
 
   /**
-   * Informs if it is necessary to generate a table for the enumeration type fields.
+   * Informs if it is necessary generate a table for the enumeration type fields.
    *
    * @param boolean
    */
   public void setEnumFieldToLookupTable(boolean isEnumFieldToLookupTable) {
     this.enumFieldToLookupTable = isEnumFieldToLookupTable;
   }
+  
+  
+  /**
+   * Returns if it is necessary generate the index for the schema.
+   *
+   * @return boolean
+   */
+  public boolean isGenerateIndex() {
+    return this.generateIndexes;
+  }
+
+  /**
+   * Informs if it is necessary generate the indexes for the schema.
+   *
+   * @param boolean
+   */
+  public void setGenerateIndexes(boolean generateIndexes) {
+    this.generateIndexes = generateIndexes;
+  }
+  
 }
