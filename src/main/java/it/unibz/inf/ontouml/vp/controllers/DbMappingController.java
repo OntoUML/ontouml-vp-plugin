@@ -50,12 +50,12 @@ public class DbMappingController implements VPActionController {
   }
 
   private List<String> task(SimpleServiceWorker context) {
-    try {      
+    try {
       if (schemaFilePath == null) {
         context.cancel(true);
         return List.of();
       }
-      
+
       saveFilePath();
 
       final String project = Uml2OntoumlTransformer.transformAndSerialize();
@@ -64,17 +64,17 @@ public class DbMappingController implements VPActionController {
           OntoUMLServerAccessController.requestModelTransformationToDb(project, options);
 
       if (!context.isCancelled()) {
-    	  if(projectConfigurations.isGenerateSchema()) {
-    		  Files.write(schemaFilePath, serviceResult.getResult().getSchema().getBytes());
-    	  }
-    	  if(projectConfigurations.isGenerateObda()) {
-    		  Files.write(obdaFilePath, serviceResult.getResult().getObda().getBytes());
-    	  }
-    	  if(projectConfigurations.isGenerateConnection()) {
-    		  Files.write(propertiesFilePath, serviceResult.getResult().getConnection().getBytes());
-    	  }
-    	  ViewManagerUtils.log(MESSAGE_MODEL_EXPORTED);
-    	  return List.of(MESSAGE_MODEL_EXPORTED);
+        if (projectConfigurations.isGenerateSchema()) {
+          Files.write(schemaFilePath, serviceResult.getResult().getSchema().getBytes());
+        }
+        if (projectConfigurations.isGenerateObda()) {
+          Files.write(obdaFilePath, serviceResult.getResult().getObda().getBytes());
+        }
+        if (projectConfigurations.isGenerateConnection()) {
+          Files.write(propertiesFilePath, serviceResult.getResult().getConnection().getBytes());
+        }
+        ViewManagerUtils.log(MESSAGE_MODEL_EXPORTED);
+        return List.of(MESSAGE_MODEL_EXPORTED);
       }
 
       return List.of();
@@ -114,8 +114,8 @@ public class DbMappingController implements VPActionController {
       obdaFilePath = Paths.get(fileDirectory, fileName + obdaFormat);
       propertiesFilePath = Paths.get(fileDirectory, fileName + propertiesFormat);
       return true;
-    }else {
-    	return false;
+    } else {
+      return false;
     }
   }
 
@@ -137,10 +137,9 @@ public class DbMappingController implements VPActionController {
    */
   @Override
   public void update(VPAction action) {}
-  
+
   private String removeFileExtension(String fileName) {
-	  if(fileName.lastIndexOf('.') > 0)
-		  return fileName.substring(0, fileName.lastIndexOf('.'));
-	  else return fileName;
+    if (fileName.lastIndexOf('.') > 0) return fileName.substring(0, fileName.lastIndexOf('.'));
+    else return fileName;
   }
 }

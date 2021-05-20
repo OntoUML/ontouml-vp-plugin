@@ -57,7 +57,6 @@ public class DbMappingView extends javax.swing.JPanel {
     // *************************************
     setSize(new Dimension(500, 360));
 
-    
     // *************************************
     // Automatically generated code.
     // *************************************
@@ -109,35 +108,50 @@ public class DbMappingView extends javax.swing.JPanel {
     groupStrategy.add(rbtOneTablePerKind);
     rbtOneTablePerKind.setSelected(true);
     rbtOneTablePerKind.setText("One Table per Kind");
-    rbtOneTablePerKind.addItemListener(new java.awt.event.ItemListener() {
-        public void itemStateChanged(java.awt.event.ItemEvent evt) {
+    rbtOneTablePerKind.addItemListener(
+        new java.awt.event.ItemListener() {
+          public void itemStateChanged(java.awt.event.ItemEvent evt) {
             rbtOneTablePerKindItemStateChanged(evt);
-        }
-    });
+          }
+        });
 
     javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
     jPanel1.setLayout(jPanel1Layout);
     jPanel1Layout.setHorizontalGroup(
-        jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGroup(jPanel1Layout.createSequentialGroup()
-            .addContainerGap()
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(rbtOneTablePerClass)
-                .addComponent(rbtOneTablePerConcreteClass)
-                .addComponent(rbtOneTablePerKind))
-            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-    );
+        jPanel1Layout
+            .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(
+                jPanel1Layout
+                    .createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(
+                        jPanel1Layout
+                            .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(rbtOneTablePerClass)
+                            .addComponent(rbtOneTablePerConcreteClass)
+                            .addComponent(rbtOneTablePerKind))
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
     jPanel1Layout.setVerticalGroup(
-        jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGroup(jPanel1Layout.createSequentialGroup()
-            .addContainerGap()
-            .addComponent(rbtOneTablePerClass, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addGap(18, 18, 18)
-            .addComponent(rbtOneTablePerConcreteClass, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addGap(18, 18, 18)
-            .addComponent(rbtOneTablePerKind)
-            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-    );
+        jPanel1Layout
+            .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(
+                jPanel1Layout
+                    .createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(
+                        rbtOneTablePerClass,
+                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                        23,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(18, 18, 18)
+                    .addComponent(
+                        rbtOneTablePerConcreteClass,
+                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                        23,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(18, 18, 18)
+                    .addComponent(rbtOneTablePerKind)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
     jLabel3.setText("DBMS");
 
@@ -157,51 +171,103 @@ public class DbMappingView extends javax.swing.JPanel {
     javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
     jPanel2.setLayout(jPanel2Layout);
     jPanel2Layout.setHorizontalGroup(
-        jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGroup(jPanel2Layout.createSequentialGroup()
-            .addContainerGap()
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(cxbGenerateSchema))
-            .addGap(18, 18, 18)
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addComponent(cbxDBMS, 0, 158, Short.MAX_VALUE)
-                    .addGap(26, 26, 26))
-                .addComponent(cxbEnumToLookupTable, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
-                .addComponent(cbxStandarizeNames, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(cxbCreateIndex, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel3)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addGap(21, 21, 21)
-                            .addComponent(jLabel1)))
-                    .addGap(0, 0, Short.MAX_VALUE)))
-            .addGap(18, 18, 18))
-    );
+        jPanel2Layout
+            .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(
+                jPanel2Layout
+                    .createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(
+                        jPanel2Layout
+                            .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(
+                                jPanel1,
+                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cxbGenerateSchema))
+                    .addGap(18, 18, 18)
+                    .addGroup(
+                        jPanel2Layout
+                            .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(
+                                jPanel2Layout
+                                    .createSequentialGroup()
+                                    .addComponent(cbxDBMS, 0, 158, Short.MAX_VALUE)
+                                    .addGap(26, 26, 26))
+                            .addComponent(
+                                cxbEnumToLookupTable,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                184,
+                                Short.MAX_VALUE)
+                            .addComponent(
+                                cbxStandarizeNames,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                Short.MAX_VALUE)
+                            .addComponent(
+                                cxbCreateIndex,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                Short.MAX_VALUE)
+                            .addGroup(
+                                jPanel2Layout
+                                    .createSequentialGroup()
+                                    .addGroup(
+                                        jPanel2Layout
+                                            .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel3)
+                                            .addGroup(
+                                                jPanel2Layout
+                                                    .createSequentialGroup()
+                                                    .addGap(21, 21, 21)
+                                                    .addComponent(jLabel1)))
+                                    .addGap(0, 0, Short.MAX_VALUE)))
+                    .addGap(18, 18, 18)));
     jPanel2Layout.setVerticalGroup(
-        jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGroup(jPanel2Layout.createSequentialGroup()
-            .addContainerGap()
-            .addComponent(cxbGenerateSchema)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addComponent(jLabel3)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(cbxDBMS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        jPanel2Layout
+            .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(
+                jPanel2Layout
+                    .createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(cxbGenerateSchema)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addComponent(cxbEnumToLookupTable)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addComponent(cbxStandarizeNames)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jLabel1)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 5, Short.MAX_VALUE)
-                    .addComponent(cxbCreateIndex)
-                    .addContainerGap())
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-    );
+                    .addGroup(
+                        jPanel2Layout
+                            .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(
+                                jPanel2Layout
+                                    .createSequentialGroup()
+                                    .addComponent(jLabel3)
+                                    .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(
+                                        cbxDBMS,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(cxbEnumToLookupTable)
+                                    .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(cbxStandarizeNames)
+                                    .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jLabel1)
+                                    .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                        5,
+                                        Short.MAX_VALUE)
+                                    .addComponent(cxbCreateIndex)
+                                    .addContainerGap())
+                            .addComponent(
+                                jPanel1,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                Short.MAX_VALUE))));
 
     jTabbedPane1.addTab("Relational Schema", jPanel2);
 
@@ -215,30 +281,52 @@ public class DbMappingView extends javax.swing.JPanel {
     javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
     jPanel6.setLayout(jPanel6Layout);
     jPanel6Layout.setHorizontalGroup(
-        jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGroup(jPanel6Layout.createSequentialGroup()
-            .addContainerGap()
-            .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel6Layout.createSequentialGroup()
-                    .addComponent(cxbGenerateObda)
-                    .addGap(0, 0, Short.MAX_VALUE))
-                .addGroup(jPanel6Layout.createSequentialGroup()
-                    .addComponent(jLabel2)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addComponent(jtfBaseIRI, javax.swing.GroupLayout.DEFAULT_SIZE, 348, Short.MAX_VALUE)))
-            .addContainerGap())
-    );
+        jPanel6Layout
+            .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(
+                jPanel6Layout
+                    .createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(
+                        jPanel6Layout
+                            .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(
+                                jPanel6Layout
+                                    .createSequentialGroup()
+                                    .addComponent(cxbGenerateObda)
+                                    .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(
+                                jPanel6Layout
+                                    .createSequentialGroup()
+                                    .addComponent(jLabel2)
+                                    .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(
+                                        jtfBaseIRI,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        348,
+                                        Short.MAX_VALUE)))
+                    .addContainerGap()));
     jPanel6Layout.setVerticalGroup(
-        jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-            .addContainerGap()
-            .addComponent(cxbGenerateObda)
-            .addGap(18, 18, 18)
-            .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(jLabel2)
-                .addComponent(jtfBaseIRI, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addContainerGap(118, Short.MAX_VALUE))
-    );
+        jPanel6Layout
+            .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(
+                javax.swing.GroupLayout.Alignment.TRAILING,
+                jPanel6Layout
+                    .createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(cxbGenerateObda)
+                    .addGap(18, 18, 18)
+                    .addGroup(
+                        jPanel6Layout
+                            .createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(
+                                jtfBaseIRI,
+                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addContainerGap(118, Short.MAX_VALUE)));
 
     jTabbedPane1.addTab("OBDA", jPanel6);
 
@@ -257,54 +345,100 @@ public class DbMappingView extends javax.swing.JPanel {
     javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
     jPanel5.setLayout(jPanel5Layout);
     jPanel5Layout.setHorizontalGroup(
-        jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGroup(jPanel5Layout.createSequentialGroup()
-            .addContainerGap()
-            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel5Layout.createSequentialGroup()
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel7)
-                        .addComponent(jLabel6))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jtfUser)
-                        .addComponent(jtfPassword)))
-                .addGroup(jPanel5Layout.createSequentialGroup()
-                    .addComponent(jLabel4)
-                    .addGap(34, 34, 34)
-                    .addComponent(jtfHost))
-                .addGroup(jPanel5Layout.createSequentialGroup()
-                    .addComponent(cxbGenerateConnection)
-                    .addGap(0, 0, Short.MAX_VALUE))
-                .addGroup(jPanel5Layout.createSequentialGroup()
-                    .addComponent(jLabel5)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addComponent(jtfDatabase)))
-            .addContainerGap())
-    );
+        jPanel5Layout
+            .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(
+                jPanel5Layout
+                    .createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(
+                        jPanel5Layout
+                            .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(
+                                jPanel5Layout
+                                    .createSequentialGroup()
+                                    .addGroup(
+                                        jPanel5Layout
+                                            .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel7)
+                                            .addComponent(jLabel6))
+                                    .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(
+                                        jPanel5Layout
+                                            .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jtfUser)
+                                            .addComponent(jtfPassword)))
+                            .addGroup(
+                                jPanel5Layout
+                                    .createSequentialGroup()
+                                    .addComponent(jLabel4)
+                                    .addGap(34, 34, 34)
+                                    .addComponent(jtfHost))
+                            .addGroup(
+                                jPanel5Layout
+                                    .createSequentialGroup()
+                                    .addComponent(cxbGenerateConnection)
+                                    .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(
+                                jPanel5Layout
+                                    .createSequentialGroup()
+                                    .addComponent(jLabel5)
+                                    .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(jtfDatabase)))
+                    .addContainerGap()));
     jPanel5Layout.setVerticalGroup(
-        jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGroup(jPanel5Layout.createSequentialGroup()
-            .addContainerGap()
-            .addComponent(cxbGenerateConnection)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(jLabel4)
-                .addComponent(jtfHost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(jLabel5)
-                .addComponent(jtfDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(jLabel6)
-                .addComponent(jtfUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(jLabel7)
-                .addComponent(jtfPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-    );
+        jPanel5Layout
+            .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(
+                jPanel5Layout
+                    .createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(cxbGenerateConnection)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(
+                        jPanel5Layout
+                            .createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(
+                                jtfHost,
+                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(
+                        jPanel5Layout
+                            .createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(
+                                jtfDatabase,
+                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(
+                        jPanel5Layout
+                            .createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(
+                                jtfUser,
+                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(
+                        jPanel5Layout
+                            .createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7)
+                            .addComponent(
+                                jtfPassword,
+                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
     jTabbedPane1.addTab("Conection", jPanel5);
 
@@ -323,74 +457,111 @@ public class DbMappingView extends javax.swing.JPanel {
     javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
     jPanel4.setLayout(jPanel4Layout);
     jPanel4Layout.setHorizontalGroup(
-        jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-            .addGap(36, 36, 36)
-            .addComponent(jbtnOk, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGap(61, 61, 61)
-            .addComponent(jbtnCancel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGap(57, 57, 57))
-    );
+        jPanel4Layout
+            .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(
+                javax.swing.GroupLayout.Alignment.TRAILING,
+                jPanel4Layout
+                    .createSequentialGroup()
+                    .addGap(36, 36, 36)
+                    .addComponent(
+                        jbtnOk,
+                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                        Short.MAX_VALUE)
+                    .addGap(61, 61, 61)
+                    .addComponent(
+                        jbtnCancel,
+                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                        Short.MAX_VALUE)
+                    .addGap(57, 57, 57)));
     jPanel4Layout.setVerticalGroup(
-        jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGroup(jPanel4Layout.createSequentialGroup()
-            .addContainerGap()
-            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(jbtnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(jbtnOk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-    );
+        jPanel4Layout
+            .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(
+                jPanel4Layout
+                    .createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(
+                        jPanel4Layout
+                            .createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(
+                                jbtnCancel,
+                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(
+                                jbtnOk,
+                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
     this.setLayout(layout);
     layout.setHorizontalGroup(
-        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGroup(layout.createSequentialGroup()
-            .addContainerGap()
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jTabbedPane1)
-                .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addContainerGap())
-    );
+        layout
+            .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(
+                layout
+                    .createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(
+                        layout
+                            .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTabbedPane1)
+                            .addComponent(
+                                jPanel4,
+                                javax.swing.GroupLayout.Alignment.TRAILING,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                Short.MAX_VALUE))
+                    .addContainerGap()));
     layout.setVerticalGroup(
-        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGroup(layout.createSequentialGroup()
-            .addContainerGap()
-            .addComponent(jTabbedPane1)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addContainerGap())
-    );
+        layout
+            .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(
+                layout
+                    .createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jTabbedPane1)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(
+                        jPanel4,
+                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap()));
   }
 
-  
-  private void rbtOneTablePerKindItemStateChanged(java.awt.event.ItemEvent evt) {                                                    
-      if(rbtOneTablePerKind.isSelected()) {
-    	  cxbCreateIndex.setEnabled(true);
-    	  cxbCreateIndex.setSelected(true);
-      }else {
-    	  cxbCreateIndex.setSelected(false);
-    	  cxbCreateIndex.setEnabled(false);
-      }
-  }  
-  
+  private void rbtOneTablePerKindItemStateChanged(java.awt.event.ItemEvent evt) {
+    if (rbtOneTablePerKind.isSelected()) {
+      cxbCreateIndex.setEnabled(true);
+      cxbCreateIndex.setSelected(true);
+    } else {
+      cxbCreateIndex.setSelected(false);
+      cxbCreateIndex.setEnabled(false);
+    }
+  }
+
   /**
    * Updates components with project configurations' information.
    *
    * @param configurations
    */
   private void setComponentsValues(ProjectConfigurations configurations) {
-	  cxbGenerateSchema.setSelected(configurations.isGenerateSchema());
-	  cxbGenerateObda.setSelected(configurations.isGenerateObda());
-	  cxbGenerateConnection.setSelected(configurations.isGenerateConnection());
+    cxbGenerateSchema.setSelected(configurations.isGenerateSchema());
+    cxbGenerateObda.setSelected(configurations.isGenerateObda());
+    cxbGenerateConnection.setSelected(configurations.isGenerateConnection());
 
-	  if (configurations.getMappingStrategy() != null) {
-	      if (configurations.getMappingStrategy() == MappingStrategy.ONE_TABLE_PER_CLASS)
-	    	  rbtOneTablePerClass.setSelected(true);
-	      else if (configurations.getMappingStrategy() == MappingStrategy.ONE_TABLE_PER_CONCRETE_CLASS)
-	    	  rbtOneTablePerConcreteClass.setSelected(true);
-	      else rbtOneTablePerKind.setSelected(true);
-	  }
+    if (configurations.getMappingStrategy() != null) {
+      if (configurations.getMappingStrategy() == MappingStrategy.ONE_TABLE_PER_CLASS)
+        rbtOneTablePerClass.setSelected(true);
+      else if (configurations.getMappingStrategy() == MappingStrategy.ONE_TABLE_PER_CONCRETE_CLASS)
+        rbtOneTablePerConcreteClass.setSelected(true);
+      else rbtOneTablePerKind.setSelected(true);
+    }
 
     cbxDBMS.setSelectedItem(configurations.getTargetDBMS());
     cbxStandarizeNames.setSelected(configurations.isStandardizeNames());
@@ -404,12 +575,11 @@ public class DbMappingView extends javax.swing.JPanel {
   }
 
   /** Updates project configurations with components' information. */
-  
   public void updateConfigurationsValues(ProjectConfigurations configurations) {
     configurations.setGenerateSchema(cxbGenerateSchema.isSelected());
     configurations.setGenerateObda(cxbGenerateObda.isSelected());
     configurations.setGenerateConnection(cxbGenerateConnection.isSelected());
-    
+
     if (rbtOneTablePerClass.isSelected())
       configurations.setMappingStrategy(MappingStrategy.ONE_TABLE_PER_CLASS);
     else if (rbtOneTablePerConcreteClass.isSelected())
@@ -446,18 +616,29 @@ public class DbMappingView extends javax.swing.JPanel {
 
     jbtnCancel.addActionListener(onCancelAction);
   }
-  
+
   public boolean checkValidParamters() {
-	  if( (DbmsSupported) cbxDBMS.getSelectedItem() == DbmsSupported.GENERIC_SCHEMA && !cxbEnumToLookupTable.isSelected()) {
-		  JOptionPane.showMessageDialog(this, "You can not create an enumeration field to a generic database.", "Error", JOptionPane.ERROR_MESSAGE);
-		  return false;
-	  }
-	  
-	  if(!cxbGenerateSchema.isSelected() && !cxbGenerateObda.isSelected() && !cxbGenerateConnection.isSelected()) {
-		  JOptionPane.showMessageDialog(this, "You must select at least one file to be generated (schema, OBDA or connection).", "Error", JOptionPane.ERROR_MESSAGE);
-		  return false;
-	  }
-	  
-	  return true;
+    if ((DbmsSupported) cbxDBMS.getSelectedItem() == DbmsSupported.GENERIC_SCHEMA
+        && !cxbEnumToLookupTable.isSelected()) {
+      JOptionPane.showMessageDialog(
+          this,
+          "You can not create an enumeration field to a generic database.",
+          "Error",
+          JOptionPane.ERROR_MESSAGE);
+      return false;
+    }
+
+    if (!cxbGenerateSchema.isSelected()
+        && !cxbGenerateObda.isSelected()
+        && !cxbGenerateConnection.isSelected()) {
+      JOptionPane.showMessageDialog(
+          this,
+          "You must select at least one file to be generated (schema, OBDA or connection).",
+          "Error",
+          JOptionPane.ERROR_MESSAGE);
+      return false;
+    }
+
+    return true;
   }
 }

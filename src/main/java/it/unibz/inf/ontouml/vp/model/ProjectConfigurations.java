@@ -25,7 +25,7 @@ public class ProjectConfigurations {
   public static final String DEFAULT_EXPORT_FILENAME = "";
   public static final String DEFAULT_GUFO_EXPORT_PATH = System.getProperty("user.home");
   public static final String DEFAULT_GUFO_EXPORT_FILENAME = "";
-  //***** DAFAULTS por Export to DB ***************
+  // ***** DAFAULTS por Export to DB ***************
   public static final DbmsSupported DEFAULT_DBMS = DbmsSupported.GENERIC_SCHEMA;
   public static final MappingStrategy DEFAULT_MAPPING_STRATEGY = MappingStrategy.ONE_TABLE_PER_KIND;
   public static final boolean DEFAULT_STANTDARDIZE_NAMES = true;
@@ -36,8 +36,8 @@ public class ProjectConfigurations {
   public static final String DEFAULT_DB_MAPPING_PATH = System.getProperty("user.home");
   public static final String DEFAULT_DB_MAPPING_FILE_NAME = "";
   public static final boolean DEFAULT_IS_ENUMARATION_TO_LOOKUP_TABLE = false;
-//***********************************************
-  
+  // ***********************************************
+
   @SerializedName("projectId")
   @Expose()
   private String id;
@@ -150,7 +150,7 @@ public class ProjectConfigurations {
   @SerializedName("generateObda")
   @Expose()
   private boolean generateObda;
-  
+
   @SerializedName("generateConnection")
   @Expose()
   private boolean generateConnection;
@@ -182,12 +182,10 @@ public class ProjectConfigurations {
   @SerializedName("enumFieldToLookupTable")
   @Expose()
   private boolean enumFieldToLookupTable;
-  
+
   @SerializedName("generateIndexes")
   @Expose()
   private boolean generateIndexes;
-  
-  
 
   /** Constructor without args to be called when deserializing project settings. */
   public ProjectConfigurations() {
@@ -598,7 +596,7 @@ public class ProjectConfigurations {
   public void setGenerateObda(boolean generateObda) {
     this.generateObda = generateObda;
   }
-  
+
   /**
    * Returns if it is necessary to generate the connection for the database.
    *
@@ -743,8 +741,7 @@ public class ProjectConfigurations {
   public void setEnumFieldToLookupTable(boolean isEnumFieldToLookupTable) {
     this.enumFieldToLookupTable = isEnumFieldToLookupTable;
   }
-  
-  
+
   /**
    * Returns if it is necessary generate the index for the schema.
    *
@@ -762,5 +759,4 @@ public class ProjectConfigurations {
   public void setGenerateIndexes(boolean generateIndexes) {
     this.generateIndexes = generateIndexes;
   }
-  
 }
