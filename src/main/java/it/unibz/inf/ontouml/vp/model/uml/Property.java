@@ -420,13 +420,23 @@ public class Property implements ModelElement {
   }
 
   public static void removeRedefinedProperties(IAssociationEnd associationEnd) {
-    Stream.of(associationEnd.toRedefinedPropertyArray())
-        .forEach(redefined -> associationEnd.removeRedefinedProperty(redefined));
+    var array = associationEnd.toRedefinedPropertyArray();
+
+    if (array == null) {
+      return;
+    }
+
+    Stream.of(array).forEach(redefined -> associationEnd.removeRedefinedProperty(redefined));
   }
 
   public static void removeSubsettedProperties(IAssociationEnd associationEnd) {
-    Stream.of(associationEnd.toSubsettedPropertyArray())
-        .forEach(subsetted -> associationEnd.removeSubsettedProperty(subsetted));
+    var array = associationEnd.toSubsettedPropertyArray();
+
+    if (array == null) {
+      return;
+    }
+
+    Stream.of(array).forEach(subsetted -> associationEnd.removeSubsettedProperty(subsetted));
   }
 
   public static void addRedefinedProperties(

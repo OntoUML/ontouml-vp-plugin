@@ -54,14 +54,8 @@ public class SmartModellingController {
 
     switch (stereotypes[0]) {
       case Stereotype.CATEGORY:
-        _class.setAbstract(true);
-        break;
       case Stereotype.ROLE_MIXIN:
-        _class.setAbstract(true);
-        break;
       case Stereotype.PHASE_MIXIN:
-        _class.setAbstract(true);
-        break;
       case Stereotype.MIXIN:
         _class.setAbstract(true);
         break;

@@ -1,6 +1,6 @@
 <plugin
   id="it.unibz.inf.ontouml.vp"
-  description="OntoUML Plugin Visual Paradigm v0.3.0"
+  description="OntoUML Plugin Visual Paradigm v0.5.1"
   provider="University of Bolzano"
   class="it.unibz.inf.ontouml.vp.OntoUMLPlugin">
 
