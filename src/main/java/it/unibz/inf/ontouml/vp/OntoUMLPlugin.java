@@ -24,6 +24,8 @@ public class OntoUMLPlugin implements VPPlugin {
   public static final String PLUGIN_REPO_NAME = "ontouml-vp-plugin";
 
   private static boolean isExportToGUFOWindowOpen;
+  private static boolean isDBExportWindowOpen;
+  private static boolean isOBDAExportWindowOpen;
   private static boolean isConfigWindowOpen;
   private static ProjectListener projectListener;
 
@@ -31,6 +33,8 @@ public class OntoUMLPlugin implements VPPlugin {
   public OntoUMLPlugin() {
     // The constructor of a VPPlugin MUST NOT have parameters.
     isExportToGUFOWindowOpen = false;
+    isDBExportWindowOpen = false;
+    isOBDAExportWindowOpen = false;
     isConfigWindowOpen = false;
     System.out.println("OntoUML Plugin (v" + PLUGIN_VERSION_RELEASE + ") loaded successfully.");
   }
@@ -70,5 +74,21 @@ public class OntoUMLPlugin implements VPPlugin {
 
   public static boolean getConfigWindowOpen() {
     return isConfigWindowOpen;
+  }
+
+  public static boolean getDBExportWindowOpen() {
+    return isDBExportWindowOpen;
+  }
+
+  public static void setDBExportWindowOpen(boolean open) {
+    isDBExportWindowOpen = open;
+  }
+
+  public static boolean getOBDAExportWindowOpen() {
+    return isOBDAExportWindowOpen;
+  }
+
+  public static void setOBDAExportWindowOpen(boolean open) {
+    isOBDAExportWindowOpen = open;
   }
 }

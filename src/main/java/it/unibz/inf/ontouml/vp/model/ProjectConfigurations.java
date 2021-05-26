@@ -25,6 +25,18 @@ public class ProjectConfigurations {
   public static final String DEFAULT_EXPORT_FILENAME = "";
   public static final String DEFAULT_GUFO_EXPORT_PATH = System.getProperty("user.home");
   public static final String DEFAULT_GUFO_EXPORT_FILENAME = "";
+  // ***** DAFAULTS por Export to DB ***************
+  public static final DbmsSupported DEFAULT_DBMS = DbmsSupported.GENERIC_SCHEMA;
+  public static final MappingStrategy DEFAULT_MAPPING_STRATEGY = MappingStrategy.ONE_TABLE_PER_KIND;
+  public static final boolean DEFAULT_STANTDARDIZE_NAMES = true;
+  public static final boolean DEFAULT_GENERATE_INDEXES = false;
+  public static final boolean DEFAULT_GENERATE_SCHEMA = true;
+  public static final boolean DEFAULT_GENERATE_OBDA = true;
+  public static final boolean DEFAULT_GENERATE_CONNECTION = false;
+  public static final String DEFAULT_DB_MAPPING_PATH = System.getProperty("user.home");
+  public static final String DEFAULT_DB_MAPPING_FILE_NAME = "";
+  public static final boolean DEFAULT_IS_ENUMARATION_TO_LOOKUP_TABLE = false;
+  // ***********************************************
 
   @SerializedName("projectId")
   @Expose()
@@ -118,6 +130,63 @@ public class ProjectConfigurations {
   @Expose()
   private boolean ignoreAssociationInversionWarning;
 
+  // Transformation properties for Relational Schema
+  @SerializedName("mappingStrategy")
+  @Expose()
+  private MappingStrategy mappingStrategy;
+
+  @SerializedName("targetDBMS")
+  @Expose()
+  private DbmsSupported targetDBMS;
+
+  @SerializedName("standarizeNames")
+  @Expose()
+  private boolean standardizeNames;
+
+  @SerializedName("generateSchema")
+  @Expose()
+  private boolean generateSchema;
+
+  @SerializedName("generateObda")
+  @Expose()
+  private boolean generateObda;
+
+  @SerializedName("generateConnection")
+  @Expose()
+  private boolean generateConnection;
+
+  @SerializedName("hostNameConnection")
+  @Expose()
+  private String hostNameConnection;
+
+  @SerializedName("databaseConnection")
+  @Expose()
+  private String databaseConnection;
+
+  @SerializedName("userConnection")
+  @Expose()
+  private String userConnection;
+
+  @SerializedName("passwordConnectino")
+  @Expose()
+  private String passwordConnectino;
+
+  @SerializedName("dbMappingFileName")
+  @Expose()
+  private String dbMappingFileName;
+
+  @SerializedName("dbMappingFolderPath")
+  @Expose()
+  private String dbMappingFolderPath;
+
+  @SerializedName("enumFieldToLookupTable")
+  @Expose()
+  private boolean enumFieldToLookupTable;
+
+  @SerializedName("generateIndexes")
+  @Expose()
+  private boolean generateIndexes;
+
   /** Constructor without args to be called when deserializing project settings. */
   public ProjectConfigurations() {
     this.id = "";
@@ -155,6 +224,17 @@ public class ProjectConfigurations {
     this.isSmartModellingEnabled = ProjectConfigurations.DEFAULT_IS_AUTOMATIC_MODELLING_ENABLED;
     this.ignoreAssociationInversionWarning =
         ProjectConfigurations.DEFAULT_IGNORE_ASSOCIATION_INVERSION_WARNING;
+
+    this.targetDBMS = ProjectConfigurations.DEFAULT_DBMS;
+    this.mappingStrategy = ProjectConfigurations.DEFAULT_MAPPING_STRATEGY;
+    this.standardizeNames = ProjectConfigurations.DEFAULT_STANTDARDIZE_NAMES;
+    this.generateIndexes = ProjectConfigurations.DEFAULT_GENERATE_INDEXES;
+    this.generateSchema = ProjectConfigurations.DEFAULT_GENERATE_SCHEMA;
+    this.generateObda = ProjectConfigurations.DEFAULT_GENERATE_OBDA;
+    this.generateConnection = ProjectConfigurations.DEFAULT_GENERATE_CONNECTION;
+    this.dbMappingFileName = ProjectConfigurations.DEFAULT_DB_MAPPING_FILE_NAME;
+    this.dbMappingFolderPath = ProjectConfigurations.DEFAULT_DB_MAPPING_PATH;
+    this.enumFieldToLookupTable = ProjectConfigurations.DEFAULT_IS_ENUMARATION_TO_LOOKUP_TABLE;
   }
 
   /**
@@ -425,5 +505,258 @@ public class ProjectConfigurations {
 
   public void setIgnoreAssociationInversionWarning(boolean ignoreAssociationInversionWarning) {
     this.ignoreAssociationInversionWarning = ignoreAssociationInversionWarning;
+  }
+
+  /**
+   * Informs the mapping strategy for the relational schema.
+   *
+   * @param mappingStrategy
+   */
+  public void setMappingStrategy(MappingStrategy mappingStrategy) {
+    this.mappingStrategy = mappingStrategy;
+  }
+
+  /**
+   * Returns the mapping strategy for the relational schema.
+   *
+   * @return MappingStrategy
+   */
+  public MappingStrategy getMappingStrategy() {
+    return this.mappingStrategy;
+  }
+
+  /**
+   * Checks whether the nomenclature will be standardized in the database.
+   *
+   * @return boolean
+   */
+  public boolean isStandardizeNames() {
+    return standardizeNames;
+  }
+
+  /**
+   * Informs if the nomenclature will be standardized in the database.
+   *
+   * @param standarizeNames
+   */
+  public void setStandardizeNames(boolean standarizeNames) {
+    this.standardizeNames = standarizeNames;
+  }
+
+  /**
+   * Returns the target DBMS for generating the files.
+   *
+   * @return DBMSSuported
+   */
+  public DbmsSupported getTargetDBMS() {
+    return targetDBMS;
+  }
+
+  /**
+   * Informs the target DBMS for generating the files.
+   *
+   * @param targetDBMS
+   */
+  public void setTargetDBMS(DbmsSupported targetDBMS) {
+    this.targetDBMS = targetDBMS;
+  }
+
+  /**
+   * Returns if it is necessary to generate the relational schema for the ontology.
+   *
+   * @return boolean
+   */
+  public boolean isGenerateSchema() {
+    return this.generateSchema;
+  }
+
+  /**
+   * Informs if it is necessary to generate the relational schema for the ontology.
+   *
+   * @param generateSchema
+   */
+  public void setGenerateSchema(boolean generateSchema) {
+    this.generateSchema = generateSchema;
+  }
+
+  /**
+   * Returns if it is necessary to generate the OBDA file for the ontology.
+   *
+   * @return boolean
+   */
+  public boolean isGenerateObda() {
+    return this.generateObda;
+  }
+
+  /**
+   * Informs if it is necessary to generate the OBDA file for the ontology.
+   *
+   * @param generateSchema
+   */
+  public void setGenerateObda(boolean generateObda) {
+    this.generateObda = generateObda;
+  }
+
+  /**
+   * Returns if it is necessary to generate the connection for the database.
+   *
+   * @return boolean
+   */
+  public boolean isGenerateConnection() {
+    return generateConnection;
+  }
+
+  /**
+   * Informs if it is necessary to generate the connection for the database.
+   *
+   * @param generateConnection
+   */
+  public void setGenerateConnection(boolean generateConnection) {
+    this.generateConnection = generateConnection;
+  }
+
+  /**
+   * Returns the host name connection.
+   *
+   * @return string
+   */
+  public String getHostNameConnection() {
+    return hostNameConnection;
+  }
+
+  /**
+   * Informs the host name connection.
+   *
+   * @param hostName
+   */
+  public void setHostNameConnection(String hostName) {
+    this.hostNameConnection = hostName;
+  }
+
+  /**
+   * Returns the database name connection.
+   *
+   * @return string
+   */
+  public String getDatabaseNameConnection() {
+    return databaseConnection;
+  }
+
+  /**
+   * Informs the database name connection.
+   *
+   * @param databaseName
+   */
+  public void setDatabaseNameConnection(String databaseName) {
+    this.databaseConnection = databaseName;
+  }
+
+  /**
+   * Returns the user name connection.
+   *
+   * @return string
+   */
+  public String getUserNameConnection() {
+    return userConnection;
+  }
+
+  /**
+   * Informs the user name connection.
+   *
+   * @param userName
+   */
+  public void setUserNameConnection(String userName) {
+    this.userConnection = userName;
+  }
+
+  /**
+   * Returns the password connection.
+   *
+   * @return string
+   */
+  public String getPassword() {
+    return passwordConnectino;
+  }
+
+  /**
+   * Informs the password connection.
+   *
+   * @param password
+   */
+  public void setPassword(String password) {
+    this.passwordConnectino = password;
+  }
+
+  /**
+   * Returns the file name for mapping to ER.
+   *
+   * @return
+   */
+  public String getDbMappingFileName() {
+    return this.dbMappingFileName;
+  }
+  ;
+
+  /**
+   * Informs the file name for mapping to ER.
+   *
+   * @param string
+   */
+  public void setDbMappingFileName(String dbMappingFileName) {
+    this.dbMappingFileName = dbMappingFileName;
+  }
+
+  /**
+   * Returns the directory to save the files mapping.
+   *
+   * @return String
+   */
+  public String getDbMappingFolderPath() {
+    return this.dbMappingFolderPath;
+  }
+
+  /**
+   * Informs the directory for mapping to ER.
+   *
+   * @param string
+   */
+  public void setDbMappingFolderPath(String dbMappingFolderPath) {
+    this.dbMappingFolderPath = dbMappingFolderPath;
+  }
+
+  /**
+   * Returns if it is necessary generate a table for the enumeration type fields.
+   *
+   * @return boolean
+   */
+  public boolean isEnumFieldToLookupTable() {
+    return this.enumFieldToLookupTable;
+  }
+
+  /**
+   * Informs if it is necessary generate a table for the enumeration type fields.
+   *
+   * @param boolean
+   */
+  public void setEnumFieldToLookupTable(boolean isEnumFieldToLookupTable) {
+    this.enumFieldToLookupTable = isEnumFieldToLookupTable;
+  }
+
+  /**
+   * Returns if it is necessary generate the index for the schema.
+   *
+   * @return boolean
+   */
+  public boolean isGenerateIndex() {
+    return this.generateIndexes;
+  }
+
+  /**
+   * Informs if it is necessary generate the indexes for the schema.
+   *
+   * @param boolean
+   */
+  public void setGenerateIndexes(boolean generateIndexes) {
+    this.generateIndexes = generateIndexes;
   }
 }
