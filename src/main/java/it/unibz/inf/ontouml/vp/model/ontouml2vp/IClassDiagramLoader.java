@@ -39,6 +39,18 @@ public class IClassDiagramLoader {
         .filter(view -> !view.getModelElement().holdsBetweenClasses())
         .forEach(fromRelationView -> IAssociationUIModelLoader.load(toDiagram, fromRelationView));
 
+    fromDiagram.getAllRelationViews().stream()
+        .filter(view -> view.getModelElement() != null)
+        .filter(view -> view.getModelElement().holdsBetweenClassAndRelation())
+        .forEach(
+            fromRelationView -> IAssociationClassUIModelLoader.load(toDiagram, fromRelationView));
+
+    fromDiagram.getAllRelationViews().stream()
+        .filter(view -> view.getModelElement() != null)
+        .filter(view -> !view.getModelElement().holdsBetweenClassAndRelation())
+        .forEach(
+            fromRelationView -> IAssociationClassUIModelLoader.load(toDiagram, fromRelationView));
+
     fromDiagram
         .getAllGeneralizationViews()
         .forEach(fromGenView -> IGeneralizationUIModelLoader.load(toDiagram, fromGenView));
