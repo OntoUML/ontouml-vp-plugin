@@ -3,7 +3,12 @@ package it.unibz.inf.ontouml.vp.model.uml;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.vp.plugin.model.*;
+import com.vp.plugin.model.IAssociationClass;
+import com.vp.plugin.model.IAssociationEnd;
+import com.vp.plugin.model.IAttribute;
+import com.vp.plugin.model.IClass;
+import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.IMultiplicity;
 import com.vp.plugin.model.factory.IModelElementFactory;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -382,13 +387,13 @@ public class Property implements ModelElement {
   public void setAggregationKind(int aggregation) {
     switch (aggregation) {
       case 0:
-        this.aggregationKind = "NONE";
+        this.aggregationKind = IAssociationEnd.AGGREGATION_KIND_NONE;
         break;
       case 1:
-        this.aggregationKind = "SHARED";
+        this.aggregationKind = IAssociationEnd.AGGREGATION_KIND_SHARED;
         break;
       case 2:
-        this.aggregationKind = "COMPOSITE";
+        this.aggregationKind = IAssociationEnd.AGGREGATION_KIND_COMPOSITED;
         break;
       default:
     }
@@ -401,14 +406,14 @@ public class Property implements ModelElement {
     }
 
     switch (aggregationKind.toUpperCase()) {
-      case "NONE":
-        this.aggregationKind = "NONE";
+      case IAssociationEnd.AGGREGATION_KIND_NONE:
+        this.aggregationKind = IAssociationEnd.AGGREGATION_KIND_NONE;
         return;
-      case "COMPOSITED":
-        this.aggregationKind = "COMPOSITE";
+      case IAssociationEnd.AGGREGATION_KIND_SHARED:
+        this.aggregationKind = IAssociationEnd.AGGREGATION_KIND_SHARED;
         return;
-      case "SHARED":
-        this.aggregationKind = "SHARED";
+      case IAssociationEnd.AGGREGATION_KIND_COMPOSITED:
+        this.aggregationKind = IAssociationEnd.AGGREGATION_KIND_COMPOSITED;
         return;
       default:
         this.aggregationKind = null;

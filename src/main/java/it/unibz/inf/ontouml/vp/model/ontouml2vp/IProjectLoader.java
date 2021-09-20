@@ -65,6 +65,9 @@ public class IProjectLoader {
         .forEach(rel -> IAssociationLoader.importElement(rel));
 
     // transform relations between classes and relations
+    fromProject.getAllRelations().stream()
+        .filter(rel -> rel.holdsBetweenClassAndRelation())
+        .forEach(rel -> IAssociationClassLoader.importElement(rel));
 
     // transform generalization
     fromProject.getAllGeneralizations().forEach(gen -> IGeneralizationLoader.importElement(gen));
