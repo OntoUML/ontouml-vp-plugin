@@ -7,22 +7,21 @@ import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.DiagramManager;
 import com.vp.plugin.diagram.IClassDiagramUIModel;
 import com.vp.plugin.diagram.IDiagramElement;
-import com.vp.plugin.model.IAssociation;
+import com.vp.plugin.model.IAssociationClass;
 import com.vp.plugin.model.IModelElement;
 import it.unibz.inf.ontouml.vp.model.ontouml.view.RelationView;
-import java.awt.*;
+import java.awt.Point;
 
-public class IAssociationUIModelLoader {
+public class IAssociationClassUIModelLoader {
 
   static DiagramManager diagramManager = ApplicationManager.instance().getDiagramManager();
 
   public static void load(IClassDiagramUIModel toDiagram, RelationView fromView) {
     IModelElement toModelElement = getIModelElement(fromView);
 
-    if (!(toModelElement instanceof IAssociation)) {
-      //        && !(toModelElement instanceof IAssociationClass)) {
+    if (!(toModelElement instanceof IAssociationClass)) {
       System.out.println(
-          LoaderUtils.getIncompatibleMessage(fromView, toModelElement, IAssociation.class));
+          LoaderUtils.getIncompatibleMessage(fromView, toModelElement, IAssociationClass.class));
       return;
     }
 

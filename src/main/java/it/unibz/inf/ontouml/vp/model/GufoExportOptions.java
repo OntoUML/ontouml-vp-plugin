@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class GufoExportOptions {
 
-  private String baseIRI;
+  private String baseIri;
   private String format;
   private String uriFormatBy;
   private boolean createInverses;
@@ -20,7 +20,7 @@ public class GufoExportOptions {
   public GufoExportOptions() {}
 
   public GufoExportOptions(ProjectConfigurations projectConfigurations) {
-    baseIRI = projectConfigurations.getExportGUFOIRI();
+    baseIri = projectConfigurations.getExportGUFOIRI();
     format = projectConfigurations.getExportGUFOFormat();
     uriFormatBy = projectConfigurations.getExportGUFOURIFormat();
     createInverses = projectConfigurations.getExportGUFOInverseBox();
@@ -38,12 +38,12 @@ public class GufoExportOptions {
     }
   }
 
-  public String getBaseIRI() {
-    return baseIRI;
+  public String getBaseIri() {
+    return baseIri;
   }
 
-  public void setBaseIRI(String baseIRI) {
-    this.baseIRI = baseIRI;
+  public void setBaseIri(String baseIri) {
+    this.baseIri = baseIri;
   }
 
   public String getFormat() {

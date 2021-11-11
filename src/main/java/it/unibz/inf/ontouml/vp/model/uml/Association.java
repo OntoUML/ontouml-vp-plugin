@@ -295,10 +295,11 @@ public class Association implements ModelElement {
 
     final IAssociationEnd sourceEnd = getSourceEnd(association);
     final IAssociationEnd targetEnd = getTargetEnd(association);
+    final String targetAgg = targetEnd.getAggregationKind().toLowerCase();
 
     sourceEnd.setNavigable(IAssociationEnd.NAVIGABLE_NAV_UNSPECIFIED);
 
-    if (IAssociationEnd.AGGREGATION_KIND_NONE.equals(targetEnd.getAggregationKind())) {
+    if (IAssociationEnd.AGGREGATION_KIND_NONE.toLowerCase().equals(targetAgg)) {
       targetEnd.setNavigable(IAssociationEnd.NAVIGABLE_NAV_NAVIGABLE);
     } else {
       targetEnd.setNavigable(IAssociationEnd.NAVIGABLE_NAV_UNSPECIFIED);
@@ -336,20 +337,17 @@ public class Association implements ModelElement {
       targetEnd.setAggregationKind(aggregationKind);
     } else {
       // By not forcing override we keep user-defined aggregation (e.g., "shared")
-      final String currentAggregationKind = targetEnd.getAggregationKind();
+      // The 16.3 release changes the aggregation kind's string and we must keep backwards
+      // compatibility
+      final String targetCurrentAggregation =
+          targetEnd.getAggregationKind() != null
+              ? targetEnd.getAggregationKind().toLowerCase()
+              : "none";
 
-      if (IAssociationEnd.AGGREGATION_KIND_NONE.equals(currentAggregationKind)) {
+      if (IAssociationEnd.AGGREGATION_KIND_NONE.toLowerCase().equals(targetCurrentAggregation)) {
         targetEnd.setAggregationKind(aggregationKind);
       }
     }
-  }
-
-  public static void setAggregationKind(IAssociation association, String aggregationKind) {
-    final IAssociationEnd sourceEnd = getSourceEnd(association);
-    final IAssociationEnd targetEnd = getTargetEnd(association);
-
-    sourceEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
-    targetEnd.setAggregationKind(aggregationKind);
   }
 
   public static void setDefaultMultiplicity(IAssociation association, boolean forceOverride) {

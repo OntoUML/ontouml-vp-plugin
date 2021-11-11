@@ -4,6 +4,7 @@ import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IAttribute;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IMultiplicity;
+import it.unibz.inf.ontouml.vp.model.ontouml.model.AggregationKind;
 import java.util.Iterator;
 
 public class IPropertyAdapter implements IAdapter {
@@ -75,11 +76,11 @@ public class IPropertyAdapter implements IAdapter {
       int value = attribute.getAggregation();
       switch (value) {
         case 0:
-          return "NONE";
+          return AggregationKind.NONE.getName();
         case 1:
-          return "SHARED";
+          return AggregationKind.SHARED.getName();
         case 2:
-          return "COMPOSITE";
+          return AggregationKind.COMPOSITE.getName();
       }
     }
 

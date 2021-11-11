@@ -13,6 +13,6 @@ public class IModelElementTransformer {
     target.addName(name);
 
     String description = source.getDescription();
-    target.addDescription(description.isEmpty() ? null : description);
+    target.addDescription(description != null && description.isEmpty() ? null : description);
   }
 }

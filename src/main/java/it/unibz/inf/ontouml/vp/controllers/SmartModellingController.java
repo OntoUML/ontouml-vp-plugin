@@ -10,15 +10,16 @@ import it.unibz.inf.ontouml.vp.utils.Stereotype;
 public class SmartModellingController {
 
   public static void setAggregationKind(IModelElement element) {
-    IAssociation association = (IAssociation) element;
-    IAssociationEnd compositionFromEnd = (IAssociationEnd) association.getFromEnd();
-    IAssociationEnd compositionToEnd = (IAssociationEnd) association.getToEnd();
+    final IAssociation association = (IAssociation) element;
+    final IAssociationEnd toEnd = (IAssociationEnd) association.getToEnd();
+    final IAssociationEnd fromEnd = (IAssociationEnd) association.getFromEnd();
+    final String toAgg = toEnd.getAggregationKind().toLowerCase();
 
-    if (compositionToEnd.getAggregationKind().equals(IAssociationEnd.AGGREGATION_KIND_NONE)) {
-      compositionToEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
+    if (IAssociationEnd.AGGREGATION_KIND_NONE.toLowerCase().equals(toAgg)) {
+      toEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
     }
 
-    compositionFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
+    fromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
   }
 
   public static void removeAggregationKind(IModelElement element) {

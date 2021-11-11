@@ -9,12 +9,13 @@ public class IStereotypeTransformer {
     String stereotype = null;
 
     if (source instanceof IClass
-        || source instanceof IAssociationClass
         || source instanceof IAssociation
         || source instanceof IAttribute
         || source instanceof IAssociationEnd) stereotype = getFirstStereotype(source);
 
     if (source instanceof IDataType) stereotype = "datatype";
+
+    if (source instanceof IAssociationClass) stereotype = "derivation";
 
     //    if (source instanceof IClass) {
     //      stereotype = getFirstStereotype((IClass) source);
