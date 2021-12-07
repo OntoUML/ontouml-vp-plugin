@@ -387,7 +387,8 @@ public interface ModelElement {
   }
 
   // TODO: CHECKME!
-  static <T extends IModelElement> void forEachSelectedElement(T modelElement, Consumer<T> consumer) {
+  static <T extends IModelElement> void forEachSelectedElement(
+      T modelElement, Consumer<T> consumer) {
     if (modelElement == null) {
       return;
     }

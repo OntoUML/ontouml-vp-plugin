@@ -12,7 +12,6 @@ import it.unibz.inf.ontouml.vp.model.uml.Association;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.*;
-
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,8 +57,8 @@ public class ApplyStereotypeController implements VPContextActionController {
 
     if (clickedOnAssociation(context)) {
       retrievesSelectedOrInvertedAssociations((IAssociation) clickedElement, action.getActionId())
-              .stream()
-              .forEach(assoc -> applyStereotype(action, assoc));
+          .stream()
+          .forEach(assoc -> applyStereotype(action, assoc));
       return;
     }
 
@@ -69,12 +68,12 @@ public class ApplyStereotypeController implements VPContextActionController {
     }
 
     if (clickedOnClass(context)) {
-      ModelElement.forEachSelectedElement(
-              clickedElement, clazz -> applyStereotype(action, clazz));
+      ModelElement.forEachSelectedElement(clickedElement, clazz -> applyStereotype(action, clazz));
       return;
     }
 
-    throw new UnsupportedOperationException("Cannot apply stereotype on an element of type " + getClickedElementType(context));
+    throw new UnsupportedOperationException(
+        "Cannot apply stereotype on an element of type " + getClickedElementType(context));
   }
 
   private void setEnabledOnStereotypeMenuItem(VPAction action, VPContext context) {
@@ -89,62 +88,62 @@ public class ApplyStereotypeController implements VPContextActionController {
     final String actionId = action.getActionId();
 
     switch (clickedElementType) {
-      case IModelElementFactory.MODEL_TYPE_ASSOCIATION: {
-        final IAssociation clickedAssociation = (IAssociation) clickedElement;
-        final List<IAssociation> selectedAssociations = new ArrayList<>();
+      case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
+        {
+          final IAssociation clickedAssociation = (IAssociation) clickedElement;
+          final List<IAssociation> selectedAssociations = new ArrayList<>();
 
-        ModelElement.forEachSelectedElement(
-                clickedAssociation,
-                selectedAssociation -> {
-                  if (!selectedAssociations.contains(selectedAssociation)) {
-                    selectedAssociations.add(selectedAssociation);
-                  }
-                });
+          ModelElement.forEachSelectedElement(
+              clickedAssociation,
+              selectedAssociation -> {
+                if (!selectedAssociations.contains(selectedAssociation)) {
+                  selectedAssociations.add(selectedAssociation);
+                }
+              });
 
-        action.setLabel(ActionIdManager.getActionLabelById(actionId));
+          action.setLabel(ActionIdManager.getActionLabelById(actionId));
 
-        if (isStereotypeActionAllowedAllAssociations(actionId, selectedAssociations)) {
-          action.setEnabled(true);
-        } else if (isStereotypeActionAllowedAllInvertedAssociations(
-                actionId, selectedAssociations)) {
-          action.setEnabled(true);
-          action.setLabel(action.getLabel() + " (inverted)");
-        } else {
-          action.setEnabled(false);
+          if (isStereotypeActionAllowedAllAssociations(actionId, selectedAssociations)) {
+            action.setEnabled(true);
+          } else if (isStereotypeActionAllowedAllInvertedAssociations(
+              actionId, selectedAssociations)) {
+            action.setEnabled(true);
+            action.setLabel(action.getLabel() + " (inverted)");
+          } else {
+            action.setEnabled(false);
+          }
+          break;
         }
-        break;
-      }
-      case IModelElementFactory.MODEL_TYPE_CLASS: {
-        final IClass clickedClass = (IClass) clickedElement;
+      case IModelElementFactory.MODEL_TYPE_CLASS:
+        {
+          final IClass clickedClass = (IClass) clickedElement;
 
-        final List<IClass> selectedClasses = new ArrayList<>();
+          final List<IClass> selectedClasses = new ArrayList<>();
 
-        ModelElement.forEachSelectedElement(
-                clickedClass,
-                selectedClass -> {
-                  if (!selectedClasses.contains(selectedClass)) {
-                    selectedClasses.add(selectedClass);
-                  }
-                });
+          ModelElement.forEachSelectedElement(
+              clickedClass,
+              selectedClass -> {
+                if (!selectedClasses.contains(selectedClass)) {
+                  selectedClasses.add(selectedClass);
+                }
+              });
 
-        if (isStereotypeActionAllowedAllClasses(actionId, selectedClasses)) {
-          action.setEnabled(true);
-        } else {
-          action.setEnabled(false);
+          if (isStereotypeActionAllowedAllClasses(actionId, selectedClasses)) {
+            action.setEnabled(true);
+          } else {
+            action.setEnabled(false);
+          }
+          break;
         }
-        break;
-      }
       default:
         throw new UnsupportedOperationException("Unexpected element of type " + clickedElementType);
     }
-
-
   }
 
-
   /**
-   * When the user right clicks on a diagram element, this method is invoked for each menu item
-   * of the menu to apply stereotypes. It sets the enables/disables menu items and adjusts their labels.
+   * When the user right clicks on a diagram element, this method is invoked for each menu item of
+   * the menu to apply stereotypes. It sets the enables/disables menu items and adjusts their
+   * labels.
    */
   @Override
   public void update(VPAction action, VPContext context) {
@@ -158,57 +157,59 @@ public class ApplyStereotypeController implements VPContextActionController {
     final String actionId = action.getActionId();
 
     switch (clickedElementType) {
-      case IModelElementFactory.MODEL_TYPE_ASSOCIATION: {
-        final IAssociation clickedAssociation = (IAssociation) clickedElement;
-        final List<IAssociation> selectedAssociations = new ArrayList<>();
+      case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
+        {
+          final IAssociation clickedAssociation = (IAssociation) clickedElement;
+          final List<IAssociation> selectedAssociations = new ArrayList<>();
 
-        ModelElement.forEachSelectedElement(
-                clickedAssociation,
-                selectedAssociation -> {
-                  if (!selectedAssociations.contains(selectedAssociation)) {
-                    selectedAssociations.add(selectedAssociation);
-                  }
-                });
+          ModelElement.forEachSelectedElement(
+              clickedAssociation,
+              selectedAssociation -> {
+                if (!selectedAssociations.contains(selectedAssociation)) {
+                  selectedAssociations.add(selectedAssociation);
+                }
+              });
 
-        action.setLabel(ActionIdManager.getActionLabelById(actionId));
+          action.setLabel(ActionIdManager.getActionLabelById(actionId));
 
-        if (isStereotypeActionAllowedAllAssociations(actionId, selectedAssociations)) {
-          action.setEnabled(true);
-        } else if (isStereotypeActionAllowedAllInvertedAssociations(
-                actionId, selectedAssociations)) {
-          action.setEnabled(true);
-          action.setLabel(action.getLabel() + " (inverted)");
-        } else {
-          action.setEnabled(false);
+          if (isStereotypeActionAllowedAllAssociations(actionId, selectedAssociations)) {
+            action.setEnabled(true);
+          } else if (isStereotypeActionAllowedAllInvertedAssociations(
+              actionId, selectedAssociations)) {
+            action.setEnabled(true);
+            action.setLabel(action.getLabel() + " (inverted)");
+          } else {
+            action.setEnabled(false);
+          }
+          break;
         }
-        break;
-      }
-      case IModelElementFactory.MODEL_TYPE_CLASS: {
-        final IClass clickedClass = (IClass) clickedElement;
-        final List<IClass> selectedClasses = new ArrayList<>();
+      case IModelElementFactory.MODEL_TYPE_CLASS:
+        {
+          final IClass clickedClass = (IClass) clickedElement;
+          final List<IClass> selectedClasses = new ArrayList<>();
 
-        ModelElement.forEachSelectedElement(
-                clickedClass,
-                selectedClass -> {
-                  if (!selectedClasses.contains(selectedClass)) {
-                    selectedClasses.add(selectedClass);
-                  }
-                });
+          ModelElement.forEachSelectedElement(
+              clickedClass,
+              selectedClass -> {
+                if (!selectedClasses.contains(selectedClass)) {
+                  selectedClasses.add(selectedClass);
+                }
+              });
 
-        if (isStereotypeActionAllowedAllClasses(actionId, selectedClasses)) {
-          action.setEnabled(true);
-        } else {
-          action.setEnabled(false);
+          if (isStereotypeActionAllowedAllClasses(actionId, selectedClasses)) {
+            action.setEnabled(true);
+          } else {
+            action.setEnabled(false);
+          }
+          break;
         }
-        break;
-      }
       default:
         throw new UnsupportedOperationException("Unexpected element of type " + clickedElementType);
     }
   }
 
   private List<IModelElement> retrievesSelectedOrInvertedAssociations(
-          IAssociation association, String actionId) {
+      IAssociation association, String actionId) {
     List<IModelElement> selectedOrInvertedAssociations = new ArrayList<>();
     final IClass associationSource = Association.getSource(association);
     final IClass associationTarget = Association.getTarget(association);
@@ -216,22 +217,22 @@ public class ApplyStereotypeController implements VPContextActionController {
     // Verifies if the actionId requires inverting the associations
     if (isStereotypeActionAllowed(actionId, associationSource, associationTarget)) {
       ModelElement.forEachSelectedElement(
-              association,
-              selectedAssociation -> {
-                selectedOrInvertedAssociations.add(selectedAssociation);
-              });
+          association,
+          selectedAssociation -> {
+            selectedOrInvertedAssociations.add(selectedAssociation);
+          });
     } else {
       final boolean shouldProceed = ViewManagerUtils.associationInvertionWarningDialog();
 
       if (shouldProceed) {
         ModelElement.forEachSelectedElement(
-                association,
-                selectedAssociation -> {
-                  if (!selectedOrInvertedAssociations.contains(selectedAssociation)) {
-                    Association.invertAssociation(selectedAssociation, true);
-                    selectedOrInvertedAssociations.add(selectedAssociation);
-                  }
-                });
+            association,
+            selectedAssociation -> {
+              if (!selectedOrInvertedAssociations.contains(selectedAssociation)) {
+                Association.invertAssociation(selectedAssociation, true);
+                selectedOrInvertedAssociations.add(selectedAssociation);
+              }
+            });
       }
     }
 
@@ -243,7 +244,7 @@ public class ApplyStereotypeController implements VPContextActionController {
 
     for (IClass child : children) {
       final List<String> allowedActions =
-              OntoUMLConstraintsManager.getAllowedActionsBasedOnChild(child);
+          OntoUMLConstraintsManager.getAllowedActionsBasedOnChild(child);
       if (!allowedActions.contains(actionId)) {
         return false;
       }
@@ -253,7 +254,7 @@ public class ApplyStereotypeController implements VPContextActionController {
 
     for (IClass parent : parents) {
       final List<String> allowedActions =
-              OntoUMLConstraintsManager.getAllowedActionsBasedOnParent(parent);
+          OntoUMLConstraintsManager.getAllowedActionsBasedOnParent(parent);
       if (!allowedActions.contains(actionId)) {
         return false;
       }
@@ -263,42 +264,42 @@ public class ApplyStereotypeController implements VPContextActionController {
   }
 
   private boolean isStereotypeActionAllowed(
-          String actionId, IClass associationSource, IClass associationTarget) {
+      String actionId, IClass associationSource, IClass associationTarget) {
     final List<String> allowedActions =
-            OntoUMLConstraintsManager.getAllowedActionsBasedOnSourceAndTarget(
-                    associationSource, associationTarget);
+        OntoUMLConstraintsManager.getAllowedActionsBasedOnSourceAndTarget(
+            associationSource, associationTarget);
 
     return allowedActions.contains(actionId);
   }
 
   private boolean isStereotypeActionAllowedAllClasses(String actionId, List<IClass> classes) {
     return classes.stream()
-            .allMatch(
-                    selectedClass -> {
-                      return isStereotypeActionAllowed(actionId, selectedClass);
-                    });
+        .allMatch(
+            selectedClass -> {
+              return isStereotypeActionAllowed(actionId, selectedClass);
+            });
   }
 
   private boolean isStereotypeActionAllowedAllAssociations(
-          String actionId, List<IAssociation> associations) {
+      String actionId, List<IAssociation> associations) {
     return associations.stream()
-            .allMatch(
-                    selectedAssociation -> {
-                      final IClass source = Association.getSource(selectedAssociation);
-                      final IClass target = Association.getTarget(selectedAssociation);
-                      return isStereotypeActionAllowed(actionId, source, target);
-                    });
+        .allMatch(
+            selectedAssociation -> {
+              final IClass source = Association.getSource(selectedAssociation);
+              final IClass target = Association.getTarget(selectedAssociation);
+              return isStereotypeActionAllowed(actionId, source, target);
+            });
   }
 
   private boolean isStereotypeActionAllowedAllInvertedAssociations(
-          String actionId, List<IAssociation> associations) {
+      String actionId, List<IAssociation> associations) {
     return associations.stream()
-            .allMatch(
-                    selectedAssociation -> {
-                      final IClass source = Association.getSource(selectedAssociation);
-                      final IClass target = Association.getTarget(selectedAssociation);
-                      return isStereotypeActionAllowed(actionId, target, source);
-                    });
+        .allMatch(
+            selectedAssociation -> {
+              final IClass source = Association.getSource(selectedAssociation);
+              final IClass target = Association.getTarget(selectedAssociation);
+              return isStereotypeActionAllowed(actionId, target, source);
+            });
   }
 
   private void applyStereotype(VPAction action, IModelElement element) {
@@ -420,7 +421,7 @@ public class ApplyStereotypeController implements VPContextActionController {
       case ActionIdManager.PARTICIPATIONAL:
       case ActionIdManager.PARTICIPATIONAL_FIXED:
         if (Association.hasAggregationSetOnSource((IAssociation) element)
-                && !Association.hasAggregationSetOnTarget((IAssociation) element))
+            && !Association.hasAggregationSetOnTarget((IAssociation) element))
           Association.invertAssociation((IAssociation) element, true);
         StereotypesManager.applyStereotype(element, Stereotype.PARTICIPATIONAL);
         break;
@@ -471,28 +472,28 @@ public class ApplyStereotypeController implements VPContextActionController {
       case ActionIdManager.COMPONENT_OF:
       case ActionIdManager.COMPONENT_OF_FIXED:
         if (Association.hasAggregationSetOnSource((IAssociation) element)
-                && !Association.hasAggregationSetOnTarget((IAssociation) element))
+            && !Association.hasAggregationSetOnTarget((IAssociation) element))
           Association.invertAssociation((IAssociation) element, true);
         StereotypesManager.applyStereotype(element, Stereotype.COMPONENT_OF);
         break;
       case ActionIdManager.MEMBER_OF:
       case ActionIdManager.MEMBER_OF_FIXED:
         if (Association.hasAggregationSetOnSource((IAssociation) element)
-                && !Association.hasAggregationSetOnTarget((IAssociation) element))
+            && !Association.hasAggregationSetOnTarget((IAssociation) element))
           Association.invertAssociation((IAssociation) element, true);
         StereotypesManager.applyStereotype(element, Stereotype.MEMBER_OF);
         break;
       case ActionIdManager.SUB_COLLECTION_OF:
       case ActionIdManager.SUB_COLLECTION_OF_FIXED:
         if (Association.hasAggregationSetOnSource((IAssociation) element)
-                && !Association.hasAggregationSetOnTarget((IAssociation) element))
+            && !Association.hasAggregationSetOnTarget((IAssociation) element))
           Association.invertAssociation((IAssociation) element, true);
         StereotypesManager.applyStereotype(element, Stereotype.SUB_COLLECTION_OF);
         break;
       case ActionIdManager.SUB_QUANTITY_OF:
       case ActionIdManager.SUB_QUANTITY_OF_FIXED:
         if (Association.hasAggregationSetOnSource((IAssociation) element)
-                && !Association.hasAggregationSetOnTarget((IAssociation) element))
+            && !Association.hasAggregationSetOnTarget((IAssociation) element))
           Association.invertAssociation((IAssociation) element, true);
         StereotypesManager.applyStereotype(element, Stereotype.SUB_QUANTITY_OF);
         break;
@@ -507,10 +508,10 @@ public class ApplyStereotypeController implements VPContextActionController {
     }
 
     boolean isSmartModelingEnabled =
-            Configurations.getInstance().getProjectConfigurations().isSmartModellingEnabled();
+        Configurations.getInstance().getProjectConfigurations().isSmartModellingEnabled();
     boolean isClass = element.getModelType().equals(IModelElementFactory.MODEL_TYPE_CLASS);
     boolean isAssociation =
-            element.getModelType().equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
+        element.getModelType().equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
 
     if (isSmartModelingEnabled && isClass) {
       SmartModellingController.setClassMetaProperties((IClass) element);
