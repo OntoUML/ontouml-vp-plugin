@@ -387,28 +387,24 @@ public interface ModelElement {
   }
 
   // TODO: CHECKME!
-  static <T extends IModelElement> void forEachSelectedElement(T element, Consumer<T> consumer) {
-    if (element == null) {
+  static <T extends IModelElement> void forEachSelectedElement(T modelElement, Consumer<T> consumer) {
+    if (modelElement == null) {
       return;
     }
 
-    final String selectedElementType = element.getModelType();
+    final String selectedElementType = modelElement.getModelType();
     final DiagramManager dm = ApplicationManager.instance().getDiagramManager();
     final IDiagramUIModel diagram = dm.getActiveDiagram();
     final IDiagramElement[] selectedDiagramElements =
-        diagram != null ? diagram.getSelectedDiagramElement() : null;
+        diagram != null ? diagram.getSelectedDiagramElement(selectedElementType) : null;
 
     if (diagram == null || selectedDiagramElements == null) {
-      consumer.accept(element);
+      consumer.accept(modelElement);
       return;
     }
 
     Arrays.stream(selectedDiagramElements)
-        .map(selectedDiagramElement -> selectedDiagramElement.getModelElement())
-        .filter(
-            selectedElement ->
-                selectedElement != null
-                    && selectedElementType.equals(selectedElement.getModelType()))
+        .map(IDiagramElement::getModelElement)
         .forEach((Consumer<IModelElement>) consumer);
     ;
   }
