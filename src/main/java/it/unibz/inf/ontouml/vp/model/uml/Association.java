@@ -241,6 +241,14 @@ public class Association implements ModelElement {
     return (IAssociationEnd) association.getToEnd();
   }
 
+  public static List<String> getSourceRestrictions(IAssociation association) {
+    return Class.getRestrictedToList(getSource(association));
+  }
+
+  public static List<String> getTargetRestrictions(IAssociation association) {
+    return Class.getRestrictedToList(getTarget(association));
+  }
+
   public static void invertAssociation(
       IAssociation association, boolean keepAllAssociationEndPropertiesInPlace) {
     final IClass originalSource = getSource(association);

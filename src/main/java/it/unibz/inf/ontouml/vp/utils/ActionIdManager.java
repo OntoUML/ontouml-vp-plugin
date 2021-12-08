@@ -281,7 +281,8 @@ public final class ActionIdManager {
   }
 
   public static String getActionLabelById(String actionId) {
-    switch (actionId) {
+    // TODO: relocate the "replace" method or add more options to the switch-case
+    switch (actionId.replace(".fixedMenu","")) {
       case INSTANTIATION:
         return "Instantiation";
       case TERMINATION:
@@ -322,4 +323,6 @@ public final class ActionIdManager {
         throw new UnsupportedOperationException("Unexpected action id value: " + actionId);
     }
   }
+
+
 }

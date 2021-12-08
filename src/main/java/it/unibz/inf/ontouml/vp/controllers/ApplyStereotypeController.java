@@ -34,9 +34,9 @@ public class ApplyStereotypeController implements VPContextActionController {
     return clickedElement != null ? clickedElement.getModelType() : "";
   }
 
-  private boolean clickedOnElementOfType(VPContext context, String type) {
+  private boolean clickedOnElementOfType(VPContext context, String modelType) {
     final String clickedType = getClickedElementType(context);
-    return type.equals(clickedType);
+    return modelType.equals(clickedType);
   }
 
   private boolean clickedOnClass(VPContext context) {
@@ -53,27 +53,30 @@ public class ApplyStereotypeController implements VPContextActionController {
 
   @Override
   public void performAction(VPAction action, VPContext context, ActionEvent event) {
-    final IModelElement clickedElement = context.getModelElement();
+    ApplyStereotypeMenuManager manager = ApplyStereotypeMenuManager.create(action,context);
+    manager.performAction();
 
-    if (clickedOnAssociation(context)) {
-      retrievesSelectedOrInvertedAssociations((IAssociation) clickedElement, action.getActionId())
-          .stream()
-          .forEach(assoc -> applyStereotype(action, assoc));
-      return;
-    }
-
-    if (clickedOnAttribute(context)) {
-      applyStereotype(action, clickedElement);
-      return;
-    }
-
-    if (clickedOnClass(context)) {
-      ModelElement.forEachSelectedElement(clickedElement, clazz -> applyStereotype(action, clazz));
-      return;
-    }
-
-    throw new UnsupportedOperationException(
-        "Cannot apply stereotype on an element of type " + getClickedElementType(context));
+//    final IModelElement clickedElement = context.getModelElement();
+//
+//    if (clickedOnAssociation(context)) {
+//      retrievesSelectedOrInvertedAssociations((IAssociation) clickedElement, action.getActionId())
+//          .stream()
+//          .forEach(assoc -> applyStereotype(action, assoc));
+//      return;
+//    }
+//
+//    if (clickedOnAttribute(context)) {
+//      applyStereotype(action, clickedElement);
+//      return;
+//    }
+//
+//    if (clickedOnClass(context)) {
+//      ModelElement.forEachSelectedElement(clickedElement, clazz -> applyStereotype(action, clazz));
+//      return;
+//    }
+//
+//    throw new UnsupportedOperationException(
+//        "Cannot apply stereotype on an element of type " + getClickedElementType(context));
   }
 
   private void setEnabledOnStereotypeMenuItem(VPAction action, VPContext context) {
@@ -147,65 +150,67 @@ public class ApplyStereotypeController implements VPContextActionController {
    */
   @Override
   public void update(VPAction action, VPContext context) {
+    ApplyStereotypeMenuManager manager = ApplyStereotypeMenuManager.create(action,context);
+    manager.update();
 
-    setEnabledOnStereotypeMenuItem(action, context);
-
-    // TODO: Separate enabling logic from renaming logic (add + " inverted");
-
-    final IModelElement clickedElement = context.getModelElement();
-    final String clickedElementType = clickedElement != null ? clickedElement.getModelType() : "";
-    final String actionId = action.getActionId();
-
-    switch (clickedElementType) {
-      case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
-        {
-          final IAssociation clickedAssociation = (IAssociation) clickedElement;
-          final List<IAssociation> selectedAssociations = new ArrayList<>();
-
-          ModelElement.forEachSelectedElement(
-              clickedAssociation,
-              selectedAssociation -> {
-                if (!selectedAssociations.contains(selectedAssociation)) {
-                  selectedAssociations.add(selectedAssociation);
-                }
-              });
-
-          action.setLabel(ActionIdManager.getActionLabelById(actionId));
-
-          if (isStereotypeActionAllowedAllAssociations(actionId, selectedAssociations)) {
-            action.setEnabled(true);
-          } else if (isStereotypeActionAllowedAllInvertedAssociations(
-              actionId, selectedAssociations)) {
-            action.setEnabled(true);
-            action.setLabel(action.getLabel() + " (inverted)");
-          } else {
-            action.setEnabled(false);
-          }
-          break;
-        }
-      case IModelElementFactory.MODEL_TYPE_CLASS:
-        {
-          final IClass clickedClass = (IClass) clickedElement;
-          final List<IClass> selectedClasses = new ArrayList<>();
-
-          ModelElement.forEachSelectedElement(
-              clickedClass,
-              selectedClass -> {
-                if (!selectedClasses.contains(selectedClass)) {
-                  selectedClasses.add(selectedClass);
-                }
-              });
-
-          if (isStereotypeActionAllowedAllClasses(actionId, selectedClasses)) {
-            action.setEnabled(true);
-          } else {
-            action.setEnabled(false);
-          }
-          break;
-        }
-      default:
-        throw new UnsupportedOperationException("Unexpected element of type " + clickedElementType);
-    }
+//    setEnabledOnStereotypeMenuItem(action, context);
+//
+//    // TODO: Separate enabling logic from renaming logic (add + " inverted");
+//
+//    final IModelElement clickedElement = context.getModelElement();
+//    final String clickedElementType = clickedElement != null ? clickedElement.getModelType() : "";
+//    final String actionId = action.getActionId();
+//
+//    switch (clickedElementType) {
+//      case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
+//        {
+//          final IAssociation clickedAssociation = (IAssociation) clickedElement;
+//          final List<IAssociation> selectedAssociations = new ArrayList<>();
+//
+//          ModelElement.forEachSelectedElement(
+//              clickedAssociation,
+//              selectedAssociation -> {
+//                if (!selectedAssociations.contains(selectedAssociation)) {
+//                  selectedAssociations.add(selectedAssociation);
+//                }
+//              });
+//
+//          action.setLabel(ActionIdManager.getActionLabelById(actionId));
+//
+//          if (isStereotypeActionAllowedAllAssociations(actionId, selectedAssociations)) {
+//            action.setEnabled(true);
+//          } else if (isStereotypeActionAllowedAllInvertedAssociations(
+//              actionId, selectedAssociations)) {
+//            action.setEnabled(true);
+//            action.setLabel(action.getLabel() + " (inverted)");
+//          } else {
+//            action.setEnabled(false);
+//          }
+//          break;
+//        }
+//      case IModelElementFactory.MODEL_TYPE_CLASS:
+//        {
+//          final IClass clickedClass = (IClass) clickedElement;
+//          final List<IClass> selectedClasses = new ArrayList<>();
+//
+//          ModelElement.forEachSelectedElement(
+//              clickedClass,
+//              selectedClass -> {
+//                if (!selectedClasses.contains(selectedClass)) {
+//                  selectedClasses.add(selectedClass);
+//                }
+//              });
+//
+//          if (isStereotypeActionAllowedAllClasses(actionId, selectedClasses)) {
+//            action.setEnabled(true);
+//          } else {
+//            action.setEnabled(false);
+//          }
+//          break;
+//        }
+//      default:
+//        throw new UnsupportedOperationException("Unexpected element of type " + clickedElementType);
+//    }
   }
 
   private List<IModelElement> retrievesSelectedOrInvertedAssociations(
