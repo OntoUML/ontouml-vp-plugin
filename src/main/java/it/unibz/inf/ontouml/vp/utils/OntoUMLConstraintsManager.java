@@ -16,10 +16,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class OntoUMLConstraintsManager {
 
@@ -78,88 +76,6 @@ public class OntoUMLConstraintsManager {
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
-  }
-
-  // TODO: remove
-  public static List<String> getAllowedActionsBasedOnParent(IClass parrentClass) {
-    if (allowedSuperClassesFor == null || allowedSubClassesFor == null) {
-      loadConstraints();
-    }
-
-    final String parentClassStereotype = ModelElement.getUniqueStereotypeName(parrentClass);
-    List<String> allowedStereotypes = allowedSubClassesFor.get(parentClassStereotype);
-
-    if (allowedStereotypes == null) {
-      allowedStereotypes = new ArrayList<>();
-    }
-
-    return allowedStereotypes.stream()
-        .map(allowedStereotype -> ActionIdManager.classStereotypeToActionID(allowedStereotype))
-        .collect(Collectors.toList());
-  }
-
-  // TODO: remove
-  public static List<String> getAllowedActionsBasedOnChild(IClass childClass) {
-    if (allowedSuperClassesFor == null || allowedSubClassesFor == null) {
-      loadConstraints();
-    }
-
-    final String childClassStereotype = ModelElement.getUniqueStereotypeName(childClass);
-    List<String> allowedStereotypes = allowedSuperClassesFor.get(childClassStereotype);
-
-    if (allowedStereotypes == null) {
-      allowedStereotypes = new ArrayList<>();
-    }
-
-    return allowedStereotypes.stream()
-        .map(allowedStereotype -> ActionIdManager.classStereotypeToActionID(allowedStereotype))
-        .collect(Collectors.toList());
-  }
-
-  // TODO: remove
-  public static List<String> getAllowedActionsBasedOnSourceAndTarget(
-      IClass sourceClass, IClass targetClass) {
-    if (associationConstraints == null) {
-      loadConstraints();
-    }
-
-    final List<String> sourceRestrictions = Class.getRestrictedToList(sourceClass);
-    final List<String> targetRestrictions = Class.getRestrictedToList(targetClass);
-    final List<List<String>> listsOfAllowedStereotypes = new ArrayList<>();
-
-    for (String sourceRestriction : sourceRestrictions) {
-      for (String targetRestriction : targetRestrictions) {
-        final List<String> allowedStereotypes =
-            associationConstraints.get(sourceRestriction + ":" + targetRestriction);
-
-        if (allowedStereotypes != null) {
-          listsOfAllowedStereotypes.add(allowedStereotypes);
-        }
-      }
-    }
-
-    List<String> intersectingAllowedStereotypes = new ArrayList<>();
-
-    for (List<String> allowedStereotypes : listsOfAllowedStereotypes) {
-      if (allowedStereotypes.isEmpty()) {
-        return allowedStereotypes;
-      }
-
-      if (intersectingAllowedStereotypes.isEmpty()) {
-        intersectingAllowedStereotypes.addAll(allowedStereotypes);
-      } else {
-        intersectingAllowedStereotypes =
-            intersectingAllowedStereotypes.stream()
-                .filter(allowedStereotypes::contains)
-                .distinct()
-                .collect(Collectors.toList());
-      }
-    }
-
-    return intersectingAllowedStereotypes.stream()
-        .map(
-            allowedStereotype -> ActionIdManager.associationStereotypeToActionID(allowedStereotype))
-        .collect(Collectors.toList());
   }
 
   public static boolean isStereotypeAllowed(IClass _class, String stereotype) {

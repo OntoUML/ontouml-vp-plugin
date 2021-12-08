@@ -1,11 +1,14 @@
-package it.unibz.inf.ontouml.vp.utils;
+package it.unibz.inf.ontouml.vp.controllers;
 
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPContext;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IModelElement;
 import it.unibz.inf.ontouml.vp.model.uml.Association;
-import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
+import it.unibz.inf.ontouml.vp.utils.OntoUMLConstraintsManager;
+import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
+import it.unibz.inf.ontouml.vp.utils.VPContextUtils;
+import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -88,7 +91,8 @@ public class ApplyAssociationStereotypeMenuManager extends ApplyStereotypeMenuMa
     String stereotype = associationStereotypeId.getStereotype();
 
     return elements.stream()
-        .filter(element -> OntoUMLConstraintsManager.isStereotypeAllowed((IAssociation) element, stereotype))
+        .filter(element -> OntoUMLConstraintsManager
+            .isStereotypeAllowed((IAssociation) element, stereotype))
         .collect(Collectors.toSet());
   }
 

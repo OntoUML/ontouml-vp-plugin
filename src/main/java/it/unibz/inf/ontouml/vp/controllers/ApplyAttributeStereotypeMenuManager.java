@@ -1,7 +1,9 @@
-package it.unibz.inf.ontouml.vp.utils;
+package it.unibz.inf.ontouml.vp.controllers;
 
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPContext;
+import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
+import it.unibz.inf.ontouml.vp.utils.VPContextUtils;
 
 public class ApplyAttributeStereotypeMenuManager extends ApplyStereotypeMenuManager {
 

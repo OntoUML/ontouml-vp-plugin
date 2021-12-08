@@ -1,12 +1,9 @@
-package it.unibz.inf.ontouml.vp.utils;
+package it.unibz.inf.ontouml.vp.controllers;
 
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPContext;
-import com.vp.plugin.model.IAssociation;
-import com.vp.plugin.model.IAttribute;
-import com.vp.plugin.model.IClass;
-import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.factory.IModelElementFactory;
+import it.unibz.inf.ontouml.vp.utils.VPContextUtils;
 
 abstract public class ApplyStereotypeMenuManager {
 

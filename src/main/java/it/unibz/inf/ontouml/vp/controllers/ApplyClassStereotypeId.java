@@ -1,10 +1,9 @@
-package it.unibz.inf.ontouml.vp.utils;
+package it.unibz.inf.ontouml.vp.controllers;
 
+import it.unibz.inf.ontouml.vp.utils.Stereotype;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public enum ApplyClassStereotypeId {
 
