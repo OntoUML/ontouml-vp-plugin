@@ -24,41 +24,48 @@ public class ApplyAssociationStereotypeMenuManager extends ApplyStereotypeMenuMa
   ApplyAssociationStereotypeMenuManager(VPAction action, VPContext context) {
     this.action = action;
     this.context = context;
-    this.associationStereotypeId = ApplyAssociationStereotypeId.getFromActionId(action.getActionId());
+    this.associationStereotypeId =
+        ApplyAssociationStereotypeId.getFromActionId(action.getActionId());
 
     this.elements = VPContextUtils.getModelElements(context);
     this.elementsWhereStereotypeIsAllowed = getElementsWhereStereotypeIsAllowed(elements);
-    this.elementsWhereStereotypeIsAllowedOnlyIfInverted = getElementsWhereStereotypeIsAllowedIfInverted(elements);
+    this.elementsWhereStereotypeIsAllowedOnlyIfInverted =
+        getElementsWhereStereotypeIsAllowedIfInverted(elements);
 
-    this.allElementsCanReceiveTheStereotype = elements.stream().allMatch(element ->
-        elementsWhereStereotypeIsAllowed.contains(element)
-        || elementsWhereStereotypeIsAllowedOnlyIfInverted.contains(element));
+    this.allElementsCanReceiveTheStereotype =
+        elements.stream()
+            .allMatch(
+                element ->
+                    elementsWhereStereotypeIsAllowed.contains(element)
+                        || elementsWhereStereotypeIsAllowedOnlyIfInverted.contains(element));
 
-    this.hasSomeElementThatRequiresInversion = elementsWhereStereotypeIsAllowedOnlyIfInverted
-        .stream().anyMatch(element -> !elementsWhereStereotypeIsAllowed.contains(element));
+    this.hasSomeElementThatRequiresInversion =
+        elementsWhereStereotypeIsAllowedOnlyIfInverted.stream()
+            .anyMatch(element -> !elementsWhereStereotypeIsAllowed.contains(element));
   }
 
   @Override
   public void performAction() {
     boolean shouldProceed = true;
 
-    if(shouldWarnAboutInvertingAssociations()) {
+    if (shouldWarnAboutInvertingAssociations()) {
       shouldProceed = ViewManagerUtils.associationInvertionWarningDialog();
     }
 
-    if(!shouldProceed) {
-      return ;
+    if (!shouldProceed) {
+      return;
     }
 
-    elements.forEach(element -> {
-      IAssociation association = (IAssociation) element;
+    elements.forEach(
+        element -> {
+          IAssociation association = (IAssociation) element;
 
-      if(doesRequireInverting(association)) {
-        Association.invertAssociation(association,true);
-      }
+          if (doesRequireInverting(association)) {
+            Association.invertAssociation(association, true);
+          }
 
-      StereotypesManager.applyStereotype(association,associationStereotypeId.getStereotype());
-    });
+          StereotypesManager.applyStereotype(association, associationStereotypeId.getStereotype());
+        });
   }
 
   @Override
@@ -68,13 +75,14 @@ public class ApplyAssociationStereotypeMenuManager extends ApplyStereotypeMenuMa
   }
 
   private void updateLabel() {
-    String invertLabel = hasSomeElementThatRequiresInversion ?
-        associationStereotypeId.getDefaultLabel() + " (inverted)" :
-        associationStereotypeId.getDefaultLabel();
+    String invertLabel =
+        hasSomeElementThatRequiresInversion
+            ? associationStereotypeId.getDefaultLabel() + " (inverted)"
+            : associationStereotypeId.getDefaultLabel();
 
-    if(associationStereotypeId.isFixed()) {
+    if (associationStereotypeId.isFixed()) {
       action.setLabel(invertLabel);
-    } else if(allElementsCanReceiveTheStereotype) {
+    } else if (allElementsCanReceiveTheStereotype) {
       action.setLabel(invertLabel);
     } else {
       action.setLabel(associationStereotypeId.getDefaultLabel());
@@ -82,7 +90,7 @@ public class ApplyAssociationStereotypeMenuManager extends ApplyStereotypeMenuMa
   }
 
   private void updateEnabling() {
-    if(!associationStereotypeId.isFixed()) {
+    if (!associationStereotypeId.isFixed()) {
       action.setEnabled(allElementsCanReceiveTheStereotype);
     }
   }
@@ -91,16 +99,21 @@ public class ApplyAssociationStereotypeMenuManager extends ApplyStereotypeMenuMa
     String stereotype = associationStereotypeId.getStereotype();
 
     return elements.stream()
-        .filter(element -> OntoUMLConstraintsManager
-            .isStereotypeAllowed((IAssociation) element, stereotype))
+        .filter(
+            element ->
+                OntoUMLConstraintsManager.isStereotypeAllowed((IAssociation) element, stereotype))
         .collect(Collectors.toSet());
   }
 
-  private Set<IModelElement> getElementsWhereStereotypeIsAllowedIfInverted(Set<IModelElement> elements) {
+  private Set<IModelElement> getElementsWhereStereotypeIsAllowedIfInverted(
+      Set<IModelElement> elements) {
     String stereotype = associationStereotypeId.getStereotype();
 
     return elements.stream()
-        .filter(element -> OntoUMLConstraintsManager.isStereotypeAllowedIfInverted((IAssociation) element, stereotype))
+        .filter(
+            element ->
+                OntoUMLConstraintsManager.isStereotypeAllowedIfInverted(
+                    (IAssociation) element, stereotype))
         .collect(Collectors.toSet());
   }
 
@@ -112,5 +125,4 @@ public class ApplyAssociationStereotypeMenuManager extends ApplyStereotypeMenuMa
     return elementsWhereStereotypeIsAllowedOnlyIfInverted.contains(association)
         && !elementsWhereStereotypeIsAllowed.contains(association);
   }
-
 }

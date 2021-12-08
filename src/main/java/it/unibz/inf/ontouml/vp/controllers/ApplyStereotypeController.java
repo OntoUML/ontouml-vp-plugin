@@ -15,7 +15,7 @@ public class ApplyStereotypeController implements VPContextActionController {
 
   @Override
   public void performAction(VPAction action, VPContext context, ActionEvent event) {
-    ApplyStereotypeMenuManager manager = ApplyStereotypeMenuManager.create(action,context);
+    ApplyStereotypeMenuManager manager = ApplyStereotypeMenuManager.create(action, context);
     manager.performAction();
   }
 
@@ -26,8 +26,7 @@ public class ApplyStereotypeController implements VPContextActionController {
    */
   @Override
   public void update(VPAction action, VPContext context) {
-    ApplyStereotypeMenuManager manager = ApplyStereotypeMenuManager.create(action,context);
+    ApplyStereotypeMenuManager manager = ApplyStereotypeMenuManager.create(action, context);
     manager.update();
   }
-
 }

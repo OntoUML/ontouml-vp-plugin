@@ -6,9 +6,7 @@ import com.vp.plugin.diagram.IBaseDiagramElement;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IModelElement;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,8 +35,7 @@ public class Diagram {
   }
 
   public static Set<IModelElement> getSelectedModelElements(IDiagramUIModel diagram) {
-    return getSelectedDiagramElements(diagram)
-        .stream()
+    return getSelectedDiagramElements(diagram).stream()
         .map(IBaseDiagramElement::getModelElement)
         .filter(Objects::nonNull)
         .collect(Collectors.toSet());
@@ -51,11 +48,10 @@ public class Diagram {
     return getSelectedModelElements(diagram, modelType);
   }
 
-  public static Set<IModelElement> getSelectedModelElements(IDiagramUIModel diagram, String modelType) {
-    return Diagram.getSelectedModelElements()
-        .stream()
+  public static Set<IModelElement> getSelectedModelElements(
+      IDiagramUIModel diagram, String modelType) {
+    return Diagram.getSelectedModelElements().stream()
         .filter(me -> me.getModelType().equals(modelType))
         .collect(Collectors.toSet());
   }
-
 }

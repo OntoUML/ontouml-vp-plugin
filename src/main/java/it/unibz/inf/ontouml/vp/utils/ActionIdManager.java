@@ -41,6 +41,4 @@ public final class ActionIdManager {
 
   public static final String ASSOCIATION_ACTION_INVERT_ASSOCIATION =
       "it.unibz.inf.ontouml.vp.AssociationActions.invertAssociation";
-
-
 }

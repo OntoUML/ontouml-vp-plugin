@@ -9,7 +9,7 @@ public class VPContextUtils {
 
   /** @return a set including selected model elements of the same type */
   public static Set<IModelElement> getModelElements(VPContext context) {
-    if(isDiagramContext(context)) {
+    if (isDiagramContext(context)) {
       return Diagram.getSelectedModelElements(context.getDiagram(), getModelType(context));
     }
     return Set.of(context.getModelElement());
@@ -23,5 +23,4 @@ public class VPContextUtils {
     IModelElement modelElement = context.getModelElement();
     return modelElement != null ? modelElement.getModelType() : "";
   }
-
 }

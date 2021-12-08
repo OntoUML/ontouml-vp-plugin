@@ -5,7 +5,7 @@ import com.vp.plugin.action.VPContext;
 import com.vp.plugin.model.factory.IModelElementFactory;
 import it.unibz.inf.ontouml.vp.utils.VPContextUtils;
 
-abstract public class ApplyStereotypeMenuManager {
+public abstract class ApplyStereotypeMenuManager {
 
   protected VPAction action;
   protected VPContext context;
@@ -20,11 +20,12 @@ abstract public class ApplyStereotypeMenuManager {
       case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
         return new ApplyAssociationStereotypeMenuManager(action, context);
       default:
-        throw new RuntimeException("Attempt to apply stereotype to unexpected model element of type '"  + modelType + "'");
+        throw new RuntimeException(
+            "Attempt to apply stereotype to unexpected model element of type '" + modelType + "'");
     }
   }
 
-  abstract public void performAction();
+  public abstract void performAction();
 
-  abstract public void update();
+  public abstract void update();
 }

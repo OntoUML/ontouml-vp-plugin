@@ -20,17 +20,19 @@ public class ApplyClassStereotypeMenuManager extends ApplyStereotypeMenuManager 
 
   @Override
   public void performAction() {
-    VPContextUtils.getModelElements(context).forEach(element -> {
-      StereotypesManager.applyStereotype(element, classStereotypeId.getStereotype());
-      if (classStereotypeId.hasKnownNature()) {
-        Class.setDefaultRestrictedTo((IClass) element);
-      }
-    });
+    VPContextUtils.getModelElements(context)
+        .forEach(
+            element -> {
+              StereotypesManager.applyStereotype(element, classStereotypeId.getStereotype());
+              if (classStereotypeId.hasKnownNature()) {
+                Class.setDefaultRestrictedTo((IClass) element);
+              }
+            });
   }
 
   @Override
   public void update() {
-    if(classStereotypeId.isFixed()) {
+    if (classStereotypeId.isFixed()) {
       action.setEnabled(true);
     } else {
       boolean shouldEnable = isStereotypeAllowedForAllSelectedElements(classStereotypeId);
@@ -38,7 +40,8 @@ public class ApplyClassStereotypeMenuManager extends ApplyStereotypeMenuManager 
     }
   }
 
-  private boolean isStereotypeAllowedForAllSelectedElements(ApplyClassStereotypeId classStereotypeId) {
+  private boolean isStereotypeAllowedForAllSelectedElements(
+      ApplyClassStereotypeId classStereotypeId) {
     String stereotype = classStereotypeId.getStereotype();
     return VPContextUtils.getModelElements(context).stream()
         .allMatch(

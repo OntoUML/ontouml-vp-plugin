@@ -17,9 +17,11 @@ public class ApplyAttributeStereotypeMenuManager extends ApplyStereotypeMenuMana
 
   @Override
   public void performAction() {
-    VPContextUtils.getModelElements(context).forEach(element -> {
-      StereotypesManager.applyStereotype(element, attributeStereotypeId.getStereotype());
-    });
+    VPContextUtils.getModelElements(context)
+        .forEach(
+            element -> {
+              StereotypesManager.applyStereotype(element, attributeStereotypeId.getStereotype());
+            });
   }
 
   @Override

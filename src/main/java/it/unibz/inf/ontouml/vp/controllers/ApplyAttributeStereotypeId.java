@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public enum ApplyAttributeStereotypeId {
-
   END("it.unibz.inf.ontouml.vp.addEndStereotype", Stereotype.END, "End"),
   BEGIN("it.unibz.inf.ontouml.vp.addBeginStereotype", Stereotype.BEGIN, "Begin"),
 
@@ -37,10 +36,13 @@ public enum ApplyAttributeStereotypeId {
   }
 
   public static ApplyAttributeStereotypeId getFromActionId(String actionId) {
-    if(actionIdMap == null || actionIdMap.isEmpty()) {
+    if (actionIdMap == null || actionIdMap.isEmpty()) {
       actionIdMap = new HashMap<String, ApplyAttributeStereotypeId>();
       Arrays.stream(ApplyAttributeStereotypeId.values())
-          .forEach(applyAttributeStereotypeId -> actionIdMap.put(applyAttributeStereotypeId.getActionId(),applyAttributeStereotypeId));
+          .forEach(
+              applyAttributeStereotypeId ->
+                  actionIdMap.put(
+                      applyAttributeStereotypeId.getActionId(), applyAttributeStereotypeId));
     }
 
     return actionIdMap.get(actionId);
