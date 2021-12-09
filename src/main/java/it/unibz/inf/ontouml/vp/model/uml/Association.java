@@ -331,7 +331,7 @@ public class Association implements ModelElement {
         aggregationKind = IAssociationEnd.AGGREGATION_KIND_COMPOSITED;
         break;
       default:
-        if (hasValidStereotype(association)) {
+        if (hasOntoumlStereotype(association)) {
           // When there is a non-parthood stereotype we must remove any aggregation kind
           sourceEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
           targetEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
@@ -521,12 +521,16 @@ public class Association implements ModelElement {
   }
 
   public static boolean isOntoumlAssociation(IAssociation association) {
-    return (hasValidStereotype(association) || association.stereotypeCount() == 0)
-        && Class.hasValidStereotype(Association.getSource(association))
-        && Class.hasValidStereotype(Association.getTarget(association));
+    boolean hasSource = getSource(association) != null;
+    boolean hasTarget = getTarget(association) != null;
+    boolean hasOntoumlStereotype = hasOntoumlStereotype(association);
+    boolean hasOntoumlSource = hasSource && Class.isOntoumlClass(getSource(association));
+    boolean hasOntoumlTarget = hasTarget && Class.isOntoumlClass(getTarget(association));
+
+    return hasSource && hasTarget && (hasOntoumlStereotype || hasOntoumlSource || hasOntoumlTarget);
   }
 
-  public static boolean hasValidStereotype(IAssociation association) {
+  public static boolean hasOntoumlStereotype(IAssociation association) {
     final String stereotype = ModelElement.getUniqueStereotypeName(association);
     return Stereotype.getOntoUMLAssociationStereotypeNames().contains(stereotype);
   }

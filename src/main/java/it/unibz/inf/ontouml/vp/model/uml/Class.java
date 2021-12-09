@@ -627,7 +627,9 @@ public class Class implements ModelElement {
     return isExtensional != null;
   }
 
-  public static boolean hasValidStereotype(IClass _class) {
+  public static boolean isOntoumlClass(IClass _class) {
+    if(_class == null) return false;
+
     final String stereotype = ModelElement.getUniqueStereotypeName(_class);
     return Stereotype.getOntoUMLClassStereotypeNames().contains(stereotype);
   }
