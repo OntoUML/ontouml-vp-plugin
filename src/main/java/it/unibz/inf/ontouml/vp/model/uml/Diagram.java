@@ -48,14 +48,14 @@ public class Diagram {
   }
 
   public static void setOntoumlDiagram(IDiagramUIModel diagram) {
-    if(isOntoUMLDiagram(diagram)) return ;
+    if (isOntoUMLDiagram(diagram)) return;
 
     IDiagramUIModelComment comment = diagram.createComment();
     DiagramComment.setOntoumlDiagramComment(comment);
   }
 
   public static void unsetOntoumlDiagram(IDiagramUIModel diagram) {
-    if (!isOntoUMLDiagram(diagram)) return ;
+    if (!isOntoUMLDiagram(diagram)) return;
 
     getComments(diagram).stream()
         .filter(DiagramComment::isOntoumlDiagramComment)

@@ -11,10 +11,11 @@ import java.util.stream.Collectors;
 
 public class ProjectModelListener implements IProjectModelListener {
 
-  private static final Set<String> typesOfModelElementOfInterest = Set.of(
-      IModelElementFactory.MODEL_TYPE_ASSOCIATION,
-      IModelElementFactory.MODEL_TYPE_CLASS,
-      IModelElementFactory.MODEL_TYPE_GENERALIZATION);
+  private static final Set<String> typesOfModelElementOfInterest =
+      Set.of(
+          IModelElementFactory.MODEL_TYPE_ASSOCIATION,
+          IModelElementFactory.MODEL_TYPE_CLASS,
+          IModelElementFactory.MODEL_TYPE_GENERALIZATION);
 
   private final ModelListener modelListener;
 
@@ -64,8 +65,9 @@ public class ProjectModelListener implements IProjectModelListener {
   }
 
   private Set<IModelElement> getAllLevelInterestModelElements(IProject project) {
-    return !(project.allLevelModelElementCount() > 0) ? Collections.emptySet() :
-        Set.of(project.toAllLevelModelElementArray()).stream()
+    return !(project.allLevelModelElementCount() > 0)
+        ? Collections.emptySet()
+        : Set.of(project.toAllLevelModelElementArray()).stream()
             .filter(this::isModelElementOfInterest)
             .collect(Collectors.toSet());
   }

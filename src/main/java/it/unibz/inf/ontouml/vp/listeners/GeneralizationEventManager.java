@@ -46,11 +46,11 @@ public class GeneralizationEventManager extends ModelElementEventManager {
   }
 
   private void propagateParentsRestrictions(Object value) {
-    if(!(value instanceof IClass))  return ;
+    if (!(value instanceof IClass)) return;
 
     IClass _class = (IClass) value;
 
-    if(!Class.isOntoumlClass(_class) || !Class.isBaseSortal(_class)) return ;
+    if (!Class.isOntoumlClass(_class) || !Class.isBaseSortal(_class)) return;
 
     Class.getParents(_class).stream()
         .filter(Class::isOntoumlClass)

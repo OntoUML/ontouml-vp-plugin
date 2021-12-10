@@ -25,16 +25,29 @@ import java.util.stream.Collectors;
  */
 public class Class implements ModelElement {
 
-  private static final Set<String> STEREOTYPES_WITH_FIXED_RESTRICTED_TO_VALUE = Set.of(
-      Stereotype.EVENT, Stereotype.SITUATION, Stereotype.TYPE,
-      Stereotype.ABSTRACT, Stereotype.DATATYPE, Stereotype.ENUMERATION,
-      Stereotype.KIND, Stereotype.COLLECTIVE, Stereotype.QUANTITY,
-      Stereotype.RELATOR, Stereotype.MODE, Stereotype.QUALITY);
-  private static final Set<String> STEREOTYPES_WITH_MULTIPLE_RESTRICTED_TO_VALUES = Set.of(
-      Stereotype.CATEGORY, Stereotype.MIXIN, Stereotype.PHASE_MIXIN, Stereotype.ROLE_MIXIN,
-      Stereotype.HISTORICAL_ROLE_MIXIN);
-  private static final Set<String> STEREOTYPES_WITH_INHERITED_RESTRICTED_TO_VALUE = Set.of(
-      Stereotype.SUBKIND, Stereotype.ROLE, Stereotype.PHASE, Stereotype.HISTORICAL_ROLE);
+  private static final Set<String> STEREOTYPES_WITH_FIXED_RESTRICTED_TO_VALUE =
+      Set.of(
+          Stereotype.EVENT,
+          Stereotype.SITUATION,
+          Stereotype.TYPE,
+          Stereotype.ABSTRACT,
+          Stereotype.DATATYPE,
+          Stereotype.ENUMERATION,
+          Stereotype.KIND,
+          Stereotype.COLLECTIVE,
+          Stereotype.QUANTITY,
+          Stereotype.RELATOR,
+          Stereotype.MODE,
+          Stereotype.QUALITY);
+  private static final Set<String> STEREOTYPES_WITH_MULTIPLE_RESTRICTED_TO_VALUES =
+      Set.of(
+          Stereotype.CATEGORY,
+          Stereotype.MIXIN,
+          Stereotype.PHASE_MIXIN,
+          Stereotype.ROLE_MIXIN,
+          Stereotype.HISTORICAL_ROLE_MIXIN);
+  private static final Set<String> STEREOTYPES_WITH_INHERITED_RESTRICTED_TO_VALUE =
+      Set.of(Stereotype.SUBKIND, Stereotype.ROLE, Stereotype.PHASE, Stereotype.HISTORICAL_ROLE);
 
   private final IModelElement sourceModelElement;
 
@@ -639,7 +652,7 @@ public class Class implements ModelElement {
   }
 
   public static boolean isOntoumlClass(IClass _class) {
-    if(_class == null) return false;
+    if (_class == null) return false;
 
     final String stereotype = ModelElement.getUniqueStereotypeName(_class);
     return Stereotype.getOntoUMLClassStereotypeNames().contains(stereotype);
@@ -690,29 +703,34 @@ public class Class implements ModelElement {
   }
 
   public static void propagateRestrictionsToDescendants(IClass _class) {
-    Class.applyOnDescendants(_class, descendent -> {
-      if (!doesItInheritItsRestrictions(descendent)) {
-        return false;
-      }
+    Class.applyOnDescendants(
+        _class,
+        descendent -> {
+          if (!doesItInheritItsRestrictions(descendent)) {
+            return false;
+          }
 
-      final Set<IClass> parents = Class.getParents(descendent).stream().filter(Class::isSortal)
-          .collect(Collectors.toSet());
-      final String parentsRestrictions = combineClassesRestrictions(parents);
-      final String descendentRestrictions = Class.getRestrictedTo(descendent);
+          final Set<IClass> parents =
+              Class.getParents(descendent).stream()
+                  .filter(Class::isSortal)
+                  .collect(Collectors.toSet());
+          final String parentsRestrictions = combineClassesRestrictions(parents);
+          final String descendentRestrictions = Class.getRestrictedTo(descendent);
 
-      if(!parentsRestrictions.equals(descendentRestrictions)) {
-        Class.setRestrictedTo(descendent,parentsRestrictions);
-        return true;
-      }
+          if (!parentsRestrictions.equals(descendentRestrictions)) {
+            Class.setRestrictedTo(descendent, parentsRestrictions);
+            return true;
+          }
 
-      return false;
-    });
+          return false;
+        });
   }
 
   private static String combineClassesRestrictions(Set<IClass> classes) {
     return classes.stream()
         .flatMap(_class -> new HashSet<>(Class.getRestrictedToList(_class)).stream())
-        .sorted().collect(Collectors.joining(" "));
+        .sorted()
+        .collect(Collectors.joining(" "));
   }
 
   public static boolean canItHaveMultipleRestrictions(IClass _class) {

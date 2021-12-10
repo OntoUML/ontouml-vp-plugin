@@ -15,8 +15,7 @@ import it.unibz.inf.ontouml.vp.utils.SmartColoringUtils;
 
 public class DiagramListener implements IDiagramListener {
 
-  public DiagramListener() {
-  }
+  public DiagramListener() {}
 
   @Override
   public void diagramElementAdded(IDiagramUIModel diagram, IDiagramElement shape) {
@@ -54,12 +53,10 @@ public class DiagramListener implements IDiagramListener {
       IDiagramUIModel diagram,
       String propertyName,
       Object originalProperty,
-      Object modifiedProperty) {
-  }
+      Object modifiedProperty) {}
 
   @Override
-  public void diagramUIModelRenamed(IDiagramUIModel diagram) {
-  }
+  public void diagramUIModelRenamed(IDiagramUIModel diagram) {}
 
   private void runSmartPainting(IDiagramElement diagramElement) {
     if (isClassDiagramElement(diagramElement) && isPaintingEnabled()) {
@@ -69,11 +66,14 @@ public class DiagramListener implements IDiagramListener {
 
   private void runSmartPainting(IDiagramUIModel diagram) {
     if (isDiagram(diagram) && isPaintingEnabled()) {
-      diagram.diagramElementIterator().forEachRemaining(element -> {
-        if (isClassDiagramElement(element)) {
-          paint((IClassUIModel) element);
-        }
-      });
+      diagram
+          .diagramElementIterator()
+          .forEachRemaining(
+              element -> {
+                if (isClassDiagramElement(element)) {
+                  paint((IClassUIModel) element);
+                }
+              });
     }
   }
 
@@ -94,16 +94,16 @@ public class DiagramListener implements IDiagramListener {
   }
 
   private void runOntoumlDiagramCheck(IDiagramElement element) {
-    if(isOntoumlDiagramElement(element) && !isInOntoumlDiagram(element)) {
+    if (isOntoumlDiagramElement(element) && !isInOntoumlDiagram(element)) {
       IDiagramUIModel diagram = element.getDiagramUIModel();
       Diagram.setOntoumlDiagram(diagram);
     }
   }
 
   private void runOntoumlDiagramCheck(IDiagramUIModel diagram) {
-    if(containsOntoumlElements(diagram) && !Diagram.isOntoUMLDiagram(diagram)) {
+    if (containsOntoumlElements(diagram) && !Diagram.isOntoUMLDiagram(diagram)) {
       Diagram.setOntoumlDiagram(diagram);
-    } else if(!containsOntoumlElements(diagram) && Diagram.isOntoUMLDiagram(diagram)) {
+    } else if (!containsOntoumlElements(diagram) && Diagram.isOntoUMLDiagram(diagram)) {
       Diagram.unsetOntoumlDiagram(diagram);
     }
   }
@@ -113,17 +113,17 @@ public class DiagramListener implements IDiagramListener {
 
     while (iter.hasNext()) {
       IDiagramElement element = (IDiagramElement) iter.next();
-      if(isOntoumlDiagramElement(element)) return true;
+      if (isOntoumlDiagramElement(element)) return true;
     }
 
     return false;
   }
 
   private boolean isOntoumlDiagramElement(IDiagramElement element) {
-    if(isAssociationDiagramElement(element)) {
+    if (isAssociationDiagramElement(element)) {
       IAssociation association = (IAssociation) element.getModelElement();
       return Association.isOntoumlAssociation(association);
-    } else if(isClassDiagramElement(element)) {
+    } else if (isClassDiagramElement(element)) {
       IClass _class = (IClass) element.getModelElement();
       return Class.isOntoumlClass(_class);
     }

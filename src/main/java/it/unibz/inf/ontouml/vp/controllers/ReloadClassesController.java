@@ -1,12 +1,9 @@
 package it.unibz.inf.ontouml.vp.controllers;
 
 import com.vp.plugin.ApplicationManager;
-import com.vp.plugin.DiagramManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
-import com.vp.plugin.diagram.IDiagramUIModel;
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
-import it.unibz.inf.ontouml.vp.model.uml.Diagram;
 import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 
 public class ReloadClassesController implements VPActionController {

@@ -6,17 +6,19 @@ public class DiagramComment {
 
   private static final String ontoumlPluginCommentAuthor = "OntoUML Plugin";
   private static final String ontoumlPluginCommentSummary = "OntoUML Diagram";
-  private static final String ontoumlPluginCommentContent = "This diagram has been set as an OntoUML Diagram.";
+  private static final String ontoumlPluginCommentContent =
+      "This diagram has been set as an OntoUML Diagram.";
 
   public static boolean isOntoumlDiagramComment(IDiagramUIModelComment comment) {
-    return ontoumlPluginCommentAuthor.equals(comment.getAuthor()) &&
-        ontoumlPluginCommentSummary.equals(comment.getSummary()) &&
-        ontoumlPluginCommentContent.equals(comment.getContent());
+    return ontoumlPluginCommentAuthor.equals(comment.getAuthor())
+        && ontoumlPluginCommentSummary.equals(comment.getSummary())
+        && ontoumlPluginCommentContent.equals(comment.getContent());
   }
 
   public static void setOntoumlDiagramComment(IDiagramUIModelComment comment) {
-    if(!isEmpty(comment)) {
-      throw new RuntimeException("The comment is not empty. It cannot be used to set an OntoUML diagram.");
+    if (!isEmpty(comment)) {
+      throw new RuntimeException(
+          "The comment is not empty. It cannot be used to set an OntoUML diagram.");
     }
 
     comment.setAuthor(ontoumlPluginCommentAuthor);
@@ -31,5 +33,4 @@ public class DiagramComment {
 
     return !hasAuthor && !hasSummary && !hasContent;
   }
-
 }

@@ -39,15 +39,15 @@ public class ModelListener implements PropertyChangeListener {
   public void propertyChange(PropertyChangeEvent event) {
     try {
       ModelElementEventManager eventManager = ModelElementEventManager.create(event);
-      if(eventManager != null) eventManager.processEvent();
+      if (eventManager != null) eventManager.processEvent();
 
-//      final Object source = event.getSource();
-//
-//      if (source instanceof IClass) {
-//        processClassEvent(event);
-//      } else if (source instanceof IGeneralization) {
-//        processGeneralizationEvent(event);
-//      }
+      //      final Object source = event.getSource();
+      //
+      //      if (source instanceof IClass) {
+      //        processClassEvent(event);
+      //      } else if (source instanceof IGeneralization) {
+      //        processGeneralizationEvent(event);
+      //      }
     } catch (Exception e) {
       System.err.println("An error occurred while processing a change event on model element.");
       e.printStackTrace();

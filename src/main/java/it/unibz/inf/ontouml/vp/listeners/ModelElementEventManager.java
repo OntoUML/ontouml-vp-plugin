@@ -4,7 +4,7 @@ import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.factory.IModelElementFactory;
 import java.beans.PropertyChangeEvent;
 
-abstract public class ModelElementEventManager {
+public abstract class ModelElementEventManager {
 
   // Names of property change events to be handled
   protected static final String STEREOTYPE_CHANGE_EVENT = "stereotypes";
@@ -16,18 +16,18 @@ abstract public class ModelElementEventManager {
 
   protected PropertyChangeEvent event;
 
-  abstract public void processEvent();
+  public abstract void processEvent();
 
   protected boolean hasEventChangedValues() {
     return newValue != null ? !newValue.equals(oldValue) : newValue != null;
   }
 
   public static ModelElementEventManager create(PropertyChangeEvent event) {
-    if(!hasModelElementSource(event)) throwUnexpectedEventSource();
+    if (!hasModelElementSource(event)) throwUnexpectedEventSource();
 
     String modelType = ((IModelElement) event.getSource()).getModelType();
 
-    switch(modelType) {
+    switch (modelType) {
       case IModelElementFactory.MODEL_TYPE_CLASS:
         return new ClassEventManager(event);
       case IModelElementFactory.MODEL_TYPE_GENERALIZATION:
@@ -50,7 +50,7 @@ abstract public class ModelElementEventManager {
   }
 
   public static void throwUnexpectedEventSource(String modelType) {
-    throw new RuntimeException("Unexpected source in received property change event of type '"+modelType+"'");
+    throw new RuntimeException(
+        "Unexpected source in received property change event of type '" + modelType + "'");
   }
-
 }
