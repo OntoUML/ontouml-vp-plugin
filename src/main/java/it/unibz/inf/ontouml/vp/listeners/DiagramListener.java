@@ -43,7 +43,6 @@ public class DiagramListener implements IDiagramListener {
   public void diagramUIModelLoaded(IDiagramUIModel diagram) {
     try {
       runSmartPainting(diagram);
-      runOntoumlDiagramCheck(diagram);
     } catch (Exception e) {
       System.err.println("An error occurred while adding an element to diagram.");
       e.printStackTrace();
@@ -56,7 +55,6 @@ public class DiagramListener implements IDiagramListener {
       String propertyName,
       Object originalProperty,
       Object modifiedProperty) {
-    System.out.println("Diagram property change: " + propertyName);
   }
 
   @Override

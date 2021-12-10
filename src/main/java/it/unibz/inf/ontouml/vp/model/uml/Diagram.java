@@ -8,7 +8,6 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.diagram.IDiagramUIModelComment;
 import com.vp.plugin.model.IModelElement;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,14 +42,9 @@ public class Diagram {
         .collect(Collectors.toSet());
   }
 
+  // TODO: check whether it makes sense to use this function name to avoid null diagrams
   public static boolean isOntoUMLDiagram(IDiagramUIModel diagram) {
-    final Iterator<?> comments = diagram.commentIterator();
-
-    while(comments.hasNext()) {
-      final IDiagramUIModelComment comment = (IDiagramUIModelComment) comments.next();
-      if(DiagramComment.isOntoumlDiagramComment(comment)) return true;
-    }
-    return false;
+    return getComments(diagram).stream().anyMatch(DiagramComment::isOntoumlDiagramComment);
   }
 
   public static void setOntoumlDiagram(IDiagramUIModel diagram) {
@@ -61,15 +55,18 @@ public class Diagram {
   }
 
   public static void unsetOntoumlDiagram(IDiagramUIModel diagram) {
-    if(!isOntoUMLDiagram(diagram)) return ;
+    if (!isOntoUMLDiagram(diagram)) return ;
 
-    var iter = diagram.commentIterator();
+    getComments(diagram).stream()
+        .filter(DiagramComment::isOntoumlDiagramComment)
+        .forEach(diagram::removeComment);
+  }
 
-    while(iter.hasNext()) {
-      IDiagramUIModelComment comment = (IDiagramUIModelComment) iter.next();
-      if(DiagramComment.isOntoumlDiagramComment(comment)) {
-        diagram.removeComment(comment);
-      }
-    }
+  public static boolean haveComments(IDiagramUIModel diagram) {
+    return diagram.commentCount() > 0;
+  }
+
+  public static Set<IDiagramUIModelComment> getComments(IDiagramUIModel diagram) {
+    return haveComments(diagram) ? Set.of(diagram.toCommentArray()) : Collections.emptySet();
   }
 }

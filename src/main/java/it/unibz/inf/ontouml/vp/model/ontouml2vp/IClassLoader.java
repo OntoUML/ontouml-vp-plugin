@@ -30,7 +30,8 @@ public class IClassLoader {
     boolean isDerived = fromClass.isDerived();
     setDerived(toClass, isDerived);
 
-    fromClass.isExtensional().ifPresent(aBoolean -> setIsExtensional(toClass, aBoolean));
+    fromClass.isExtensional().ifPresent(aBoolean -> it.unibz.inf.ontouml.vp.model.uml.Class
+        .isExtensional(toClass, aBoolean));
     fromClass.isPowertype().ifPresent(aBoolean -> setIsPowertype(toClass, aBoolean));
     fromClass.getOrderAsString().ifPresent(aString -> setOrder(toClass, aString));
 

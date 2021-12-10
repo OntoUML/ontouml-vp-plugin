@@ -30,7 +30,7 @@ public class ModelListener implements PropertyChangeListener {
   private final List<String> interestStereotypes;
 
   public ModelListener() {
-    interestStereotypes = Stereotype.getSortalStereotypeNames();
+    interestStereotypes = Stereotype.getBaseSortalStereotypeNames();
     interestStereotypes.addAll(Stereotype.getUltimateSortalStereotypeNames());
     interestStereotypes.add(Stereotype.TYPE);
   }
@@ -38,15 +38,18 @@ public class ModelListener implements PropertyChangeListener {
   @Override
   public void propertyChange(PropertyChangeEvent event) {
     try {
-      final Object source = event.getSource();
+      ModelElementEventManager eventManager = ModelElementEventManager.create(event);
+      if(eventManager != null) eventManager.processEvent();
 
-      if (source instanceof IClass) {
-        processClassEvent(event);
-      } else if (source instanceof IGeneralization) {
-        processGeneralizationEvent(event);
-      }
+//      final Object source = event.getSource();
+//
+//      if (source instanceof IClass) {
+//        processClassEvent(event);
+//      } else if (source instanceof IGeneralization) {
+//        processGeneralizationEvent(event);
+//      }
     } catch (Exception e) {
-      System.err.println("An error ocurred while processing a change event on model element.");
+      System.err.println("An error occurred while processing a change event on model element.");
       e.printStackTrace();
     }
   }
@@ -178,20 +181,20 @@ public class ModelListener implements PropertyChangeListener {
     if (newRestrictionValue != null
         && !newRestrictionValue.equals(oldRestrictionValue)
         && !newRestrictionValue.equals(RestrictedTo.COLLECTIVE)) {
-      Class.setIsExtensional(_class, false);
+      Class.isExtensional(_class, false);
     }
   }
 
   private void preventManualChangeToIsExtensional(PropertyChangeEvent event) {
     final IClass _class = event.getSource() instanceof IClass ? (IClass) event.getSource() : null;
-    final String restritedToValue = Class.getRestrictedTo(_class);
+    final String restrictedToValue = Class.getRestrictedTo(_class);
     final Object newIsExtensionalValue = event.getNewValue();
     final Object oldIsExtensionalValue = event.getOldValue();
 
     if (newIsExtensionalValue != null
         && !newIsExtensionalValue.equals(oldIsExtensionalValue)
-        && !restritedToValue.equals(RestrictedTo.COLLECTIVE)) {
-      Class.setIsExtensional(_class, false);
+        && !restrictedToValue.equals(RestrictedTo.COLLECTIVE)) {
+      Class.isExtensional(_class, false);
     }
   }
 

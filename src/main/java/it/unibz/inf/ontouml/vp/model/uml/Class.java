@@ -25,6 +25,17 @@ import java.util.stream.Collectors;
  */
 public class Class implements ModelElement {
 
+  private static final Set<String> STEREOTYPES_WITH_FIXED_RESTRICTED_TO_VALUE = Set.of(
+      Stereotype.EVENT, Stereotype.SITUATION, Stereotype.TYPE,
+      Stereotype.ABSTRACT, Stereotype.DATATYPE, Stereotype.ENUMERATION,
+      Stereotype.KIND, Stereotype.COLLECTIVE, Stereotype.QUANTITY,
+      Stereotype.RELATOR, Stereotype.MODE, Stereotype.QUALITY);
+  private static final Set<String> STEREOTYPES_WITH_MULTIPLE_RESTRICTED_TO_VALUES = Set.of(
+      Stereotype.CATEGORY, Stereotype.MIXIN, Stereotype.PHASE_MIXIN, Stereotype.ROLE_MIXIN,
+      Stereotype.HISTORICAL_ROLE_MIXIN);
+  private static final Set<String> STEREOTYPES_WITH_INHERITED_RESTRICTED_TO_VALUE = Set.of(
+      Stereotype.SUBKIND, Stereotype.ROLE, Stereotype.PHASE, Stereotype.HISTORICAL_ROLE);
+
   private final IModelElement sourceModelElement;
 
   @SerializedName("type")
@@ -605,7 +616,7 @@ public class Class implements ModelElement {
     return Boolean.parseBoolean(isExtensionalValue);
   }
 
-  public static void setIsExtensional(IClass _class, boolean isExtensionalValue) {
+  public static void isExtensional(IClass _class, boolean isExtensionalValue) {
     final ITaggedValueContainer container = _class.getTaggedValues();
     final ITaggedValue isExtensional =
         container != null
@@ -639,6 +650,11 @@ public class Class implements ModelElement {
     return RestrictedTo.isRestrictedToEditable(stereotype);
   }
 
+  public static boolean isRestrictedTo(IClass _class, Set<String> restrictions) {
+    Set<String> classRestrictions = new HashSet<>(getRestrictedToList(_class));
+    return restrictions.equals(classRestrictions);
+  }
+
   public static boolean isAbstractEditable(IClass _class) {
     final String stereotype = ModelElement.getUniqueStereotypeName(_class);
     return stereotype == null || !Stereotype.isNonSortal(stereotype);
@@ -656,5 +672,61 @@ public class Class implements ModelElement {
 
   public static boolean hasCollectiveNature(IClass _class) {
     return RestrictedTo.COLLECTIVE.equals(getRestrictedTo(_class));
+  }
+
+  public static boolean isBaseSortal(IClass _class) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(_class);
+    return Stereotype.isBaseSortal(stereotype);
+  }
+
+  public static boolean isUltimateSortal(IClass _class) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(_class);
+    return Stereotype.isUltimateSortal(stereotype);
+  }
+
+  public static boolean isSortal(IClass _class) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(_class);
+    return Stereotype.isSortal(stereotype);
+  }
+
+  public static void propagateRestrictionsToDescendants(IClass _class) {
+    Class.applyOnDescendants(_class, descendent -> {
+      if (!doesItInheritItsRestrictions(descendent)) {
+        return false;
+      }
+
+      final Set<IClass> parents = Class.getParents(descendent).stream().filter(Class::isSortal)
+          .collect(Collectors.toSet());
+      final String parentsRestrictions = combineClassesRestrictions(parents);
+      final String descendentRestrictions = Class.getRestrictedTo(descendent);
+
+      if(!parentsRestrictions.equals(descendentRestrictions)) {
+        Class.setRestrictedTo(descendent,parentsRestrictions);
+        return true;
+      }
+
+      return false;
+    });
+  }
+
+  private static String combineClassesRestrictions(Set<IClass> classes) {
+    return classes.stream()
+        .flatMap(_class -> new HashSet<>(Class.getRestrictedToList(_class)).stream())
+        .sorted().collect(Collectors.joining(" "));
+  }
+
+  public static boolean canItHaveMultipleRestrictions(IClass _class) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(_class);
+    return STEREOTYPES_WITH_MULTIPLE_RESTRICTED_TO_VALUES.contains(stereotype);
+  }
+
+  public static boolean doesItInheritItsRestrictions(IClass _class) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(_class);
+    return STEREOTYPES_WITH_INHERITED_RESTRICTED_TO_VALUE.contains(stereotype);
+  }
+
+  public static boolean doesItHaveFixedRestrictions(IClass _class) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(_class);
+    return STEREOTYPES_WITH_FIXED_RESTRICTED_TO_VALUE.contains(stereotype);
   }
 }
