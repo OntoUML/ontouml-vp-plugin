@@ -9,6 +9,7 @@ import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IClass;
 import it.unibz.inf.ontouml.vp.utils.Stereotype;
+import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

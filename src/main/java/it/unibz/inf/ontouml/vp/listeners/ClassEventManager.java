@@ -8,6 +8,7 @@ import it.unibz.inf.ontouml.vp.utils.SmartColoringUtils;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
 import java.beans.PropertyChangeEvent;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ClassEventManager extends ModelElementEventManager {
 
@@ -110,6 +111,7 @@ public class ClassEventManager extends ModelElementEventManager {
     }
 
     if (Class.doesItInheritItsRestrictions(source) && hasEventChangedValues()) {
+      inheritRestrictedTo(source);
       Class.propagateRestrictionsToDescendants(source);
       return;
     }
@@ -132,5 +134,19 @@ public class ClassEventManager extends ModelElementEventManager {
 
   private void enforceFixedRestrictions() {
     Class.setDefaultRestrictedTo(source);
+  }
+
+  public void inheritRestrictedTo(IClass _class) {
+    if (!Class.doesItInheritItsRestrictions(_class)) return ;
+
+    final Set<IClass> parents = Class.getParents(_class).stream()
+            .filter(Class::isSortal)
+            .collect(Collectors.toSet());
+    final String parentsRestrictions = Class.combineClassesRestrictions(parents);
+    final String classRestrictions = Class.getRestrictedTo(_class);
+
+    if (!parentsRestrictions.equals(classRestrictions)) {
+      Class.setRestrictedTo(_class, parentsRestrictions);
+    }
   }
 }

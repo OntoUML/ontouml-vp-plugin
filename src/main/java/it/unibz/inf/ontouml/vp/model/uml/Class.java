@@ -725,7 +725,7 @@ public class Class implements ModelElement {
         });
   }
 
-  private static String combineClassesRestrictions(Set<IClass> classes) {
+  public static String combineClassesRestrictions(Set<IClass> classes) {
     return classes.stream()
         .flatMap(_class -> new HashSet<>(Class.getRestrictedToList(_class)).stream())
         .sorted()

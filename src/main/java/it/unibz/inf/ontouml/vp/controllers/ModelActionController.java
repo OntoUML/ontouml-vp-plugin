@@ -9,6 +9,7 @@ import com.vp.plugin.model.factory.IModelElementFactory;
 import it.unibz.inf.ontouml.vp.model.uml.Association;
 import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.ActionIdManager;
+import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 import java.awt.event.ActionEvent;
 
 public class ModelActionController implements VPContextActionController {
@@ -27,11 +28,14 @@ public class ModelActionController implements VPContextActionController {
             ? (IAssociation) context.getModelElement()
             : null;
 
+    if(!Association.holdsBetweenClasses(clickedAssociation)) {
+        ViewManagerUtils.simpleDialog("Unable to invert: the association is not connecting two classes.");
+    }
+
     switch (action.getActionId()) {
       case ActionIdManager.ASSOCIATION_ACTION_INVERT_ASSOCIATION:
-        ModelElement.forEachSelectedElement(
-            clickedAssociation,
-            selectedAssociation -> Association.invertAssociation(selectedAssociation, false));
+        ModelElement.forEachSelectedElement(clickedAssociation, selectedAssociation ->
+            Association.invertAssociation(selectedAssociation, false));
         break;
     }
   }

@@ -96,6 +96,7 @@ public class RestrictedTo {
       case Stereotype.DATATYPE:
       case Stereotype.ABSTRACT:
         return true;
+      // TODO: review resetting mode restrictedTo mechanism
       case Stereotype.MODE:
         return restrictedTo.stream()
             .anyMatch(
