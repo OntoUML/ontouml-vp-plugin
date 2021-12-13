@@ -28,51 +28,16 @@ public class AssociationEventManager extends ModelElementEventManager {
 
   @Override
   public void processEvent() {
-    // TODO: add checks to enforce navigability and aggregation when known
-    switch (changeEvent) {
-      case STEREOTYPE_CHANGE_EVENT:
-        processStereotypeChange();
-        break;
-      case SOURCE_CHANGE_EVENT:
-        processSourceChange();
-        break;
-      case TARGET_CHANGE_EVENT:
-        processTargetChange();
-        break;
-      case VIEW_ADDED_EVENT:
-        processViewAdded();
-        break;
-      case VIEW_REMOVED_EVENT:
-        processViewRemoved();
-        break;
+    if (STEREOTYPE_CHANGE_EVENT.equals(changeEvent)) {
+      processStereotypeChange();
     }
   }
 
-  private void processTargetChange() {
-    checkSourcesDiagrams();
-    checkAssociationConsistency();
-  }
-
-  private void processSourceChange() {
-    checkSourcesDiagrams();
-    checkAssociationConsistency();
-  }
-
   private void processStereotypeChange() {
-    checkSourcesDiagrams();
-    // TODO: checkAssociationConsistency() with setDefaultAssociationProperties()
+//    checkSourcesDiagrams();
     checkAssociationConsistency();
     // setDefaultAssociationProperties();
   }
-
-  //  private void processViewAdded() {
-  //    checkAddedAssociationView();
-  //    checkAssociationConsistency();
-  //  }
-  //
-  //  private void processViewRemoved() {
-  //    checkRemovedAssociationView();
-  //  }
 
   private boolean shouldCheckAssociationConsistency() {
     return Association.isOntoumlAssociation(source)
@@ -82,14 +47,33 @@ public class AssociationEventManager extends ModelElementEventManager {
   private void checkAssociationConsistency() {
     if (shouldCheckAssociationConsistency()) {
       checkAggregationPlacement();
-      checkNavigability();
       checkAggregationKind();
+      checkNavigability();
       checkMultiplicity();
       checkAssociationEndProperties();
     }
   }
 
-  private void checkMultiplicity() {}
+  private void checkMultiplicity() {
+    if(isSourceEndMultiplicityUnspecified()) {
+      final String mult = Association.getDefaultSourceMultiplicity(source);
+      Association.getSourceEnd(source).setMultiplicity(mult);
+    }
+    if(isTargetEndMultiplicityUnspecified()) {
+      final String mult = Association.getDefaultTargetMultiplicity(source);
+      Association.getTargetEnd(source).setMultiplicity(mult);
+    }
+  }
+
+  private boolean isSourceEndMultiplicityUnspecified() {
+    final IAssociationEnd targetEnd = Association.getTargetEnd(source);
+    return IAssociationEnd.MULTIPLICITY_UNSPECIFIED.equals(targetEnd.getMultiplicity());
+  }
+
+  private boolean isTargetEndMultiplicityUnspecified() {
+    final IAssociationEnd targetEnd = Association.getTargetEnd(source);
+    return IAssociationEnd.MULTIPLICITY_UNSPECIFIED.equals(targetEnd.getMultiplicity());
+  }
 
   private void checkAggregationKind() {
     final IAssociationEnd targetEnd = Association.getTargetEnd(source);
@@ -137,32 +121,34 @@ public class AssociationEventManager extends ModelElementEventManager {
   }
 
   private void checkAggregationPlacement() {
-    final IAssociationEnd sourceEnd = Association.getSourceEnd(source);
-    final IAssociationEnd targetEnd = Association.getTargetEnd(source);
-    final boolean hasAggregationOnSource =
-        !IAssociationEnd.AGGREGATION_KIND_none.equals(sourceEnd.getAggregationKind());
-    final boolean hasAggregationOnTarget =
-        !IAssociationEnd.AGGREGATION_KIND_none.equals(targetEnd.getAggregationKind());
-
-    if (hasAggregationOnSource
-        && !hasAggregationOnTarget
+    if (hasAggregationOnSource() && !hasAggregationOnTarget()
         && !Association.hasOntoumlStereotype(source)) {
       Association.invertAssociation(source, true);
     }
   }
 
+  private boolean hasAggregationOnTarget() {
+    final IAssociationEnd targetEnd = Association.getTargetEnd(source);
+    return !IAssociationEnd.AGGREGATION_KIND_none.equals(targetEnd.getAggregationKind());
+  }
+
+  private boolean hasAggregationOnSource() {
+    final IAssociationEnd sourceEnd = Association.getSourceEnd(source);
+    return !IAssociationEnd.AGGREGATION_KIND_none.equals(sourceEnd.getAggregationKind());
+  }
+
   private void checkNavigability() {
     final IAssociationEnd sourceEnd = Association.getSourceEnd(source);
     final IAssociationEnd targetEnd = Association.getTargetEnd(source);
-    final boolean hasAggregationOnTarget =
-        !IAssociationEnd.AGGREGATION_KIND_none.equals(targetEnd.getAggregationKind());
-    final boolean isSourceEndNavigable =
-        IAssociationEnd.NAVIGABLE_NAVIGABLE == sourceEnd.getNavigable();
 
-    if (isSourceEndNavigable) sourceEnd.setNavigable(IAssociationEnd.NAVIGABLE_UNSPECIFIED);
+    if (isSourceEndNavigable()) sourceEnd.setNavigable(IAssociationEnd.NAVIGABLE_UNSPECIFIED);
 
-    if (hasAggregationOnTarget) targetEnd.setNavigable(IAssociationEnd.NAVIGABLE_UNSPECIFIED);
+    if (hasAggregationOnTarget()) targetEnd.setNavigable(IAssociationEnd.NAVIGABLE_UNSPECIFIED);
     else targetEnd.setNavigable(IAssociationEnd.NAVIGABLE_NAVIGABLE);
+  }
+
+  private boolean isSourceEndNavigable() {
+    return IAssociationEnd.NAVIGABLE_NAVIGABLE == Association.getSourceEnd(source).getNavigable();
   }
 
   private boolean isAssociationView(Object obj) {

@@ -21,7 +21,7 @@ public class DiagramListener implements IDiagramListener {
   public void diagramElementAdded(IDiagramUIModel diagram, IDiagramElement shape) {
     try {
       runSmartPainting(shape);
-      runOntoumlDiagramCheck(shape);
+//      runOntoumlDiagramCheck(shape);
     } catch (Exception e) {
       System.err.println("An error occurred while adding an element to diagram.");
       e.printStackTrace();
@@ -31,7 +31,7 @@ public class DiagramListener implements IDiagramListener {
   @Override
   public void diagramElementRemoved(IDiagramUIModel diagram, IDiagramElement shape) {
     try {
-      runOntoumlDiagramCheck(diagram);
+//      runOntoumlDiagramCheck(diagram);
     } catch (Exception e) {
       System.err.println("An error occurred while removing an element from diagram.");
       e.printStackTrace();

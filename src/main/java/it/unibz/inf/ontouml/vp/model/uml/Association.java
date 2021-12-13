@@ -521,6 +521,76 @@ public class Association implements ModelElement {
     }
   }
 
+  public static String getDefaultSourceMultiplicity(IAssociation association) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(association);
+    final String targetStereotype = ModelElement.getUniqueStereotypeName(Association.getTarget(association));
+
+    switch(stereotype != null ? stereotype : "") {
+      case Stereotype.CHARACTERIZATION:
+      case Stereotype.SUB_COLLECTION_OF:
+      case Stereotype.SUB_QUANTITY_OF:
+      case Stereotype.CREATION:
+      case Stereotype.TERMINATION:
+      case Stereotype.BRINGS_ABOUT:
+      case Stereotype.TRIGGERS:
+        return IAssociationEnd.MULTIPLICITY_ONE;
+      case Stereotype.COMPONENT_OF:
+      case Stereotype.MEMBER_OF:
+      case Stereotype.MANIFESTATION:
+      case Stereotype.PARTICIPATION:
+      case Stereotype.PARTICIPATIONAL:
+        return IAssociationEnd.MULTIPLICITY_ONE_TO_MANY;
+      case Stereotype.COMPARATIVE:
+      case Stereotype.EXTERNAL_DEPENDENCE:
+      case Stereotype.HISTORICAL_DEPENDENCE:
+      case Stereotype.INSTANTIATION:
+        return IAssociationEnd.MULTIPLICITY_MANY;
+      case Stereotype.MATERIAL:
+      case Stereotype.MEDIATION:
+        return Stereotype.ROLE.equals(targetStereotype) || Stereotype.ROLE_MIXIN.equals(targetStereotype) ?
+            IAssociationEnd.MULTIPLICITY_ONE_TO_MANY : IAssociationEnd.MULTIPLICITY_ZERO_TO_MANY;
+    }
+
+    return IAssociationEnd.MULTIPLICITY_MANY;
+  }
+
+
+  public static String getDefaultTargetMultiplicity(IAssociation association) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(association);
+    final String sourceStereotype = ModelElement.getUniqueStereotypeName(Association.getSource(association));
+
+    switch(stereotype != null ? stereotype : "") {
+      case Stereotype.TRIGGERS:
+        return IAssociationEnd.MULTIPLICITY_ZERO_TO_ONE;
+      case Stereotype.CHARACTERIZATION:
+      case Stereotype.COMPONENT_OF:
+      case Stereotype.MEDIATION:
+      case Stereotype.SUB_COLLECTION_OF:
+      case Stereotype.SUB_QUANTITY_OF:
+      case Stereotype.CREATION:
+      case Stereotype.TERMINATION:
+      case Stereotype.HISTORICAL_DEPENDENCE:
+      case Stereotype.PARTICIPATIONAL:
+      case Stereotype.BRINGS_ABOUT:
+        return IAssociationEnd.MULTIPLICITY_ONE;
+      case Stereotype.EXTERNAL_DEPENDENCE:
+      case Stereotype.MEMBER_OF:
+      case Stereotype.INSTANTIATION:
+        return IAssociationEnd.MULTIPLICITY_ONE_TO_MANY;
+      case Stereotype.COMPARATIVE:
+      case Stereotype.MANIFESTATION:
+        return IAssociationEnd.MULTIPLICITY_MANY;
+      case Stereotype.MATERIAL:
+        return Stereotype.ROLE.equals(sourceStereotype) || Stereotype.ROLE_MIXIN.equals(sourceStereotype) ?
+            IAssociationEnd.MULTIPLICITY_ONE_TO_MANY : IAssociationEnd.MULTIPLICITY_ZERO_TO_MANY;
+      case Stereotype.PARTICIPATION:
+        return Stereotype.HISTORICAL_ROLE.equals(sourceStereotype) || Stereotype.HISTORICAL_ROLE_MIXIN.equals(sourceStereotype) ?
+          IAssociationEnd.MULTIPLICITY_ONE_TO_MANY: IAssociationEnd.MULTIPLICITY_ZERO_TO_MANY;
+    }
+
+    return IAssociationEnd.MULTIPLICITY_MANY;
+  }
+
   public static boolean isOntoumlAssociation(IAssociation association) {
     boolean hasSource = getSource(association) != null;
     boolean hasTarget = getTarget(association) != null;
@@ -573,7 +643,7 @@ public class Association implements ModelElement {
             Stereotype.BRINGS_ABOUT,
             Stereotype.TRIGGERS);
     final String stereotype = ModelElement.getUniqueStereotypeName(association);
-    return necessarySourceStereotypes.contains(stereotype);
+    return stereotype != null && necessarySourceStereotypes.contains(stereotype);
   }
 
   public static boolean isTargetAlwaysReadOnly(IAssociation association) {
@@ -588,7 +658,7 @@ public class Association implements ModelElement {
             Stereotype.PARTICIPATIONAL,
             Stereotype.BRINGS_ABOUT);
     final String stereotype = ModelElement.getUniqueStereotypeName(association);
-    return necessaryTargetStereotypes.contains(stereotype);
+    return stereotype != null && necessaryTargetStereotypes.contains(stereotype);
   }
 
   public static String getDefaultAggregationKind(IAssociation association) {
