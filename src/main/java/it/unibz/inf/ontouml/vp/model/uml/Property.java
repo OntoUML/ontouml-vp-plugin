@@ -410,15 +410,15 @@ public class Property implements ModelElement {
       return;
     }
 
-    switch (aggregationKind.toUpperCase()) {
-      case IAssociationEnd.AGGREGATION_KIND_NONE:
-        this.aggregationKind = IAssociationEnd.AGGREGATION_KIND_NONE;
+    switch (aggregationKind.toLowerCase()) {
+      case IAssociationEnd.AGGREGATION_KIND_none:
+        this.aggregationKind = IAssociationEnd.AGGREGATION_KIND_none;
         return;
-      case IAssociationEnd.AGGREGATION_KIND_SHARED:
-        this.aggregationKind = IAssociationEnd.AGGREGATION_KIND_SHARED;
+      case IAssociationEnd.AGGREGATION_KIND_shared:
+        this.aggregationKind = IAssociationEnd.AGGREGATION_KIND_shared;
         return;
-      case IAssociationEnd.AGGREGATION_KIND_COMPOSITED:
-        this.aggregationKind = IAssociationEnd.AGGREGATION_KIND_COMPOSITED;
+      case IAssociationEnd.AGGREGATION_KIND_composite:
+        this.aggregationKind = IAssociationEnd.AGGREGATION_KIND_composite;
         return;
       default:
         this.aggregationKind = null;

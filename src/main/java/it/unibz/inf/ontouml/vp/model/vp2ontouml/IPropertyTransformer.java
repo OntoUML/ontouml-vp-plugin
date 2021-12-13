@@ -64,7 +64,7 @@ public class IPropertyTransformer {
   }
 
   private static AggregationKind transformAggregationKind(IPropertyAdapter property) {
-    return AggregationKind.findByName(property.getAggregationKind())
+    return AggregationKind.findByName(property.getAggregationKind().toUpperCase())
         .orElseGet(() -> property.isAssociationEnd() ? AggregationKind.NONE : null);
   }
 
