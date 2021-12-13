@@ -29,7 +29,7 @@ public class AssociationEventManager extends ModelElementEventManager {
   @Override
   public void processEvent() {
     // TODO: add checks to enforce navigability and aggregation when known
-    switch(changeEvent) {
+    switch (changeEvent) {
       case STEREOTYPE_CHANGE_EVENT:
         processStereotypeChange();
         break;
@@ -65,22 +65,22 @@ public class AssociationEventManager extends ModelElementEventManager {
     // setDefaultAssociationProperties();
   }
 
-//  private void processViewAdded() {
-//    checkAddedAssociationView();
-//    checkAssociationConsistency();
-//  }
-//
-//  private void processViewRemoved() {
-//    checkRemovedAssociationView();
-//  }
+  //  private void processViewAdded() {
+  //    checkAddedAssociationView();
+  //    checkAssociationConsistency();
+  //  }
+  //
+  //  private void processViewRemoved() {
+  //    checkRemovedAssociationView();
+  //  }
 
   private boolean shouldCheckAssociationConsistency() {
-    return Association.isOntoumlAssociation(source) ||
-        ModelElement.isPresentInOntoumlDiagram(source);
+    return Association.isOntoumlAssociation(source)
+        || ModelElement.isPresentInOntoumlDiagram(source);
   }
 
   private void checkAssociationConsistency() {
-    if(shouldCheckAssociationConsistency()) {
+    if (shouldCheckAssociationConsistency()) {
       checkAggregationPlacement();
       checkNavigability();
       checkAggregationKind();
@@ -89,17 +89,15 @@ public class AssociationEventManager extends ModelElementEventManager {
     }
   }
 
-  private void checkMultiplicity() {
-
-  }
+  private void checkMultiplicity() {}
 
   private void checkAggregationKind() {
     final IAssociationEnd targetEnd = Association.getTargetEnd(source);
 
-    if(shouldSetAggregationKind()) {
+    if (shouldSetAggregationKind()) {
       final String defaultAggregationKind = Association.getDefaultAggregationKind(source);
       targetEnd.setAggregationKind(defaultAggregationKind);
-    } else if(shouldRemoveAggregationKind()) {
+    } else if (shouldRemoveAggregationKind()) {
       targetEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_none);
     }
   }
@@ -107,18 +105,20 @@ public class AssociationEventManager extends ModelElementEventManager {
   private boolean shouldSetAggregationKind() {
     final IAssociationEnd targetEnd = Association.getTargetEnd(source);
     final String aggKind = targetEnd.getAggregationKind();
-    final boolean isAggregationKindNone= IAssociationEnd.AGGREGATION_KIND_none.equals(aggKind);
+    final boolean isAggregationKindNone = IAssociationEnd.AGGREGATION_KIND_none.equals(aggKind);
 
-    return Association.hasOntoumlStereotype(source) && Association.hasMereologyStereotype(source)
+    return Association.hasOntoumlStereotype(source)
+        && Association.hasMereologyStereotype(source)
         && isAggregationKindNone;
   }
 
   private boolean shouldRemoveAggregationKind() {
     final IAssociationEnd targetEnd = Association.getTargetEnd(source);
     final String aggKind = targetEnd.getAggregationKind();
-    final boolean isAggregationKindNone= IAssociationEnd.AGGREGATION_KIND_none.equals(aggKind);
+    final boolean isAggregationKindNone = IAssociationEnd.AGGREGATION_KIND_none.equals(aggKind);
 
-    return Association.hasOntoumlStereotype(source) && !Association.hasMereologyStereotype(source)
+    return Association.hasOntoumlStereotype(source)
+        && !Association.hasMereologyStereotype(source)
         && !isAggregationKindNone;
   }
 
@@ -128,10 +128,10 @@ public class AssociationEventManager extends ModelElementEventManager {
     final boolean isSourceReadOnly = sourceEnd.isReadOnly();
     final boolean isTargetReadOnly = targetEnd.isReadOnly();
 
-    if(Association.isSourceAlwaysReadOnly(source) && !isSourceReadOnly) {
+    if (Association.isSourceAlwaysReadOnly(source) && !isSourceReadOnly) {
       Association.getSourceEnd(source).setReadOnly(true);
     }
-    if(Association.isTargetAlwaysReadOnly(source) && !isTargetReadOnly) {
+    if (Association.isTargetAlwaysReadOnly(source) && !isTargetReadOnly) {
       Association.getTargetEnd(source).setReadOnly(true);
     }
   }
@@ -139,24 +139,30 @@ public class AssociationEventManager extends ModelElementEventManager {
   private void checkAggregationPlacement() {
     final IAssociationEnd sourceEnd = Association.getSourceEnd(source);
     final IAssociationEnd targetEnd = Association.getTargetEnd(source);
-    final boolean hasAggregationOnSource = !IAssociationEnd.AGGREGATION_KIND_none.equals(sourceEnd.getAggregationKind());
-    final boolean hasAggregationOnTarget = !IAssociationEnd.AGGREGATION_KIND_none.equals(targetEnd.getAggregationKind());
+    final boolean hasAggregationOnSource =
+        !IAssociationEnd.AGGREGATION_KIND_none.equals(sourceEnd.getAggregationKind());
+    final boolean hasAggregationOnTarget =
+        !IAssociationEnd.AGGREGATION_KIND_none.equals(targetEnd.getAggregationKind());
 
-    if(hasAggregationOnSource && !hasAggregationOnTarget && !Association.hasOntoumlStereotype(source)) {
-      Association.invertAssociation(source,true);
+    if (hasAggregationOnSource
+        && !hasAggregationOnTarget
+        && !Association.hasOntoumlStereotype(source)) {
+      Association.invertAssociation(source, true);
     }
   }
 
   private void checkNavigability() {
     final IAssociationEnd sourceEnd = Association.getSourceEnd(source);
     final IAssociationEnd targetEnd = Association.getTargetEnd(source);
-    final boolean hasAggregationOnTarget = !IAssociationEnd.AGGREGATION_KIND_none.equals(targetEnd.getAggregationKind());
-    final boolean isSourceEndNavigable = IAssociationEnd.NAVIGABLE_NAVIGABLE == sourceEnd.getNavigable();
+    final boolean hasAggregationOnTarget =
+        !IAssociationEnd.AGGREGATION_KIND_none.equals(targetEnd.getAggregationKind());
+    final boolean isSourceEndNavigable =
+        IAssociationEnd.NAVIGABLE_NAVIGABLE == sourceEnd.getNavigable();
 
-    if(isSourceEndNavigable)  sourceEnd.setNavigable(IAssociationEnd.NAVIGABLE_UNSPECIFIED);
+    if (isSourceEndNavigable) sourceEnd.setNavigable(IAssociationEnd.NAVIGABLE_UNSPECIFIED);
 
-    if(hasAggregationOnTarget)  targetEnd.setNavigable(IAssociationEnd.NAVIGABLE_UNSPECIFIED);
-    else  targetEnd.setNavigable(IAssociationEnd.NAVIGABLE_NAVIGABLE);
+    if (hasAggregationOnTarget) targetEnd.setNavigable(IAssociationEnd.NAVIGABLE_UNSPECIFIED);
+    else targetEnd.setNavigable(IAssociationEnd.NAVIGABLE_NAVIGABLE);
   }
 
   private boolean isAssociationView(Object obj) {
@@ -164,25 +170,26 @@ public class AssociationEventManager extends ModelElementEventManager {
   }
 
   private void checkAddedAssociationView() {
-    if(!isAssociationView(newValue)) return ;
+    if (!isAssociationView(newValue)) return;
 
     final IDiagramUIModel newDiagram = ((IAssociationUIModel) newValue).getDiagramUIModel();
 
-    if(shouldSetOntoumlDiagram(newDiagram)) {
+    if (shouldSetOntoumlDiagram(newDiagram)) {
       Diagram.setOntoumlDiagram(newDiagram);
     }
   }
 
   private void checkRemovedAssociationView() {
-    if(!isAssociationView(oldValue)) return ;
+    if (!isAssociationView(oldValue)) return;
 
     final IDiagramUIModel oldDiagram = ((IAssociationUIModel) oldValue).getDiagramUIModel();
 
-    if(shouldUnsetOntoumlDiagram(oldDiagram))  Diagram.unsetOntoumlDiagram(oldDiagram);
+    if (shouldUnsetOntoumlDiagram(oldDiagram)) Diagram.unsetOntoumlDiagram(oldDiagram);
   }
 
   private boolean shouldUnsetOntoumlDiagram(IDiagramUIModel oldDiagram) {
-    return Association.isOntoumlAssociation(source) && Diagram.isOntoUMLDiagram(oldDiagram)
+    return Association.isOntoumlAssociation(source)
+        && Diagram.isOntoUMLDiagram(oldDiagram)
         && !Diagram.containsOntoumlElements(oldDiagram);
   }
 
@@ -203,7 +210,7 @@ public class AssociationEventManager extends ModelElementEventManager {
   private void checkSourcesDiagrams() {
     Set<IDiagramUIModel> diagrams = ModelElement.getDiagrams(source);
 
-    if(Association.isOntoumlAssociation(source)) {
+    if (Association.isOntoumlAssociation(source)) {
       setSourceDiagramsToOntouml(diagrams);
     } else {
       unsetSourceDiagramsToOntouml(diagrams);

@@ -12,9 +12,6 @@ import it.unibz.inf.ontouml.vp.model.uml.Association;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.model.uml.Diagram;
 import it.unibz.inf.ontouml.vp.utils.SmartColoringUtils;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
 
 public class DiagramListener implements IDiagramListener {
 

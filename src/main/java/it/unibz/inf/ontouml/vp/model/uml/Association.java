@@ -562,18 +562,31 @@ public class Association implements ModelElement {
   }
 
   public static boolean isSourceAlwaysReadOnly(IAssociation association) {
-    final Set<String> necessarySourceStereotypes = Set.of(Stereotype.SUB_QUANTITY_OF, Stereotype.CREATION,
-        Stereotype.TERMINATION, Stereotype.MANIFESTATION, Stereotype.PARTICIPATION,
-        Stereotype.PARTICIPATIONAL, Stereotype.BRINGS_ABOUT, Stereotype.TRIGGERS);
+    final Set<String> necessarySourceStereotypes =
+        Set.of(
+            Stereotype.SUB_QUANTITY_OF,
+            Stereotype.CREATION,
+            Stereotype.TERMINATION,
+            Stereotype.MANIFESTATION,
+            Stereotype.PARTICIPATION,
+            Stereotype.PARTICIPATIONAL,
+            Stereotype.BRINGS_ABOUT,
+            Stereotype.TRIGGERS);
     final String stereotype = ModelElement.getUniqueStereotypeName(association);
     return necessarySourceStereotypes.contains(stereotype);
   }
 
   public static boolean isTargetAlwaysReadOnly(IAssociation association) {
-    final Set<String> necessaryTargetStereotypes = Set.of(Stereotype.CHARACTERIZATION,
-        Stereotype.EXTERNAL_DEPENDENCE, Stereotype.MEDIATION, Stereotype.CREATION,
-        Stereotype.TERMINATION, Stereotype.HISTORICAL_DEPENDENCE, Stereotype.PARTICIPATIONAL,
-        Stereotype.BRINGS_ABOUT);
+    final Set<String> necessaryTargetStereotypes =
+        Set.of(
+            Stereotype.CHARACTERIZATION,
+            Stereotype.EXTERNAL_DEPENDENCE,
+            Stereotype.MEDIATION,
+            Stereotype.CREATION,
+            Stereotype.TERMINATION,
+            Stereotype.HISTORICAL_DEPENDENCE,
+            Stereotype.PARTICIPATIONAL,
+            Stereotype.BRINGS_ABOUT);
     final String stereotype = ModelElement.getUniqueStereotypeName(association);
     return necessaryTargetStereotypes.contains(stereotype);
   }
@@ -581,11 +594,15 @@ public class Association implements ModelElement {
   public static String getDefaultAggregationKind(IAssociation association) {
     final String stereotype = ModelElement.getUniqueStereotypeName(association);
     final Set<String> sharedDefault = Set.of(Stereotype.MEMBER_OF);
-    final Set<String> compositeDefault = Set.of(Stereotype.COMPONENT_OF,
-        Stereotype.SUB_COLLECTION_OF, Stereotype.SUB_QUANTITY_OF, Stereotype.PARTICIPATIONAL);
+    final Set<String> compositeDefault =
+        Set.of(
+            Stereotype.COMPONENT_OF,
+            Stereotype.SUB_COLLECTION_OF,
+            Stereotype.SUB_QUANTITY_OF,
+            Stereotype.PARTICIPATIONAL);
 
-    if(sharedDefault.contains(stereotype))  return IAssociationEnd.AGGREGATION_KIND_shared;
-    if(compositeDefault.contains(stereotype))  return IAssociationEnd.AGGREGATION_KIND_composite;
+    if (sharedDefault.contains(stereotype)) return IAssociationEnd.AGGREGATION_KIND_shared;
+    if (compositeDefault.contains(stereotype)) return IAssociationEnd.AGGREGATION_KIND_composite;
     return IAssociationEnd.AGGREGATION_KIND_none;
   }
 }

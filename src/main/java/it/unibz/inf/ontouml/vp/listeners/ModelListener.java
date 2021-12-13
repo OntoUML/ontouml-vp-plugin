@@ -9,11 +9,10 @@ public class ModelListener implements PropertyChangeListener {
   public void propertyChange(PropertyChangeEvent event) {
     try {
       ModelElementEventManager eventManager = ModelElementEventManager.create(event);
-      if(eventManager != null) eventManager.processEvent();
+      if (eventManager != null) eventManager.processEvent();
     } catch (Exception e) {
       System.err.println("An error occurred while processing a change event on model element.");
       e.printStackTrace();
     }
   }
-
 }

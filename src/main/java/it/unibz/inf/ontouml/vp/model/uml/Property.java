@@ -13,7 +13,6 @@ import com.vp.plugin.model.factory.IModelElementFactory;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 /**

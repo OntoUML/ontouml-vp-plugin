@@ -62,7 +62,8 @@ public class ProjectModelListener implements IProjectModelListener {
   }
 
   private boolean isModelElementOfInterest(IModelElement element) {
-    return element != null && typesOfModelElementsToListenForChanges.contains(element.getModelType());
+    return element != null
+        && typesOfModelElementsToListenForChanges.contains(element.getModelType());
   }
 
   private Set<IModelElement> getAllLevelInterestModelElements(IProject project) {

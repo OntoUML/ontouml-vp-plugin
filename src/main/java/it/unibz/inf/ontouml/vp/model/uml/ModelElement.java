@@ -48,7 +48,8 @@ public interface ModelElement {
   }
 
   static Set<IDiagramElement> getViews(IModelElement element) {
-    return Optional.ofNullable(element.getDiagramElements()).map(Set::of)
+    return Optional.ofNullable(element.getDiagramElements())
+        .map(Set::of)
         .orElse(Collections.emptySet());
   }
 
@@ -433,11 +434,11 @@ public interface ModelElement {
   }
 
   static boolean isOntoumlElement(Object object) {
-    if(!(object instanceof IModelElement))  return false;
+    if (!(object instanceof IModelElement)) return false;
 
     final IModelElement element = (IModelElement) object;
 
-    switch(element.getModelType()){
+    switch (element.getModelType()) {
       case IModelElementFactory.MODEL_TYPE_CLASS:
         return Class.isOntoumlClass((IClass) element);
       case IModelElementFactory.MODEL_TYPE_ASSOCIATION:

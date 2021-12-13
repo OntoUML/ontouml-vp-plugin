@@ -72,13 +72,16 @@ public class Diagram {
   }
 
   public static boolean containsOntoumlElements(IDiagramUIModel diagram) {
-    return Optional.ofNullable(diagram.toDiagramElementArray()).map(Set::of)
-        .orElse(Collections.emptySet()).stream()
+    return Optional.ofNullable(diagram.toDiagramElementArray())
+        .map(Set::of)
+        .orElse(Collections.emptySet())
+        .stream()
         .anyMatch(ModelElement::isOntoumlElement);
   }
 
   public static Set<IDiagramElement> getDiagramElements(IDiagramUIModel diagram) {
-    return Optional.ofNullable(diagram.toDiagramElementArray()).map(Set::of)
+    return Optional.ofNullable(diagram.toDiagramElementArray())
+        .map(Set::of)
         .orElse(Collections.emptySet());
   }
 }

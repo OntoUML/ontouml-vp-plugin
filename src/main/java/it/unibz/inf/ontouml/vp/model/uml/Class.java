@@ -291,8 +291,7 @@ public class Class implements ModelElement {
   }
 
   public void removeProperties(Property property) {
-    if (this.properties != null)
-      this.properties.remove(property);
+    if (this.properties != null) this.properties.remove(property);
   }
 
   public JsonObject getPropertyAssignments() {
