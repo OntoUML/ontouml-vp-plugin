@@ -490,9 +490,9 @@ public class ViewManagerUtils {
     final JLabel _lLineOne =
         new JLabel(
             "<html>This action will invert the direction of some<br>"
-                + "of the selected the associations in all diagrams<br>"
-                + "they appear. You may want to check whether their<br>"
-                + "names are still consistent.<br><br>"
+                + "of the selected associations in all diagrams<br>"
+                + "they appear. We advise checking whether their<br>"
+                + "names remain consistent.<br><br>"
                 + "Do you wish to continue?</html>");
     final JCheckBox _chkHideWarnings = new JCheckBox("Do not show this dialog again");
 

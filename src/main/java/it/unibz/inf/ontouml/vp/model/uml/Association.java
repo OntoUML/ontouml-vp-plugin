@@ -109,6 +109,10 @@ public class Association implements ModelElement {
     setDerived(source.isDerived());
   }
 
+  public static boolean holdsBetweenClasses(IAssociation association) {
+    return association.getTo() instanceof IClass && association.getFrom() instanceof IClass;
+  }
+
   @Override
   public String getId() {
     return getSourceModelElement().getId();
