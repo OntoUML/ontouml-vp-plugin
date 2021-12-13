@@ -137,11 +137,10 @@ public class ClassEventManager extends ModelElementEventManager {
   }
 
   public void inheritRestrictedTo(IClass _class) {
-    if (!Class.doesItInheritItsRestrictions(_class)) return ;
+    if (!Class.doesItInheritItsRestrictions(_class)) return;
 
-    final Set<IClass> parents = Class.getParents(_class).stream()
-            .filter(Class::isSortal)
-            .collect(Collectors.toSet());
+    final Set<IClass> parents =
+        Class.getParents(_class).stream().filter(Class::isSortal).collect(Collectors.toSet());
     final String parentsRestrictions = Class.combineClassesRestrictions(parents);
     final String classRestrictions = Class.getRestrictedTo(_class);
 
