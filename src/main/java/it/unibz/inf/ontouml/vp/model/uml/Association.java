@@ -523,9 +523,10 @@ public class Association implements ModelElement {
 
   public static String getDefaultSourceMultiplicity(IAssociation association) {
     final String stereotype = ModelElement.getUniqueStereotypeName(association);
-    final String targetStereotype = ModelElement.getUniqueStereotypeName(Association.getTarget(association));
+    final String targetStereotype =
+        ModelElement.getUniqueStereotypeName(Association.getTarget(association));
 
-    switch(stereotype != null ? stereotype : "") {
+    switch (stereotype != null ? stereotype : "") {
       case Stereotype.CHARACTERIZATION:
       case Stereotype.SUB_COLLECTION_OF:
       case Stereotype.SUB_QUANTITY_OF:
@@ -547,19 +548,21 @@ public class Association implements ModelElement {
         return IAssociationEnd.MULTIPLICITY_MANY;
       case Stereotype.MATERIAL:
       case Stereotype.MEDIATION:
-        return Stereotype.ROLE.equals(targetStereotype) || Stereotype.ROLE_MIXIN.equals(targetStereotype) ?
-            IAssociationEnd.MULTIPLICITY_ONE_TO_MANY : IAssociationEnd.MULTIPLICITY_ZERO_TO_MANY;
+        return Stereotype.ROLE.equals(targetStereotype)
+                || Stereotype.ROLE_MIXIN.equals(targetStereotype)
+            ? IAssociationEnd.MULTIPLICITY_ONE_TO_MANY
+            : IAssociationEnd.MULTIPLICITY_ZERO_TO_MANY;
     }
 
     return IAssociationEnd.MULTIPLICITY_MANY;
   }
 
-
   public static String getDefaultTargetMultiplicity(IAssociation association) {
     final String stereotype = ModelElement.getUniqueStereotypeName(association);
-    final String sourceStereotype = ModelElement.getUniqueStereotypeName(Association.getSource(association));
+    final String sourceStereotype =
+        ModelElement.getUniqueStereotypeName(Association.getSource(association));
 
-    switch(stereotype != null ? stereotype : "") {
+    switch (stereotype != null ? stereotype : "") {
       case Stereotype.TRIGGERS:
         return IAssociationEnd.MULTIPLICITY_ZERO_TO_ONE;
       case Stereotype.CHARACTERIZATION:
@@ -581,11 +584,15 @@ public class Association implements ModelElement {
       case Stereotype.MANIFESTATION:
         return IAssociationEnd.MULTIPLICITY_MANY;
       case Stereotype.MATERIAL:
-        return Stereotype.ROLE.equals(sourceStereotype) || Stereotype.ROLE_MIXIN.equals(sourceStereotype) ?
-            IAssociationEnd.MULTIPLICITY_ONE_TO_MANY : IAssociationEnd.MULTIPLICITY_ZERO_TO_MANY;
+        return Stereotype.ROLE.equals(sourceStereotype)
+                || Stereotype.ROLE_MIXIN.equals(sourceStereotype)
+            ? IAssociationEnd.MULTIPLICITY_ONE_TO_MANY
+            : IAssociationEnd.MULTIPLICITY_ZERO_TO_MANY;
       case Stereotype.PARTICIPATION:
-        return Stereotype.HISTORICAL_ROLE.equals(sourceStereotype) || Stereotype.HISTORICAL_ROLE_MIXIN.equals(sourceStereotype) ?
-          IAssociationEnd.MULTIPLICITY_ONE_TO_MANY: IAssociationEnd.MULTIPLICITY_ZERO_TO_MANY;
+        return Stereotype.HISTORICAL_ROLE.equals(sourceStereotype)
+                || Stereotype.HISTORICAL_ROLE_MIXIN.equals(sourceStereotype)
+            ? IAssociationEnd.MULTIPLICITY_ONE_TO_MANY
+            : IAssociationEnd.MULTIPLICITY_ZERO_TO_MANY;
     }
 
     return IAssociationEnd.MULTIPLICITY_MANY;

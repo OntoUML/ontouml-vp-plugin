@@ -34,7 +34,7 @@ public class AssociationEventManager extends ModelElementEventManager {
   }
 
   private void processStereotypeChange() {
-//    checkSourcesDiagrams();
+    //    checkSourcesDiagrams();
     checkAssociationConsistency();
     // setDefaultAssociationProperties();
   }
@@ -55,11 +55,11 @@ public class AssociationEventManager extends ModelElementEventManager {
   }
 
   private void checkMultiplicity() {
-    if(isSourceEndMultiplicityUnspecified()) {
+    if (isSourceEndMultiplicityUnspecified()) {
       final String mult = Association.getDefaultSourceMultiplicity(source);
       Association.getSourceEnd(source).setMultiplicity(mult);
     }
-    if(isTargetEndMultiplicityUnspecified()) {
+    if (isTargetEndMultiplicityUnspecified()) {
       final String mult = Association.getDefaultTargetMultiplicity(source);
       Association.getTargetEnd(source).setMultiplicity(mult);
     }
@@ -121,7 +121,8 @@ public class AssociationEventManager extends ModelElementEventManager {
   }
 
   private void checkAggregationPlacement() {
-    if (hasAggregationOnSource() && !hasAggregationOnTarget()
+    if (hasAggregationOnSource()
+        && !hasAggregationOnTarget()
         && !Association.hasOntoumlStereotype(source)) {
       Association.invertAssociation(source, true);
     }
