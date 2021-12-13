@@ -18,7 +18,7 @@ public class ApplyAttributeStereotypeMenuManager extends ApplyStereotypeMenuMana
   @Override
   public void performAction() {
     IAttribute att = (IAttribute) context.getModelElement();
-    StereotypesManager.applyStereotype(att,attributeStereotypeId.getStereotype());
+    StereotypesManager.applyStereotype(att, attributeStereotypeId.getStereotype());
   }
 
   @Override
