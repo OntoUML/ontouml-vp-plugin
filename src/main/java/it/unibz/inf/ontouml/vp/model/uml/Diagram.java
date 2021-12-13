@@ -9,6 +9,7 @@ import com.vp.plugin.diagram.IDiagramUIModelComment;
 import com.vp.plugin.model.IModelElement;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -68,5 +69,16 @@ public class Diagram {
 
   public static Set<IDiagramUIModelComment> getComments(IDiagramUIModel diagram) {
     return haveComments(diagram) ? Set.of(diagram.toCommentArray()) : Collections.emptySet();
+  }
+
+  public static boolean containsOntoumlElements(IDiagramUIModel diagram) {
+    return Optional.ofNullable(diagram.toDiagramElementArray()).map(Set::of)
+        .orElse(Collections.emptySet()).stream()
+        .anyMatch(ModelElement::isOntoumlElement);
+  }
+
+  public static Set<IDiagramElement> getDiagramElements(IDiagramUIModel diagram) {
+    return Optional.ofNullable(diagram.toDiagramElementArray()).map(Set::of)
+        .orElse(Collections.emptySet());
   }
 }

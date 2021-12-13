@@ -285,13 +285,13 @@ public class Class implements ModelElement {
   }
 
   public void addProperties(Property property) {
-    if (this.properties == null) this.properties = new HashSet<Property>();
+    if (this.properties == null) this.properties = new HashSet<>();
 
     this.properties.add(property);
   }
 
   public void removeProperties(Property property) {
-    if (this.properties != null && this.properties.contains(property))
+    if (this.properties != null)
       this.properties.remove(property);
   }
 
@@ -316,13 +316,13 @@ public class Class implements ModelElement {
   }
 
   public void addStereotype(String name) {
-    if (this.stereotypes == null) this.stereotypes = new ArrayList<String>();
+    if (this.stereotypes == null) this.stereotypes = new ArrayList<>();
 
     this.stereotypes.add(name);
   }
 
   public void removeStereotype(String name) {
-    if (this.stereotypes != null && this.stereotypes.contains(name)) this.stereotypes.remove(name);
+    if (this.stereotypes != null) this.stereotypes.remove(name);
   }
 
   public boolean isAbstract() {
@@ -351,14 +351,14 @@ public class Class implements ModelElement {
 
   public void addLiteral(Literal literal) {
     if (getLiterals() == null) {
-      setLiterals(new LinkedList<Literal>());
+      setLiterals(new LinkedList<>());
     }
 
     this.literals.add(literal);
   }
 
   public static Set<IClass> getParents(IClass _class) {
-    final Set<IClass> parents = new HashSet<IClass>();
+    final Set<IClass> parents = new HashSet<>();
     final ISimpleRelationship[] relationships = _class.toToRelationshipArray();
 
     for (int i = 0; relationships != null && i < relationships.length; i++) {
@@ -376,7 +376,7 @@ public class Class implements ModelElement {
   }
 
   public static Set<IClass> getChildren(IClass _class) {
-    final Set<IClass> children = new HashSet<IClass>();
+    final Set<IClass> children = new HashSet<>();
     final ISimpleRelationship[] relationships = _class.toFromRelationshipArray();
 
     for (int i = 0; relationships != null && i < relationships.length; i++) {
@@ -394,7 +394,7 @@ public class Class implements ModelElement {
   }
 
   public static Set<IClass> getAncestors(IClass _class) {
-    final Set<IClass> ancestors = new HashSet<IClass>();
+    final Set<IClass> ancestors = new HashSet<>();
     final Set<IClass> parents = getChildren(_class);
 
     for (IClass parent : parents) {
@@ -406,7 +406,7 @@ public class Class implements ModelElement {
   }
 
   public static Set<IClass> getDescendants(IClass _class) {
-    final Set<IClass> descendants = new HashSet<IClass>();
+    final Set<IClass> descendants = new HashSet<>();
     final Set<IClass> children = getChildren(_class);
 
     for (IClass child : children) {

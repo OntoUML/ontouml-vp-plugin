@@ -11,9 +11,10 @@ import java.util.stream.Collectors;
 
 public class ProjectModelListener implements IProjectModelListener {
 
-  private static final Set<String> typesOfModelElementOfInterest =
+  private static final Set<String> typesOfModelElementsToListenForChanges =
       Set.of(
           IModelElementFactory.MODEL_TYPE_ASSOCIATION,
+          IModelElementFactory.MODEL_TYPE_ASSOCIATION_END,
           IModelElementFactory.MODEL_TYPE_CLASS,
           IModelElementFactory.MODEL_TYPE_GENERALIZATION);
 
@@ -61,7 +62,7 @@ public class ProjectModelListener implements IProjectModelListener {
   }
 
   private boolean isModelElementOfInterest(IModelElement element) {
-    return element != null && typesOfModelElementOfInterest.contains(element.getModelType());
+    return element != null && typesOfModelElementsToListenForChanges.contains(element.getModelType());
   }
 
   private Set<IModelElement> getAllLevelInterestModelElements(IProject project) {

@@ -12,6 +12,7 @@ import it.unibz.inf.ontouml.vp.utils.Stereotype;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Implementation of ModelElement to handle IAssociation objects to be serialized as
@@ -307,7 +308,7 @@ public class Association implements ModelElement {
 
     sourceEnd.setNavigable(IAssociationEnd.NAVIGABLE_NAV_UNSPECIFIED);
 
-    if (IAssociationEnd.AGGREGATION_KIND_NONE.toLowerCase().equals(targetAgg)) {
+    if (IAssociationEnd.AGGREGATION_KIND_none.equals(targetAgg)) {
       targetEnd.setNavigable(IAssociationEnd.NAVIGABLE_NAV_NAVIGABLE);
     } else {
       targetEnd.setNavigable(IAssociationEnd.NAVIGABLE_NAV_UNSPECIFIED);
@@ -318,30 +319,30 @@ public class Association implements ModelElement {
     final String stereotype = ModelElement.getUniqueStereotypeName(association);
     final IAssociationEnd sourceEnd = getSourceEnd(association);
     final IAssociationEnd targetEnd = getTargetEnd(association);
-    String aggregationKind = IAssociationEnd.AGGREGATION_KIND_NONE;
+    String aggregationKind = IAssociationEnd.AGGREGATION_KIND_none;
 
     switch (stereotype) {
       case Stereotype.MEMBER_OF:
-        aggregationKind = IAssociationEnd.AGGREGATION_KIND_SHARED;
+        aggregationKind = IAssociationEnd.AGGREGATION_KIND_shared;
         break;
       case Stereotype.COMPONENT_OF:
       case Stereotype.SUB_COLLECTION_OF:
       case Stereotype.SUB_QUANTITY_OF:
       case Stereotype.PARTICIPATIONAL:
-        aggregationKind = IAssociationEnd.AGGREGATION_KIND_COMPOSITED;
+        aggregationKind = IAssociationEnd.AGGREGATION_KIND_composite;
         break;
       default:
         if (hasOntoumlStereotype(association)) {
           // When there is a non-parthood stereotype we must remove any aggregation kind
-          sourceEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
-          targetEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
+          sourceEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_none);
+          targetEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_none);
         }
         // We don't interfere where there is not stereotype
         return;
     }
 
     if (forceOverride) {
-      sourceEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
+      sourceEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_none);
       targetEnd.setAggregationKind(aggregationKind);
     } else {
       // By not forcing override we keep user-defined aggregation (e.g., "shared")
@@ -352,7 +353,7 @@ public class Association implements ModelElement {
               ? targetEnd.getAggregationKind().toLowerCase()
               : "none";
 
-      if (IAssociationEnd.AGGREGATION_KIND_NONE.toLowerCase().equals(targetCurrentAggregation)) {
+      if (IAssociationEnd.AGGREGATION_KIND_none.equals(targetCurrentAggregation)) {
         targetEnd.setAggregationKind(aggregationKind);
       }
     }
@@ -535,23 +536,56 @@ public class Association implements ModelElement {
     return Stereotype.getOntoUMLAssociationStereotypeNames().contains(stereotype);
   }
 
+  public static boolean hasMereologyStereotype(IAssociation association) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(association);
+    return Stereotype.getOntoUMLMereologyStereotypeNames().contains(stereotype);
+  }
+
   public static boolean hasAggregationSetOnSource(IAssociation association) {
     var aggregationKind = getSourceEnd(association).getAggregationKind();
 
-    // TODO: remove direct comparison to "Shared" once IAssociationEnd.AGGREGATION_KIND_SHARED is
+    // TODO: remove direct comparison to "Shared" once IAssociationEnd.AGGREGATION_KIND_shared is
     // fixed by VP
-    return IAssociationEnd.AGGREGATION_KIND_SHARED.equals(aggregationKind)
-        || IAssociationEnd.AGGREGATION_KIND_COMPOSITED.equals(aggregationKind)
+    return IAssociationEnd.AGGREGATION_KIND_shared.equals(aggregationKind)
+        || IAssociationEnd.AGGREGATION_KIND_composite.equals(aggregationKind)
         || "Shared".equals(aggregationKind);
   }
 
   public static boolean hasAggregationSetOnTarget(IAssociation association) {
     var aggregationKind = getTargetEnd(association).getAggregationKind();
 
-    // TODO: remove direct comparison to "Shared" once IAssociationEnd.AGGREGATION_KIND_SHARED is
+    // TODO: remove direct comparison to "Shared" once IAssociationEnd.AGGREGATION_KIND_shared is
     // fixed by VP
-    return IAssociationEnd.AGGREGATION_KIND_SHARED.equals(aggregationKind)
-        || IAssociationEnd.AGGREGATION_KIND_COMPOSITED.equals(aggregationKind)
+    return IAssociationEnd.AGGREGATION_KIND_shared.equals(aggregationKind)
+        || IAssociationEnd.AGGREGATION_KIND_composite.equals(aggregationKind)
         || "Shared".equals(aggregationKind);
+  }
+
+  public static boolean isSourceAlwaysReadOnly(IAssociation association) {
+    final Set<String> necessarySourceStereotypes = Set.of(Stereotype.SUB_QUANTITY_OF, Stereotype.CREATION,
+        Stereotype.TERMINATION, Stereotype.MANIFESTATION, Stereotype.PARTICIPATION,
+        Stereotype.PARTICIPATIONAL, Stereotype.BRINGS_ABOUT, Stereotype.TRIGGERS);
+    final String stereotype = ModelElement.getUniqueStereotypeName(association);
+    return necessarySourceStereotypes.contains(stereotype);
+  }
+
+  public static boolean isTargetAlwaysReadOnly(IAssociation association) {
+    final Set<String> necessaryTargetStereotypes = Set.of(Stereotype.CHARACTERIZATION,
+        Stereotype.EXTERNAL_DEPENDENCE, Stereotype.MEDIATION, Stereotype.CREATION,
+        Stereotype.TERMINATION, Stereotype.HISTORICAL_DEPENDENCE, Stereotype.PARTICIPATIONAL,
+        Stereotype.BRINGS_ABOUT);
+    final String stereotype = ModelElement.getUniqueStereotypeName(association);
+    return necessaryTargetStereotypes.contains(stereotype);
+  }
+
+  public static String getDefaultAggregationKind(IAssociation association) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(association);
+    final Set<String> sharedDefault = Set.of(Stereotype.MEMBER_OF);
+    final Set<String> compositeDefault = Set.of(Stereotype.COMPONENT_OF,
+        Stereotype.SUB_COLLECTION_OF, Stereotype.SUB_QUANTITY_OF, Stereotype.PARTICIPATIONAL);
+
+    if(sharedDefault.contains(stereotype))  return IAssociationEnd.AGGREGATION_KIND_shared;
+    if(compositeDefault.contains(stereotype))  return IAssociationEnd.AGGREGATION_KIND_composite;
+    return IAssociationEnd.AGGREGATION_KIND_none;
   }
 }

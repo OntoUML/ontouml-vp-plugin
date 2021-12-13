@@ -13,6 +13,7 @@ import com.vp.plugin.model.factory.IModelElementFactory;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -226,6 +227,11 @@ public class Property implements ModelElement {
     }
   }
 
+  public static boolean isOntoumlProperty(IModelElement element) {
+    final IModelElement parent = element != null ? element.getParent() : null;
+    return ModelElement.isOntoumlElement(parent);
+  }
+
   @Override
   public String getId() {
     return getSourceModelElement().getId();
@@ -387,13 +393,13 @@ public class Property implements ModelElement {
   public void setAggregationKind(int aggregation) {
     switch (aggregation) {
       case 0:
-        this.aggregationKind = IAssociationEnd.AGGREGATION_KIND_NONE;
+        this.aggregationKind = IAssociationEnd.AGGREGATION_KIND_none;
         break;
       case 1:
-        this.aggregationKind = IAssociationEnd.AGGREGATION_KIND_SHARED;
+        this.aggregationKind = IAssociationEnd.AGGREGATION_KIND_shared;
         break;
       case 2:
-        this.aggregationKind = IAssociationEnd.AGGREGATION_KIND_COMPOSITED;
+        this.aggregationKind = IAssociationEnd.AGGREGATION_KIND_composite;
         break;
       default:
     }

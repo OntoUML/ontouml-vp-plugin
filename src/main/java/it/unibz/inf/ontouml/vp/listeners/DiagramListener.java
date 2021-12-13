@@ -12,6 +12,9 @@ import it.unibz.inf.ontouml.vp.model.uml.Association;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.model.uml.Diagram;
 import it.unibz.inf.ontouml.vp.utils.SmartColoringUtils;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
 
 public class DiagramListener implements IDiagramListener {
 
@@ -59,21 +62,16 @@ public class DiagramListener implements IDiagramListener {
   public void diagramUIModelRenamed(IDiagramUIModel diagram) {}
 
   private void runSmartPainting(IDiagramElement diagramElement) {
-    if (isClassDiagramElement(diagramElement) && isPaintingEnabled()) {
+    if (isClassView(diagramElement) && isPaintingEnabled()) {
       paint((IClassUIModel) diagramElement);
     }
   }
 
   private void runSmartPainting(IDiagramUIModel diagram) {
     if (isDiagram(diagram) && isPaintingEnabled()) {
-      diagram
-          .diagramElementIterator()
-          .forEachRemaining(
-              element -> {
-                if (isClassDiagramElement(element)) {
-                  paint((IClassUIModel) element);
-                }
-              });
+      Diagram.getDiagramElements(diagram).stream()
+          .filter(this::isClassView)
+          .forEach(e -> paint((IClassUIModel) e));
     }
   }
 
@@ -81,7 +79,7 @@ public class DiagramListener implements IDiagramListener {
     SmartColoringUtils.paint(element);
   }
 
-  private boolean isClassDiagramElement(Object element) {
+  private boolean isClassView(Object element) {
     return element instanceof IClassUIModel;
   }
 
@@ -123,7 +121,7 @@ public class DiagramListener implements IDiagramListener {
     if (isAssociationDiagramElement(element)) {
       IAssociation association = (IAssociation) element.getModelElement();
       return Association.isOntoumlAssociation(association);
-    } else if (isClassDiagramElement(element)) {
+    } else if (isClassView(element)) {
       IClass _class = (IClass) element.getModelElement();
       return Class.isOntoumlClass(_class);
     }

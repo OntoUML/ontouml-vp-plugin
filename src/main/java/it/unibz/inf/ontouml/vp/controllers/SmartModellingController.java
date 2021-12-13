@@ -15,19 +15,19 @@ public class SmartModellingController {
     final IAssociationEnd fromEnd = (IAssociationEnd) association.getFromEnd();
     final String toAgg = toEnd.getAggregationKind().toLowerCase();
 
-    if (IAssociationEnd.AGGREGATION_KIND_NONE.toLowerCase().equals(toAgg)) {
-      toEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
+    if (IAssociationEnd.AGGREGATION_KIND_none.equals(toAgg)) {
+      toEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_composite);
     }
 
-    fromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
+    fromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_none);
   }
 
   public static void removeAggregationKind(IModelElement element) {
     IAssociationEnd compositionFromEnd = (IAssociationEnd) ((IAssociation) element).getFromEnd();
     IAssociationEnd compositionToEnd = (IAssociationEnd) ((IAssociation) element).getToEnd();
 
-    compositionFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
-    compositionToEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
+    compositionFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_none);
+    compositionToEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_none);
   }
 
   private static boolean setCardinalityIfEmpty(IAssociationEnd end, String cardinality) {

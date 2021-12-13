@@ -9,6 +9,7 @@ public abstract class ModelElementEventManager {
   // Names of property change events to be handled
   protected static final String STEREOTYPE_CHANGE_EVENT = "stereotypes";
   protected static final String VIEW_ADDED_EVENT = "modelViewAdded";
+  protected static final String VIEW_REMOVED_EVENT = "modelViewRemoved";
 
   protected String changeEvent;
   protected Object newValue;
@@ -19,7 +20,7 @@ public abstract class ModelElementEventManager {
   public abstract void processEvent();
 
   protected boolean hasEventChangedValues() {
-    return newValue != null ? !newValue.equals(oldValue) : newValue != null;
+    return newValue != null && !newValue.equals(oldValue);
   }
 
   public static ModelElementEventManager create(PropertyChangeEvent event) {
