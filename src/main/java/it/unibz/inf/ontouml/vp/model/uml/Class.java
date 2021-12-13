@@ -734,16 +734,16 @@ public class Class implements ModelElement {
 
   public static boolean canItHaveMultipleRestrictions(IClass _class) {
     final String stereotype = ModelElement.getUniqueStereotypeName(_class);
-    return STEREOTYPES_WITH_MULTIPLE_RESTRICTED_TO_VALUES.contains(stereotype);
+    return STEREOTYPES_WITH_MULTIPLE_RESTRICTED_TO_VALUES.contains(stereotype != null ? stereotype : "");
   }
 
   public static boolean doesItInheritItsRestrictions(IClass _class) {
     final String stereotype = ModelElement.getUniqueStereotypeName(_class);
-    return STEREOTYPES_WITH_INHERITED_RESTRICTED_TO_VALUE.contains(stereotype);
+    return STEREOTYPES_WITH_INHERITED_RESTRICTED_TO_VALUE.contains(stereotype != null ? stereotype : "");
   }
 
   public static boolean doesItHaveFixedRestrictions(IClass _class) {
     final String stereotype = ModelElement.getUniqueStereotypeName(_class);
-    return STEREOTYPES_WITH_FIXED_RESTRICTED_TO_VALUE.contains(stereotype);
+    return STEREOTYPES_WITH_FIXED_RESTRICTED_TO_VALUE.contains(stereotype != null ? stereotype : "");
   }
 }

@@ -121,9 +121,7 @@ public class AssociationEventManager extends ModelElementEventManager {
   }
 
   private void checkAggregationPlacement() {
-    if (hasAggregationOnSource()
-        && !hasAggregationOnTarget()
-        && !Association.hasOntoumlStereotype(source)) {
+    if (hasAggregationOnSource() && !hasAggregationOnTarget()) {
       Association.invertAssociation(source, true);
     }
   }

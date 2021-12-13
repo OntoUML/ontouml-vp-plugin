@@ -2,8 +2,8 @@ package it.unibz.inf.ontouml.vp.controllers;
 
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPContext;
+import com.vp.plugin.model.IAttribute;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
-import it.unibz.inf.ontouml.vp.utils.VPContextUtils;
 
 public class ApplyAttributeStereotypeMenuManager extends ApplyStereotypeMenuManager {
 
@@ -17,11 +17,8 @@ public class ApplyAttributeStereotypeMenuManager extends ApplyStereotypeMenuMana
 
   @Override
   public void performAction() {
-    VPContextUtils.getModelElements(context)
-        .forEach(
-            element -> {
-              StereotypesManager.applyStereotype(element, attributeStereotypeId.getStereotype());
-            });
+    IAttribute att = (IAttribute) context.getModelElement();
+    StereotypesManager.applyStereotype(att,attributeStereotypeId.getStereotype());
   }
 
   @Override
