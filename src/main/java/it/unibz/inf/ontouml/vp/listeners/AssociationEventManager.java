@@ -28,9 +28,8 @@ public class AssociationEventManager extends ModelElementEventManager {
 
   @Override
   public void processEvent() {
-    if (STEREOTYPE_CHANGE_EVENT.equals(changeEvent)) {
+    if (Association.holdsBetweenClasses(source) && STEREOTYPE_CHANGE_EVENT.equals(changeEvent))
       processStereotypeChange();
-    }
   }
 
   private void processStereotypeChange() {
