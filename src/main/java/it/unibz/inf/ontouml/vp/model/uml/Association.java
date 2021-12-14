@@ -12,6 +12,7 @@ import it.unibz.inf.ontouml.vp.utils.Stereotype;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Implementation of ModelElement to handle IAssociation objects to be serialized as
@@ -106,6 +107,10 @@ public class Association implements ModelElement {
     setPropertyAssignments(ModelElement.transformPropertyAssignments(source));
     setAbstract(source.isAbstract());
     setDerived(source.isDerived());
+  }
+
+  public static boolean holdsBetweenClasses(IAssociation association) {
+    return association.getTo() instanceof IClass && association.getFrom() instanceof IClass;
   }
 
   @Override
@@ -241,6 +246,14 @@ public class Association implements ModelElement {
     return (IAssociationEnd) association.getToEnd();
   }
 
+  public static List<String> getSourceRestrictions(IAssociation association) {
+    return Class.getRestrictedToList(getSource(association));
+  }
+
+  public static List<String> getTargetRestrictions(IAssociation association) {
+    return Class.getRestrictedToList(getTarget(association));
+  }
+
   public static void invertAssociation(
       IAssociation association, boolean keepAllAssociationEndPropertiesInPlace) {
     final IClass originalSource = getSource(association);
@@ -299,7 +312,7 @@ public class Association implements ModelElement {
 
     sourceEnd.setNavigable(IAssociationEnd.NAVIGABLE_NAV_UNSPECIFIED);
 
-    if (IAssociationEnd.AGGREGATION_KIND_NONE.toLowerCase().equals(targetAgg)) {
+    if (IAssociationEnd.AGGREGATION_KIND_none.equals(targetAgg)) {
       targetEnd.setNavigable(IAssociationEnd.NAVIGABLE_NAV_NAVIGABLE);
     } else {
       targetEnd.setNavigable(IAssociationEnd.NAVIGABLE_NAV_UNSPECIFIED);
@@ -310,30 +323,30 @@ public class Association implements ModelElement {
     final String stereotype = ModelElement.getUniqueStereotypeName(association);
     final IAssociationEnd sourceEnd = getSourceEnd(association);
     final IAssociationEnd targetEnd = getTargetEnd(association);
-    String aggregationKind = IAssociationEnd.AGGREGATION_KIND_NONE;
+    String aggregationKind = IAssociationEnd.AGGREGATION_KIND_none;
 
     switch (stereotype) {
       case Stereotype.MEMBER_OF:
-        aggregationKind = IAssociationEnd.AGGREGATION_KIND_SHARED;
+        aggregationKind = IAssociationEnd.AGGREGATION_KIND_shared;
         break;
       case Stereotype.COMPONENT_OF:
       case Stereotype.SUB_COLLECTION_OF:
       case Stereotype.SUB_QUANTITY_OF:
       case Stereotype.PARTICIPATIONAL:
-        aggregationKind = IAssociationEnd.AGGREGATION_KIND_COMPOSITED;
+        aggregationKind = IAssociationEnd.AGGREGATION_KIND_composite;
         break;
       default:
-        if (hasValidStereotype(association)) {
+        if (hasOntoumlStereotype(association)) {
           // When there is a non-parthood stereotype we must remove any aggregation kind
-          sourceEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
-          targetEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
+          sourceEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_none);
+          targetEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_none);
         }
         // We don't interfere where there is not stereotype
         return;
     }
 
     if (forceOverride) {
-      sourceEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_NONE);
+      sourceEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_none);
       targetEnd.setAggregationKind(aggregationKind);
     } else {
       // By not forcing override we keep user-defined aggregation (e.g., "shared")
@@ -344,7 +357,7 @@ public class Association implements ModelElement {
               ? targetEnd.getAggregationKind().toLowerCase()
               : "none";
 
-      if (IAssociationEnd.AGGREGATION_KIND_NONE.toLowerCase().equals(targetCurrentAggregation)) {
+      if (IAssociationEnd.AGGREGATION_KIND_none.equals(targetCurrentAggregation)) {
         targetEnd.setAggregationKind(aggregationKind);
       }
     }
@@ -512,34 +525,165 @@ public class Association implements ModelElement {
     }
   }
 
-  public static boolean isOntoumlAssociation(IAssociation association) {
-    return (hasValidStereotype(association) || association.stereotypeCount() == 0)
-        && Class.hasValidStereotype(Association.getSource(association))
-        && Class.hasValidStereotype(Association.getTarget(association));
+  public static String getDefaultSourceMultiplicity(IAssociation association) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(association);
+    final String targetStereotype =
+        ModelElement.getUniqueStereotypeName(Association.getTarget(association));
+
+    switch (stereotype != null ? stereotype : "") {
+      case Stereotype.CHARACTERIZATION:
+      case Stereotype.SUB_COLLECTION_OF:
+      case Stereotype.SUB_QUANTITY_OF:
+      case Stereotype.CREATION:
+      case Stereotype.TERMINATION:
+      case Stereotype.BRINGS_ABOUT:
+      case Stereotype.TRIGGERS:
+        return IAssociationEnd.MULTIPLICITY_ONE;
+      case Stereotype.COMPONENT_OF:
+      case Stereotype.MEMBER_OF:
+      case Stereotype.MANIFESTATION:
+      case Stereotype.PARTICIPATION:
+      case Stereotype.PARTICIPATIONAL:
+        return IAssociationEnd.MULTIPLICITY_ONE_TO_MANY;
+      case Stereotype.COMPARATIVE:
+      case Stereotype.EXTERNAL_DEPENDENCE:
+      case Stereotype.HISTORICAL_DEPENDENCE:
+      case Stereotype.INSTANTIATION:
+        return IAssociationEnd.MULTIPLICITY_MANY;
+      case Stereotype.MATERIAL:
+      case Stereotype.MEDIATION:
+        return Stereotype.ROLE.equals(targetStereotype)
+                || Stereotype.ROLE_MIXIN.equals(targetStereotype)
+            ? IAssociationEnd.MULTIPLICITY_ONE_TO_MANY
+            : IAssociationEnd.MULTIPLICITY_ZERO_TO_MANY;
+    }
+
+    return IAssociationEnd.MULTIPLICITY_MANY;
   }
 
-  public static boolean hasValidStereotype(IAssociation association) {
+  public static String getDefaultTargetMultiplicity(IAssociation association) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(association);
+    final String sourceStereotype =
+        ModelElement.getUniqueStereotypeName(Association.getSource(association));
+
+    switch (stereotype != null ? stereotype : "") {
+      case Stereotype.TRIGGERS:
+        return IAssociationEnd.MULTIPLICITY_ZERO_TO_ONE;
+      case Stereotype.CHARACTERIZATION:
+      case Stereotype.COMPONENT_OF:
+      case Stereotype.MEDIATION:
+      case Stereotype.SUB_COLLECTION_OF:
+      case Stereotype.SUB_QUANTITY_OF:
+      case Stereotype.CREATION:
+      case Stereotype.TERMINATION:
+      case Stereotype.HISTORICAL_DEPENDENCE:
+      case Stereotype.PARTICIPATIONAL:
+      case Stereotype.BRINGS_ABOUT:
+        return IAssociationEnd.MULTIPLICITY_ONE;
+      case Stereotype.EXTERNAL_DEPENDENCE:
+      case Stereotype.MEMBER_OF:
+      case Stereotype.INSTANTIATION:
+        return IAssociationEnd.MULTIPLICITY_ONE_TO_MANY;
+      case Stereotype.COMPARATIVE:
+      case Stereotype.MANIFESTATION:
+        return IAssociationEnd.MULTIPLICITY_MANY;
+      case Stereotype.MATERIAL:
+        return Stereotype.ROLE.equals(sourceStereotype)
+                || Stereotype.ROLE_MIXIN.equals(sourceStereotype)
+            ? IAssociationEnd.MULTIPLICITY_ONE_TO_MANY
+            : IAssociationEnd.MULTIPLICITY_ZERO_TO_MANY;
+      case Stereotype.PARTICIPATION:
+        return Stereotype.HISTORICAL_ROLE.equals(sourceStereotype)
+                || Stereotype.HISTORICAL_ROLE_MIXIN.equals(sourceStereotype)
+            ? IAssociationEnd.MULTIPLICITY_ONE_TO_MANY
+            : IAssociationEnd.MULTIPLICITY_ZERO_TO_MANY;
+    }
+
+    return IAssociationEnd.MULTIPLICITY_MANY;
+  }
+
+  public static boolean isOntoumlAssociation(IAssociation association) {
+    boolean hasSource = getSource(association) != null;
+    boolean hasTarget = getTarget(association) != null;
+    boolean hasOntoumlStereotype = hasOntoumlStereotype(association);
+    boolean hasOntoumlSource = hasSource && Class.isOntoumlClass(getSource(association));
+    boolean hasOntoumlTarget = hasTarget && Class.isOntoumlClass(getTarget(association));
+
+    return hasSource && hasTarget && (hasOntoumlStereotype || hasOntoumlSource || hasOntoumlTarget);
+  }
+
+  public static boolean hasOntoumlStereotype(IAssociation association) {
     final String stereotype = ModelElement.getUniqueStereotypeName(association);
     return Stereotype.getOntoUMLAssociationStereotypeNames().contains(stereotype);
+  }
+
+  public static boolean hasMereologyStereotype(IAssociation association) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(association);
+    return Stereotype.getOntoUMLMereologyStereotypeNames().contains(stereotype);
   }
 
   public static boolean hasAggregationSetOnSource(IAssociation association) {
     var aggregationKind = getSourceEnd(association).getAggregationKind();
 
-    // TODO: remove direct comparison to "Shared" once IAssociationEnd.AGGREGATION_KIND_SHARED is
+    // TODO: remove direct comparison to "Shared" once IAssociationEnd.AGGREGATION_KIND_shared is
     // fixed by VP
-    return IAssociationEnd.AGGREGATION_KIND_SHARED.equals(aggregationKind)
-        || IAssociationEnd.AGGREGATION_KIND_COMPOSITED.equals(aggregationKind)
+    return IAssociationEnd.AGGREGATION_KIND_shared.equals(aggregationKind)
+        || IAssociationEnd.AGGREGATION_KIND_composite.equals(aggregationKind)
         || "Shared".equals(aggregationKind);
   }
 
   public static boolean hasAggregationSetOnTarget(IAssociation association) {
     var aggregationKind = getTargetEnd(association).getAggregationKind();
 
-    // TODO: remove direct comparison to "Shared" once IAssociationEnd.AGGREGATION_KIND_SHARED is
+    // TODO: remove direct comparison to "Shared" once IAssociationEnd.AGGREGATION_KIND_shared is
     // fixed by VP
-    return IAssociationEnd.AGGREGATION_KIND_SHARED.equals(aggregationKind)
-        || IAssociationEnd.AGGREGATION_KIND_COMPOSITED.equals(aggregationKind)
+    return IAssociationEnd.AGGREGATION_KIND_shared.equals(aggregationKind)
+        || IAssociationEnd.AGGREGATION_KIND_composite.equals(aggregationKind)
         || "Shared".equals(aggregationKind);
+  }
+
+  public static boolean isSourceAlwaysReadOnly(IAssociation association) {
+    final Set<String> necessarySourceStereotypes =
+        Set.of(
+            Stereotype.SUB_QUANTITY_OF,
+            Stereotype.CREATION,
+            Stereotype.TERMINATION,
+            Stereotype.MANIFESTATION,
+            Stereotype.PARTICIPATION,
+            Stereotype.PARTICIPATIONAL,
+            Stereotype.BRINGS_ABOUT,
+            Stereotype.TRIGGERS);
+    final String stereotype = ModelElement.getUniqueStereotypeName(association);
+    return stereotype != null && necessarySourceStereotypes.contains(stereotype);
+  }
+
+  public static boolean isTargetAlwaysReadOnly(IAssociation association) {
+    final Set<String> necessaryTargetStereotypes =
+        Set.of(
+            Stereotype.CHARACTERIZATION,
+            Stereotype.EXTERNAL_DEPENDENCE,
+            Stereotype.MEDIATION,
+            Stereotype.CREATION,
+            Stereotype.TERMINATION,
+            Stereotype.HISTORICAL_DEPENDENCE,
+            Stereotype.PARTICIPATIONAL,
+            Stereotype.BRINGS_ABOUT);
+    final String stereotype = ModelElement.getUniqueStereotypeName(association);
+    return stereotype != null && necessaryTargetStereotypes.contains(stereotype);
+  }
+
+  public static String getDefaultAggregationKind(IAssociation association) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(association);
+    final Set<String> sharedDefault = Set.of(Stereotype.MEMBER_OF);
+    final Set<String> compositeDefault =
+        Set.of(
+            Stereotype.COMPONENT_OF,
+            Stereotype.SUB_COLLECTION_OF,
+            Stereotype.SUB_QUANTITY_OF,
+            Stereotype.PARTICIPATIONAL);
+
+    if (sharedDefault.contains(stereotype)) return IAssociationEnd.AGGREGATION_KIND_shared;
+    if (compositeDefault.contains(stereotype)) return IAssociationEnd.AGGREGATION_KIND_composite;
+    return IAssociationEnd.AGGREGATION_KIND_none;
   }
 }

@@ -1,13 +1,24 @@
 package it.unibz.inf.ontouml.vp.listeners;
 
-import com.vp.plugin.ApplicationManager;
-import com.vp.plugin.model.*;
+import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.IProject;
+import com.vp.plugin.model.IProjectModelListener;
 import com.vp.plugin.model.factory.IModelElementFactory;
-import java.util.Iterator;
+import it.unibz.inf.ontouml.vp.utils.ApplicationManagerUtils;
+import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ProjectModelListener implements IProjectModelListener {
 
-  private ModelListener modelListener;
+  private static final Set<String> typesOfModelElementsToListenForChanges =
+      Set.of(
+          IModelElementFactory.MODEL_TYPE_ASSOCIATION,
+          IModelElementFactory.MODEL_TYPE_ASSOCIATION_END,
+          IModelElementFactory.MODEL_TYPE_CLASS,
+          IModelElementFactory.MODEL_TYPE_GENERALIZATION);
+
+  private final ModelListener modelListener;
 
   ProjectModelListener() {
     modelListener = new ModelListener();
@@ -18,7 +29,7 @@ public class ProjectModelListener implements IProjectModelListener {
     try {
       addListenerToModelElement(modelElement);
     } catch (Exception e) {
-      System.err.println("An error ocurred while adding model element.");
+      System.err.println("An error occurred while adding model element.");
       e.printStackTrace();
     }
   }
@@ -28,33 +39,38 @@ public class ProjectModelListener implements IProjectModelListener {
     try {
       removeListenerFromModelElement(modelElement);
     } catch (Exception e) {
-      System.err.println("An error ocurred while removing model element.");
+      System.err.println("An error occurred while removing model element.");
       e.printStackTrace();
     }
   }
 
   private void addListenerToModelElement(IModelElement modelElement) {
-    if (modelElement instanceof IClass || modelElement instanceof IGeneralization) {
+    if (isModelElementOfInterest(modelElement)) {
       modelElement.addPropertyChangeListener(modelListener);
     }
   }
 
   private void removeListenerFromModelElement(IModelElement modelElement) {
-    if (modelElement instanceof IClass || modelElement instanceof IGeneralization) {
+    if (isModelElementOfInterest(modelElement)) {
       modelElement.removePropertyChangeListener(modelListener);
     }
   }
 
   public void addListenersToModelElements() {
-    final IProject project = ApplicationManager.instance().getProjectManager().getProject();
-    final String[] desiredElements = {
-      IModelElementFactory.MODEL_TYPE_CLASS, IModelElementFactory.MODEL_TYPE_GENERALIZATION
-    };
-    final Iterator<?> iter = project.allLevelModelElementIterator(desiredElements);
+    getAllLevelInterestModelElements(ApplicationManagerUtils.getCurrentProject())
+        .forEach(element -> element.addPropertyChangeListener(modelListener));
+  }
 
-    while (iter != null && iter.hasNext()) {
-      final IModelElement modelElement = (IModelElement) iter.next();
-      modelElement.addPropertyChangeListener(modelListener);
-    }
+  private boolean isModelElementOfInterest(IModelElement element) {
+    return element != null
+        && typesOfModelElementsToListenForChanges.contains(element.getModelType());
+  }
+
+  private Set<IModelElement> getAllLevelInterestModelElements(IProject project) {
+    return !(project.allLevelModelElementCount() > 0)
+        ? Collections.emptySet()
+        : Set.of(project.toAllLevelModelElementArray()).stream()
+            .filter(this::isModelElementOfInterest)
+            .collect(Collectors.toSet());
   }
 }

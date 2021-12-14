@@ -3,6 +3,7 @@ package it.unibz.inf.ontouml.vp.utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class Stereotype {
 
@@ -125,11 +126,27 @@ public class Stereotype {
     return new ArrayList<>(Arrays.asList(KIND, COLLECTIVE, QUANTITY, RELATOR, QUALITY, MODE));
   }
 
-  public static List<String> getSortalStereotypeNames() {
+  public static List<String> getBaseSortalStereotypeNames() {
     return new ArrayList<>(Arrays.asList(SUBKIND, ROLE, PHASE, HISTORICAL_ROLE));
+  }
+
+  public static Set<String> getOntoUMLMereologyStereotypeNames() {
+    return Set.of(PARTICIPATIONAL, COMPONENT_OF, MEMBER_OF, SUB_COLLECTION_OF, SUB_QUANTITY_OF);
   }
 
   public static boolean isNonSortal(String stereotype) {
     return getNonSortalStereotypeNames().contains(stereotype);
+  }
+
+  public static boolean isBaseSortal(String stereotype) {
+    return getBaseSortalStereotypeNames().contains(stereotype);
+  }
+
+  public static boolean isUltimateSortal(String stereotype) {
+    return getUltimateSortalStereotypeNames().contains(stereotype);
+  }
+
+  public static boolean isSortal(String stereotype) {
+    return isUltimateSortal(stereotype) || isBaseSortal(stereotype);
   }
 }

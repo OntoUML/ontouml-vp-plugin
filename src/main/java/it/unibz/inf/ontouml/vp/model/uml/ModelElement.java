@@ -4,15 +4,21 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.DiagramManager;
+import com.vp.plugin.diagram.IBaseDiagramElement;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.*;
 import com.vp.plugin.model.factory.IModelElementFactory;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * @author Victor Viola
@@ -39,6 +45,23 @@ public interface ModelElement {
 
   static boolean hasUniqueStereotype(IModelElement element) {
     return getUniqueStereotype(element) != null;
+  }
+
+  static Set<IDiagramElement> getViews(IModelElement element) {
+    return Optional.ofNullable(element.getDiagramElements())
+        .map(Set::of)
+        .orElse(Collections.emptySet());
+  }
+
+  static Set<IDiagramUIModel> getDiagrams(IModelElement element) {
+    return getViews(element).stream()
+        .map(IBaseDiagramElement::getDiagramUIModel)
+        .filter(Objects::nonNull)
+        .collect(Collectors.toSet());
+  }
+
+  static boolean isPresentInOntoumlDiagram(IModelElement element) {
+    return ModelElement.getDiagrams(element).stream().anyMatch(Diagram::isOntoUMLDiagram);
   }
 
   /** @return <code>IModelElement</code> on which the object is based. */
@@ -387,29 +410,43 @@ public interface ModelElement {
   }
 
   // TODO: CHECKME!
-  static <T extends IModelElement> void forEachSelectedElement(T element, Consumer<T> consumer) {
-    if (element == null) {
+  static <T extends IModelElement> void forEachSelectedElement(
+      T modelElement, Consumer<T> consumer) {
+    if (modelElement == null) {
       return;
     }
 
-    final String selectedElementType = element.getModelType();
+    final String selectedElementType = modelElement.getModelType();
     final DiagramManager dm = ApplicationManager.instance().getDiagramManager();
     final IDiagramUIModel diagram = dm.getActiveDiagram();
     final IDiagramElement[] selectedDiagramElements =
-        diagram != null ? diagram.getSelectedDiagramElement() : null;
+        diagram != null ? diagram.getSelectedDiagramElement(selectedElementType) : null;
 
     if (diagram == null || selectedDiagramElements == null) {
-      consumer.accept(element);
+      consumer.accept(modelElement);
       return;
     }
 
     Arrays.stream(selectedDiagramElements)
-        .map(selectedDiagramElement -> selectedDiagramElement.getModelElement())
-        .filter(
-            selectedElement ->
-                selectedElement != null
-                    && selectedElementType.equals(selectedElement.getModelType()))
+        .map(IDiagramElement::getModelElement)
         .forEach((Consumer<IModelElement>) consumer);
     ;
+  }
+
+  static boolean isOntoumlElement(Object object) {
+    if (!(object instanceof IModelElement)) return false;
+
+    final IModelElement element = (IModelElement) object;
+
+    switch (element.getModelType()) {
+      case IModelElementFactory.MODEL_TYPE_CLASS:
+        return Class.isOntoumlClass((IClass) element);
+      case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
+        return Association.isOntoumlAssociation((IAssociation) element);
+      case IModelElementFactory.MODEL_TYPE_ATTRIBUTE:
+        return Property.isOntoumlProperty(element);
+      default:
+        return false;
+    }
   }
 }

@@ -1,6 +1,6 @@
 <plugin
   id="it.unibz.inf.ontouml.vp"
-  description="OntoUML Plugin Visual Paradigm v0.5.1"
+  description="OntoUML Plugin Visual Paradigm v0.5.3"
   provider="University of Bolzano"
   class="it.unibz.inf.ontouml.vp.OntoUMLPlugin">
 
@@ -726,7 +726,7 @@
         <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotypeController"/>
       </action>
 
-      <action id="it.unibz.inf.ontouml.vp.addBringsStereotype.fixedMenu" label="BringsAbout"
+      <action id="it.unibz.inf.ontouml.vp.addBringsAboutStereotype.fixedMenu" label="BringsAbout"
         style="normal" menuPath="ontoUMLMenu2.fixedMenu/#">
         <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyStereotypeController"/>
       </action>

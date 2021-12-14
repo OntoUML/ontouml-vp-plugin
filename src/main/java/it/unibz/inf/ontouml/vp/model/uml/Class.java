@@ -25,6 +25,30 @@ import java.util.stream.Collectors;
  */
 public class Class implements ModelElement {
 
+  private static final Set<String> STEREOTYPES_WITH_FIXED_RESTRICTED_TO_VALUE =
+      Set.of(
+          Stereotype.EVENT,
+          Stereotype.SITUATION,
+          Stereotype.TYPE,
+          Stereotype.ABSTRACT,
+          Stereotype.DATATYPE,
+          Stereotype.ENUMERATION,
+          Stereotype.KIND,
+          Stereotype.COLLECTIVE,
+          Stereotype.QUANTITY,
+          Stereotype.RELATOR,
+          Stereotype.MODE,
+          Stereotype.QUALITY);
+  private static final Set<String> STEREOTYPES_WITH_MULTIPLE_RESTRICTED_TO_VALUES =
+      Set.of(
+          Stereotype.CATEGORY,
+          Stereotype.MIXIN,
+          Stereotype.PHASE_MIXIN,
+          Stereotype.ROLE_MIXIN,
+          Stereotype.HISTORICAL_ROLE_MIXIN);
+  private static final Set<String> STEREOTYPES_WITH_INHERITED_RESTRICTED_TO_VALUE =
+      Set.of(Stereotype.SUBKIND, Stereotype.ROLE, Stereotype.PHASE, Stereotype.HISTORICAL_ROLE);
+
   private final IModelElement sourceModelElement;
 
   @SerializedName("type")
@@ -261,14 +285,13 @@ public class Class implements ModelElement {
   }
 
   public void addProperties(Property property) {
-    if (this.properties == null) this.properties = new HashSet<Property>();
+    if (this.properties == null) this.properties = new HashSet<>();
 
     this.properties.add(property);
   }
 
   public void removeProperties(Property property) {
-    if (this.properties != null && this.properties.contains(property))
-      this.properties.remove(property);
+    if (this.properties != null) this.properties.remove(property);
   }
 
   public JsonObject getPropertyAssignments() {
@@ -292,13 +315,13 @@ public class Class implements ModelElement {
   }
 
   public void addStereotype(String name) {
-    if (this.stereotypes == null) this.stereotypes = new ArrayList<String>();
+    if (this.stereotypes == null) this.stereotypes = new ArrayList<>();
 
     this.stereotypes.add(name);
   }
 
   public void removeStereotype(String name) {
-    if (this.stereotypes != null && this.stereotypes.contains(name)) this.stereotypes.remove(name);
+    if (this.stereotypes != null) this.stereotypes.remove(name);
   }
 
   public boolean isAbstract() {
@@ -327,14 +350,14 @@ public class Class implements ModelElement {
 
   public void addLiteral(Literal literal) {
     if (getLiterals() == null) {
-      setLiterals(new LinkedList<Literal>());
+      setLiterals(new LinkedList<>());
     }
 
     this.literals.add(literal);
   }
 
   public static Set<IClass> getParents(IClass _class) {
-    final Set<IClass> parents = new HashSet<IClass>();
+    final Set<IClass> parents = new HashSet<>();
     final ISimpleRelationship[] relationships = _class.toToRelationshipArray();
 
     for (int i = 0; relationships != null && i < relationships.length; i++) {
@@ -352,7 +375,7 @@ public class Class implements ModelElement {
   }
 
   public static Set<IClass> getChildren(IClass _class) {
-    final Set<IClass> children = new HashSet<IClass>();
+    final Set<IClass> children = new HashSet<>();
     final ISimpleRelationship[] relationships = _class.toFromRelationshipArray();
 
     for (int i = 0; relationships != null && i < relationships.length; i++) {
@@ -370,7 +393,7 @@ public class Class implements ModelElement {
   }
 
   public static Set<IClass> getAncestors(IClass _class) {
-    final Set<IClass> ancestors = new HashSet<IClass>();
+    final Set<IClass> ancestors = new HashSet<>();
     final Set<IClass> parents = getChildren(_class);
 
     for (IClass parent : parents) {
@@ -382,7 +405,7 @@ public class Class implements ModelElement {
   }
 
   public static Set<IClass> getDescendants(IClass _class) {
-    final Set<IClass> descendants = new HashSet<IClass>();
+    final Set<IClass> descendants = new HashSet<>();
     final Set<IClass> children = getChildren(_class);
 
     for (IClass child : children) {
@@ -605,7 +628,7 @@ public class Class implements ModelElement {
     return Boolean.parseBoolean(isExtensionalValue);
   }
 
-  public static void setIsExtensional(IClass _class, boolean isExtensionalValue) {
+  public static void isExtensional(IClass _class, boolean isExtensionalValue) {
     final ITaggedValueContainer container = _class.getTaggedValues();
     final ITaggedValue isExtensional =
         container != null
@@ -627,7 +650,9 @@ public class Class implements ModelElement {
     return isExtensional != null;
   }
 
-  public static boolean hasValidStereotype(IClass _class) {
+  public static boolean isOntoumlClass(IClass _class) {
+    if (_class == null) return false;
+
     final String stereotype = ModelElement.getUniqueStereotypeName(_class);
     return Stereotype.getOntoUMLClassStereotypeNames().contains(stereotype);
   }
@@ -635,6 +660,11 @@ public class Class implements ModelElement {
   public static boolean isRestrictedToEditable(IClass _class) {
     final String stereotype = ModelElement.getUniqueStereotypeName(_class);
     return RestrictedTo.isRestrictedToEditable(stereotype);
+  }
+
+  public static boolean isRestrictedTo(IClass _class, Set<String> restrictions) {
+    Set<String> classRestrictions = new HashSet<>(getRestrictedToList(_class));
+    return restrictions.equals(classRestrictions);
   }
 
   public static boolean isAbstractEditable(IClass _class) {
@@ -654,5 +684,69 @@ public class Class implements ModelElement {
 
   public static boolean hasCollectiveNature(IClass _class) {
     return RestrictedTo.COLLECTIVE.equals(getRestrictedTo(_class));
+  }
+
+  public static boolean isBaseSortal(IClass _class) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(_class);
+    return Stereotype.isBaseSortal(stereotype);
+  }
+
+  public static boolean isUltimateSortal(IClass _class) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(_class);
+    return Stereotype.isUltimateSortal(stereotype);
+  }
+
+  public static boolean isSortal(IClass _class) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(_class);
+    return Stereotype.isSortal(stereotype);
+  }
+
+  public static void propagateRestrictionsToDescendants(IClass _class) {
+    Class.applyOnDescendants(
+        _class,
+        descendent -> {
+          if (!doesItInheritItsRestrictions(descendent)) {
+            return false;
+          }
+
+          final Set<IClass> parents =
+              Class.getParents(descendent).stream()
+                  .filter(Class::isSortal)
+                  .collect(Collectors.toSet());
+          final String parentsRestrictions = combineClassesRestrictions(parents);
+          final String descendentRestrictions = Class.getRestrictedTo(descendent);
+
+          if (!parentsRestrictions.equals(descendentRestrictions)) {
+            Class.setRestrictedTo(descendent, parentsRestrictions);
+            return true;
+          }
+
+          return false;
+        });
+  }
+
+  public static String combineClassesRestrictions(Set<IClass> classes) {
+    return classes.stream()
+        .flatMap(_class -> new HashSet<>(Class.getRestrictedToList(_class)).stream())
+        .sorted()
+        .collect(Collectors.joining(" "));
+  }
+
+  public static boolean canItHaveMultipleRestrictions(IClass _class) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(_class);
+    return STEREOTYPES_WITH_MULTIPLE_RESTRICTED_TO_VALUES.contains(
+        stereotype != null ? stereotype : "");
+  }
+
+  public static boolean doesItInheritItsRestrictions(IClass _class) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(_class);
+    return STEREOTYPES_WITH_INHERITED_RESTRICTED_TO_VALUE.contains(
+        stereotype != null ? stereotype : "");
+  }
+
+  public static boolean doesItHaveFixedRestrictions(IClass _class) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(_class);
+    return STEREOTYPES_WITH_FIXED_RESTRICTED_TO_VALUE.contains(
+        stereotype != null ? stereotype : "");
   }
 }

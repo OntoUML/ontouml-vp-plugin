@@ -252,7 +252,7 @@ public class ApplyPropertiesController implements VPContextActionController {
       case ActionIdManager.CLASS_PROPERTY_SET_RESTRICTED_TO:
         enabled =
             Class.isRestrictedToEditable(clickedClass)
-                || (!isSmartModelingEnabled && Class.hasValidStereotype(clickedClass));
+                || (!isSmartModelingEnabled && Class.isOntoumlClass(clickedClass));
         break;
 
       case ActionIdManager.CLASS_PROPERTY_SET_IS_EXTENSIONAL:
@@ -260,7 +260,7 @@ public class ApplyPropertiesController implements VPContextActionController {
         enabled =
             Class.isCollective(clickedClass)
                 || Class.hasCollectiveNature(clickedClass)
-                || (!isSmartModelingEnabled && Class.hasValidStereotype(clickedClass));
+                || (!isSmartModelingEnabled && Class.isOntoumlClass(clickedClass));
         break;
 
       case ActionIdManager.CLASS_PROPERTY_SET_IS_POWERTYPE:
@@ -270,7 +270,7 @@ public class ApplyPropertiesController implements VPContextActionController {
 
       case ActionIdManager.CLASS_PROPERTY_SET_ORDER:
         enabled = Class.isType(clickedClass);
-        if (Class.hasValidStereotype(clickedClass)) {
+        if (Class.isOntoumlClass(clickedClass)) {
           String order = Class.getOrderOr(clickedClass).orElse("1");
           action.setLabel("Set order" + " (" + order + ")");
         }

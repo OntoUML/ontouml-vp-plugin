@@ -64,7 +64,7 @@ public class IAssociationLoader {
 
     fromProperty
         .getAggregationKind()
-        .map(agg -> agg.getName())
+        .map(agg -> agg.getName().toLowerCase())
         .ifPresent(agg -> toProperty.setAggregationKind(agg));
 
     fromProperty.getCardinalityValue().ifPresent(value -> toProperty.setMultiplicity(value));
