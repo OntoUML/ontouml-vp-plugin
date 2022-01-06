@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.vp.plugin.model.*;
+import com.vp.plugin.model.factory.IModelElementFactory;
 import it.unibz.inf.ontouml.vp.utils.RestrictedTo;
 import it.unibz.inf.ontouml.vp.utils.Stereotype;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
@@ -205,6 +206,15 @@ public class Class implements ModelElement {
     setDescription(source.getDescription());
 
     loadTags(source);
+  }
+
+  public static Set<IAttribute> getAttributes(IClass _class) {
+    return _class.attributeCount() > 0 ? new HashSet<>(Arrays.asList(_class.toAttributeArray()))
+        : Collections.emptySet();
+  }
+
+  public static boolean isClass(IModelElement element) {
+    return element != null && IModelElementFactory.MODEL_TYPE_CLASS.equals(element.getModelType());
   }
 
   private void loadTags(IClass source) {

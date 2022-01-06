@@ -128,6 +128,18 @@
       <separator id="project.export.ontouml" ribbonPath="Project/Export/#"/>
 
       <action
+        id="it.unibz.inf.ontouml.vp.actions.FixStereotypesAction"
+        actionType="generalAction"
+        description="Automatically fixes misspelled and deprecated stereotypes."
+        style="normal"
+        tooltip="Automatically fixes misspelled and deprecated stereotypes."
+        icon="icons/toolbar/wand-orange-48x48.png"
+        label="Fix Stereotypes"
+        menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
+        <actionController class="it.unibz.inf.ontouml.vp.controllers.FixStereotypesController"/>
+      </action>
+
+      <action
         id="it.unibz.inf.ontouml.vp.actions.UpdatePluginAction"
         actionType="generalAction"
         description="Opens the plugin update dialog."
