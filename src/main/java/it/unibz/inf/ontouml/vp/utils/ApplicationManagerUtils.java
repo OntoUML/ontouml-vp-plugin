@@ -36,4 +36,9 @@ public class ApplicationManagerUtils {
   public static Iterator<?> getAllLevelModelElements(String[] typesFilter) {
     return getCurrentProject().allLevelModelElementIterator(typesFilter);
   }
+
+  public static Iterator<?> getAllLevelModelElements(String typeFilter) {
+    final String[] filter = { typeFilter };
+    return getCurrentProject().allLevelModelElementIterator(filter);
+  }
 }

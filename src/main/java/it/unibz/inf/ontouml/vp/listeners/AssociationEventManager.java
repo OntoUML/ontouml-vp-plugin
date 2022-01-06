@@ -33,7 +33,7 @@ public class AssociationEventManager extends ModelElementEventManager {
   }
 
   private void processStereotypeChange() {
-    //    checkSourcesDiagrams();
+    // checkSourcesDiagrams();
     checkAssociationConsistency();
     // setDefaultAssociationProperties();
   }

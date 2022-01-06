@@ -7,9 +7,11 @@ import com.vp.plugin.model.IAttribute;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.factory.IModelElementFactory;
+import it.unibz.inf.ontouml.vp.model.uml.Association;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.ApplicationManagerUtils;
+import it.unibz.inf.ontouml.vp.utils.OntoUMLConstraintsManager;
 import it.unibz.inf.ontouml.vp.utils.Stereotype;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
 import java.util.HashMap;
@@ -20,10 +22,9 @@ import java.util.Set;
 
 public class FixStereotypesController implements VPActionController {
 
-  private static String[] typesSelection = { IModelElementFactory.MODEL_TYPE_CLASS,
-      IModelElementFactory.MODEL_TYPE_ASSOCIATION };
-
-  private Set<IModelElement> elements;
+  private Set<IAttribute> attributes;
+  private Set<IAssociation> associations;
+  private Set<IClass> classes;
   private Map<String,String> associationStereotypesMap;
   private Map<String,String> attributeStereotypesMap;
   private Map<String,String> classStereotypesMap;
@@ -33,12 +34,14 @@ public class FixStereotypesController implements VPActionController {
 
   @Override
   public void performAction(VPAction vpAction) {
-    getModelElements();
+    retrieveModelElements();
     fixElementsStereotypes();
   }
 
   private void fixElementsStereotypes() {
-    elements.forEach(this::fixElementsStereotypes);
+    classes.forEach(this::fixElementsStereotypes);
+    attributes.forEach(this::fixElementsStereotypes);
+    associations.forEach(this::fixAssociationsStereotypes);
   }
 
   private void fixElementsStereotypes(IModelElement element) {
@@ -46,6 +49,13 @@ public class FixStereotypesController implements VPActionController {
     final String recognizedStr = getRecognizedStereotypes(element);
 
     if(hasReplacement(stereotype,recognizedStr))  applyStereotype(element, recognizedStr);
+  }
+
+  private void fixAssociationsStereotypes(IAssociation association) {
+    final String stereotype = ModelElement.getUniqueStereotypeName(association);
+    final String recognizedStr = getRecognizedStereotypes(association);
+
+    if(hasReplacement(stereotype,recognizedStr))  applyStereotype(association, recognizedStr);
   }
 
   private String getRecognizedStereotypes(IModelElement element) {
@@ -92,8 +102,15 @@ public class FixStereotypesController implements VPActionController {
   }
 
   private void applyAssociationStereotype(IAssociation association, String replacementStereotype) {
-    // TODO: check whether it is necessary to invert the association
+    if(shouldInvert(association, replacementStereotype))
+      Association.invertAssociation(association,false);
+
     StereotypesManager.applyStereotype(association, replacementStereotype);
+  }
+
+  private boolean shouldInvert(IAssociation association, String stereotype) {
+    return !OntoUMLConstraintsManager.isStereotypeAllowed(association,stereotype) &&
+        OntoUMLConstraintsManager.isStereotypeAllowedIfInverted(association,stereotype);
   }
 
   private void applyClassStereotype(IClass _class, String replacementStereotype) {
@@ -163,20 +180,36 @@ public class FixStereotypesController implements VPActionController {
     // TODO: add a list of misspelled stereotypes to the map
   }
 
-  private void getModelElements() {
-    final Iterator<?> iter = ApplicationManagerUtils.getAllLevelModelElements(typesSelection);
-    elements = new HashSet<>();
+  private void retrieveModelElements() {
+    retrieveClasses();
+    retrieveAssociations();
+    retrieveAttributes();
+  }
+
+  private void retrieveAssociations() {
+    associations = new HashSet<>();
+    final Iterator<?> iter =
+        ApplicationManagerUtils.getAllLevelModelElements(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
 
     while(iter != null && iter.hasNext()) {
-      final IModelElement next = (IModelElement) iter.next();
-      elements.add(next);
-      if(Class.isClass(next)) getAttributes((IClass) next);
+      associations.add((IAssociation) iter.next());
     }
   }
 
-  private void getAttributes(IClass _class) {
-    final Set<IAttribute> attributes = Class.getAttributes(_class);
-    elements.addAll(attributes);
+  private void retrieveAttributes() {
+    attributes = new HashSet<>();
+    classes.stream()
+        .flatMap(c -> Class.getAttributes(c).stream())
+        .forEach(attributes::add);
   }
 
+  private void retrieveClasses() {
+    classes = new HashSet<>();
+    final Iterator<?> iter =
+        ApplicationManagerUtils.getAllLevelModelElements(IModelElementFactory.MODEL_TYPE_CLASS);
+
+    while(iter != null && iter.hasNext()) {
+      classes.add((IClass) iter.next());
+    }
+  }
 }
