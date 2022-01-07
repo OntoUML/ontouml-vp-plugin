@@ -192,7 +192,6 @@ public class FixStereotypesController implements VPActionController {
               associationStereotypesMap.put(normalizedStr, str);
             });
 
-    // TODO: remove spaces and hyphens
     associationStereotypesMap.put("characterizes", Stereotype.CHARACTERIZATION);
     associationStereotypesMap.put("externaldependenceon", Stereotype.EXTERNAL_DEPENDENCE);
     associationStereotypesMap.put("externallydepends", Stereotype.EXTERNAL_DEPENDENCE);

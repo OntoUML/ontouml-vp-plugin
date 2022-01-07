@@ -175,7 +175,6 @@
         <actionController class="it.unibz.inf.ontouml.vp.controllers.ReportErrorController"/>
       </action>
 
-      <!--
       <action
         id="it.unibz.inf.ontouml.vp.actions.ReloadClassesAction"
         actionType="generalAction"
@@ -185,6 +184,7 @@
         menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
         <actionController class="it.unibz.inf.ontouml.vp.controllers.ReloadClassesController"/>
       </action>
+      <!--
       -->
 
     </actionSet>
