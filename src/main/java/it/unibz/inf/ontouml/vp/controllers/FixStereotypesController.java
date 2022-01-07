@@ -130,9 +130,9 @@ public class FixStereotypesController implements VPActionController {
   private boolean hasReplacement(String originalStereotype, String recognizedStereotype) {
     // TODO: Review whether we should reapplying even when original and recognized are equal
     return recognizedStereotype != null && !recognizedStereotype.isEmpty();
-//    return recognizedStereotype != null
-//        && !recognizedStereotype.isEmpty()
-//        && !recognizedStereotype.equals(originalStereotype);
+    //    return recognizedStereotype != null
+    //        && !recognizedStereotype.isEmpty()
+    //        && !recognizedStereotype.equals(originalStereotype);
   }
 
   private String getNormalizedStereotype(String stereotype) {

@@ -28,7 +28,7 @@ public class StereotypesManager {
 
     // Retrieves IStereotype objects for OntoUML elements
     for (IModelElement stereotype : installedStereotypes) {
-      if(Stereotype.isOntoumlStereotype((IStereotype) stereotype)) {
+      if (Stereotype.isOntoumlStereotype((IStereotype) stereotype)) {
         stereotypesMap.put(stereotype.getName(), (IStereotype) stereotype);
       }
     }
@@ -151,7 +151,7 @@ public class StereotypesManager {
   public static void applyStereotype(IModelElement element, String stereotypeName) {
     final IStereotype stereotype = getStereotype(stereotypeName);
 
-     if (stereotype == null || !element.getModelType().equals(stereotype.getBaseType())) {
+    if (stereotype == null || !element.getModelType().equals(stereotype.getBaseType())) {
       return;
     }
 

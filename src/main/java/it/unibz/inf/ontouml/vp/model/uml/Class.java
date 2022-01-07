@@ -717,7 +717,7 @@ public class Class implements ModelElement {
         _class,
         descendent -> {
           if (!doesItInheritItsRestrictions(descendent)) {
-            return ;
+            return;
           }
 
           final Set<IClass> parents =
