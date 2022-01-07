@@ -113,7 +113,7 @@ public class FixStereotypesController implements VPActionController {
 
   private void applyAssociationStereotype(IAssociation association, String replacementStereotype) {
     if(shouldInvert(association, replacementStereotype))
-      Association.invertAssociation(association,false);
+      Association.invertAssociation(association,true);
 
     StereotypesManager.applyStereotype(association, replacementStereotype);
   }

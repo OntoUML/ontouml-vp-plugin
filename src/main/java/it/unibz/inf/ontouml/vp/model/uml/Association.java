@@ -262,6 +262,7 @@ public class Association implements ModelElement {
     final IAssociationEnd originalTargetEnd = getTargetEnd(association);
     final PropertyDescription sourceEndDescription = new PropertyDescription(originalSourceEnd);
     final PropertyDescription targetEndDescription = new PropertyDescription(originalTargetEnd);
+    final int readingDirection = association.getDirection();
     final List<AssociationModelDescription> originalAssociationsDescriptions =
         retrieveAndDeleteAssociationModels(association);
 
@@ -271,6 +272,8 @@ public class Association implements ModelElement {
     if (keepAllAssociationEndPropertiesInPlace) {
       sourceEndDescription.copyTo(originalTargetEnd);
       targetEndDescription.copyTo(originalSourceEnd);
+      association.setDirection(readingDirection == IAssociation.DIRECTION_FROM_TO ?
+          IAssociation.DIRECTION_TO_FROM : IAssociation.DIRECTION_FROM_TO);
     } else {
       sourceEndDescription.partialCopyTo(originalTargetEnd);
       targetEndDescription.partialCopyTo(originalSourceEnd);
