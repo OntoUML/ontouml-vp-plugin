@@ -128,9 +128,11 @@ public class FixStereotypesController implements VPActionController {
   }
 
   private boolean hasReplacement(String originalStereotype, String recognizedStereotype) {
-    return recognizedStereotype != null
-        && !recognizedStereotype.isEmpty()
-        && !recognizedStereotype.equals(originalStereotype);
+    // TODO: Review whether we should reapplying even when original and recognized are equal
+    return recognizedStereotype != null && !recognizedStereotype.isEmpty();
+//    return recognizedStereotype != null
+//        && !recognizedStereotype.isEmpty()
+//        && !recognizedStereotype.equals(originalStereotype);
   }
 
   private String getNormalizedStereotype(String stereotype) {
@@ -163,7 +165,7 @@ public class FixStereotypesController implements VPActionController {
   private void initializeClassStereotypeMap() {
     classStereotypesMap = new HashMap<>();
 
-    Stereotype.getOntoUMLClassStereotypeNames()
+    Stereotype.getOntoumlClassStereotypeNames()
         .forEach(
             str -> {
               String normalizedStr = getNormalizedStereotype(str);
@@ -185,7 +187,7 @@ public class FixStereotypesController implements VPActionController {
   private void initializeAssociationStereotypeMap() {
     associationStereotypesMap = new HashMap<>();
 
-    Stereotype.getOntoUMLAssociationStereotypeNames()
+    Stereotype.getOntoumlAssociationStereotypeNames()
         .forEach(
             str -> {
               String normalizedStr = getNormalizedStereotype(str);
@@ -209,7 +211,7 @@ public class FixStereotypesController implements VPActionController {
   private void initializeAttributeStereotypeMap() {
     attributeStereotypesMap = new HashMap<>();
 
-    Stereotype.getOntoUMLAttributeStereotypeNames()
+    Stereotype.getOntoumlAttributeStereotypeNames()
         .forEach(
             str -> {
               String normalizedStr = getNormalizedStereotype(str);

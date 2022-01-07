@@ -665,7 +665,7 @@ public class Class implements ModelElement {
     if (_class == null) return false;
 
     final String stereotype = ModelElement.getUniqueStereotypeName(_class);
-    return Stereotype.getOntoUMLClassStereotypeNames().contains(stereotype);
+    return Stereotype.getOntoumlClassStereotypeNames().contains(stereotype);
   }
 
   public static boolean isRestrictedToEditable(IClass _class) {
@@ -712,12 +712,12 @@ public class Class implements ModelElement {
     return Stereotype.isSortal(stereotype);
   }
 
-  public static void propagateRestrictionsToDescendants(IClass _class) {
-    Class.applyOnDescendants(
+  public static void propagateRestrictionsToChildren(IClass _class) {
+    Class.applyOnChildren(
         _class,
         descendent -> {
           if (!doesItInheritItsRestrictions(descendent)) {
-            return false;
+            return ;
           }
 
           final Set<IClass> parents =
@@ -729,10 +729,7 @@ public class Class implements ModelElement {
 
           if (!parentsRestrictions.equals(descendentRestrictions)) {
             Class.setRestrictedTo(descendent, parentsRestrictions);
-            return true;
           }
-
-          return false;
         });
   }
 

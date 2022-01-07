@@ -619,7 +619,7 @@ public class Association implements ModelElement {
 
   public static boolean hasOntoumlStereotype(IAssociation association) {
     final String stereotype = ModelElement.getUniqueStereotypeName(association);
-    return Stereotype.getOntoUMLAssociationStereotypeNames().contains(stereotype);
+    return Stereotype.getOntoumlAssociationStereotypeNames().contains(stereotype);
   }
 
   public static boolean hasMereologyStereotype(IAssociation association) {
