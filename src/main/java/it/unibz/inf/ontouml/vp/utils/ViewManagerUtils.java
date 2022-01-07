@@ -477,7 +477,7 @@ public class ViewManagerUtils {
     return map.get(selectedValue);
   }
 
-  public static boolean associationInvertionWarningDialog() {
+  public static boolean showInvertAssociationWarningDialog() {
     final Configurations config = Configurations.getInstance();
     final ProjectConfigurations projectConfig = config.getProjectConfigurations();
 
@@ -514,6 +514,27 @@ public class ViewManagerUtils {
       projectConfig.setIgnoreAssociationInversionWarning(true);
       config.save();
     }
+
+    return JOptionPane.YES_OPTION == selectedOption;
+  }
+
+  public static boolean showFixStereotypesWarningDialog() {
+    final ViewManager vm = ApplicationManager.instance().getViewManager();
+    final JLabel message = new JLabel(
+        "<html>This action will affect all elements in your model<br>"
+            + "changing stereotypes and inverting associations<br>"
+            + "whenever inconsistencies are detected. Please<br>"
+            + "beware of these changes and save your project<br>"
+            + "before proceeding.<br><br>"
+            + "Do you wish to continue?</html>");
+
+    int selectedOption = vm.showConfirmDialog(
+        vm.getRootFrame(),
+        message,
+        "Fix OntoUML Stereotypes Warning",
+        JOptionPane.YES_NO_OPTION,
+        JOptionPane.INFORMATION_MESSAGE,
+        new ImageIcon(getFilePath(SIMPLE_LOGO)));
 
     return JOptionPane.YES_OPTION == selectedOption;
   }

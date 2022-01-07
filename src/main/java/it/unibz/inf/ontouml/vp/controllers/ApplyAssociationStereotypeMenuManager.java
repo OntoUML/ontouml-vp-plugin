@@ -49,7 +49,7 @@ public class ApplyAssociationStereotypeMenuManager extends ApplyStereotypeMenuMa
     boolean shouldProceed = true;
 
     if (shouldWarnAboutInvertingAssociations())
-      shouldProceed = ViewManagerUtils.associationInvertionWarningDialog();
+      shouldProceed = ViewManagerUtils.showInvertAssociationWarningDialog();
 
     if (!shouldProceed) return;
 

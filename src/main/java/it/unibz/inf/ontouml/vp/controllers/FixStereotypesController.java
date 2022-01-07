@@ -14,6 +14,7 @@ import it.unibz.inf.ontouml.vp.utils.ApplicationManagerUtils;
 import it.unibz.inf.ontouml.vp.utils.OntoUMLConstraintsManager;
 import it.unibz.inf.ontouml.vp.utils.Stereotype;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
+import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,6 +23,7 @@ import java.util.Set;
 
 public class FixStereotypesController implements VPActionController {
 
+  private boolean shouldProceed = false;
   private Set<IAttribute> attributes;
   private Set<IAssociation> associations;
   private Set<IClass> classes;
@@ -34,8 +36,16 @@ public class FixStereotypesController implements VPActionController {
 
   @Override
   public void performAction(VPAction vpAction) {
+    showFixStereotypesWarning();
+
+    if(!shouldProceed) return ;
+
     retrieveModelElements();
     fixElementsStereotypes();
+  }
+
+  private void showFixStereotypesWarning() {
+    shouldProceed = ViewManagerUtils.showFixStereotypesWarningDialog();
   }
 
   private void fixElementsStereotypes() {
