@@ -20,7 +20,7 @@ public class ReloadClassesController implements VPActionController {
   @Override
   public void performAction(VPAction action) {
     final String dialogResult = showInputDialog();
-    if(dialogResult == null || dialogResult.isEmpty()) {
+    if (dialogResult == null || dialogResult.isEmpty()) {
       reloadPlugin();
     } else {
       applyStereotype(dialogResult);
@@ -32,7 +32,8 @@ public class ReloadClassesController implements VPActionController {
 
   private String showInputDialog() {
     final ViewManager vm = ApplicationManager.instance().getViewManager();
-    return vm.showInputDialog(vm.getRootFrame(),
+    return vm.showInputDialog(
+        vm.getRootFrame(),
         "Enter stereotype or cancel to download:",
         "Stereotype Dialog",
         JOptionPane.PLAIN_MESSAGE);
@@ -48,12 +49,14 @@ public class ReloadClassesController implements VPActionController {
   }
 
   private void applyStereotype(String stereotype) {
-    final IDiagramElement[] views = ApplicationManagerUtils.getDiagramManager().getSelectedDiagramElements();
+    final IDiagramElement[] views =
+        ApplicationManagerUtils.getDiagramManager().getSelectedDiagramElements();
     final IDiagramElement selectedView = views != null && views.length > 0 ? views[0] : null;
-    final IModelElement selectedElement = selectedView != null ? selectedView.getMetaModelElement() : null;
+    final IModelElement selectedElement =
+        selectedView != null ? selectedView.getMetaModelElement() : null;
 
-    if(selectedElement != null) {
-      applyStereotype(selectedElement,stereotype);
+    if (selectedElement != null) {
+      applyStereotype(selectedElement, stereotype);
     }
   }
 
@@ -64,14 +67,15 @@ public class ReloadClassesController implements VPActionController {
 
   private void removeStereotypes(IModelElement element) {
     final ITaggedValueContainer container = element.getTaggedValues();
-    final Iterator<?> taggedValuesIterator = container != null ? container.taggedValueIterator() : null;
+    final Iterator<?> taggedValuesIterator =
+        container != null ? container.taggedValueIterator() : null;
     final Iterator<?> stereotypeIterator = element.stereotypeModelIterator();
 
-    while(taggedValuesIterator != null && taggedValuesIterator.hasNext()) {
+    while (taggedValuesIterator != null && taggedValuesIterator.hasNext()) {
       container.removeTaggedValue((ITaggedValue) taggedValuesIterator.next());
     }
 
-    while(stereotypeIterator != null && stereotypeIterator.hasNext()) {
+    while (stereotypeIterator != null && stereotypeIterator.hasNext()) {
       element.removeStereotype((IStereotype) stereotypeIterator.next());
     }
   }

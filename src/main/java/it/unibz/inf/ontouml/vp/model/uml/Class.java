@@ -209,7 +209,8 @@ public class Class implements ModelElement {
   }
 
   public static Set<IAttribute> getAttributes(IClass _class) {
-    return _class.attributeCount() > 0 ? new HashSet<>(Arrays.asList(_class.toAttributeArray()))
+    return _class.attributeCount() > 0
+        ? new HashSet<>(Arrays.asList(_class.toAttributeArray()))
         : Collections.emptySet();
   }
 

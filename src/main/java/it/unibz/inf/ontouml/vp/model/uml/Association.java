@@ -272,8 +272,10 @@ public class Association implements ModelElement {
     if (keepAllAssociationEndPropertiesInPlace) {
       sourceEndDescription.copyTo(originalTargetEnd);
       targetEndDescription.copyTo(originalSourceEnd);
-      association.setDirection(readingDirection == IAssociation.DIRECTION_FROM_TO ?
-          IAssociation.DIRECTION_TO_FROM : IAssociation.DIRECTION_FROM_TO);
+      association.setDirection(
+          readingDirection == IAssociation.DIRECTION_FROM_TO
+              ? IAssociation.DIRECTION_TO_FROM
+              : IAssociation.DIRECTION_FROM_TO);
     } else {
       sourceEndDescription.partialCopyTo(originalTargetEnd);
       targetEndDescription.partialCopyTo(originalSourceEnd);

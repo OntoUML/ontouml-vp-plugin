@@ -27,9 +27,9 @@ public class FixStereotypesController implements VPActionController {
   private Set<IAttribute> attributes;
   private Set<IAssociation> associations;
   private Set<IClass> classes;
-  private Map<String,String> associationStereotypesMap;
-  private Map<String,String> attributeStereotypesMap;
-  private Map<String,String> classStereotypesMap;
+  private Map<String, String> associationStereotypesMap;
+  private Map<String, String> attributeStereotypesMap;
+  private Map<String, String> classStereotypesMap;
 
   @Override
   public void update(VPAction vpAction) {}
@@ -38,7 +38,7 @@ public class FixStereotypesController implements VPActionController {
   public void performAction(VPAction vpAction) {
     showFixStereotypesWarning();
 
-    if(!shouldProceed) return ;
+    if (!shouldProceed) return;
 
     retrieveModelElements();
     fixElementsStereotypes();
@@ -58,26 +58,26 @@ public class FixStereotypesController implements VPActionController {
     final String stereotype = ModelElement.getUniqueStereotypeName(element);
     final String recognizedStr = getRecognizedStereotypes(element);
 
-    if(hasReplacement(stereotype,recognizedStr))  applyStereotype(element, recognizedStr);
+    if (hasReplacement(stereotype, recognizedStr)) applyStereotype(element, recognizedStr);
   }
 
   private void fixAssociationsStereotypes(IAssociation association) {
     final String stereotype = ModelElement.getUniqueStereotypeName(association);
     final String recognizedStr = getRecognizedStereotypes(association);
 
-    if(hasReplacement(stereotype,recognizedStr))  applyStereotype(association, recognizedStr);
+    if (hasReplacement(stereotype, recognizedStr)) applyStereotype(association, recognizedStr);
   }
 
   private String getRecognizedStereotypes(IModelElement element) {
     final String normalizedStr = getNormalizedStereotype(element);
     final String type = element.getModelType();
-    Map<String,String> stereotypesMap = getStereotypesMap(type);
+    Map<String, String> stereotypesMap = getStereotypesMap(type);
 
     return stereotypesMap.get(normalizedStr);
   }
 
   private Map<String, String> getStereotypesMap(String modelType) {
-    switch(modelType) {
+    switch (modelType) {
       case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
         return getAssociationStereotypesMap();
       case IModelElementFactory.MODEL_TYPE_ATTRIBUTE:
@@ -92,7 +92,7 @@ public class FixStereotypesController implements VPActionController {
   private void applyStereotype(IModelElement element, String replacementStereotype) {
     final String modelType = element.getModelType();
 
-    switch(modelType) {
+    switch (modelType) {
       case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
         applyAssociationStereotype((IAssociation) element, replacementStereotype);
         break;
@@ -112,15 +112,15 @@ public class FixStereotypesController implements VPActionController {
   }
 
   private void applyAssociationStereotype(IAssociation association, String replacementStereotype) {
-    if(shouldInvert(association, replacementStereotype))
-      Association.invertAssociation(association,true);
+    if (shouldInvert(association, replacementStereotype))
+      Association.invertAssociation(association, true);
 
     StereotypesManager.applyStereotype(association, replacementStereotype);
   }
 
   private boolean shouldInvert(IAssociation association, String stereotype) {
-    return !OntoUMLConstraintsManager.isStereotypeAllowed(association,stereotype) &&
-        OntoUMLConstraintsManager.isStereotypeAllowedIfInverted(association,stereotype);
+    return !OntoUMLConstraintsManager.isStereotypeAllowed(association, stereotype)
+        && OntoUMLConstraintsManager.isStereotypeAllowedIfInverted(association, stereotype);
   }
 
   private void applyClassStereotype(IClass _class, String replacementStereotype) {
@@ -134,7 +134,7 @@ public class FixStereotypesController implements VPActionController {
   }
 
   private String getNormalizedStereotype(String stereotype) {
-    return stereotype != null ? stereotype.toLowerCase().replaceAll("\\s+","") : "";
+    return stereotype != null ? stereotype.toLowerCase().replaceAll("\\s+", "") : "";
   }
 
   private String getNormalizedStereotype(IModelElement element) {
@@ -143,27 +143,32 @@ public class FixStereotypesController implements VPActionController {
   }
 
   private Map<String, String> getClassStereotypesMap() {
-    if(classStereotypesMap == null || classStereotypesMap.isEmpty()) initializeClassStereotypeMap();
+    if (classStereotypesMap == null || classStereotypesMap.isEmpty())
+      initializeClassStereotypeMap();
     return classStereotypesMap;
   }
 
   private Map<String, String> getAssociationStereotypesMap() {
-    if(associationStereotypesMap == null || associationStereotypesMap.isEmpty()) initializeAssociationStereotypeMap();
+    if (associationStereotypesMap == null || associationStereotypesMap.isEmpty())
+      initializeAssociationStereotypeMap();
     return associationStereotypesMap;
   }
 
   private Map<String, String> getAttributeStereotypesMap() {
-    if(attributeStereotypesMap == null || attributeStereotypesMap.isEmpty()) initializeAttributeStereotypeMap();
+    if (attributeStereotypesMap == null || attributeStereotypesMap.isEmpty())
+      initializeAttributeStereotypeMap();
     return attributeStereotypesMap;
   }
 
   private void initializeClassStereotypeMap() {
     classStereotypesMap = new HashMap<>();
 
-    Stereotype.getOntoUMLClassStereotypeNames().forEach(str -> {
-      String normalizedStr = getNormalizedStereotype(str);
-      classStereotypesMap.put(normalizedStr, str);
-    });
+    Stereotype.getOntoUMLClassStereotypeNames()
+        .forEach(
+            str -> {
+              String normalizedStr = getNormalizedStereotype(str);
+              classStereotypesMap.put(normalizedStr, str);
+            });
 
     // TODO: add a list of misspelled stereotypes to the map
   }
@@ -171,10 +176,12 @@ public class FixStereotypesController implements VPActionController {
   private void initializeAssociationStereotypeMap() {
     associationStereotypesMap = new HashMap<>();
 
-    Stereotype.getOntoUMLAssociationStereotypeNames().forEach(str -> {
-      String normalizedStr = getNormalizedStereotype(str);
-      associationStereotypesMap.put(normalizedStr, str);
-    });
+    Stereotype.getOntoUMLAssociationStereotypeNames()
+        .forEach(
+            str -> {
+              String normalizedStr = getNormalizedStereotype(str);
+              associationStereotypesMap.put(normalizedStr, str);
+            });
 
     // TODO: add a list of misspelled stereotypes to the map
   }
@@ -182,10 +189,12 @@ public class FixStereotypesController implements VPActionController {
   private void initializeAttributeStereotypeMap() {
     attributeStereotypesMap = new HashMap<>();
 
-    Stereotype.getOntoUMLAttributeStereotypeNames().forEach(str -> {
-      String normalizedStr = getNormalizedStereotype(str);
-      attributeStereotypesMap.put(normalizedStr, str);
-    });
+    Stereotype.getOntoUMLAttributeStereotypeNames()
+        .forEach(
+            str -> {
+              String normalizedStr = getNormalizedStereotype(str);
+              attributeStereotypesMap.put(normalizedStr, str);
+            });
 
     // TODO: add a list of misspelled stereotypes to the map
   }
@@ -199,18 +208,17 @@ public class FixStereotypesController implements VPActionController {
   private void retrieveAssociations() {
     associations = new HashSet<>();
     final Iterator<?> iter =
-        ApplicationManagerUtils.getAllLevelModelElements(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
+        ApplicationManagerUtils.getAllLevelModelElements(
+            IModelElementFactory.MODEL_TYPE_ASSOCIATION);
 
-    while(iter != null && iter.hasNext()) {
+    while (iter != null && iter.hasNext()) {
       associations.add((IAssociation) iter.next());
     }
   }
 
   private void retrieveAttributes() {
     attributes = new HashSet<>();
-    classes.stream()
-        .flatMap(c -> Class.getAttributes(c).stream())
-        .forEach(attributes::add);
+    classes.stream().flatMap(c -> Class.getAttributes(c).stream()).forEach(attributes::add);
   }
 
   private void retrieveClasses() {
@@ -218,7 +226,7 @@ public class FixStereotypesController implements VPActionController {
     final Iterator<?> iter =
         ApplicationManagerUtils.getAllLevelModelElements(IModelElementFactory.MODEL_TYPE_CLASS);
 
-    while(iter != null && iter.hasNext()) {
+    while (iter != null && iter.hasNext()) {
       classes.add((IClass) iter.next());
     }
   }
