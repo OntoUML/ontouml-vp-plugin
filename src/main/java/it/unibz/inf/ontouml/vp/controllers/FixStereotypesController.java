@@ -134,7 +134,7 @@ public class FixStereotypesController implements VPActionController {
   }
 
   private String getNormalizedStereotype(String stereotype) {
-    return stereotype != null ? stereotype.toLowerCase().replaceAll("\\s+", "") : "";
+    return stereotype != null ? stereotype.toLowerCase().replaceAll("(\\s|-)+", "") : "";
   }
 
   private String getNormalizedStereotype(IModelElement element) {
@@ -170,7 +170,16 @@ public class FixStereotypesController implements VPActionController {
               classStereotypesMap.put(normalizedStr, str);
             });
 
-    // TODO: add a list of misspelled stereotypes to the map
+    classStereotypesMap.put("hou",Stereotype.TYPE);
+    classStereotypesMap.put("highordertype",Stereotype.TYPE);
+    classStereotypesMap.put("higherordertype",Stereotype.TYPE);
+    classStereotypesMap.put("powertype",Stereotype.TYPE);
+    classStereotypesMap.put("universal",Stereotype.TYPE);
+    classStereotypesMap.put("collectivekind",Stereotype.COLLECTIVE);
+    classStereotypesMap.put("quantitykind",Stereotype.QUANTITY);
+    classStereotypesMap.put("relatorkind",Stereotype.RELATOR);
+    classStereotypesMap.put("qualitykind",Stereotype.QUALITY);
+    classStereotypesMap.put("modekind",Stereotype.MODE);
   }
 
   private void initializeAssociationStereotypeMap() {
@@ -183,7 +192,19 @@ public class FixStereotypesController implements VPActionController {
               associationStereotypesMap.put(normalizedStr, str);
             });
 
-    // TODO: add a list of misspelled stereotypes to the map
+    // TODO: remove spaces and hyphens
+    associationStereotypesMap.put("characterizes",Stereotype.CHARACTERIZATION);
+    associationStereotypesMap.put("externaldependenceon",Stereotype.EXTERNAL_DEPENDENCE);
+    associationStereotypesMap.put("externallydepends",Stereotype.EXTERNAL_DEPENDENCE);
+    associationStereotypesMap.put("externallydependson",Stereotype.EXTERNAL_DEPENDENCE);
+    associationStereotypesMap.put("mediates",Stereotype.MEDIATION);
+    associationStereotypesMap.put("iof",Stereotype.INSTANTIATION);
+    associationStereotypesMap.put("instanceof",Stereotype.INSTANTIATION);
+    associationStereotypesMap.put("terminates",Stereotype.TERMINATION);
+    associationStereotypesMap.put("participates",Stereotype.PARTICIPATION);
+    associationStereotypesMap.put("historicallydepends",Stereotype.HISTORICAL_DEPENDENCE);
+    associationStereotypesMap.put("creates",Stereotype.CREATION);
+    associationStereotypesMap.put("manifests",Stereotype.MANIFESTATION);
   }
 
   private void initializeAttributeStereotypeMap() {
@@ -195,8 +216,6 @@ public class FixStereotypesController implements VPActionController {
               String normalizedStr = getNormalizedStereotype(str);
               attributeStereotypesMap.put(normalizedStr, str);
             });
-
-    // TODO: add a list of misspelled stereotypes to the map
   }
 
   private void retrieveModelElements() {
