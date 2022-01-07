@@ -170,16 +170,16 @@ public class FixStereotypesController implements VPActionController {
               classStereotypesMap.put(normalizedStr, str);
             });
 
-    classStereotypesMap.put("hou",Stereotype.TYPE);
-    classStereotypesMap.put("highordertype",Stereotype.TYPE);
-    classStereotypesMap.put("higherordertype",Stereotype.TYPE);
-    classStereotypesMap.put("powertype",Stereotype.TYPE);
-    classStereotypesMap.put("universal",Stereotype.TYPE);
-    classStereotypesMap.put("collectivekind",Stereotype.COLLECTIVE);
-    classStereotypesMap.put("quantitykind",Stereotype.QUANTITY);
-    classStereotypesMap.put("relatorkind",Stereotype.RELATOR);
-    classStereotypesMap.put("qualitykind",Stereotype.QUALITY);
-    classStereotypesMap.put("modekind",Stereotype.MODE);
+    classStereotypesMap.put("hou", Stereotype.TYPE);
+    classStereotypesMap.put("highordertype", Stereotype.TYPE);
+    classStereotypesMap.put("higherordertype", Stereotype.TYPE);
+    classStereotypesMap.put("powertype", Stereotype.TYPE);
+    classStereotypesMap.put("universal", Stereotype.TYPE);
+    classStereotypesMap.put("collectivekind", Stereotype.COLLECTIVE);
+    classStereotypesMap.put("quantitykind", Stereotype.QUANTITY);
+    classStereotypesMap.put("relatorkind", Stereotype.RELATOR);
+    classStereotypesMap.put("qualitykind", Stereotype.QUALITY);
+    classStereotypesMap.put("modekind", Stereotype.MODE);
   }
 
   private void initializeAssociationStereotypeMap() {
@@ -193,18 +193,18 @@ public class FixStereotypesController implements VPActionController {
             });
 
     // TODO: remove spaces and hyphens
-    associationStereotypesMap.put("characterizes",Stereotype.CHARACTERIZATION);
-    associationStereotypesMap.put("externaldependenceon",Stereotype.EXTERNAL_DEPENDENCE);
-    associationStereotypesMap.put("externallydepends",Stereotype.EXTERNAL_DEPENDENCE);
-    associationStereotypesMap.put("externallydependson",Stereotype.EXTERNAL_DEPENDENCE);
-    associationStereotypesMap.put("mediates",Stereotype.MEDIATION);
-    associationStereotypesMap.put("iof",Stereotype.INSTANTIATION);
-    associationStereotypesMap.put("instanceof",Stereotype.INSTANTIATION);
-    associationStereotypesMap.put("terminates",Stereotype.TERMINATION);
-    associationStereotypesMap.put("participates",Stereotype.PARTICIPATION);
-    associationStereotypesMap.put("historicallydepends",Stereotype.HISTORICAL_DEPENDENCE);
-    associationStereotypesMap.put("creates",Stereotype.CREATION);
-    associationStereotypesMap.put("manifests",Stereotype.MANIFESTATION);
+    associationStereotypesMap.put("characterizes", Stereotype.CHARACTERIZATION);
+    associationStereotypesMap.put("externaldependenceon", Stereotype.EXTERNAL_DEPENDENCE);
+    associationStereotypesMap.put("externallydepends", Stereotype.EXTERNAL_DEPENDENCE);
+    associationStereotypesMap.put("externallydependson", Stereotype.EXTERNAL_DEPENDENCE);
+    associationStereotypesMap.put("mediates", Stereotype.MEDIATION);
+    associationStereotypesMap.put("iof", Stereotype.INSTANTIATION);
+    associationStereotypesMap.put("instanceof", Stereotype.INSTANTIATION);
+    associationStereotypesMap.put("terminates", Stereotype.TERMINATION);
+    associationStereotypesMap.put("participates", Stereotype.PARTICIPATION);
+    associationStereotypesMap.put("historicallydepends", Stereotype.HISTORICAL_DEPENDENCE);
+    associationStereotypesMap.put("creates", Stereotype.CREATION);
+    associationStereotypesMap.put("manifests", Stereotype.MANIFESTATION);
   }
 
   private void initializeAttributeStereotypeMap() {
