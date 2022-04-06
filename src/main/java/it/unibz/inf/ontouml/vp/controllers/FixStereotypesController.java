@@ -177,11 +177,13 @@ public class FixStereotypesController implements VPActionController {
     classStereotypesMap.put("higherordertype", Stereotype.TYPE);
     classStereotypesMap.put("powertype", Stereotype.TYPE);
     classStereotypesMap.put("universal", Stereotype.TYPE);
+    classStereotypesMap.put("2ndot", Stereotype.TYPE);
     classStereotypesMap.put("collectivekind", Stereotype.COLLECTIVE);
     classStereotypesMap.put("quantitykind", Stereotype.QUANTITY);
     classStereotypesMap.put("relatorkind", Stereotype.RELATOR);
     classStereotypesMap.put("qualitykind", Stereotype.QUALITY);
     classStereotypesMap.put("modekind", Stereotype.MODE);
+    classStereotypesMap.put("enum", Stereotype.ENUMERATION);
   }
 
   private void initializeAssociationStereotypeMap() {
