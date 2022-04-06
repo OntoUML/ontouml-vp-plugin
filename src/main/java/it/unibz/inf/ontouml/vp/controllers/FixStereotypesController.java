@@ -3,6 +3,7 @@ package it.unibz.inf.ontouml.vp.controllers;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 import com.vp.plugin.model.IAssociation;
+import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IAttribute;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IModelElement;
@@ -42,6 +43,42 @@ public class FixStereotypesController implements VPActionController {
 
     retrieveModelElements();
     fixElementsStereotypes();
+    fixAssociationEnds();
+  }
+
+  private void fixAssociationEnds() {
+    associations.forEach(a -> {
+      if(hasMissingSourceEndType(a)) {
+        fixSourceEnd(a);
+      }
+      if(hasMissingTargetEndType(a)) {
+        fixTargetEnd(a);
+      }
+    });
+  }
+
+  private boolean hasMissingSourceEndType(IAssociation association) {
+    IClass source = Association.getSource(association);
+    IAssociationEnd sourceEnd = Association.getSourceEnd(association);
+    return sourceEnd.getTypeAsElement() == null && source != null;
+  }
+
+  private boolean hasMissingTargetEndType(IAssociation association) {
+    IClass target = Association.getTarget(association);
+    IAssociationEnd targetEnd = Association.getTargetEnd(association);
+    return targetEnd.getTypeAsElement() == null && target != null;
+  }
+
+  private void fixSourceEnd(IAssociation association) {
+    IClass source = Association.getSource(association);
+    IAssociationEnd sourceEnd = Association.getSourceEnd(association);
+    sourceEnd.setType(source);
+  }
+
+  private void fixTargetEnd(IAssociation association) {
+    IClass target = Association.getTarget(association);
+    IAssociationEnd targetEnd = Association.getTargetEnd(association);
+    targetEnd.setType(target);
   }
 
   private void showFixStereotypesWarning() {
