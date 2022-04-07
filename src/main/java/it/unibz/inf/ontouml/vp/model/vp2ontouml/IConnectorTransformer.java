@@ -42,7 +42,7 @@ public class IConnectorTransformer {
   private static void setDerivationPath(IAssociationClassUIModel source, ConnectorView<?> target) {
     List<Point> points = Arrays.asList(source.getPoints());
 
-    if(isDerivationInverted(source)) Collections.reverse(points);
+    if (isDerivationInverted(source)) Collections.reverse(points);
 
     Path path = new Path();
     path.setId(source.getId() + "_path");
@@ -85,24 +85,23 @@ public class IConnectorTransformer {
     target.setSource(connectorStub);
   }
 
-  private static void setClassShapeTarget(IAssociationClassUIModel source, ConnectorView<?> target) {
+  private static void setClassShapeTarget(
+      IAssociationClassUIModel source, ConnectorView<?> target) {
     IDiagramElement classShape = getClassShape(source);
     ElementView<?, ?> shapeStub = ReferenceTransformer.transformStub(classShape);
     target.setTarget(shapeStub);
   }
 
   private static IDiagramElement getClassShape(IAssociationClassUIModel derivation) {
-    if(hasToShape(derivation) && !hasFromShape(derivation))
-      return getToShape(derivation);
-    if(hasFromShape(derivation) && !hasToShape(derivation))
-      return getFromShape(derivation);
+    if (hasToShape(derivation) && !hasFromShape(derivation)) return getToShape(derivation);
+    if (hasFromShape(derivation) && !hasToShape(derivation)) return getFromShape(derivation);
     return null;
   }
 
   private static IDiagramElement getRelationConnector(IAssociationClassUIModel derivation) {
-    if(hasFromConnector(derivation) && !hasToConnector(derivation))
+    if (hasFromConnector(derivation) && !hasToConnector(derivation))
       return getFromConnector(derivation);
-    if(hasToConnector(derivation) && !hasFromConnector(derivation))
+    if (hasToConnector(derivation) && !hasFromConnector(derivation))
       return getToConnector(derivation);
     return null;
   }

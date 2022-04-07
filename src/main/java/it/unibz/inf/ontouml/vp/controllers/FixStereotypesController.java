@@ -47,14 +47,15 @@ public class FixStereotypesController implements VPActionController {
   }
 
   private void fixAssociationEnds() {
-    associations.forEach(a -> {
-      if(hasMissingSourceEndType(a)) {
-        fixSourceEnd(a);
-      }
-      if(hasMissingTargetEndType(a)) {
-        fixTargetEnd(a);
-      }
-    });
+    associations.forEach(
+        a -> {
+          if (hasMissingSourceEndType(a)) {
+            fixSourceEnd(a);
+          }
+          if (hasMissingTargetEndType(a)) {
+            fixTargetEnd(a);
+          }
+        });
   }
 
   private boolean hasMissingSourceEndType(IAssociation association) {

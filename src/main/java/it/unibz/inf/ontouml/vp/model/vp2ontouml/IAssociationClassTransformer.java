@@ -22,7 +22,8 @@ public class IAssociationClassTransformer {
     Classifier<?, ?> derivingAssociationStub = createClassifierStub(derivingAssociation);
     Classifier<?, ?> derivedClassStub = createClassifierStub(derivedClass);
 
-    Relation target = Relation.createDerivation(null, null, derivingAssociationStub, derivedClassStub);
+    Relation target =
+        Relation.createDerivation(null, null, derivingAssociationStub, derivedClassStub);
 
     IModelElementTransformer.transform(source, target);
     ITaggedValueTransformer.transform(source, target);
