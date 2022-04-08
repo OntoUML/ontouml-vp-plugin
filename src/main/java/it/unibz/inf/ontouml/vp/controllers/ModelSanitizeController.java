@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-public class FixStereotypesController implements VPActionController {
+public class ModelSanitizeController implements VPActionController {
 
   private boolean shouldProceed = false;
   private Set<IAttribute> attributes;

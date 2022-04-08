@@ -128,15 +128,15 @@
       <separator id="project.export.ontouml" ribbonPath="Project/Export/#"/>
 
       <action
-        id="it.unibz.inf.ontouml.vp.actions.FixStereotypesAction"
+        id="it.unibz.inf.ontouml.vp.actions.ModelSanitizeAction"
         actionType="generalAction"
-        description="Automatically fixes misspelled and deprecated stereotypes."
+        description="Automatically fixes issues in deprecated models, such as misspelled stereotypes and inconsistent association direction."
         style="normal"
-        tooltip="Automatically fixes misspelled and deprecated stereotypes."
+        tooltip="Automatically fixes issues in deprecated models, such as misspelled stereotypes and inconsistent association direction."
         icon="icons/toolbar/wand-orange-48x48.png"
-        label="Fix Stereotypes"
+        label="Model Sanitize"
         menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
-        <actionController class="it.unibz.inf.ontouml.vp.controllers.FixStereotypesController"/>
+        <actionController class="it.unibz.inf.ontouml.vp.controllers.ModelSanitizeController"/>
       </action>
 
       <action
