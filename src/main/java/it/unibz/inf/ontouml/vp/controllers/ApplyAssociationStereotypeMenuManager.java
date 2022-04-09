@@ -3,8 +3,10 @@ package it.unibz.inf.ontouml.vp.controllers;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPContext;
 import com.vp.plugin.model.IAssociation;
+import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IModelElement;
 import it.unibz.inf.ontouml.vp.model.uml.Association;
+import it.unibz.inf.ontouml.vp.model.uml.Property;
 import it.unibz.inf.ontouml.vp.utils.OntoUMLConstraintsManager;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
 import it.unibz.inf.ontouml.vp.utils.VPContextUtils;
@@ -58,12 +60,56 @@ public class ApplyAssociationStereotypeMenuManager extends ApplyStereotypeMenuMa
         .filter(Association::holdsBetweenClasses)
         .forEach(
             association -> {
-              if (doesRequireInverting(association))
-                Association.invertAssociation(association, true);
+              String stereotype = associationStereotypeId.getStereotype();
+              StereotypesManager.applyStereotype(association, stereotype);
+              IAssociationEnd sourceEnd = !doesRequireInverting(association) ?
+                  Association.getSourceEnd(association) : Association.getTargetEnd(association);
+              IAssociationEnd targetEnd = !doesRequireInverting(association) ?
+                  Association.getTargetEnd(association) : Association.getSourceEnd(association);
 
-              StereotypesManager.applyStereotype(
-                  association, associationStereotypeId.getStereotype());
+              setSourceEndProperties(association, sourceEnd);
+              setTargetEndProperties(association, targetEnd);
             });
+  }
+
+  private void setTargetEndProperties(IAssociation association, IAssociationEnd targetEnd) {
+    if(Association.hasMereologyStereotype(association)) {
+      if(!Property.isWholeEnd(targetEnd)) {
+        String defaultAggKind = Association.getDefaultAggregationKind(association);
+        targetEnd.setAggregationKind(defaultAggKind);
+      }
+      targetEnd.setNavigable(IAssociationEnd.NAVIGABLE_UNSPECIFIED);
+    } else {
+      targetEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_none);
+      targetEnd.setNavigable(IAssociationEnd.NAVIGABLE_NAVIGABLE);
+    }
+
+    String targetMultiplicity = targetEnd.getMultiplicity();
+
+    if(targetMultiplicity == null || IAssociationEnd.MULTIPLICITY_UNSPECIFIED.equals(targetMultiplicity)) {
+      String defaultTargetMultiplicity = Association.getDefaultTargetMultiplicity(association);
+      targetEnd.setMultiplicity(defaultTargetMultiplicity);
+    }
+
+    if (Association.isTargetAlwaysReadOnly(association)) {
+      targetEnd.setReadOnly(true);
+    }
+  }
+
+  private void setSourceEndProperties(IAssociation association, IAssociationEnd sourceEnd) {
+    String sourceMultiplicity = sourceEnd.getMultiplicity();
+
+    sourceEnd.setNavigable(IAssociationEnd.NAVIGABLE_UNSPECIFIED);
+    sourceEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_none);
+
+    if(sourceMultiplicity == null || IAssociationEnd.MULTIPLICITY_UNSPECIFIED.equals(sourceMultiplicity)) {
+      String defaultSourceMultiplicity = Association.getDefaultSourceMultiplicity(association);
+      sourceEnd.setMultiplicity(defaultSourceMultiplicity);
+    }
+
+    if (Association.isSourceAlwaysReadOnly(association)) {
+      sourceEnd.setReadOnly(true);
+    }
   }
 
   @Override

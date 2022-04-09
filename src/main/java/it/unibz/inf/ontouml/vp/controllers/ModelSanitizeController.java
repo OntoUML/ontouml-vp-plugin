@@ -43,10 +43,18 @@ public class ModelSanitizeController implements VPActionController {
 
     retrieveModelElements();
     fixElementsStereotypes();
-    fixAssociationEnds();
+    fixMissingTypeOnAssociationEnds();
+    fixNavigability();
   }
 
-  private void fixAssociationEnds() {
+  private void fixNavigability() {
+//    associations.forEach(a -> {
+//
+//      OntoUMLConstraintsManager.isStereotypeAllowed()
+//    });
+  }
+
+  private void fixMissingTypeOnAssociationEnds() {
     associations.forEach(
         a -> {
           if (hasMissingSourceEndType(a)) {
@@ -59,26 +67,26 @@ public class ModelSanitizeController implements VPActionController {
   }
 
   private boolean hasMissingSourceEndType(IAssociation association) {
-    IClass source = Association.getSource(association);
-    IAssociationEnd sourceEnd = Association.getSourceEnd(association);
+    IClass source = Association.getFrom(association);
+    IAssociationEnd sourceEnd = Association.getFromEnd(association);
     return sourceEnd.getTypeAsElement() == null && source != null;
   }
 
   private boolean hasMissingTargetEndType(IAssociation association) {
-    IClass target = Association.getTarget(association);
-    IAssociationEnd targetEnd = Association.getTargetEnd(association);
+    IClass target = Association.getTo(association);
+    IAssociationEnd targetEnd = Association.getToEnd(association);
     return targetEnd.getTypeAsElement() == null && target != null;
   }
 
   private void fixSourceEnd(IAssociation association) {
-    IClass source = Association.getSource(association);
-    IAssociationEnd sourceEnd = Association.getSourceEnd(association);
+    IClass source = Association.getFrom(association);
+    IAssociationEnd sourceEnd = Association.getFromEnd(association);
     sourceEnd.setType(source);
   }
 
   private void fixTargetEnd(IAssociation association) {
-    IClass target = Association.getTarget(association);
-    IAssociationEnd targetEnd = Association.getTargetEnd(association);
+    IClass target = Association.getTo(association);
+    IAssociationEnd targetEnd = Association.getToEnd(association);
     targetEnd.setType(target);
   }
 
@@ -150,10 +158,11 @@ public class ModelSanitizeController implements VPActionController {
   }
 
   private void applyAssociationStereotype(IAssociation association, String replacementStereotype) {
-    if (shouldInvert(association, replacementStereotype))
-      Association.invertAssociation(association, true);
-
-    StereotypesManager.applyStereotype(association, replacementStereotype);
+    throw new RuntimeException("Oops... update invert");
+//    if (shouldInvert(association, replacementStereotype))
+//      Association.invertAssociation(association, true);
+//
+//    StereotypesManager.applyStereotype(association, replacementStereotype);
   }
 
   private boolean shouldInvert(IAssociation association, String stereotype) {
