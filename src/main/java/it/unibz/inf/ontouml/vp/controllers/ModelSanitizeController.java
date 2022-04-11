@@ -13,16 +13,21 @@ import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
 import it.unibz.inf.ontouml.vp.utils.ApplicationManagerUtils;
 import it.unibz.inf.ontouml.vp.utils.OntoUMLConstraintsManager;
+import it.unibz.inf.ontouml.vp.utils.SimpleServiceWorker;
 import it.unibz.inf.ontouml.vp.utils.Stereotype;
 import it.unibz.inf.ontouml.vp.utils.StereotypesManager;
 import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class ModelSanitizeController implements VPActionController {
+
+  private static final String MESSAGE_MODEL_SANITIZE_SUCCESS = "Model sanitize executed successfully.";
+  private static final String MESSAGE_MODEL_IMPORT_UNEXPECTED_ERROR = "Unexpected error performing model sanitize.";
 
   private boolean shouldProceed = false;
   private Set<IAttribute> attributes;
@@ -41,17 +46,73 @@ public class ModelSanitizeController implements VPActionController {
 
     if (!shouldProceed) return;
 
-    retrieveModelElements();
-    fixElementsStereotypes();
-    fixMissingTypeOnAssociationEnds();
-    fixNavigability();
+    new SimpleServiceWorker(this::sanitizeModelTask).execute();
   }
 
-  private void fixNavigability() {
-//    associations.forEach(a -> {
-//
-//      OntoUMLConstraintsManager.isStereotypeAllowed()
-//    });
+  private List<String> sanitizeModelTask(SimpleServiceWorker context) {
+    try {
+      if (!context.isCancelled()) {
+        retrieveModelElements();
+        fixElementsStereotypes();
+        fixMissingTypeOnAssociationEnds();
+        fixAssociationEnds();
+
+        ViewManagerUtils.log(MESSAGE_MODEL_SANITIZE_SUCCESS);
+        return List.of(MESSAGE_MODEL_SANITIZE_SUCCESS);
+      }
+
+      return List.of();
+    } catch (Exception e) {
+      e.printStackTrace();
+      ViewManagerUtils.log(MESSAGE_MODEL_IMPORT_UNEXPECTED_ERROR);
+      return List.of(MESSAGE_MODEL_IMPORT_UNEXPECTED_ERROR);
+    }
+  }
+
+  private void fixAssociationEnds() {
+    associations.forEach(a -> {
+      IAssociationEnd sourceEnd = Association.getSourceEnd(a);
+      IAssociationEnd targetEnd = Association.getTargetEnd(a);
+      String aggKind = targetEnd.getAggregationKind();
+
+      if (shouldInvert(a)) {
+        Association.setSourceEndProperties(a, targetEnd);
+        Association.setTargetEndProperties(a, sourceEnd);
+
+        if (shouldPreserveAggregation(a, aggKind)) {
+          sourceEnd.setAggregationKind(aggKind);
+          sourceEnd.setNavigable(IAssociationEnd.NAVIGABLE_UNSPECIFIED);
+        }
+      } else {
+        Association.setSourceEndProperties(a, sourceEnd);
+        Association.setTargetEndProperties(a, targetEnd);
+
+        if (shouldPreserveAggregation(a, aggKind)) {
+          targetEnd.setAggregationKind(aggKind);
+          targetEnd.setNavigable(IAssociationEnd.NAVIGABLE_UNSPECIFIED);
+        }
+      }
+    });
+  }
+
+  private boolean shouldInvert(IAssociation association) {
+    String str = ModelElement.getUniqueStereotypeName(association);
+
+    return !OntoUMLConstraintsManager.isStereotypeAllowed(association,str)
+        && OntoUMLConstraintsManager.isStereotypeAllowedIfInverted(association,str);
+  }
+
+  private boolean shouldPreserveAggregation(IAssociation association, String originalAggregation) {
+    String str = ModelElement.getUniqueStereotypeName(association);
+
+    return (!Association.hasOntoumlStereotype(association)
+        || Association.hasMereologyStereotype(association))
+        && isAggregation(originalAggregation);
+  }
+
+  private boolean isAggregation(String aggregationKind) {
+    return IAssociationEnd.AGGREGATION_KIND_shared.equals(aggregationKind)
+        || IAssociationEnd.AGGREGATION_KIND_composite.equals(aggregationKind);
   }
 
   private void fixMissingTypeOnAssociationEnds() {
@@ -136,42 +197,19 @@ public class ModelSanitizeController implements VPActionController {
   }
 
   private void applyStereotype(IModelElement element, String replacementStereotype) {
-    final String modelType = element.getModelType();
+    final String modelType = element != null ? element.getModelType() : null;
 
-    switch (modelType) {
-      case IModelElementFactory.MODEL_TYPE_ASSOCIATION:
-        applyAssociationStereotype((IAssociation) element, replacementStereotype);
-        break;
-      case IModelElementFactory.MODEL_TYPE_ATTRIBUTE:
-        applyAttributeStereotype((IAttribute) element, replacementStereotype);
-        break;
-      case IModelElementFactory.MODEL_TYPE_CLASS:
-        applyClassStereotype((IClass) element, replacementStereotype);
-        break;
-      default:
-        throw new RuntimeException("Unexpected model element of type '" + modelType + "'.");
+    if(!isTypeExpected(modelType)) {
+      throw new RuntimeException("Unexpected model element of type '" + modelType + "'.");
     }
+
+    StereotypesManager.applyStereotype(element, replacementStereotype);
   }
 
-  private void applyAttributeStereotype(IAttribute attribute, String replacementStereotype) {
-    StereotypesManager.applyStereotype(attribute, replacementStereotype);
-  }
-
-  private void applyAssociationStereotype(IAssociation association, String replacementStereotype) {
-    throw new RuntimeException("Oops... update invert");
-//    if (shouldInvert(association, replacementStereotype))
-//      Association.invertAssociation(association, true);
-//
-//    StereotypesManager.applyStereotype(association, replacementStereotype);
-  }
-
-  private boolean shouldInvert(IAssociation association, String stereotype) {
-    return !OntoUMLConstraintsManager.isStereotypeAllowed(association, stereotype)
-        && OntoUMLConstraintsManager.isStereotypeAllowedIfInverted(association, stereotype);
-  }
-
-  private void applyClassStereotype(IClass _class, String replacementStereotype) {
-    StereotypesManager.applyStereotype(_class, replacementStereotype);
+  private boolean isTypeExpected(String modelType) {
+    return IModelElementFactory.MODEL_TYPE_ASSOCIATION.equals(modelType)
+      || IModelElementFactory.MODEL_TYPE_ATTRIBUTE.equals(modelType)
+      || IModelElementFactory.MODEL_TYPE_CLASS.equals(modelType);
   }
 
   private boolean hasReplacement(String originalStereotype, String recognizedStereotype) {
