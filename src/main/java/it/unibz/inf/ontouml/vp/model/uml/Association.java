@@ -605,12 +605,12 @@ public class Association implements ModelElement {
 
   public static boolean hasOntoumlStereotype(IAssociation association) {
     final String stereotype = ModelElement.getUniqueStereotypeName(association);
-    return Stereotype.getOntoumlAssociationStereotypeNames().contains(stereotype);
+    return stereotype != null && Stereotype.getOntoumlAssociationStereotypeNames().contains(stereotype);
   }
 
   public static boolean hasMereologyStereotype(IAssociation association) {
     final String stereotype = ModelElement.getUniqueStereotypeName(association);
-    return Stereotype.getOntoUMLMereologyStereotypeNames().contains(stereotype);
+    return stereotype != null && Stereotype.getOntoUMLMereologyStereotypeNames().contains(stereotype);
   }
 
   public static boolean hasAggregationOnFromEnd(IAssociation association) {
@@ -709,5 +709,45 @@ public class Association implements ModelElement {
   public static boolean doesFromAndSourceMatch(IAssociation association) {
     return association.getFromEnd() != null
         && association.getFromEnd().equals(getSourceEnd(association));
+  }
+
+  public static void setSourceEndProperties(IAssociation association, IAssociationEnd sourceEnd) {
+    String sourceMultiplicity = sourceEnd.getMultiplicity();
+
+    sourceEnd.setNavigable(IAssociationEnd.NAVIGABLE_UNSPECIFIED);
+    sourceEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_none);
+
+    if(sourceMultiplicity == null || IAssociationEnd.MULTIPLICITY_UNSPECIFIED.equals(sourceMultiplicity)) {
+      String defaultSourceMultiplicity = Association.getDefaultSourceMultiplicity(association);
+      sourceEnd.setMultiplicity(defaultSourceMultiplicity);
+    }
+
+    if (Association.isSourceAlwaysReadOnly(association)) {
+      sourceEnd.setReadOnly(true);
+    }
+  }
+
+  public static void setTargetEndProperties(IAssociation association, IAssociationEnd targetEnd) {
+    if(Association.hasMereologyStereotype(association)) {
+      if(!Property.isWholeEnd(targetEnd)) {
+        String defaultAggKind = Association.getDefaultAggregationKind(association);
+        targetEnd.setAggregationKind(defaultAggKind);
+      }
+      targetEnd.setNavigable(IAssociationEnd.NAVIGABLE_UNSPECIFIED);
+    } else {
+      targetEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_none);
+      targetEnd.setNavigable(IAssociationEnd.NAVIGABLE_NAVIGABLE);
+    }
+
+    String targetMultiplicity = targetEnd.getMultiplicity();
+
+    if(targetMultiplicity == null || IAssociationEnd.MULTIPLICITY_UNSPECIFIED.equals(targetMultiplicity)) {
+      String defaultTargetMultiplicity = Association.getDefaultTargetMultiplicity(association);
+      targetEnd.setMultiplicity(defaultTargetMultiplicity);
+    }
+
+    if (Association.isTargetAlwaysReadOnly(association)) {
+      targetEnd.setReadOnly(true);
+    }
   }
 }
