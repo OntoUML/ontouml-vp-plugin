@@ -34,7 +34,7 @@ public class AssociationEventManager extends ModelElementEventManager {
 
   private void processStereotypeChange() {
     // checkSourcesDiagrams();
-//    checkAssociationConsistency();
+    //    checkAssociationConsistency();
     // setDefaultAssociationProperties();
   }
 
@@ -121,9 +121,9 @@ public class AssociationEventManager extends ModelElementEventManager {
 
   private void checkAggregationPlacement() {
     throw new RuntimeException("Oops...");
-//    if (hasAggregationOnSource() && !hasAggregationOnTarget()) {
-//      Association.invertAssociation(source, true);
-//    }
+    //    if (hasAggregationOnSource() && !hasAggregationOnTarget()) {
+    //      Association.invertAssociation(source, true);
+    //    }
   }
 
   private boolean hasAggregationOnTarget() {

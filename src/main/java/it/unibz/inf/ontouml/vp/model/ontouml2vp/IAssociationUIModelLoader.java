@@ -38,7 +38,8 @@ public class IAssociationUIModelLoader {
     toView.resetCaption();
   }
 
-  public boolean isDirectionInverted(IClass source, IClass target, IDiagramElement sourceShape, IDiagramElement targetShape) {
+  public boolean isDirectionInverted(
+      IClass source, IClass target, IDiagramElement sourceShape, IDiagramElement targetShape) {
     return !source.getId().equals(target.getId())
         && source.getId().equals(targetShape.getModelElement().getId())
         && target.getId().equals(sourceShape.getModelElement().getId());

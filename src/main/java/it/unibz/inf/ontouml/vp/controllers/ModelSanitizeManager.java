@@ -41,49 +41,49 @@ public class ModelSanitizeManager {
   }
 
   private void filterAssociationBetweenClasses() {
-    associations = associations.stream()
-        .filter(Association::holdsBetweenClasses)
-        .collect(Collectors.toSet());
+    associations =
+        associations.stream().filter(Association::holdsBetweenClasses).collect(Collectors.toSet());
   }
 
   private void fixAssociationEnds() {
-    associations.forEach(a -> {
-      IAssociationEnd sourceEnd = Association.getSourceEnd(a);
-      IAssociationEnd targetEnd = Association.getTargetEnd(a);
-      String aggKind = targetEnd.getAggregationKind();
+    associations.forEach(
+        a -> {
+          IAssociationEnd sourceEnd = Association.getSourceEnd(a);
+          IAssociationEnd targetEnd = Association.getTargetEnd(a);
+          String aggKind = targetEnd.getAggregationKind();
 
-      if (shouldInvert(a)) {
-        Association.setSourceEndProperties(a, targetEnd);
-        Association.setTargetEndProperties(a, sourceEnd);
+          if (shouldInvert(a)) {
+            Association.setSourceEndProperties(a, targetEnd);
+            Association.setTargetEndProperties(a, sourceEnd);
 
-        if (shouldPreserveAggregation(a, aggKind)) {
-          sourceEnd.setAggregationKind(aggKind);
-          sourceEnd.setNavigable(IAssociationEnd.NAVIGABLE_UNSPECIFIED);
-        }
-      } else {
-        Association.setSourceEndProperties(a, sourceEnd);
-        Association.setTargetEndProperties(a, targetEnd);
+            if (shouldPreserveAggregation(a, aggKind)) {
+              sourceEnd.setAggregationKind(aggKind);
+              sourceEnd.setNavigable(IAssociationEnd.NAVIGABLE_UNSPECIFIED);
+            }
+          } else {
+            Association.setSourceEndProperties(a, sourceEnd);
+            Association.setTargetEndProperties(a, targetEnd);
 
-        if (shouldPreserveAggregation(a, aggKind)) {
-          targetEnd.setAggregationKind(aggKind);
-          targetEnd.setNavigable(IAssociationEnd.NAVIGABLE_UNSPECIFIED);
-        }
-      }
-    });
+            if (shouldPreserveAggregation(a, aggKind)) {
+              targetEnd.setAggregationKind(aggKind);
+              targetEnd.setNavigable(IAssociationEnd.NAVIGABLE_UNSPECIFIED);
+            }
+          }
+        });
   }
 
   private boolean shouldInvert(IAssociation association) {
     String str = ModelElement.getUniqueStereotypeName(association);
 
-    return !OntoUMLConstraintsManager.isStereotypeAllowed(association,str)
-        && OntoUMLConstraintsManager.isStereotypeAllowedIfInverted(association,str);
+    return !OntoUMLConstraintsManager.isStereotypeAllowed(association, str)
+        && OntoUMLConstraintsManager.isStereotypeAllowedIfInverted(association, str);
   }
 
   private boolean shouldPreserveAggregation(IAssociation association, String originalAggregation) {
     String str = ModelElement.getUniqueStereotypeName(association);
 
     return (!Association.hasOntoumlStereotype(association)
-        || Association.hasMereologyStereotype(association))
+            || Association.hasMereologyStereotype(association))
         && isAggregation(originalAggregation);
   }
 
@@ -177,7 +177,7 @@ public class ModelSanitizeManager {
   private void applyStereotype(IModelElement element, String replacementStereotype) {
     final String modelType = element != null ? element.getModelType() : null;
 
-    if(!isTypeExpected(modelType)) {
+    if (!isTypeExpected(modelType)) {
       throw new RuntimeException("Unexpected model element of type '" + modelType + "'.");
     }
 
@@ -293,36 +293,39 @@ public class ModelSanitizeManager {
   private void retrieveAssociations() {
     IProject project = ApplicationManagerUtils.getCurrentProject();
 
-    associations = Optional.ofNullable(
-        project.toAllLevelModelElementArray(IModelElementFactory.MODEL_TYPE_ASSOCIATION)).stream()
-        .flatMap(Arrays::stream)
-        .map(IAssociation.class::cast)
-        .collect(Collectors.toSet());
+    associations =
+        Optional.ofNullable(
+                project.toAllLevelModelElementArray(IModelElementFactory.MODEL_TYPE_ASSOCIATION))
+            .stream()
+            .flatMap(Arrays::stream)
+            .map(IAssociation.class::cast)
+            .collect(Collectors.toSet());
   }
 
   private void retrieveAttributes() {
-//    attributes = new HashSet<>();
-//    classes.stream().flatMap(c -> Class.getAttributes(c).stream()).forEach(attributes::add);
-    attributes = classes.stream()
-        .map(Class::getAttributes)
-        .flatMap(Set::stream)
-        .collect(Collectors.toSet());
+    //    attributes = new HashSet<>();
+    //    classes.stream().flatMap(c -> Class.getAttributes(c).stream()).forEach(attributes::add);
+    attributes =
+        classes.stream().map(Class::getAttributes).flatMap(Set::stream).collect(Collectors.toSet());
   }
 
   private void retrieveClasses() {
-//    classes = new HashSet<>();
-//    final Iterator<?> iter =
-//        ApplicationManagerUtils.getAllLevelModelElements(IModelElementFactory.MODEL_TYPE_CLASS);
-//
-//    while (iter != null && iter.hasNext()) {
-//      classes.add((IClass) iter.next());
-//    }
+    //    classes = new HashSet<>();
+    //    final Iterator<?> iter =
+    //
+    // ApplicationManagerUtils.getAllLevelModelElements(IModelElementFactory.MODEL_TYPE_CLASS);
+    //
+    //    while (iter != null && iter.hasNext()) {
+    //      classes.add((IClass) iter.next());
+    //    }
     IProject project = ApplicationManagerUtils.getCurrentProject();
 
-    classes = Optional.ofNullable(
-        project.toAllLevelModelElementArray(IModelElementFactory.MODEL_TYPE_CLASS)).stream()
-        .flatMap(Arrays::stream)
-        .map(IClass.class::cast)
-        .collect(Collectors.toSet());
+    classes =
+        Optional.ofNullable(
+                project.toAllLevelModelElementArray(IModelElementFactory.MODEL_TYPE_CLASS))
+            .stream()
+            .flatMap(Arrays::stream)
+            .map(IClass.class::cast)
+            .collect(Collectors.toSet());
   }
 }

@@ -87,8 +87,8 @@ public class LoaderUtils {
   }
 
   static boolean isWholeEnd(IAssociationEnd associationEnd) {
-    return associationEnd.getAggregationKind() != null &&
-        !IAssociationEnd.AGGREGATION_KIND_none.equals(associationEnd.getAggregationKind());
+    return associationEnd.getAggregationKind() != null
+        && !IAssociationEnd.AGGREGATION_KIND_none.equals(associationEnd.getAggregationKind());
   }
 
   static boolean isNavigable(IAssociationEnd associationEnd) {
@@ -99,13 +99,13 @@ public class LoaderUtils {
     IAssociationEnd fromEnd = (IAssociationEnd) association.getFromEnd();
     IAssociationEnd toEnd = (IAssociationEnd) association.getToEnd();
 
-    if(isWholeEnd(toEnd)) {
+    if (isWholeEnd(toEnd)) {
       return toEnd;
-    } else if(isWholeEnd(fromEnd)) {
+    } else if (isWholeEnd(fromEnd)) {
       return fromEnd;
-    } else if(isNavigable(toEnd)) {
+    } else if (isNavigable(toEnd)) {
       return toEnd;
-    } else if(isNavigable(fromEnd)) {
+    } else if (isNavigable(fromEnd)) {
       return fromEnd;
     } else {
       return toEnd;
@@ -126,5 +126,4 @@ public class LoaderUtils {
   static IClass getTargetOnNavigability(IAssociation association) {
     return (IClass) getTargetEndOnNavigability(association).getTypeAsElement();
   }
-
 }

@@ -605,12 +605,14 @@ public class Association implements ModelElement {
 
   public static boolean hasOntoumlStereotype(IAssociation association) {
     final String stereotype = ModelElement.getUniqueStereotypeName(association);
-    return stereotype != null && Stereotype.getOntoumlAssociationStereotypeNames().contains(stereotype);
+    return stereotype != null
+        && Stereotype.getOntoumlAssociationStereotypeNames().contains(stereotype);
   }
 
   public static boolean hasMereologyStereotype(IAssociation association) {
     final String stereotype = ModelElement.getUniqueStereotypeName(association);
-    return stereotype != null && Stereotype.getOntoUMLMereologyStereotypeNames().contains(stereotype);
+    return stereotype != null
+        && Stereotype.getOntoUMLMereologyStereotypeNames().contains(stereotype);
   }
 
   public static boolean hasAggregationOnFromEnd(IAssociation association) {
@@ -678,13 +680,13 @@ public class Association implements ModelElement {
     IAssociationEnd fromEnd = (IAssociationEnd) association.getFromEnd();
     IAssociationEnd toEnd = (IAssociationEnd) association.getToEnd();
 
-    if(hasAggregationOnToEnd(association)) {
+    if (hasAggregationOnToEnd(association)) {
       return toEnd;
-    } else if(hasAggregationOnFromEnd(association)) {
+    } else if (hasAggregationOnFromEnd(association)) {
       return fromEnd;
-    } else if(hasNavigableToEnd(association)) {
+    } else if (hasNavigableToEnd(association)) {
       return toEnd;
-    } else if(hasNavigableFromEnd(association)) {
+    } else if (hasNavigableFromEnd(association)) {
       return fromEnd;
     } else {
       return toEnd;
@@ -717,7 +719,8 @@ public class Association implements ModelElement {
     sourceEnd.setNavigable(IAssociationEnd.NAVIGABLE_UNSPECIFIED);
     sourceEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_none);
 
-    if(sourceMultiplicity == null || IAssociationEnd.MULTIPLICITY_UNSPECIFIED.equals(sourceMultiplicity)) {
+    if (sourceMultiplicity == null
+        || IAssociationEnd.MULTIPLICITY_UNSPECIFIED.equals(sourceMultiplicity)) {
       String defaultSourceMultiplicity = Association.getDefaultSourceMultiplicity(association);
       sourceEnd.setMultiplicity(defaultSourceMultiplicity);
     }
@@ -728,8 +731,8 @@ public class Association implements ModelElement {
   }
 
   public static void setTargetEndProperties(IAssociation association, IAssociationEnd targetEnd) {
-    if(Association.hasMereologyStereotype(association)) {
-      if(!Property.isWholeEnd(targetEnd)) {
+    if (Association.hasMereologyStereotype(association)) {
+      if (!Property.isWholeEnd(targetEnd)) {
         String defaultAggKind = Association.getDefaultAggregationKind(association);
         targetEnd.setAggregationKind(defaultAggKind);
       }
@@ -741,7 +744,8 @@ public class Association implements ModelElement {
 
     String targetMultiplicity = targetEnd.getMultiplicity();
 
-    if(targetMultiplicity == null || IAssociationEnd.MULTIPLICITY_UNSPECIFIED.equals(targetMultiplicity)) {
+    if (targetMultiplicity == null
+        || IAssociationEnd.MULTIPLICITY_UNSPECIFIED.equals(targetMultiplicity)) {
       String defaultTargetMultiplicity = Association.getDefaultTargetMultiplicity(association);
       targetEnd.setMultiplicity(defaultTargetMultiplicity);
     }

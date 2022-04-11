@@ -3,7 +3,6 @@ package it.unibz.inf.ontouml.vp.model.uml;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationClass;
 import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IAttribute;
@@ -472,9 +471,10 @@ public class Property implements ModelElement {
   }
 
   public static boolean isWholeEnd(IAssociationEnd associationEnd) {
-    String aggregationKind = Optional.ofNullable(associationEnd.getAggregationKind())
-        .map(String::toLowerCase)
-        .orElse("");
+    String aggregationKind =
+        Optional.ofNullable(associationEnd.getAggregationKind())
+            .map(String::toLowerCase)
+            .orElse("");
 
     return IAssociationEnd.AGGREGATION_KIND_shared.equals(aggregationKind)
         || IAssociationEnd.AGGREGATION_KIND_composite.equals(aggregationKind);

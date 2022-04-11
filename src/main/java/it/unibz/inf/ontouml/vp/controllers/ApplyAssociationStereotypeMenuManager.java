@@ -61,10 +61,14 @@ public class ApplyAssociationStereotypeMenuManager extends ApplyStereotypeMenuMa
             association -> {
               String stereotype = associationStereotypeId.getStereotype();
               StereotypesManager.applyStereotype(association, stereotype);
-              IAssociationEnd sourceEnd = !doesRequireInverting(association) ?
-                  Association.getSourceEnd(association) : Association.getTargetEnd(association);
-              IAssociationEnd targetEnd = !doesRequireInverting(association) ?
-                  Association.getTargetEnd(association) : Association.getSourceEnd(association);
+              IAssociationEnd sourceEnd =
+                  !doesRequireInverting(association)
+                      ? Association.getSourceEnd(association)
+                      : Association.getTargetEnd(association);
+              IAssociationEnd targetEnd =
+                  !doesRequireInverting(association)
+                      ? Association.getTargetEnd(association)
+                      : Association.getSourceEnd(association);
 
               Association.setSourceEndProperties(association, sourceEnd);
               Association.setTargetEndProperties(association, targetEnd);

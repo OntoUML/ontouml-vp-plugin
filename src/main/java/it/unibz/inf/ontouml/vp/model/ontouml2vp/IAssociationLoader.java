@@ -1,9 +1,8 @@
 package it.unibz.inf.ontouml.vp.model.ontouml2vp;
 
+import static it.unibz.inf.ontouml.vp.model.ontouml2vp.LoaderUtils.isWholeEnd;
 import static it.unibz.inf.ontouml.vp.model.ontouml2vp.LoaderUtils.loadName;
 import static it.unibz.inf.ontouml.vp.model.ontouml2vp.LoaderUtils.logElementCreation;
-import static it.unibz.inf.ontouml.vp.model.ontouml2vp.LoaderUtils.isWholeEnd;
-import static it.unibz.inf.ontouml.vp.model.ontouml2vp.LoaderUtils.isNavigable;
 
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.*;
@@ -57,24 +56,27 @@ public class IAssociationLoader {
   private static IAssociationEnd getSourceEnd(Property sourceProperty, IAssociation relation) {
     IAssociationEnd fromEnd = (IAssociationEnd) relation.getFromEnd();
     IAssociationEnd toEnd = (IAssociationEnd) relation.getToEnd();
-    String fromId = Optional.ofNullable(relation.getFrom()).map(IModelElement::getId).orElse("noend");
-    String toId = Optional.ofNullable(relation.getToEnd()).map(IModelElement::getId).orElse("noend");
+    String fromId =
+        Optional.ofNullable(relation.getFrom()).map(IModelElement::getId).orElse("noend");
+    String toId =
+        Optional.ofNullable(relation.getToEnd()).map(IModelElement::getId).orElse("noend");
     String classId = sourceProperty.getPropertyType().map(Element::getId).orElse("noid");
 
-    if(fromId.equals(classId) && !toId.equals(classId)) return fromEnd;
-    if(toId.equals(classId) && !fromId.equals(classId)) return toEnd;
+    if (fromId.equals(classId) && !toId.equals(classId)) return fromEnd;
+    if (toId.equals(classId) && !fromId.equals(classId)) return toEnd;
     return fromEnd;
   }
 
   private static IAssociationEnd getTargetEnd(Property targetProperty, IAssociation relation) {
     IAssociationEnd fromEnd = (IAssociationEnd) relation.getFromEnd();
     IAssociationEnd toEnd = (IAssociationEnd) relation.getToEnd();
-    String fromId = Optional.ofNullable(relation.getFrom()).map(IModelElement::getId).orElse("noend");
+    String fromId =
+        Optional.ofNullable(relation.getFrom()).map(IModelElement::getId).orElse("noend");
     String toId = Optional.ofNullable(relation.getTo()).map(IModelElement::getId).orElse("noend");
     String classId = targetProperty.getPropertyType().map(Element::getId).orElse("noid");
 
-    if(toId.equals(classId) && !fromId.equals(classId)) return toEnd;
-    if(fromId.equals(classId) && !toId.equals(classId)) return fromEnd;
+    if (toId.equals(classId) && !fromId.equals(classId)) return toEnd;
+    if (fromId.equals(classId) && !toId.equals(classId)) return fromEnd;
     return toEnd;
   }
 
@@ -84,7 +86,7 @@ public class IAssociationLoader {
 
     fromEnd.setNavigable(IAssociationEnd.NAVIGABLE_UNSPECIFIED);
 
-    if(!isWholeEnd(toEnd) && !isWholeEnd(fromEnd)) {
+    if (!isWholeEnd(toEnd) && !isWholeEnd(fromEnd)) {
       toEnd.setNavigable(IAssociationEnd.NAVIGABLE_NAVIGABLE);
     } else {
       toEnd.setNavigable(IAssociationEnd.NAVIGABLE_UNSPECIFIED);
@@ -122,10 +124,12 @@ public class IAssociationLoader {
     Classifier<?, ?> relationSource = relation.getSource();
     IModelElement associationSource = vpProject.getModelElementById(relationSource.getId());
 
-    String associationSourceId = Optional.ofNullable(associationSource.getId()).orElse("nosourceid");
-    String associationFromId = Optional.ofNullable(association.getFrom()).map(IModelElement::getId).orElse("nofromid");
+    String associationSourceId =
+        Optional.ofNullable(associationSource.getId()).orElse("nosourceid");
+    String associationFromId =
+        Optional.ofNullable(association.getFrom()).map(IModelElement::getId).orElse("nofromid");
 
-    if(associationFromId.equals(associationSourceId)) association.setFrom(associationSource);
+    if (associationFromId.equals(associationSourceId)) association.setFrom(associationSource);
     else association.setTo(associationSource);
   }
 
@@ -133,10 +137,12 @@ public class IAssociationLoader {
     Classifier<?, ?> relationTarget = relation.getTarget();
     IModelElement associationTarget = vpProject.getModelElementById(relationTarget.getId());
 
-    String associationTargetId = Optional.ofNullable(associationTarget.getId()).orElse("notargetid");
-    String associationToId = Optional.ofNullable(association.getTo()).map(IModelElement::getId).orElse("notoid");
+    String associationTargetId =
+        Optional.ofNullable(associationTarget.getId()).orElse("notargetid");
+    String associationToId =
+        Optional.ofNullable(association.getTo()).map(IModelElement::getId).orElse("notoid");
 
-    if(associationToId.equals(associationTargetId)) association.setTo(associationTarget);
+    if (associationToId.equals(associationTargetId)) association.setTo(associationTarget);
     else association.setFrom(associationTarget);
   }
 

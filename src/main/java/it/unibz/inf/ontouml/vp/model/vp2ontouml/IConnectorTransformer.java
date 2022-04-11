@@ -51,8 +51,7 @@ public class IConnectorTransformer {
     IAssociation association = (IAssociation) source.getModelElement();
     List<Point> points = Arrays.asList(source.getPoints());
 
-    if (!Association.doesFromAndSourceMatch(association))
-      Collections.reverse(points);
+    if (!Association.doesFromAndSourceMatch(association)) Collections.reverse(points);
 
     Path path = new Path();
     path.setId(source.getId() + "_path");
@@ -105,14 +104,14 @@ public class IConnectorTransformer {
     IAssociation association = (IAssociation) source.getModelElement();
     IDiagramElement shapeOrConnector = null;
 
-    if (Association.doesFromAndSourceMatch(association)){
+    if (Association.doesFromAndSourceMatch(association)) {
       shapeOrConnector = hasFromShape(source) ? getFromShape(source) : getFromConnector(source);
     } else {
       shapeOrConnector = hasToShape(source) ? getToShape(source) : getToConnector(source);
     }
 
-    ElementView<?, ?> connectorSourceStub = shapeOrConnector != null ?
-        ReferenceTransformer.transformStub(shapeOrConnector) : null;
+    ElementView<?, ?> connectorSourceStub =
+        shapeOrConnector != null ? ReferenceTransformer.transformStub(shapeOrConnector) : null;
 
     target.setSource(connectorSourceStub);
   }
@@ -121,14 +120,14 @@ public class IConnectorTransformer {
     IAssociation association = (IAssociation) source.getModelElement();
     IDiagramElement shapeOrConnector = null;
 
-    if (Association.doesFromAndSourceMatch(association)){
+    if (Association.doesFromAndSourceMatch(association)) {
       shapeOrConnector = hasToShape(source) ? getToShape(source) : getToConnector(source);
     } else {
       shapeOrConnector = hasFromShape(source) ? getFromShape(source) : getFromConnector(source);
     }
 
-    ElementView<?, ?> connectorSourceStub = shapeOrConnector != null ?
-        ReferenceTransformer.transformStub(shapeOrConnector) : null;
+    ElementView<?, ?> connectorSourceStub =
+        shapeOrConnector != null ? ReferenceTransformer.transformStub(shapeOrConnector) : null;
 
     target.setTarget(connectorSourceStub);
   }

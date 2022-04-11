@@ -8,8 +8,10 @@ import java.util.List;
 
 public class ModelSanitizeController implements VPActionController {
 
-  private static final String MESSAGE_MODEL_SANITIZE_SUCCESS = "Model sanitize executed successfully.";
-  private static final String MESSAGE_MODEL_IMPORT_UNEXPECTED_ERROR = "Unexpected error performing model sanitize.";
+  private static final String MESSAGE_MODEL_SANITIZE_SUCCESS =
+      "Model sanitize executed successfully.";
+  private static final String MESSAGE_MODEL_IMPORT_UNEXPECTED_ERROR =
+      "Unexpected error performing model sanitize.";
 
   private boolean shouldProceed = false;
 
