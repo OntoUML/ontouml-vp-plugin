@@ -102,6 +102,12 @@ public class ViewManagerUtils {
     log(list);
   }
 
+  public static void clean() {
+    ApplicationManager.instance()
+        .getViewManager()
+        .removeMessagePaneComponent(OntoUMLPlugin.PLUGIN_ID);
+  }
+
   private static String timestamp() {
     return "[" + (new Timestamp(System.currentTimeMillis())) + "] ";
   }
