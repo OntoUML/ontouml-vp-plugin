@@ -108,17 +108,17 @@ public class ModelSanitizeManager {
   private boolean doesFromMatchEndType(IAssociation association) {
     IModelElement from = association.getFrom();
     IAssociationEnd fromEnd = Association.getFromEnd(association);
+    IModelElement fromEndType = fromEnd.getTypeAsElement();
 
-    return fromEnd.getTypeAsElement() != null
-        && fromEnd.getTypeAsElement().getModelType().equals(from.getModelType());
+    return fromEndType != null && fromEndType.getId().equals(from.getId());
   }
 
   private boolean doesToMatchEndType(IAssociation association) {
     IModelElement to = association.getTo();
     IAssociationEnd toEnd = Association.getToEnd(association);
+    IModelElement toEndType = toEnd.getTypeAsElement();
 
-    return toEnd.getTypeAsElement() != null
-        && toEnd.getTypeAsElement().getModelType().equals(to.getModelType());
+    return toEndType != null && toEndType.getId().equals(to.getId());
   }
 
   private void fixFromEndType(IAssociation association) {

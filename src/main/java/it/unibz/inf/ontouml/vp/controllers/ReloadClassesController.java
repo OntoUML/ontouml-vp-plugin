@@ -20,6 +20,8 @@ import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.swing.JFileChooser;
 
 public class ReloadClassesController implements VPActionController {
@@ -29,134 +31,100 @@ public class ReloadClassesController implements VPActionController {
   private static final String UNEXPECTED_ERROR = "Unexpected error occurred.";
   private static final String RELOAD_PLUGIN_CONFIRMATION = "Do wish you to reload the plugin?";
 
-  private static Set<String> blacklistSet =
-      Set.of(
-          ".git",
-          ".vscode"
-          //      , "abel2015petroleum-system"
-          //      , "albuquerque2015ontobio"
-          //      , "amaral2019rot"
-          //      , "amaral2020modeling"
-          //      , "ambient-assisted-living2021"
-          //      , "aristotle-ontology2019"
-          //      , "barcelos2015ontology"
-          //      , "barros2020programming"
-          //      , "board-game-ontology2020"
-          //      , "buchtela2020connection"
-          //      , "castro2012cloudvulnerability"
-          //      , "cgts2021sebim"
-          //      , "clergy-ontology"
-          //      , "cservice2015ontology"
-          //      , "dpo2017"
-          //      , "el2020ontology"
-          //      , "experiment-model2015"
-          //      , "ferreira2015ontoemergeplan"
-          //      , "filip2021modelovani"
-          //      , "fraller2019flexible"
-          //      , "g809-2015"
-          //      , "gi2mo-ontology"
-          //      , "grueau2013towards"
-          //      , "guarino2018rea"
-          //      , "guizzardi2014nfr"
-          //      , "guizzardi2020core"
-          //      , "hazard-ontology-train-control2017"
-          //      , "internal-affairs-ontology"
-          //      , "khantong2020ontology"
-          //      , "kostov2017towards"
-          //      , "laurier2018rea"
-          //      , "library"
-          //      , "martinez2013human-genome"
-          //      , "medical-appointment2020"
-          //      , "mono2022ontology"
-          //      , "music-ontology"
-          //      , "nardi2015commitment"
-          //      , "niederkofler2019knowledge"
-          //      , "oliveira2007collaboration"
-          //      , "pereira2015ontologia"
-          //      , "pereira2020ontotrans"
-          //      , "ramirez2015userfeedback"
-          //      , "rdbs-o2018"
-          //      , "real-state-ontology2015"
-          //      , "recommendation-ontology"
-          //      , "rodrigues2017ontological"
-          //      , "rodrigues2019ontocrime"
-          //      , "sales2018cover"
-          //      , "silveira2021oap"
-          //      , "spmo"
-          //      , "van2020ontological"
-          //      , "vanEe2021modular"
-          //      , "vieira2020weathering"
-          //      , "vrepa2021digital"
-          //      , "andersson2018ascribing"
-          //      , "duarte2018ontological"
-          //      , "duarte2018osdef"
-          //      , "franco2018ontology"
-          //      , "hazard-ontology-robotic-strolling2017"
-          //      , "photo2015ontology"
-          //      , "zanetti2019representacao"
-          ,
-          "ANTT-Ontology2015",
-          "abrahao2018complex",
-          "aguiar2019ooco",
-          "ahmad2018aviation",
-          "aires2022valuenetworks-geo",
-          "amaral2020rome",
-          "andersson2018ascribing",
-          "bank2015model",
-          "barcelos2013ontology",
-          "brazilian-federal-organizational-structures2015",
-          "buridan-ontology2021",
-          "carolla2014methodological",
-          "cmpo2017ontology",
-          "cons2015model",
-          "debbech2019conceptual",
-          "digitaldoctor2022ontology",
-          "duarte2018ontological",
-          "duarte2018osdef",
-          "duarte2021ross",
-          "eu-rent-refactored2022",
-          "fernandez-cejas2022curie-o",
-          "fischer2018ontorea",
-          "franco2018ontology",
-          "gailly2016design",
-          "gameplay-ontology2020",
-          "guarino2016towards",
-          "guizzardi2005ontological",
-          "hazard-ontology-robotic-strolling2017",
-          "hazard-ontology2017",
-          "healthORG2015model",
-          "internship",
-          "it2015infrastructure",
-          "junior2018o4c",
-          "moreira2018saref4health",
-          "neves2020nwpontology",
-          "neves2021ontology",
-          "online-mentoring",
-          "photo2015ontology",
-          "plato-ontology2019",
-          "porello2020coex",
-          "ppo-o2021",
-          "project-management-ontology",
-          "public-expense-ontology2020",
-          "qam",
-          "quality-assurance-process-ontology2017",
-          "ramos2021bias",
-          "richetti2019tdecision",
-          "rodrigues2019ontological",
-          "rsystem2020ontology",
-          "saleme2019mulseonto",
-          "santos2020valuenetworks",
-          "silva2012itarchitecture",
-          "social-contract2015",
-          "software-ontology-swo",
-          "spo",
-          "sportbooking2021model",
-          "srro-ontology",
-          "stock-broker2021",
-          "tender2015model",
-          "university-ontology",
-          "weigand2021artifact",
-          "zanetti2019representacao");
+  private static Set<String> blacklistSet = Stream
+      .of(".git", ".vscode"
+//          , "abel2015petroleum-system"
+//          , "aguiar2018rdbs-o"
+//          , "ahmad2018aviation"
+//          , "aires2022valuenetworks-geo"
+//          , "albuquerque2011ontobio"
+//          , "alpinebits2022"
+//          , "amaral2019rot"
+//          , "amaral2020rome"
+//          , "ambient-assisted-living2021"
+//          , "andersson2018value-ascription"
+//          , "aristotle-ontology2019"
+//          , "bank-model"
+//          , "barcelos2013normative-acts"
+//          , "barcelos2015transport-networks"
+//          , "barros2020programming"
+//          , "bernasconi2021ontovcm"
+//          , "brazilian-governmental-organizational-structures"
+//          , "buchtela2020connection"
+//          , "buridan-ontology2021"
+//          , "carolla2014campus-management"
+//          , "castro2012cloudvulnerability"
+//          , "cgts2021sebim"
+//          , "chartered-service"
+//          , "clergy-ontology"
+//          , "cmpo2017"
+//          , "dpo2017"
+//          , "duarte2018osdef"
+//          , "duarte2018reqon"
+//          , "duarte2021ross"
+//          , "eu-rent-refactored2022"
+//          , "experiment2013"
+//          , "fernandez-cejas2022curie-o"
+//          , "ferreira2015ontoemergeplan"
+//          , "franco2018rpg"
+//          , "g809-2015"
+//          , "gailly2016value"
+//          , "gi2mo"
+//          , "grueau2013towards"
+//          , "guarino2016value"
+//          , "guarino2018rea"
+//          , "guizzardi2014nfr"
+//          , "guizzardi2020decision-making"
+//          , "hazard-ontology-robotic-strolling2017"
+//          , "hazard-ontology-train-control2017"
+//          , "health-organizations"
+//          , "internal-affairs2013"
+//          , "internship"
+//          , "khantong2020ontology"
+//          , "kostov2017towards"
+//          , "kritz2020ontobg"
+//          , "laurier2018rea"
+//          , "library"
+//          , "martinez2013human-genome"
+//          , "medical-appointment2020"
+//          , "mgic-antt2011"
+//          , "moreira2018saref4health"
+//          , "music-ontology"
+//          , "neves2021grain-production"
+//          , "niederkofler2019dssapple"
+//          , "oliveira2007collaboration"
+//          , "online-mentoring"
+//          , "pereira2015doacao-orgaos"
+//          , "pereira2020ontotrans"
+//          , "photography"
+//          , "plato-ontology2019"
+//          , "porello2020coex"
+//          , "ppo-o2021"
+//          , "public-tender"
+//          , "ramirez2015userfeedback"
+//          , "ramos2021bias"
+//          , "recommendation-ontology"
+//          , "repa2021public-administration"
+//          , "rodrigues2019ontocrime"
+//          , "rodrigues2019turbidite"
+//          , "sales2018competition"
+//          , "sales2018cover"
+//          , "santos2020valuenetworks"
+//          , "sikora2021online-education"
+//          , "silva2012itarchitecture"
+//          , "silveira2021oap"
+//          , "social-contract"
+//          , "spo2017"
+//          , "sportbooking2021"
+//          , "srro-ontology"
+//          , "stock-broker2021"
+//          , "tourbo2021"
+//          , "van-wingerde2020smart-contracts"
+//          , "vieira2020weathering"
+//          , "weigand2021artifact"
+//          , "zanetti2019orm-o"
+//          , "zhou2017hazard"
+      ).collect(Collectors.toSet());
   private static Set<String> targetSet = Set.of("");
 
   private File repositoryFile;
@@ -196,7 +164,8 @@ public class ReloadClassesController implements VPActionController {
   }
 
   @Override
-  public void update(VPAction action) {}
+  public void update(VPAction action) {
+  }
 
   private void reloadPlugin() {
     System.out.println("----------------------------------------");
@@ -266,15 +235,15 @@ public class ReloadClassesController implements VPActionController {
               System.out.println("Sanitizing '" + ontologyDir.getName() + "'");
               ModelSanitizeManager.run();
               System.out.println("Sanitized '" + ontologyDir.getName() + "': OK");
-              System.out.println("Exporting diagrams '" + ontologyDir.getName() + "'");
-              try {
-                exportDiagrams();
-              } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException(
-                    "Unable to export diagrams of '" + ontologyDir.getName() + "'");
-              }
-              System.out.println("Exported diagrams '" + ontologyDir.getName() + "': OK");
+//              System.out.println("Exporting diagrams '" + ontologyDir.getName() + "'");
+//              try {
+//                exportDiagrams();
+//              } catch (IOException e) {
+//                e.printStackTrace();
+//                throw new RuntimeException(
+//                    "Unable to export diagrams of '" + ontologyDir.getName() + "'");
+//              }
+//              System.out.println("Exported diagrams '" + ontologyDir.getName() + "': OK");
               System.out.println("Exporting JSON '" + ontologyDir.getName() + "'");
               try {
                 exportJson();
