@@ -10,7 +10,9 @@ import java.util.HashSet;
  * @author Claudenir Fonseca
  * @author Victor Viola
  */
-/** @author Victor Viola */
+/**
+ * @author Victor Viola
+ */
 public class ProjectConfigurations {
 
   public static final boolean DEFAULT_IS_PLUGIN_ENABLED = true;
