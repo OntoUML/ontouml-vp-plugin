@@ -2,7 +2,9 @@
 
 This project contains a [Visual Paradigm](https://www.visual-paradigm.com/) plugin that enables the development of OntoUML models.
 
-This project is defined under the umbrella of the [OntoUML Server](https://github.com/OntoUML/ontouml-server) project and is currently a proof of concept.
+To use the OntoUML Plugin, you can download the [Visual Paradigm Community Edition](https://www.visual-paradigm.com/download/community.jsp), a free version for non-commercial use only.
+
+This project is defined under the umbrella of the [OntoUML Server](https://github.com/OntoUML/ontouml-server) project and substitutes discontinued OntoUML editors like OLED and Menthor.
 
 If you are interested to know more, feel free to open an issue to provide feedback on the project or reach our team members for more specific cases:
 
@@ -13,11 +15,15 @@ If you are interested to know more, feel free to open an issue to provide feedba
 
 ## Contents
 
-* [Overview](#overview)
-* [User Instructions](#user-instructions)
-* [Developer Instructions](#developer-instructions)
-* [Report Errors](#report-errors)
-* [FAQ](#faq)
+- [Overview](#overview)
+  - [Features](#features)
+  - [Automatic Diagram Generation](#automatic-diagram-generation)
+- [User Instructions](#user-instructions)
+- [Developer Instructions](#developer-instructions)
+  - [Requirements](#requirements)
+  - [Build instructions](#build-instructions)
+- [Report Errors](#report-errors)
+- [FAQ](#faq)
 
 ___
 
