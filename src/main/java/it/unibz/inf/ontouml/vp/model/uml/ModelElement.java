@@ -64,13 +64,19 @@ public interface ModelElement {
     return ModelElement.getDiagrams(element).stream().anyMatch(Diagram::isOntoUMLDiagram);
   }
 
-  /** @return <code>IModelElement</code> on which the object is based. */
+  /**
+   * @return <code>IModelElement</code> on which the object is based.
+   */
   public IModelElement getSourceModelElement();
 
-  /** @return object's type in OntoUML Schema. */
+  /**
+   * @return object's type in OntoUML Schema.
+   */
   public String getOntoUMLType();
 
-  /** @return object's ID (based on a <code>IModelElement</code>). */
+  /**
+   * @return object's ID (based on a <code>IModelElement</code>).
+   */
   public String getId();
 
   /**
