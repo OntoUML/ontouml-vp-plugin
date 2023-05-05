@@ -18,73 +18,48 @@ VISUAL_PARADIGM_PLUGIN_DIR_WINDOWS="C:\\Users\\$USER\\AppData\\Roaming\\VisualPa
 VISUAL_PARADIGM_PLUGIN_DIR_MAC="/Users/$USER/Library/Application Support/VisualParadigm/plugins/" #MacOS
 VISUAL_PARADIGM_PLUGIN_DIR_LINUX="/home/$USER/.config/VisualParadigm/plugins/" #Linux
 
-function readPath(){ #UNDER DEVELOPMENT
+function read_App_Path(){ #UNDER DEVELOPMENT
     while true; do
-        if [[ -d "$1" ]]; then
-            break
-        else
-            printf "<FOLDER NOT FOUND> Type a valid path!\n"
-            read -p "The path to your Visual Paradigm $2: " VISUAL_PARADIGM_APP_DIR_LINUX
-        fi
+        echo "Visual Paradigm Path: $1"
+        read -p "Confirm (y/n)?: " choice
+        case "$choice" in
+            y|Y ) 
+                if [[ -d "$1" ]]; then
+                    break
+                else
+                    printf "<FOLDER NOT FOUND> Type a valid path!\n"
+                fi
+            ;;
+            n|N ) read -p "The path to your Visual Paradigm (APP FOLDER) is: " $1 ;;
+            * ) printf "Invalid input\n";;
+        esac
     done
-    echo $1
+    app_dir="$1"
+}
+
+function read_Plugin_Path(){
+    while true; do
+        echo "Visual Paradigm Plugin Path: $1"
+        read -p "Confirm (y/n)?: " choice
+        case "$choice" in
+            y|Y ) break;;
+            n|N ) read -p "The path to your Visual Paradigm (PLUGIN FOLDER) is: " $1 ;;
+            * ) printf "Invalid input\n";;
+        esac
+    done
+    plugin_dir="$1"
 }
 
 function get_VP_App_Path(){
     case "$OS" in
         Linux*)  
-            while true; do
-                echo "Visual Paradigm Path: $VISUAL_PARADIGM_APP_DIR_LINUX"
-                read -p "Confirm (y/n)?: " choice
-                case "$choice" in
-                    y|Y ) 
-                        if [[ -d $VISUAL_PARADIGM_APP_DIR_LINUX ]]; then
-                            break
-                        else
-                            printf "<FOLDER NOT FOUND> Type a valid path!\n"
-                        fi
-                    ;;
-                    n|N ) read -p "The path to your Visual Paradigm (APP FOLDER) is: " VISUAL_PARADIGM_APP_DIR_LINUX ;;
-                    * ) printf "Invalid input\n";;
-                esac
-            done
-            app_dir=$VISUAL_PARADIGM_APP_DIR_LINUX
+            read_App_Path "$VISUAL_PARADIGM_APP_DIR_LINUX"
         ;;
         Darwin*)
-            while true; do
-                echo "Visual Paradigm Path: $VISUAL_PARADIGM_APP_DIR_MAC"
-                read -p "Confirm (y/n)?" choice
-                case "$choice" in
-                    y|Y ) 
-                        if [[ -d $VISUAL_PARADIGM_APP_DIR_MAC ]]; then
-                            break
-                        else
-                            printf "<FOLDER NOT FOUND> Type a valid path!\n"
-                        fi
-                    ;;
-                    n|N ) read -p "The path to your Visual Paradigm (APP FOLDER) is: " VISUAL_PARADIGM_APP_DIR_MAC ;;
-                    * ) printf "Invalid input\n";;
-                esac
-            done
-            app_dir=$VISUAL_PARADIGM_APP_DIR_MAC
+            read_App_Path "$VISUAL_PARADIGM_APP_DIR_MAC"
         ;;
         MINGW64*)
-            while true; do
-                echo "Visual Paradigm Path: $VISUAL_PARADIGM_APP_DIR_WINDOWS"
-                read -r -p "Confirm (y/n)?: " choice
-                case "$choice" in
-                    y|Y ) 
-                        if [[ -d $VISUAL_PARADIGM_APP_DIR_WINDOWS ]]; then
-                            break
-                        else
-                            printf "<FOLDER NOT FOUND> Type a valid path!\n"
-                        fi
-                    ;;
-                    n|N ) read -r -p "The path to your Visual Paradigm (APP FOLDER) is: " VISUAL_PARADIGM_APP_DIR_WINDOWS ;;
-                    * ) printf "Invalid input\n";;
-                esac
-            done
-            app_dir=$VISUAL_PARADIGM_APP_DIR_WINDOWS
+            read_App_Path "$VISUAL_PARADIGM_APP_DIR_WINDOWS"
             app_dir=$(echo "$app_dir" | sed 's/\\/\\\\/g')
         ;;
         *)
@@ -96,40 +71,13 @@ function get_VP_App_Path(){
 function get_VP_Plugin_Path(){
     case "$OS" in
         Linux*)  
-            while true; do
-                echo "Visual Paradigm Plugin Path: $VISUAL_PARADIGM_PLUGIN_DIR_LINUX"
-                read -p "Confirm (y/n)?: " choice
-                case "$choice" in
-                    y|Y ) break;;
-                    n|N ) read -p "The path to your Visual Paradigm (PLUGIN FOLDER) is: " VISUAL_PARADIGM_PLUGIN_DIR_LINUX ;;
-                    * ) printf "Invalid input\n";;
-                esac
-            done
-            plugin_dir=$VISUAL_PARADIGM_PLUGIN_DIR_LINUX
+            read_Plugin_Path "$VISUAL_PARADIGM_PLUGIN_DIR_LINUX"
         ;;
         Darwin*)
-            while true; do
-                echo "Visual Paradigm Plugin Path: $VISUAL_PARADIGM_PLUGIN_DIR_MAC"
-                read -p "Confirm (y/n)?: " choice
-                case "$choice" in
-                    y|Y ) break;;
-                    n|N ) read -p "The path to your Visual Paradigm (PLUGIN FOLDER) is: " VISUAL_PARADIGM_PLUGIN_DIR_MAC ;;
-                    * ) printf "Invalid input\n";;
-                esac
-            done
-            plugin_dir=$VISUAL_PARADIGM_PLUGIN_DIR_MAC
+            read_Plugin_Path "$VISUAL_PARADIGM_PLUGIN_DIR_MAC"
         ;;
         MINGW64*)
-            while true; do
-                echo "Visual Paradigm Plugin Path: $VISUAL_PARADIGM_PLUGIN_DIR_WINDOWS"
-                read -p "Confirm (y/n)?: " choice
-                case "$choice" in
-                    y|Y ) break;;
-                    n|N ) read -r -p "The path to your Visual Paradigm (PLUGIN FOLDER) is: " VISUAL_PARADIGM_PLUGIN_DIR_WINDOWS ;;
-                    * ) printf "Invalid input\n";;
-                esac
-            done
-            plugin_dir=$VISUAL_PARADIGM_PLUGIN_DIR_WINDOWS
+            read_Plugin_Path "$VISUAL_PARADIGM_PLUGIN_DIR_WINDOWS"
             plugin_dir=$(echo "$plugin_dir" | sed 's/\\/\\\\/g')
         ;;
         *)
