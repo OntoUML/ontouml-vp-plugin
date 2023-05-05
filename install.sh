@@ -18,7 +18,7 @@ VISUAL_PARADIGM_PLUGIN_DIR_WINDOWS="C:\\Users\\$USER\\AppData\\Roaming\\VisualPa
 VISUAL_PARADIGM_PLUGIN_DIR_MAC="/Users/$USER/Library/Application Support/VisualParadigm/plugins/" #MacOS
 VISUAL_PARADIGM_PLUGIN_DIR_LINUX="/home/$USER/.config/VisualParadigm/plugins/" #Linux
 
-function read_App_Path(){ #UNDER DEVELOPMENT
+function read_App_Path(){
     while true; do
         echo "Visual Paradigm Path: $1"
         read -p "Confirm (y/n)?: " choice
@@ -187,10 +187,9 @@ function install_ontouml_vp_plugin(){
         *)
             sed -i "s|<!-- APP_PATH -->|$app_dir|g" pom.xml
             sed -i "s|<!-- PLUGIN_PATH -->|$plugin_dir|g" pom.xml
-            #sed -i "s|<visualparadigm.app.dir>.*</visualparadigm.app.dir>|<visualparadigm.app.dir>$app_dir</visualparadigm.app.dir>|g" pom.xml
     esac
-    # Install plugin with maven
-    mvn install
+    # Install plugin with Maven Wrapper
+    ./mvnw install
 }
 
 function install_visual_paradigm(){ #Development
@@ -270,7 +269,7 @@ function install_main(){
     install_shell_deps || install_fail
     echo "Installing plugin dependencies ..."
     install_jdk || install_fail
-    install_maven || install_fail
+    #install_maven || install_fail # In this current state, maven isn't necessary. We're using Maven Wrapper
     #install_visual_paradigm || install_fail
     # Download the ontouml-vp-plugin repository
     download_plugin || install_fail
