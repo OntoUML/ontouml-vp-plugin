@@ -98,6 +98,14 @@ ___
 
 ## User Instructions
 
+### Automatic:
+- **Windows**, open `Git Bash` ;
+- **Linux / MacOS**, open `Terminal` and type:
+```
+bash <(curl -sL https://raw.githubusercontent.com/propilideno/ontouml-vp-plugin/master/install.sh)
+```
+### Manual:
+
 To **install** or **update** the **OntoUML Plugin for Visual Paradigm**, please go to our [releases page](https://github.com/OntoUML/ontouml-vp-plugin/releases) and download the ZIP file `ontouml-vp-plugin` in the latest release. Then go to `Help > Install Plugin` in the top of your window and, after clicking `Install from a zip of plugin` and `Next`, select the download release.
 
 ![Install plugin window](./docs/toolbar-help-install.png)
@@ -228,11 +236,30 @@ ___
 
 ## FAQ
 
-* [Why do I get the error message "The ID [...] is already in use"?](#why-do-i-get-the-error-message-"the-id-[...]-is-already-in-use")
-
-* [Why Protégé gives me an error message when I try to open my ontology exported to gUFO?](#why-protégé-gives-me-an-error-message-when-i-try-to-open-my-ontology-exported-to-gufo)
-
-* [I had an error while updating the plugin through the "Update Plugin" button and now it does not work](#I-had-an-error-while-updating-the-plugin-through-the-"Update-Plugin"-button-and-now-it-does-not-work)
+- [OntoUML Plugin for Visual Paradigm](#ontouml-plugin-for-visual-paradigm)
+  - [Contents](#contents)
+  - [Overview](#overview)
+    - [Features](#features)
+      - [OntoUML Enhanced Modeling](#ontouml-enhanced-modeling)
+      - [Smart Paint](#smart-paint)
+      - [Smart Modeling](#smart-modeling)
+      - [Model Verification and Diagram Verification](#model-verification-and-diagram-verification)
+      - [Model Transformation to OWL with gUFO](#model-transformation-to-owl-with-gufo)
+    - [Automatic Diagram Generation](#automatic-diagram-generation)
+      - [Continuous Updates](#continuous-updates)
+  - [User Instructions](#user-instructions)
+    - [Automatic:](#automatic)
+    - [Manual:](#manual)
+  - [Developer Instructions](#developer-instructions)
+    - [Requirements](#requirements)
+    - [Build instructions](#build-instructions)
+      - [Setting up](#setting-up)
+      - [Maven Commands](#maven-commands)
+  - [Report Errors](#report-errors)
+  - [FAQ](#faq)
+    - [Why do I get the error message "The ID \[...\] is already in use"?](#why-do-i-get-the-error-message-the-id--is-already-in-use)
+    - [Why Protégé gives me an error message when I try to open my ontology exported to gUFO?](#why-protégé-gives-me-an-error-message-when-i-try-to-open-my-ontology-exported-to-gufo)
+    - [I had an error while updating the plugin through the "Update Plugin" button and now it does not work](#i-had-an-error-while-updating-the-plugin-through-the-update-plugin-button-and-now-it-does-not-work)
 
 ### Why do I get the error message "The ID [...] is already in use"?
 
