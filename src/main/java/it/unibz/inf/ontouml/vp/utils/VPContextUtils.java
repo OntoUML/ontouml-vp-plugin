@@ -7,7 +7,9 @@ import java.util.Set;
 
 public class VPContextUtils {
 
-  /** @return a set including selected model elements of the same type */
+  /**
+   * @return a set including selected model elements of the same type
+   */
   public static Set<IModelElement> getModelElements(VPContext context) {
     if (isDiagramContext(context)) {
       return Diagram.getSelectedModelElements(context.getDiagram(), getModelType(context));
