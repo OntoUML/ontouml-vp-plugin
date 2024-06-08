@@ -26,10 +26,9 @@ read_app_path(){
         case "$choice" in
             y|Y ) [[ -d "$currentPath" ]] && break || printf "<FOLDER NOT FOUND> Type a valid path!\n";;
             n|N )
-                read -p "The path to your Visual Paradigm (PLUGIN FOLDER) is: " currentPath
                 case "$OS" in
-                    MINGW64*) 1=$(powershell -Command "(New-Object -ComObject Shell.Application).BrowseForFolder(0, 'Select a folder', 0, 0).Self.Path");;
-                    *) read -p "The path to your Visual Paradigm (PLUGIN FOLDER) is: " currentPath;;
+                    MINGW64*) currentPath=$(powershell -Command "(New-Object -ComObject Shell.Application).BrowseForFolder(0, 'Select a folder', 0, 0).Self.Path");;
+					*) read -p "The path to your Visual Paradigm (APP FOLDER) is: " currentPath;;
                 esac
             ;;
             * ) printf "Invalid input\n";;
@@ -46,7 +45,6 @@ read_plugin_path(){
         case "$choice" in
             y|Y ) [[ -d "$currentPath" ]] && break || printf "<FOLDER NOT FOUND> Type a valid path!\n";;
             n|N )
-                read -p "The path to your Visual Paradigm (PLUGIN FOLDER) is: " currentPath
                 case "$OS" in
                     MINGW64*) currentPath=$(powershell -Command "(New-Object -ComObject Shell.Application).BrowseForFolder(0, 'Select a folder', 0, 0).Self.Path");;
                     *) read -p "The path to your Visual Paradigm (PLUGIN FOLDER) is: " currentPath;;
