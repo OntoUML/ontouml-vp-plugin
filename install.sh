@@ -23,13 +23,7 @@ function read_App_Path(){
         echo "Visual Paradigm Path: $1"
         read -p "Confirm (y/n)?: " choice
         case "$choice" in
-            y|Y ) 
-                if [[ -d "$1" ]]; then
-                    break
-                else
-                    printf "<FOLDER NOT FOUND> Type a valid path!\n"
-                fi
-            ;;
+            y|Y ) [[ -d "$1" ]] && break || printf "<FOLDER NOT FOUND> Type a valid path!\n";;
             n|N ) read -p "The path to your Visual Paradigm (APP FOLDER) is: " $1 ;;
             * ) printf "Invalid input\n";;
         esac
