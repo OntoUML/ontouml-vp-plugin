@@ -36,7 +36,7 @@ function read_Plugin_Path(){
         echo "Visual Paradigm Plugin Path: $1"
         read -p "Confirm (y/n)?: " choice
         case "$choice" in
-            y|Y ) break;;
+            y|Y ) [[ -d "$1" ]] && break || printf "<FOLDER NOT FOUND> Type a valid path!\n";;
             n|N ) read -p "The path to your Visual Paradigm (PLUGIN FOLDER) is: " $1 ;;
             * ) printf "Invalid input\n";;
         esac
