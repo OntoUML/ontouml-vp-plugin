@@ -46,7 +46,7 @@ read_plugin_path(){
 
 get_vp_app_path(){
     case "$OS" in
-        Linux*)  
+        Linux*)
             read_app_path "$VISUAL_PARADIGM_APP_DIR_LINUX"
         ;;
         Darwin*)
@@ -64,7 +64,7 @@ get_vp_app_path(){
 
 get_vp_plugin_path(){
     case "$OS" in
-        Linux*)  
+        Linux*)
             read_plugin_path "$VISUAL_PARADIGM_PLUGIN_DIR_LINUX"
         ;;
         Darwin*)
@@ -87,7 +87,7 @@ download_plugin(){
             echo "OntoUML Repository already downloaded, running the script ..."
         ;;
         *)
-            echo "Downloading the OntoUML Repository ..." 
+            echo "Downloading the OntoUML Repository ..."
             rm -rf $repo_name-master
             curl -sL $repo_url -o master-ontouml-temp.zip
             unzip master-ontouml-temp.zip
@@ -98,13 +98,13 @@ download_plugin(){
 
 # If the install fails, then print an error and exit.
 install_fail() {
-    echo "Installation failed" 
-    exit 1 
-} 
+    echo "Installation failed"
+    exit 1
+}
 
 # This is the help fuction. It helps users withe the options
-help(){ 
-    echo "Usage: ./install.sh" 
+help(){
+    echo "Usage: ./install.sh"
     echo "Make sure u have permission to execute install.sh"
     echo "If u had problems try it: "chmod +x install.sh" or allow execution in properties"
 }
@@ -113,7 +113,7 @@ install_maven(){ # Optional because Maven Wrapper
     if command -v mvn &> /dev/null; then
         echo "<PRESENT> Maven already installed."
     else
-		echo "<MISSING> You're missing Maven"
+        echo "<MISSING> You're missing Maven"
         case "$OS" in
             Linux*)
                 sudo apt-get install maven
@@ -139,10 +139,10 @@ install_jdk(){
     if command -v javac &> /dev/null; then
         echo "<PRESENT> JDK already installed."
     else
-		echo "<MISSING> You're missing JDK"
+        echo "<MISSING> You're missing JDK"
         case "$OS" in
             Linux*)
-                sudo apt-get install default-jdk 
+                sudo apt-get install default-jdk
             ;;
             Darwin*)
                 brew install java
@@ -177,8 +177,8 @@ install_ontouml_vp_plugin(){
         done
     fi
     # Config pom.xml with gathered paths
-    case "$OS" in 
-        Darwin*) 
+    case "$OS" in
+        Darwin*)
             sed -i '' "s|<!-- APP_PATH -->|$app_dir|g" pom.xml # '' Before the regex is to prevent ISSUE on MacOS.
             sed -i '' "s|<!-- PLUGIN_PATH -->|$plugin_dir|g" pom.xml # '' Before the regex is to prevent ISSUE on MacOS
             ;;
@@ -200,7 +200,7 @@ install_brew(){
     # Check if homebrew is installed
     if command -v brew &> /dev/null; then
         echo "Homebrew is already installed"
-    else  
+    else
         echo "Installing Homebrew ..."
         # if it's is not installed, then install it.
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -212,18 +212,18 @@ install_brew(){
 }
 
 # to install for debian based distrOS (and ubuntu)
-install_shell_deps(){ 
-    case "$OS" in 
-        Darwin*) 
-			install_brew
+install_shell_deps(){
+    case "$OS" in
+        Darwin*)
+            install_brew
             ;;
         Linux*)
             if ! command -v unzip &> /dev/null; then
-                sudo apt-get install unzip	
+                sudo apt-get install unzip
             fi
-			;;
-		*)
-			echo "No shell requirements for your OS"
+            ;;
+        *)
+            echo "No shell requirements for your OS"
     esac
 }
 
@@ -261,7 +261,7 @@ greetings(){
 }
 
 # Main function
-install_main(){ 
+install_main(){
     echo "=== OntoUML-vp-plugin Installer ==="
     echo "Installing shell dependencies ..."
     install_shell_deps || install_fail
