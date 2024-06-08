@@ -117,8 +117,9 @@ function Help(){
 
 function install_maven(){ # Optional because Maven Wrapper
     if command -v mvn &> /dev/null; then
-        echo "Maven already installed."
+        echo "<PRESENT> Maven already installed."
     else
+		echo "<MISSING> You're missing Maven"
         case "$OS" in
             Linux*)
                 sudo apt-get install maven
@@ -142,8 +143,9 @@ function install_maven(){ # Optional because Maven Wrapper
 
 function install_jdk(){
     if command -v javac &> /dev/null; then
-        echo "JDK already installed."
+        echo "<PRESENT> JDK already installed."
     else
+		echo "<MISSING> You're missing JDK"
         case "$OS" in
             Linux*)
                 sudo apt-get install default-jdk 
@@ -153,7 +155,7 @@ function install_jdk(){
             ;;
             MINGW64*)
                 local TUTORIAL_LINK="https://phoenixnap.com/kb/install-java-windows"
-                echo "Maven automatic installion is not supported by Windows yet."
+                echo "JDK automatic installion is not supported by Windows yet."
                 echo "Follow this tutorial and try it again ..."
                 start $TUTORIAL_LINK
                 exit 1
