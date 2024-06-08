@@ -18,7 +18,7 @@ VISUAL_PARADIGM_PLUGIN_DIR_WINDOWS="C:\\Users\\$USER\\AppData\\Roaming\\VisualPa
 VISUAL_PARADIGM_PLUGIN_DIR_MAC="/Users/$USER/Library/Application Support/VisualParadigm/plugins/" #MacOS
 VISUAL_PARADIGM_PLUGIN_DIR_LINUX="/home/$USER/.config/VisualParadigm/plugins/" #Linux
 
-function read_App_Path(){
+read_app_path(){
     while true; do
         echo "Visual Paradigm Path: $1"
         read -p "Confirm (y/n)?: " choice
@@ -31,7 +31,7 @@ function read_App_Path(){
     app_dir="$1"
 }
 
-function read_Plugin_Path(){
+read_plugin_path(){
     while true; do
         echo "Visual Paradigm Plugin Path: $1"
         read -p "Confirm (y/n)?: " choice
@@ -44,16 +44,16 @@ function read_Plugin_Path(){
     plugin_dir="$1"
 }
 
-function get_VP_App_Path(){
+get_vp_app_path(){
     case "$OS" in
         Linux*)  
-            read_App_Path "$VISUAL_PARADIGM_APP_DIR_LINUX"
+            read_app_path "$VISUAL_PARADIGM_APP_DIR_LINUX"
         ;;
         Darwin*)
-            read_App_Path "$VISUAL_PARADIGM_APP_DIR_MAC"
+            read_app_path "$VISUAL_PARADIGM_APP_DIR_MAC"
         ;;
         MINGW64*)
-            read_App_Path "$VISUAL_PARADIGM_APP_DIR_WINDOWS"
+            read_app_path "$VISUAL_PARADIGM_APP_DIR_WINDOWS"
             app_dir=$(echo "$app_dir" | sed 's/\\/\\\\/g')
         ;;
         *)
@@ -62,16 +62,16 @@ function get_VP_App_Path(){
     esac
 }
 
-function get_VP_Plugin_Path(){
+get_vp_plugin_path(){
     case "$OS" in
         Linux*)  
-            read_Plugin_Path "$VISUAL_PARADIGM_PLUGIN_DIR_LINUX"
+            read_plugin_path "$VISUAL_PARADIGM_PLUGIN_DIR_LINUX"
         ;;
         Darwin*)
-            read_Plugin_Path "$VISUAL_PARADIGM_PLUGIN_DIR_MAC"
+            read_plugin_path "$VISUAL_PARADIGM_PLUGIN_DIR_MAC"
         ;;
         MINGW64*)
-            read_Plugin_Path "$VISUAL_PARADIGM_PLUGIN_DIR_WINDOWS"
+            read_plugin_path "$VISUAL_PARADIGM_PLUGIN_DIR_WINDOWS"
             plugin_dir=$(echo "$plugin_dir" | sed 's/\\/\\\\/g')
         ;;
         *)
@@ -80,7 +80,7 @@ function get_VP_Plugin_Path(){
     esac
 }
 
-function download_plugin(){
+download_plugin(){
     echo "Downloading OntoUML VP Plugin Repository ..."
     case "$(basename $(pwd))" in
         $repo_name*) # Case ontouml-vp-plugin or ontouml-vp-plugin-master
@@ -97,19 +97,19 @@ function download_plugin(){
 }
 
 # If the install fails, then print an error and exit.
-function install_fail() {
+install_fail() {
     echo "Installation failed" 
     exit 1 
 } 
 
 # This is the help fuction. It helps users withe the options
-function Help(){ 
+help(){ 
     echo "Usage: ./install.sh" 
     echo "Make sure u have permission to execute install.sh"
     echo "If u had problems try it: "chmod +x install.sh" or allow execution in properties"
 }
 
-function install_maven(){ # Optional because Maven Wrapper
+install_maven(){ # Optional because Maven Wrapper
     if command -v mvn &> /dev/null; then
         echo "<PRESENT> Maven already installed."
     else
@@ -135,7 +135,7 @@ function install_maven(){ # Optional because Maven Wrapper
     fi
 }
 
-function install_jdk(){
+install_jdk(){
     if command -v javac &> /dev/null; then
         echo "<PRESENT> JDK already installed."
     else
@@ -161,10 +161,10 @@ function install_jdk(){
     fi
 }
 
-function install_ontouml_vp_plugin(){
+install_ontouml_vp_plugin(){
     # Get the paths to write on pom.xml
-    get_VP_App_Path
-    get_VP_Plugin_Path
+    get_vp_app_path
+    get_vp_plugin_path
     if [ -d  "$plugin_dir$ontouml_plugin_path" ]; then
         echo "<WARNING> ONTOUML PLUGIN INSTALLED!"
         while true; do
@@ -190,13 +190,13 @@ function install_ontouml_vp_plugin(){
     ./mvnw install
 }
 
-function install_visual_paradigm(){ #Development
+install_visual_paradigm(){ #Development
     echo "Opening Visual Paradigm WebSite"
     open https://www.visual-paradigm.com/download/
     # https://www.visual-paradigm.com/download/?platform=linux&arch=64bit #Linux -> Visual_Paradigm_17_0_20230401_Linux64.sh
 }
 
-function install_brew(){
+install_brew(){
     # Check if homebrew is installed
     if command -v brew &> /dev/null; then
         echo "Homebrew is already installed"
@@ -211,8 +211,8 @@ function install_brew(){
     fi
 }
 
-# Function to install for debian based distrOS (and ubuntu)
-function install_shell_deps(){ 
+# to install for debian based distrOS (and ubuntu)
+install_shell_deps(){ 
     case "$OS" in 
         Darwin*) 
 			install_brew
@@ -227,7 +227,7 @@ function install_shell_deps(){
     esac
 }
 
-function clean_installation(){
+clean_installation(){
     while true; do
         printf "\nDo you want to clean installation files?\n"
         read -p "Confirm (y/n)?: " choice
@@ -248,7 +248,7 @@ function clean_installation(){
     done
 }
 
-function greetings(){
+greetings(){
     printf "\n\n==> OntoUML was installed with SUCCESS !!!\n"
     echo "==> Contribute with us giving this repo a Star ⭐"
     echo "Contributors:"
@@ -261,7 +261,7 @@ function greetings(){
 }
 
 # Main function
-function install_main(){ 
+install_main(){ 
     echo "=== OntoUML-vp-plugin Installer ==="
     echo "Installing shell dependencies ..."
     install_shell_deps || install_fail
