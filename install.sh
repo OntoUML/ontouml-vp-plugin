@@ -19,29 +19,43 @@ VISUAL_PARADIGM_PLUGIN_DIR_MAC="/Users/$USER/Library/Application Support/VisualP
 VISUAL_PARADIGM_PLUGIN_DIR_LINUX="/home/$USER/.config/VisualParadigm/plugins/" #Linux
 
 read_app_path(){
+    local currentPath="$1"
     while true; do
-        echo "Visual Paradigm Path: $1"
+        echo "Visual Paradigm Path: $currentPath"
         read -p "Confirm (y/n)?: " choice
         case "$choice" in
-            y|Y ) [[ -d "$1" ]] && break || printf "<FOLDER NOT FOUND> Type a valid path!\n";;
-            n|N ) read -p "The path to your Visual Paradigm (APP FOLDER) is: " $1 ;;
+            y|Y ) [[ -d "$currentPath" ]] && break || printf "<FOLDER NOT FOUND> Type a valid path!\n";;
+            n|N )
+                read -p "The path to your Visual Paradigm (PLUGIN FOLDER) is: " currentPath
+                case "$OS" in
+                    MINGW64*) 1=$(powershell -Command "(New-Object -ComObject Shell.Application).BrowseForFolder(0, 'Select a folder', 0, 0).Self.Path");;
+                    *) read -p "The path to your Visual Paradigm (PLUGIN FOLDER) is: " currentPath;;
+                esac
+            ;;
             * ) printf "Invalid input\n";;
         esac
     done
-    app_dir="$1"
+    app_dir="$currentPath"
 }
 
 read_plugin_path(){
+    local currentPath="$1"
     while true; do
-        echo "Visual Paradigm Plugin Path: $1"
+        echo "Visual Paradigm Plugin Path: $currentPath"
         read -p "Confirm (y/n)?: " choice
         case "$choice" in
-            y|Y ) [[ -d "$1" ]] && break || printf "<FOLDER NOT FOUND> Type a valid path!\n";;
-            n|N ) read -p "The path to your Visual Paradigm (PLUGIN FOLDER) is: " $1 ;;
+            y|Y ) [[ -d "$currentPath" ]] && break || printf "<FOLDER NOT FOUND> Type a valid path!\n";;
+            n|N )
+                read -p "The path to your Visual Paradigm (PLUGIN FOLDER) is: " currentPath
+                case "$OS" in
+                    MINGW64*) currentPath=$(powershell -Command "(New-Object -ComObject Shell.Application).BrowseForFolder(0, 'Select a folder', 0, 0).Self.Path");;
+                    *) read -p "The path to your Visual Paradigm (PLUGIN FOLDER) is: " currentPath;;
+                esac
+            ;;
             * ) printf "Invalid input\n";;
         esac
     done
-    plugin_dir="$1"
+    plugin_dir="$currentPath"
 }
 
 get_vp_app_path(){
