@@ -127,9 +127,10 @@ function install_maven(){ # Optional because Maven Wrapper
                 brew install maven
             ;;
             MINGW64*)
+                local TUTORIAL_LINK="https://phoenixnap.com/kb/install-maven-windows"
                 echo "Maven automatic installion is not supported by Windows yet."
                 echo "Follow this tutorial and try it again ..."
-                open https://phoenixnap.com/kb/install-maven-windows
+                start $TUTORIAL_LINK
                 exit 1
             ;;
         *)
@@ -151,9 +152,10 @@ function install_jdk(){
                 brew install java
             ;;
             MINGW64*)
+                local TUTORIAL_LINK="https://phoenixnap.com/kb/install-java-windows"
                 echo "Maven automatic installion is not supported by Windows yet."
                 echo "Follow this tutorial and try it again ..."
-                open https://phoenixnap.com/kb/install-java-windows
+                start $TUTORIAL_LINK
                 exit 1
             ;;
         *)
