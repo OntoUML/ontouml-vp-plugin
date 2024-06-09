@@ -10,9 +10,9 @@ OS=$(uname -s) # Gather OS Name
 USER=$(whoami) # Gather USER Name
 
 #OntoUML-Vp-Plugin Defaults
-repo_name="ontouml-vp-plugin"
-repo_url="https://github.com/propilideno/ontouml-vp-plugin/archive/refs/heads/master.zip"
-ontouml_plugin_path="ontouml-vp-plugin-0.5.3"
+repoName="ontouml-vp-plugin"
+repoUrl="https://github.com/propilideno/ontouml-vp-plugin/archive/refs/heads/master.zip"
+ontoumlPluginPath="ontouml-vp-plugin-0.5.3"
 
 # =========== Visual Paradigm Defaults ===========
 #App Default Path
@@ -101,16 +101,16 @@ get_vp_plugin_path(){
 download_plugin(){
     echo "Downloading OntoUML VP Plugin Repository ..."
     case "$(basename $(pwd))" in
-        $repo_name*) # Case ontouml-vp-plugin or ontouml-vp-plugin-master
+        $repoName*) # Case ontouml-vp-plugin or ontouml-vp-plugin-master
             echo "OntoUML Repository already downloaded, running the script ..."
         ;;
         *)
             echo "Downloading the OntoUML Repository ..."
-            rm -rf $repo_name-master
-            curl -sL $repo_url -o master-ontouml-temp.zip
+            rm -rf $repoName-master
+            curl -sL $repoUrl -o master-ontouml-temp.zip
             unzip master-ontouml-temp.zip
             rm -rf master-ontouml-temp.zip
-            cd $repo_name-master
+            cd $repoName-master
     esac
 }
 
@@ -183,7 +183,7 @@ install_ontouml_vp_plugin(){
     # Get the paths to write on pom.xml
     get_vp_app_path
     get_vp_plugin_path
-    if [ -d  "$pluginDir$ontouml_plugin_path" ]; then
+    if [ -d  "$pluginDir$ontoumlPluginPath" ]; then
         echo "<WARNING> ONTOUML PLUGIN INSTALLED!"
         while true; do
             read -p "Do you want proceed installation (y/n)?: " choice
@@ -259,10 +259,10 @@ clean_installation(){
         case "$choice" in
             y|Y )
                 case "$(basename $(pwd))" in
-                    $repo_name*) # Case ontouml-vp-plugin or ontouml-vp-plugin-master
+                    $repoName*) # Case ontouml-vp-plugin or ontouml-vp-plugin-master
                         echo "Cleaning temporary files, downloads, zips and ontouml-vp-plugin installation ..."
                         cd ..
-                        rm -rf $repo_name-master
+                        rm -rf $repoName-master
                         break;
                     ;;
                 esac
