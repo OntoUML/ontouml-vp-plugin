@@ -27,14 +27,14 @@ read_app_path(){
             y|Y ) [[ -d "$currentPath" ]] && break || printf "<FOLDER NOT FOUND> Type a valid path!\n";;
             n|N )
                 case "$OS" in
-                    MINGW64*) currentPath=$(powershell -Command "(New-Object -ComObject Shell.Application).BrowseForFolder(0, 'Select a folder', 0, 0).Self.Path");;
-					*) read -p "The path to your Visual Paradigm (APP FOLDER) is: " currentPath;;
+                    MINGW64*) 1=$(powershell -Command "(New-Object -ComObject Shell.Application).BrowseForFolder(0, 'Select a folder', 0, 0).Self.Path");;
+                    *) read -p "The path to your Visual Paradigm (APP FOLDER) is: " currentPath;;
                 esac
             ;;
             * ) printf "Invalid input\n";;
         esac
     done
-    app_dir="$currentPath"
+    appDir="$currentPath"
 }
 
 read_plugin_path(){
@@ -53,7 +53,7 @@ read_plugin_path(){
             * ) printf "Invalid input\n";;
         esac
     done
-    plugin_dir="$currentPath"
+    pluginDir="$currentPath"
 }
 
 get_vp_app_path(){
@@ -66,7 +66,7 @@ get_vp_app_path(){
         ;;
         MINGW64*)
             read_app_path "$VISUAL_PARADIGM_APP_DIR_WINDOWS"
-            app_dir=$(echo "$app_dir" | sed 's/\\/\\\\/g')
+            appDir=$(echo "$appDir" | sed 's/\\/\\\\/g')
         ;;
         *)
             echo "Operating System not Supported"
@@ -84,7 +84,7 @@ get_vp_plugin_path(){
         ;;
         MINGW64*)
             read_plugin_path "$VISUAL_PARADIGM_PLUGIN_DIR_WINDOWS"
-            plugin_dir=$(echo "$plugin_dir" | sed 's/\\/\\\\/g')
+            pluginDir=$(echo "$pluginDir" | sed 's/\\/\\\\/g')
         ;;
         *)
             echo "Operating System not Supported"
@@ -110,7 +110,7 @@ download_plugin(){
 
 # If the install fails, then print an error and exit.
 install_fail() {
-    echo "Installation failed"
+    echo "<FAIL> Installation failed"
     exit 1
 }
 
@@ -177,7 +177,7 @@ install_ontouml_vp_plugin(){
     # Get the paths to write on pom.xml
     get_vp_app_path
     get_vp_plugin_path
-    if [ -d  "$plugin_dir$ontouml_plugin_path" ]; then
+    if [ -d  "$pluginDir$ontouml_plugin_path" ]; then
         echo "<WARNING> ONTOUML PLUGIN INSTALLED!"
         while true; do
             read -p "Do you want proceed installation (y/n)?: " choice
@@ -191,12 +191,12 @@ install_ontouml_vp_plugin(){
     # Config pom.xml with gathered paths
     case "$OS" in
         Darwin*)
-            sed -i '' "s|<!-- APP_PATH -->|$app_dir|g" pom.xml # '' Before the regex is to prevent ISSUE on MacOS.
-            sed -i '' "s|<!-- PLUGIN_PATH -->|$plugin_dir|g" pom.xml # '' Before the regex is to prevent ISSUE on MacOS
+            sed -i '' "s|<!-- APP_PATH -->|$appDir|g" pom.xml # '' Before the regex is to prevent ISSUE on MacOS.
+            sed -i '' "s|<!-- PLUGIN_PATH -->|$pluginDir|g" pom.xml # '' Before the regex is to prevent ISSUE on MacOS
             ;;
         *)
-            sed -i "s|<!-- APP_PATH -->|$app_dir|g" pom.xml
-            sed -i "s|<!-- PLUGIN_PATH -->|$plugin_dir|g" pom.xml
+            sed -i "s|<!-- APP_PATH -->|$appDir|g" pom.xml
+            sed -i "s|<!-- PLUGIN_PATH -->|$pluginDir|g" pom.xml
     esac
     # Install plugin with Maven Wrapper
     ./mvnw install
@@ -211,7 +211,7 @@ install_visual_paradigm(){ #Development
 install_brew(){
     # Check if homebrew is installed
     if command -v brew &> /dev/null; then
-        echo "Homebrew is already installed"
+        echo "<PRESENT> Homebrew is already installed"
     else
         echo "Installing Homebrew ..."
         # if it's is not installed, then install it.
@@ -226,9 +226,7 @@ install_brew(){
 # to install for debian based distrOS (and ubuntu)
 install_shell_deps(){
     case "$OS" in
-        Darwin*)
-            install_brew
-            ;;
+        Darwin*) install_brew;;
         Linux*)
             if ! command -v unzip &> /dev/null; then
                 sudo apt-get install unzip
