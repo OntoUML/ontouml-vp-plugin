@@ -1,4 +1,10 @@
 #!/bin/bash
+
+# ===================================================
+# Author: Lucas Rodrigues de Almeida, @propilideno   |
+# Description: OntoUML installation with bash script |
+# ===================================================
+
 # OS Defaults
 OS=$(uname -s) # Gather OS Name
 USER=$(whoami) # Gather USER Name
@@ -213,6 +219,15 @@ install_brew(){
     if command -v brew &> /dev/null; then
         echo "<PRESENT> Homebrew is already installed"
     else
+        read -p "Do you want proceed installation (y/n)?: " choice
+        while true; do
+            read -p "Do you want proceed installation (y/n)?: " choice
+            case "$choice" in
+                y|Y ) break;;
+                n|N ) greetings ;;
+                * ) printf "Invalid input\n";;
+            esac
+        done
         echo "Installing Homebrew ..."
         # if it's is not installed, then install it.
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -261,12 +276,6 @@ clean_installation(){
 greetings(){
     printf "\n\n==> OntoUML was installed with SUCCESS !!!\n"
     echo "==> Contribute with us giving this repo a Star ⭐"
-    echo "Contributors:"
-    printf "\t - Claudenir Fonseca       |  @claudenirmf\n"
-    printf "\t - Tiago Prince Sales      |  @tgoprince\n"
-    printf "\t - Lucas Bassetti          |  @LucasBassetti\n"
-    printf "\t - Victor Viola            |  @victorviola\n"
-    printf "\t - Lucas de Almeida        |  @propilideno\n"
     exit 1
 }
 
