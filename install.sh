@@ -127,32 +127,6 @@ help(){
     echo "If u had problems try it: "chmod +x install.sh" or allow execution in properties"
 }
 
-install_maven(){ # Optional because Maven Wrapper
-    if command -v mvn &> /dev/null; then
-        echo "<PRESENT> Maven already installed."
-    else
-        echo "<MISSING> You're missing Maven"
-        case "$OS" in
-            Linux*)
-                sudo apt-get install maven
-            ;;
-            Darwin*)
-                brew install maven
-            ;;
-            MINGW64*)
-                local TUTORIAL_LINK="https://phoenixnap.com/kb/install-maven-windows"
-                echo "Maven automatic installion is not supported by Windows yet."
-                echo "Follow this tutorial and try it again ..."
-                start $TUTORIAL_LINK
-                exit 1
-            ;;
-        *)
-            echo "Operating System not Supported"
-            exit 1
-        esac
-    fi
-}
-
 install_jdk(){
     if command -v javac &> /dev/null; then
         echo "<PRESENT> JDK already installed."
@@ -214,34 +188,9 @@ install_visual_paradigm(){ #Development
     # https://www.visual-paradigm.com/download/?platform=linux&arch=64bit #Linux -> Visual_Paradigm_17_0_20230401_Linux64.sh
 }
 
-install_brew(){
-    # Check if homebrew is installed
-    if command -v brew &> /dev/null; then
-        echo "<PRESENT> Homebrew is already installed"
-    else
-        read -p "Do you want proceed installation (y/n)?: " choice
-        while true; do
-            read -p "Do you want proceed installation (y/n)?: " choice
-            case "$choice" in
-                y|Y ) break;;
-                n|N ) greetings ;;
-                * ) printf "Invalid input\n";;
-            esac
-        done
-        echo "Installing Homebrew ..."
-        # if it's is not installed, then install it.
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        # Check for what arcitecture, so you can place path.
-        #if [[ "uname -m" == "x86_64" ]]; then
-        #    echo "export PATH=/usr/local/bin:$PATH" >> ~/.bash_profile && source ~/.bash_profile
-        #fi
-    fi
-}
-
 # to install for debian based distrOS (and ubuntu)
 install_shell_deps(){
     case "$OS" in
-        Darwin*) install_brew;;
         Linux*)
             if ! command -v unzip &> /dev/null; then
                 sudo apt-get install unzip
@@ -286,7 +235,6 @@ install_main(){
     install_shell_deps || install_fail
     echo "Installing plugin dependencies ..."
     install_jdk || install_fail
-    #install_maven || install_fail # In this current state, maven isn't necessary. We're using Maven Wrapper
     #install_visual_paradigm || install_fail
     # Download the ontouml-vp-plugin repository
     download_plugin || install_fail
