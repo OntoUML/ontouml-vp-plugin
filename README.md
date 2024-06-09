@@ -102,7 +102,7 @@ ___
 - **Windows**, open `Git Bash` ;
 - **Linux / MacOS**, open `Terminal` and type:
 ```
-bash <(curl -sL https://raw.githubusercontent.com/propilideno/ontouml-vp-plugin/master/install.sh)
+bash <(curl -sL https://raw.githubusercontent.com/OntoUML/ontouml-vp-plugin/master/install.sh)
 ```
 ### Manual:
 
