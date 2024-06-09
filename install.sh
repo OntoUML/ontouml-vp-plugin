@@ -49,7 +49,18 @@ read_plugin_path(){
         echo "Visual Paradigm Plugin Path: $currentPath"
         read -p "Confirm (y/n)?: " choice
         case "$choice" in
-            y|Y ) [[ -d "$currentPath" ]] && break || printf "<FOLDER NOT FOUND> Type a valid path!\n";;
+            y|Y ) 
+				if [ -d "$currentPath" ]; then
+                    break
+                else
+                    read -p "<FOLDER NOT FOUND> Do you want to create this folder (y/n)?: " choice
+                    case "$choice" in
+                        y|Y ) mkdir -p $currentPath && break;;
+                        n|N ) ;;
+                        * ) printf "Invalid input\n";;
+                    esac
+                fi
+            ;;
             n|N )
                 case "$OS" in
                     MINGW64*) currentPath=$(powershell -Command "(New-Object -ComObject Shell.Application).BrowseForFolder(0, 'Select a folder', 0, 0).Self.Path");;
