@@ -166,14 +166,14 @@ install_jdk(){
                 brew install java
             ;;
             MINGW64*)
-                local TUTORIAL_LINK="https://phoenixnap.com/kb/install-java-windows"
+                local LINK="https://www.oracle.com/java/technologies/downloads/"
                 echo "JDK automatic installion is not supported by Windows yet."
-                echo "Follow this tutorial and try it again ..."
-                start $TUTORIAL_LINK
+                echo "Install JDK, restart your Git Bash and try it again ..."
+                start $LINK
                 exit 1
             ;;
         *)
-            echo "Operating System not Supported"
+            echo "<FAIL> Operating System not Supported"
             exit 1
         esac
     fi
