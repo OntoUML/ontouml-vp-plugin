@@ -33,7 +33,7 @@ read_app_path(){
             y|Y ) [[ -d "$currentPath" ]] && break || printf "<FOLDER NOT FOUND> Type a valid path!\n";;
             n|N )
                 case "$OS" in
-                    MINGW64*) 1=$(powershell -Command "(New-Object -ComObject Shell.Application).BrowseForFolder(0, 'Select a folder', 0, 0).Self.Path");;
+                    MINGW64*) currentPath=$(powershell -Command "(New-Object -ComObject Shell.Application).BrowseForFolder(0, 'Select a folder', 0, 0).Self.Path");;
                     *) read -p "The path to your Visual Paradigm (APP FOLDER) is: " currentPath;;
                 esac
             ;;
@@ -50,7 +50,7 @@ read_plugin_path(){
         read -p "Confirm (y/n)?: " choice
         case "$choice" in
             y|Y ) 
-				if [ -d "$currentPath" ]; then
+                if [ -d "$currentPath" ]; then
                     break
                 else
                     read -p "<FOLDER NOT FOUND> Do you want to create this folder (y/n)?: " choice
