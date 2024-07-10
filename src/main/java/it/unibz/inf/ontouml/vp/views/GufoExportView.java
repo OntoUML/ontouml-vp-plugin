@@ -109,11 +109,13 @@ public class GufoExportView extends JPanel {
     buttonsPanelTable1.setLayout(new GridBagLayout());
     buttonsPanelTable2.setLayout(new GridBagLayout());
 
-    mainPanel.setPreferredSize(new Dimension(650, 540));
-    elementMappingPanel.setPreferredSize(new Dimension(650, 480));
-    packageMappingPanel.setPreferredSize(new Dimension(650, 540));
+    int width = 750;
+
+    mainPanel.setPreferredSize(new Dimension(width, 540));
+    elementMappingPanel.setPreferredSize(new Dimension(width, 480));
+    packageMappingPanel.setPreferredSize(new Dimension(width, 540));
     optionsPanelLeft.setPreferredSize(new Dimension(280, 120));
-    optionsPanelRight.setPreferredSize(new Dimension(320, 120));
+    optionsPanelRight.setPreferredSize(new Dimension(420, 120));
     treePanel.setPreferredSize(new Dimension(600, 300));
     buttonsPanel.setPreferredSize(new Dimension(600, 40));
     buttonsPanelTable1.setPreferredSize(new Dimension(280, 40));
@@ -199,7 +201,7 @@ public class GufoExportView extends JPanel {
     optionsPanelLeft.add(uriFormatBox, gbc_insidePanelLeft);
 
     JLabel inverseLabel = new JLabel("Create inverse properties:");
-    JLabel objectLabel = new JLabel("Minimize property creation:");
+    JLabel objectLabel = new JLabel("Create properties corresponding to associations:");
     JLabel analysisLabel = new JLabel("Run pre analysis:");
     JLabel prefixPackageLabel = new JLabel("Add prefix per package:");
 
