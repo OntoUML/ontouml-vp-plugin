@@ -1,8 +1,21 @@
 package it.unibz.inf.ontouml.vp.views;
 
+import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.view.IDialog;
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
+import it.unibz.inf.ontouml.vp.controllers.LlmAccessController;
+import it.unibz.inf.ontouml.vp.controllers.WebSearchController;
+import it.unibz.inf.ontouml.vp.model.LlmConversationLog;
+import it.unibz.inf.ontouml.vp.model.SearchResult;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import it.unibz.inf.ontouml.vp.model.Configurations;
+import it.unibz.inf.ontouml.vp.model.LlmConfigurations;
+import it.unibz.inf.ontouml.vp.model.LlmProvider;
+import it.unibz.inf.ontouml.vp.model.SearchMode;
+import it.unibz.inf.ontouml.vp.model.SearchProvider;
 import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -27,6 +40,20 @@ public class ConfigurationsView extends JPanel {
   private JCheckBox _chckbxEnableAutoColoring;
   private JCheckBox _chckbxEnableSmartModelling;
 
+  private JComboBox<LlmProvider> _cmbLlmProvider;
+  private JPasswordField _txtLlmApiKey;
+  private JTextField _txtLlmBaseUrl;
+  private JTextField _txtLlmModel;
+  private JComboBox<SearchMode> _cmbSearchMode;
+  private final Map<SearchProvider, JCheckBox> _searchProviderBoxes = new LinkedHashMap<>();
+  private final Map<SearchProvider, JTextField> _searchCredentialFields = new LinkedHashMap<>();
+  private JButton _btnTestSearch;
+  private JButton _btnTestLlm;
+  private JLabel _lblLlmTestStatus;
+
+  private static final Color TEST_SUCCESS_COLOR = new Color(0, 128, 0);
+  private static final Color TEST_FAILURE_COLOR = Color.RED.darker();
+
   private JButton _btnApply;
   private JButton _btnResetDefaults;
 
@@ -36,24 +63,35 @@ public class ConfigurationsView extends JPanel {
 
   /** ConfigurationsView constructor. */
   public ConfigurationsView(ProjectConfigurations configurations) {
-    setSize(new Dimension(670, 180));
+    setSize(new Dimension(720, 560));
     GridBagLayout gridBagLayout = new GridBagLayout();
-    gridBagLayout.columnWidths = new int[] {670};
-    gridBagLayout.rowHeights = new int[] {26, 82, 25, 0};
+    gridBagLayout.columnWidths = new int[] {700};
+    gridBagLayout.rowHeights = new int[] {26, 420, 25, 0};
     gridBagLayout.columnWeights = new double[] {1.0};
-    gridBagLayout.rowWeights = new double[] {0.0, 0.0, 1.0, Double.MIN_VALUE};
+    // the options row takes the slack, so the groups keep their height and the dialog can shrink
+    gridBagLayout.rowWeights = new double[] {0.0, 1.0, 0.0, Double.MIN_VALUE};
     setLayout(gridBagLayout);
 
     JPanel _optionsPanel = new JPanel();
+
+    // the groups outgrew the dialog once the search services were added, so they scroll
+    final JScrollPane _optionsScroll = new JScrollPane(_optionsPanel);
+    _optionsScroll.setBorder(BorderFactory.createEmptyBorder());
+    _optionsScroll.getVerticalScrollBar().setUnitIncrement(16);
+
     GridBagConstraints gbc__optionsPanel = new GridBagConstraints();
-    gbc__optionsPanel.fill = GridBagConstraints.VERTICAL;
+    gbc__optionsPanel.fill = GridBagConstraints.BOTH;
+    gbc__optionsPanel.anchor = GridBagConstraints.NORTH;
+    gbc__optionsPanel.weightx = 1.0;
+    gbc__optionsPanel.weighty = 1.0;
     gbc__optionsPanel.gridx = 0;
     gbc__optionsPanel.gridy = 1;
-    add(_optionsPanel, gbc__optionsPanel);
-    _optionsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+    add(_optionsScroll, gbc__optionsPanel);
+    // GridBagLayout (instead of a FlowLayout) so the groups can follow the dialog's width
+    _optionsPanel.setLayout(new GridBagLayout());
 
     JPanel _ontoUMLServerPanel = new JPanel();
-    _optionsPanel.add(_ontoUMLServerPanel);
+    _optionsPanel.add(_ontoUMLServerPanel, leftAlignedRow(0));
     GridBagLayout gbl__ontoUMLServerPanel = new GridBagLayout();
     gbl__ontoUMLServerPanel.columnWidths = new int[] {290, 370, 0};
     gbl__ontoUMLServerPanel.rowHeights = new int[] {26, 0};
@@ -86,7 +124,7 @@ public class ConfigurationsView extends JPanel {
     _txtServerAddress.setColumns(10);
 
     JPanel _exportPanel = new JPanel();
-    _optionsPanel.add(_exportPanel);
+    _optionsPanel.add(_exportPanel, leftAlignedRow(1));
     GridBagLayout gbl__exportPanel = new GridBagLayout();
     gbl__exportPanel.columnWidths = new int[] {290, 247, 0, 0};
     gbl__exportPanel.rowHeights = new int[] {0, 0};
@@ -95,7 +133,7 @@ public class ConfigurationsView extends JPanel {
     _exportPanel.setLayout(gbl__exportPanel);
 
     JPanel _smartPanel = new JPanel();
-    _optionsPanel.add(_smartPanel);
+    _optionsPanel.add(_smartPanel, leftAlignedRow(2));
     GridBagLayout gbl__smartPanel = new GridBagLayout();
     gbl__smartPanel.columnWidths = new int[] {290, 247, 0, 0};
     gbl__smartPanel.rowHeights = new int[] {0, 0};
@@ -118,6 +156,168 @@ public class ConfigurationsView extends JPanel {
     gbc__chckbxEnableSmartModelling.gridx = 0;
     gbc__chckbxEnableSmartModelling.gridy = 1;
     _smartPanel.add(_chckbxEnableSmartModelling, gbc__chckbxEnableSmartModelling);
+
+    JPanel _llmPanel = new JPanel();
+    _llmPanel.setBorder(BorderFactory.createTitledBorder("AI Metaclass Suggestion"));
+    // the only group that stretches: its fields should use the full width available
+    _optionsPanel.add(_llmPanel, stretchedRow(3));
+    GridBagLayout gbl__llmPanel = new GridBagLayout();
+    gbl__llmPanel.columnWidths = new int[] {120, 0};
+    gbl__llmPanel.rowHeights = new int[] {26, 26, 26, 26, 26, 26, 26, 26, 0};
+    gbl__llmPanel.columnWeights = new double[] {0.0, 1.0};
+    gbl__llmPanel.rowWeights =
+        new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+    _llmPanel.setLayout(gbl__llmPanel);
+
+    GridBagConstraints gbc__lblLlmProvider = new GridBagConstraints();
+    gbc__lblLlmProvider.anchor = GridBagConstraints.WEST;
+    gbc__lblLlmProvider.insets = new Insets(0, 0, 0, 5);
+    gbc__lblLlmProvider.gridx = 0;
+    gbc__lblLlmProvider.gridy = 0;
+    _llmPanel.add(new JLabel("Provider:"), gbc__lblLlmProvider);
+
+    _cmbLlmProvider = new JComboBox<>(LlmProvider.values());
+    _cmbLlmProvider.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            applySelectedProviderDefaults();
+            updateComponentsStatus();
+          }
+        });
+    GridBagConstraints gbc__cmbLlmProvider = new GridBagConstraints();
+    gbc__cmbLlmProvider.fill = GridBagConstraints.HORIZONTAL;
+    gbc__cmbLlmProvider.gridx = 1;
+    gbc__cmbLlmProvider.gridy = 0;
+    _llmPanel.add(_cmbLlmProvider, gbc__cmbLlmProvider);
+
+    GridBagConstraints gbc__lblLlmApiKey = new GridBagConstraints();
+    gbc__lblLlmApiKey.anchor = GridBagConstraints.WEST;
+    gbc__lblLlmApiKey.insets = new Insets(0, 0, 0, 5);
+    gbc__lblLlmApiKey.gridx = 0;
+    gbc__lblLlmApiKey.gridy = 1;
+    _llmPanel.add(new JLabel("API Key:"), gbc__lblLlmApiKey);
+
+    _txtLlmApiKey = new JPasswordField();
+    GridBagConstraints gbc__txtLlmApiKey = new GridBagConstraints();
+    gbc__txtLlmApiKey.fill = GridBagConstraints.HORIZONTAL;
+    gbc__txtLlmApiKey.gridx = 1;
+    gbc__txtLlmApiKey.gridy = 1;
+    _llmPanel.add(_txtLlmApiKey, gbc__txtLlmApiKey);
+
+    GridBagConstraints gbc__lblLlmBaseUrl = new GridBagConstraints();
+    gbc__lblLlmBaseUrl.anchor = GridBagConstraints.WEST;
+    gbc__lblLlmBaseUrl.insets = new Insets(5, 0, 0, 5);
+    gbc__lblLlmBaseUrl.gridx = 0;
+    gbc__lblLlmBaseUrl.gridy = 2;
+    _llmPanel.add(new JLabel("Base URL:"), gbc__lblLlmBaseUrl);
+
+    _txtLlmBaseUrl = new JTextField();
+    GridBagConstraints gbc__txtLlmBaseUrl = new GridBagConstraints();
+    gbc__txtLlmBaseUrl.fill = GridBagConstraints.HORIZONTAL;
+    gbc__txtLlmBaseUrl.insets = new Insets(5, 0, 0, 0);
+    gbc__txtLlmBaseUrl.gridx = 1;
+    gbc__txtLlmBaseUrl.gridy = 2;
+    _llmPanel.add(_txtLlmBaseUrl, gbc__txtLlmBaseUrl);
+
+    GridBagConstraints gbc__lblLlmModel = new GridBagConstraints();
+    gbc__lblLlmModel.anchor = GridBagConstraints.WEST;
+    gbc__lblLlmModel.insets = new Insets(5, 0, 0, 5);
+    gbc__lblLlmModel.gridx = 0;
+    gbc__lblLlmModel.gridy = 3;
+    _llmPanel.add(new JLabel("Model:"), gbc__lblLlmModel);
+
+    _txtLlmModel = new JTextField();
+    GridBagConstraints gbc__txtLlmModel = new GridBagConstraints();
+    gbc__txtLlmModel.fill = GridBagConstraints.HORIZONTAL;
+    gbc__txtLlmModel.insets = new Insets(5, 0, 0, 0);
+    gbc__txtLlmModel.gridx = 1;
+    gbc__txtLlmModel.gridy = 3;
+    _llmPanel.add(_txtLlmModel, gbc__txtLlmModel);
+
+    GridBagConstraints gbc__lblSearchMode = new GridBagConstraints();
+    gbc__lblSearchMode.anchor = GridBagConstraints.WEST;
+    gbc__lblSearchMode.insets = new Insets(12, 0, 0, 5);
+    gbc__lblSearchMode.gridx = 0;
+    gbc__lblSearchMode.gridy = 4;
+    _llmPanel.add(new JLabel("Web research:"), gbc__lblSearchMode);
+
+    _cmbSearchMode = new JComboBox<>(SearchMode.values());
+    _cmbSearchMode.setToolTipText(
+        "How sources are researched when documenting a class. \"Search via the model\" only works"
+            + " on providers that support it (e.g. OpenRouter, Perplexity).");
+    _cmbSearchMode.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            updateComponentsStatus();
+          }
+        });
+    GridBagConstraints gbc__cmbSearchMode = new GridBagConstraints();
+    gbc__cmbSearchMode.fill = GridBagConstraints.HORIZONTAL;
+    gbc__cmbSearchMode.insets = new Insets(12, 0, 0, 0);
+    gbc__cmbSearchMode.gridx = 1;
+    gbc__cmbSearchMode.gridy = 4;
+    _llmPanel.add(_cmbSearchMode, gbc__cmbSearchMode);
+
+    GridBagConstraints gbc__searchProviders = new GridBagConstraints();
+    gbc__searchProviders.fill = GridBagConstraints.HORIZONTAL;
+    gbc__searchProviders.insets = new Insets(5, 0, 0, 0);
+    gbc__searchProviders.gridx = 0;
+    gbc__searchProviders.gridy = 5;
+    gbc__searchProviders.gridwidth = 2;
+    _llmPanel.add(buildSearchProvidersPanel(), gbc__searchProviders);
+
+    JPanel _llmTestPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+
+    _btnTestLlm = new JButton("Test");
+    _btnTestLlm.setToolTipText("Sends a minimal request to the endpoint above to validate it.");
+    _btnTestLlm.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            testLlmConnection();
+          }
+        });
+    _llmTestPanel.add(_btnTestLlm);
+
+    final JButton _btnEditPrompts = new JButton("Prompts & decision tree...");
+    _btnEditPrompts.setToolTipText(
+        "Reads and edits the prompts and the decision tree used by the AI classification.");
+    _btnEditPrompts.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            ApplicationManager.instance()
+                .getViewManager()
+                .showDialog(new LlmPromptSettingsView());
+          }
+        });
+    _btnTestSearch = new JButton("Test search");
+    _btnTestSearch.setToolTipText("Checks the web research setting above.");
+    _btnTestSearch.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            testSearch();
+          }
+        });
+    _llmTestPanel.add(Box.createHorizontalStrut(6));
+    _llmTestPanel.add(_btnTestSearch);
+
+    _llmTestPanel.add(Box.createHorizontalStrut(8));
+    _llmTestPanel.add(_btnEditPrompts);
+
+    _lblLlmTestStatus = new JLabel(" ");
+    _lblLlmTestStatus.setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 0));
+    _llmTestPanel.add(_lblLlmTestStatus);
+
+    GridBagConstraints gbc__llmTestPanel = new GridBagConstraints();
+    gbc__llmTestPanel.fill = GridBagConstraints.HORIZONTAL;
+    gbc__llmTestPanel.insets = new Insets(8, 0, 0, 0);
+    gbc__llmTestPanel.gridx = 1;
+    gbc__llmTestPanel.gridy = 7;
+    _llmPanel.add(_llmTestPanel, gbc__llmTestPanel);
 
     JPanel _controlButtonsPanel = new JPanel();
     GridBagConstraints gbc__controlButtonsPanel = new GridBagConstraints();
@@ -179,6 +379,281 @@ public class ConfigurationsView extends JPanel {
     updateComponentsStatus();
   }
 
+  private LlmProvider selectedProvider() {
+    final Object selected = _cmbLlmProvider.getSelectedItem();
+    return selected instanceof LlmProvider ? (LlmProvider) selected : LlmConfigurations.DEFAULT_PROVIDER;
+  }
+
+  /**
+   * Fills the URL and model fields from the provider picked in the combo. The model is only
+   * replaced while it still holds one of the built-in defaults, so a model the user typed is never
+   * discarded. For "Other" the URL is cleared so the user can type their own endpoint.
+   */
+  private void applySelectedProviderDefaults() {
+    final LlmProvider provider = selectedProvider();
+
+    if (provider.hasCustomBaseUrl()) {
+      if (LlmProvider.isKnownBaseUrl(_txtLlmBaseUrl.getText())) {
+        _txtLlmBaseUrl.setText("");
+      }
+    } else {
+      _txtLlmBaseUrl.setText(provider.getBaseUrl());
+    }
+
+    if (LlmProvider.isDefaultModel(_txtLlmModel.getText())) {
+      _txtLlmModel.setText(provider.getDefaultModel());
+    }
+
+    setLlmTestStatus(Color.GRAY, " ");
+  }
+
+  /** Constraints for a group that keeps its own width and stays on the left of the dialog. */
+  private static GridBagConstraints leftAlignedRow(int row) {
+    final GridBagConstraints gbc = new GridBagConstraints();
+    gbc.anchor = GridBagConstraints.WEST;
+    gbc.weightx = 1.0;
+    gbc.gridx = 0;
+    gbc.gridy = row;
+    return gbc;
+  }
+
+  /** Constraints for a group that follows the dialog's width as it is resized. */
+  private static GridBagConstraints stretchedRow(int row) {
+    final GridBagConstraints gbc = new GridBagConstraints();
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+    gbc.anchor = GridBagConstraints.NORTH;
+    gbc.weightx = 1.0;
+    gbc.insets = new Insets(5, 0, 0, 0);
+    gbc.gridx = 0;
+    gbc.gridy = row;
+    return gbc;
+  }
+
+  /**
+   * Validates the LLM endpoint currently typed into the form (not the saved one, so the values can
+   * be tried out before saving). The request runs off the event dispatch thread to keep the dialog
+   * responsive while it is in flight.
+   */
+  private void testLlmConnection() {
+    final LlmConfigurations probe = probeConfiguration();
+
+    _btnTestLlm.setEnabled(false);
+    setLlmTestStatus(Color.GRAY, "Testing...");
+
+    new SwingWorker<String, Void>() {
+      @Override
+      protected String doInBackground() throws Exception {
+        return LlmAccessController.testConnection(probe);
+      }
+
+      @Override
+      protected void done() {
+        _btnTestLlm.setEnabled(true);
+
+        try {
+          final String reply = get();
+          setLlmTestStatus(
+              TEST_SUCCESS_COLOR,
+              reply.isEmpty() ? "Connection OK." : "Connection OK — replied \"" + abbreviate(reply) + "\".");
+        } catch (Exception e) {
+          final Throwable cause = e.getCause() != null ? e.getCause() : e;
+          final String message = cause.getMessage();
+          setLlmTestStatus(
+              TEST_FAILURE_COLOR, message == null || message.isEmpty() ? "Test failed." : message);
+          e.printStackTrace();
+        }
+      }
+    }.execute();
+  }
+
+  /**
+   * One row per search service: enable as many as wanted, each with its own credential. The
+   * searcher tries them top to bottom and moves on when one fails, so a service that is down or
+   * out of quota does not stop the research.
+   */
+  private JPanel buildSearchProvidersPanel() {
+    final JPanel panel = new JPanel(new GridBagLayout());
+    panel.setBorder(BorderFactory.createTitledBorder("Search services (tried in this order)"));
+
+    int row = 0;
+
+    for (SearchProvider provider : SearchProvider.values()) {
+      final JCheckBox box = new JCheckBox(provider.getLabel());
+      box.addChangeListener(
+          new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+              updateComponentsStatus();
+            }
+          });
+      _searchProviderBoxes.put(provider, box);
+
+      final GridBagConstraints gbcBox = new GridBagConstraints();
+      gbcBox.anchor = GridBagConstraints.WEST;
+      gbcBox.insets = new Insets(2, 4, 2, 6);
+      gbcBox.gridx = 0;
+      gbcBox.gridy = row;
+      panel.add(box, gbcBox);
+
+      final JLabel credentialLabel = new JLabel(provider.getCredentialLabel() + ":");
+      final GridBagConstraints gbcLabel = new GridBagConstraints();
+      gbcLabel.anchor = GridBagConstraints.WEST;
+      gbcLabel.insets = new Insets(2, 0, 2, 6);
+      gbcLabel.gridx = 1;
+      gbcLabel.gridy = row;
+      panel.add(credentialLabel, gbcLabel);
+
+      final JTextField credential =
+          provider.isCredentialSecret() ? new JPasswordField() : new JTextField();
+      credential.setToolTipText(
+          provider == SearchProvider.SEARXNG
+              ? "URL of your SearXNG instance, e.g. http://localhost:8080."
+                  + " Its settings.yml must list json under formats."
+              : "API key for " + provider.getLabel() + ".");
+      _searchCredentialFields.put(provider, credential);
+
+      final GridBagConstraints gbcCredential = new GridBagConstraints();
+      gbcCredential.fill = GridBagConstraints.HORIZONTAL;
+      gbcCredential.weightx = 1.0;
+      gbcCredential.insets = new Insets(2, 0, 2, 4);
+      gbcCredential.gridx = 2;
+      gbcCredential.gridy = row;
+      panel.add(credential, gbcCredential);
+
+      row++;
+    }
+
+    return panel;
+  }
+
+  private static String credentialOf(JTextField field) {
+    return field instanceof JPasswordField
+        ? new String(((JPasswordField) field).getPassword())
+        : field.getText();
+  }
+
+  private List<SearchProvider> enabledSearchProviders() {
+    final List<SearchProvider> enabled = new ArrayList<>();
+
+    for (Map.Entry<SearchProvider, JCheckBox> entry : _searchProviderBoxes.entrySet()) {
+      if (entry.getValue().isSelected()) {
+        enabled.add(entry.getKey());
+      }
+    }
+
+    return enabled;
+  }
+
+  private SearchMode selectedSearchMode() {
+    final Object selected = _cmbSearchMode.getSelectedItem();
+    return selected instanceof SearchMode ? (SearchMode) selected : SearchMode.NONE;
+  }
+
+  /**
+   * Exercises the web research setting currently in the form. Only the search-API mode can be
+   * proven: with search done by the provider all we can do is show what came back and say so.
+   */
+  private void testSearch() {
+    final SearchMode mode = selectedSearchMode();
+
+    if (mode == SearchMode.NONE) {
+      setLlmTestStatus(Color.GRAY, "Web research is disabled — sources will be unverified.");
+      return;
+    }
+
+    final LlmConfigurations probe = probeConfiguration();
+    final String query = "Lei 14.133/2021 planalto.gov.br";
+
+    _btnTestSearch.setEnabled(false);
+    setLlmTestStatus(Color.GRAY, "Testing web research...");
+
+    new SwingWorker<String, Void>() {
+      @Override
+      protected String doInBackground() throws Exception {
+        if (mode == SearchMode.SEARCH_API) {
+          final List<SearchResult> results = WebSearchController.search(probe, query, 3);
+
+          return results.isEmpty()
+              ? ""
+              : results.size() + " result(s) — first: " + results.get(0).getTitle();
+        }
+
+        return LlmAccessController.testModelSearch(probe);
+      }
+
+      @Override
+      protected void done() {
+        _btnTestSearch.setEnabled(true);
+
+        try {
+          final String outcome = get();
+
+          if (outcome.isEmpty()) {
+            setLlmTestStatus(TEST_FAILURE_COLOR, "The search returned no results.");
+          } else if (mode == SearchMode.SEARCH_API) {
+            setLlmTestStatus(TEST_SUCCESS_COLOR, "Search OK — " + abbreviate(outcome));
+          } else if (!outcome.contains("http")) {
+            // no link back means the provider answered from memory rather than from the web
+            setLlmTestStatus(
+                TEST_FAILURE_COLOR,
+                "No URL in the answer — this provider is probably not searching: "
+                    + abbreviate(outcome));
+          } else {
+            setLlmTestStatus(
+                TEST_SUCCESS_COLOR, "Model returned a URL — " + abbreviate(outcome));
+          }
+        } catch (Exception e) {
+          final Throwable cause = e.getCause() != null ? e.getCause() : e;
+          final String message = cause.getMessage();
+          setLlmTestStatus(
+              TEST_FAILURE_COLOR, message == null || message.isEmpty() ? "Test failed." : message);
+          e.printStackTrace();
+        }
+
+        // the status line only carries a verdict; the log shows what was asked and what came back,
+        // including every service the rotation tried
+        showTestDetails();
+      }
+    }.execute();
+  }
+
+  /** A configuration built from what is typed in the form, so a test runs before saving. */
+  private LlmConfigurations probeConfiguration() {
+    final LlmConfigurations probe = new LlmConfigurations();
+
+    probe.setProvider(selectedProvider());
+    probe.setApiKey(new String(_txtLlmApiKey.getPassword()));
+    probe.setCustomBaseUrl(_txtLlmBaseUrl.getText().trim());
+    probe.setModel(_txtLlmModel.getText().trim());
+    probe.setSearchMode(selectedSearchMode());
+    probe.setSearchProviders(enabledSearchProviders());
+
+    for (Map.Entry<SearchProvider, JTextField> entry : _searchCredentialFields.entrySet()) {
+      probe.setSearchCredential(entry.getKey(), credentialOf(entry.getValue()).trim());
+    }
+
+    return probe;
+  }
+
+  /** Opens the conversation log so the request and the answer of a test can be inspected. */
+  private void showTestDetails() {
+    if (!LlmConversationLog.getInstance().isEmpty()) {
+      ApplicationManager.instance()
+          .getViewManager()
+          .showDialog(new LlmConversationLogView());
+    }
+  }
+
+  private void setLlmTestStatus(Color color, String message) {
+    _lblLlmTestStatus.setForeground(color);
+    _lblLlmTestStatus.setText(message);
+    _lblLlmTestStatus.setToolTipText(message);
+  }
+
+  private static String abbreviate(String text) {
+    final String singleLine = text.replaceAll("\\s+", " ").trim();
+    return singleLine.length() <= 60 ? singleLine : singleLine.substring(0, 60) + "...";
+  }
+
   /**
    * Sets a direct reference to the container dialog after initialization.
    *
@@ -199,6 +674,18 @@ public class ConfigurationsView extends JPanel {
 
     configurations.setAutomaticColoringEnabled(_chckbxEnableAutoColoring.isSelected());
     configurations.setSmartModellingEnabled(_chckbxEnableSmartModelling.isSelected());
+
+    final LlmConfigurations llmConfigurations = Configurations.getInstance().getLlmConfigurations();
+    llmConfigurations.setProvider(selectedProvider());
+    llmConfigurations.setApiKey(new String(_txtLlmApiKey.getPassword()));
+    llmConfigurations.setCustomBaseUrl(_txtLlmBaseUrl.getText());
+    llmConfigurations.setModel(_txtLlmModel.getText());
+    llmConfigurations.setSearchMode(selectedSearchMode());
+    llmConfigurations.setSearchProviders(enabledSearchProviders());
+
+    for (Map.Entry<SearchProvider, JTextField> entry : _searchCredentialFields.entrySet()) {
+      llmConfigurations.setSearchCredential(entry.getKey(), credentialOf(entry.getValue()));
+    }
   }
 
   /**
@@ -212,6 +699,20 @@ public class ConfigurationsView extends JPanel {
 
     _chckbxEnableAutoColoring.setSelected(configurations.isAutomaticColoringEnabled());
     _chckbxEnableSmartModelling.setSelected(configurations.isSmartModellingEnabled());
+
+    final LlmConfigurations llmConfigurations = Configurations.getInstance().getLlmConfigurations();
+    _cmbLlmProvider.setSelectedItem(llmConfigurations.getProvider());
+    _txtLlmApiKey.setText(llmConfigurations.getApiKey());
+    _txtLlmBaseUrl.setText(llmConfigurations.getEffectiveBaseUrl());
+    _txtLlmModel.setText(llmConfigurations.getModel());
+    _cmbSearchMode.setSelectedItem(llmConfigurations.getSearchMode());
+
+    final List<SearchProvider> enabled = llmConfigurations.getSearchProviders();
+
+    for (SearchProvider provider : SearchProvider.values()) {
+      _searchProviderBoxes.get(provider).setSelected(enabled.contains(provider));
+      _searchCredentialFields.get(provider).setText(llmConfigurations.getSearchCredential(provider));
+    }
   }
 
   /** Updates components with default values. */
@@ -223,6 +724,18 @@ public class ConfigurationsView extends JPanel {
         ProjectConfigurations.DEFAULT_IS_AUTOMATIC_COLORING_ENABLED);
     _chckbxEnableSmartModelling.setSelected(
         ProjectConfigurations.DEFAULT_IS_AUTOMATIC_COLORING_ENABLED);
+
+    _cmbLlmProvider.setSelectedItem(LlmConfigurations.DEFAULT_PROVIDER);
+    _txtLlmApiKey.setText("");
+    _txtLlmBaseUrl.setText(LlmConfigurations.DEFAULT_PROVIDER.getBaseUrl());
+    _txtLlmModel.setText(LlmConfigurations.DEFAULT_PROVIDER.getDefaultModel());
+    _cmbSearchMode.setSelectedItem(SearchMode.NONE);
+
+    for (SearchProvider provider : SearchProvider.values()) {
+      _searchProviderBoxes.get(provider).setSelected(false);
+      _searchCredentialFields.get(provider).setText("");
+    }
+    setLlmTestStatus(Color.GRAY, " ");
   }
 
   /** Updates enable/editable status of components based on their information. */
@@ -231,5 +744,23 @@ public class ConfigurationsView extends JPanel {
     _txtServerAddress.setEnabled(_chckbxEnableCustomServer.isSelected());
     _chckbxEnableAutoColoring.setEnabled(true);
     _chckbxEnableSmartModelling.setEnabled(true);
+    final LlmProvider provider = selectedProvider();
+    // the URL is only typed for "Other"; known providers take it from LlmProvider,
+    // and local ones need no credentials
+    _cmbLlmProvider.setEnabled(true);
+    _txtLlmApiKey.setEnabled(provider.requiresApiKey());
+    _txtLlmBaseUrl.setEnabled(provider.hasCustomBaseUrl());
+    _txtLlmModel.setEnabled(true);
+
+    // the search provider and its key only mean anything when the plugin does the searching
+    final boolean usesSearchApi = selectedSearchMode() == SearchMode.SEARCH_API;
+    _cmbSearchMode.setEnabled(true);
+
+    for (SearchProvider searchProvider : SearchProvider.values()) {
+      final JCheckBox box = _searchProviderBoxes.get(searchProvider);
+      box.setEnabled(usesSearchApi);
+      // a credential is only worth typing for a service that is switched on
+      _searchCredentialFields.get(searchProvider).setEnabled(usesSearchApi && box.isSelected());
+    }
   }
 }

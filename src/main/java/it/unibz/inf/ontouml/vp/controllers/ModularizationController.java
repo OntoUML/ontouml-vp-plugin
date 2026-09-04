@@ -55,6 +55,19 @@ public class ModularizationController implements VPActionController {
 
       e.printStackTrace();
       return List.of(e.getMessage());
+    } catch (RuntimeException e) {
+      // Without this the failure surfaces as SimpleServiceWorker's generic "internal error",
+      // which says nothing about which element the loader choked on.
+      final String message =
+          "The diagrams could not be generated while loading the service response: "
+              + e.getMessage();
+
+      if (!context.isCancelled()) {
+        ViewManagerUtils.log(message);
+      }
+
+      e.printStackTrace();
+      return List.of(message);
     }
   }
 }

@@ -38,6 +38,8 @@ public class Configurations {
   // Since Gson shows problems with the default serialization of ZonedDateTime we rely on strings
   @Expose() private String lastUpdatesCheck;
 
+  @Expose() private LlmConfigurations llm;
+
   private Configurations() {
     this.projects = new ArrayList<ProjectConfigurations>();
     this.releases = new ArrayList<>();
@@ -45,6 +47,7 @@ public class Configurations {
     this.latestAlphaRelease = null;
     this.installedRelease = null;
     this.lastUpdatesCheck = ZonedDateTime.now().toString();
+    this.llm = new LlmConfigurations();
   }
 
   private List<ProjectConfigurations> getProjectConfigurationsList() {
@@ -109,6 +112,20 @@ public class Configurations {
 
   public GitHubRelease getInstalledRelease() {
     return installedRelease;
+  }
+
+  /**
+   * Returns the LLM metaclass suggestion configurations, creating default ones if the
+   * workspace configuration file predates this feature.
+   *
+   * @return llm configurations
+   */
+  public LlmConfigurations getLlmConfigurations() {
+    if (llm == null) {
+      llm = new LlmConfigurations();
+    }
+
+    return llm;
   }
 
   /**

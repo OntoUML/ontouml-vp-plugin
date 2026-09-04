@@ -8,22 +8,132 @@
     <actionSet id="it.unibz.inf.ontouml.vp.actionset1">
       <toolbar
         id="it.unibz.inf.ontouml.vp.actionset1.toolbar1"
+        label="OntoUML Plugin"
         orientation="north"
         index="last"/>
 
-      <menu id="it.unibz.inf.ontouml.vp.actionset1.menu1"
-        menuPath="#it.unibz.inf.ontouml.vp.actionset1.toolbar1/#"/>
+      <menu id="it.unibz.inf.ontouml.vp.actionset1.menu1" label="OntoUML Plugin" mnemonic="O"
+        icon="icons/logo/ontouml-simple-logo-small.png"
+        toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/#"/>
+
+      <!--
+        Placement of the items below, verified empirically against Visual Paradigm 17.
+
+        Every item that belongs in the "OntoUML Plugin" drop-down must carry the explicit
+        toolbarPath "<toolbar1 id>/<menu1 id>/#". Two things do NOT work and were tried:
+
+          - nesting <action> inside <menu>: VP's parser casts an action's parse context to the
+            action sink (v.bfe.b) while a menu's child context only implements v.bfe.p, so nested
+            actions are silently dropped and the menu renders empty;
+          - omitting the trailing "/#": the actions are then scattered directly onto the toolbar
+            row instead of going into the drop-down.
+
+        Using menuPath instead of toolbarPath puts the item on the classic top menu bar.
+
+        The trailing "#" means "insert at the front of the menu", so every item ends up above the
+        previously declared one: the items below are therefore declared in reverse, and the
+        drop-down reads bottom-up (Check Model first, Report Error last).
+      -->
 
       <action
-        id="it.unibz.inf.ontouml.vp.actions.ModelVerificationAction"
+        id="it.unibz.inf.ontouml.vp.actions.ReportErrorAction"
         actionType="generalAction"
-        description="Tests if the model complies to OntoUML's syntactical constraints."
+        description="Opens a bug report form on the browser."
         style="normal"
-        tooltip="Tests if the model complies to OntoUML's syntactical constraints."
-        icon="icons/toolbar/check-circle-orange.png"
-        label="Check Model"
-        menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
-        <actionController class="it.unibz.inf.ontouml.vp.controllers.ModelVerificationController"/>
+        tooltip="Opens a bug report form on the browser."
+        icon="icons/toolbar/sign-orange.png"
+        label="Report Error"
+        toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
+        <actionController class="it.unibz.inf.ontouml.vp.controllers.ReportErrorController"/>
+      </action>
+
+      <action
+        id="it.unibz.inf.ontouml.vp.actions.SettingsMenuAction"
+        actionType="generalAction"
+        description="Opens the settings menu for the plugin."
+        style="normal"
+        tooltip="Opens the settings menu for the plugin."
+        icon="icons/toolbar/gear-orange.png"
+        label="Settings"
+        toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
+        <actionController class="it.unibz.inf.ontouml.vp.controllers.SettingsMenuController"/>
+      </action>
+
+      <action
+        id="it.unibz.inf.ontouml.vp.actions.ShowLlmLogAction"
+        actionType="generalAction"
+        description="Shows the AI conversations made in this session."
+        style="normal"
+        tooltip="Shows the prompts sent to the AI and its answers."
+        icon="icons/toolbar/list-orange.png"
+        label="AI Conversation Log"
+        toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
+        <actionController class="it.unibz.inf.ontouml.vp.controllers.ShowLlmLogController"/>
+      </action>
+
+      <action
+        id="it.unibz.inf.ontouml.vp.actions.UpdatePluginAction"
+        actionType="generalAction"
+        description="Opens the plugin update dialog."
+        style="normal"
+        tooltip="Opens the plugin update dialog."
+        icon="icons/toolbar/update-orange.png"
+        label="Update Plugin"
+        toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
+        <actionController class="it.unibz.inf.ontouml.vp.controllers.UpdatePluginController"/>
+      </action>
+
+      <separator id="it.unibz.inf.ontouml.vp.actionset1.menu1.separator2" toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#"/>
+
+      <action
+        id="it.unibz.inf.ontouml.vp.actions.GUFOExportAction"
+        actionType="generalAction"
+        description="Exports the OntoUML ontology to OWL gUFO."
+        style="normal"
+        tooltip="Exports the OntoUML ontology to OWL gUFO."
+        icon="icons/logo/ontouml-simple-logo-menu.png"
+        label="Export to gUFO"
+        toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
+        <actionController class="it.unibz.inf.ontouml.vp.controllers.GufoExportController"/>
+      </action>
+
+      <action
+        id="it.unibz.inf.ontouml.vp.actions.JsonExportAction"
+        actionType="generalAction"
+        description="Exports the project as a JSON file formatted according to the OntoUML JSON Schema."
+        style="normal"
+        tooltip="Exports the project as a JSON file formatted according to the OntoUML JSON Schema."
+        icon="icons/logo/ontouml-simple-logo-menu.png"
+        label="Export to JSON"
+        toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
+        <actionController class="it.unibz.inf.ontouml.vp.controllers.JsonImportAndExportController"/>
+      </action>
+
+      <action
+        id="it.unibz.inf.ontouml.vp.actions.JsonImportAction"
+        actionType="generalAction"
+        description="Imports a project from a JSON file formatted according to the OntoUML JSON Schema."
+        style="normal"
+        tooltip="Imports a project from a JSON file formatted according to the OntoUML JSON Schema."
+        icon="icons/logo/ontouml-simple-logo-menu.png"
+        label="Import from JSON"
+        toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
+        <actionController class="it.unibz.inf.ontouml.vp.controllers.JsonImportAndExportController"/>
+      </action>
+
+      <separator id="it.unibz.inf.ontouml.vp.actionset1.menu1.separator1" toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#"/>
+
+      <action
+        id="it.unibz.inf.ontouml.vp.actions.ModularizationAction"
+        actionType="generalAction"
+        description="Generates diagrams from identified OntoUML modules present in the project."
+        style="normal"
+        tooltip="Generates diagrams from identified OntoUML modules present in the project."
+        icon="icons/toolbar/plus-sign-in-circle-orange.png"
+        label="Generate Diagrams"
+        toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
+        <actionController
+          class="it.unibz.inf.ontouml.vp.controllers.ModularizationController"/>
       </action>
 
       <action
@@ -34,33 +144,20 @@
         tooltip="Tests if the model complies to OntoUML's syntactical constraints and filters the issues related to the open diagram."
         icon="icons/toolbar/check-mark-orange.png"
         label="Check Diagram"
-        menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
+        toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
         <actionController class="it.unibz.inf.ontouml.vp.controllers.ModelVerificationController"/>
       </action>
 
       <action
-        id="it.unibz.inf.ontouml.vp.actions.ModularizationAction"
+        id="it.unibz.inf.ontouml.vp.actions.ModelVerificationAction"
         actionType="generalAction"
-        description="Generates diagrams from identified OntoUML modules present in the project."
+        description="Tests if the model complies to OntoUML's syntactical constraints."
         style="normal"
-        tooltip="Generates diagrams from identified OntoUML modules present in the project."
-        icon="icons/toolbar/plus-sign-in-circle-orange.png"
-        label="Generate Diagrams"
-        menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
-        <actionController
-          class="it.unibz.inf.ontouml.vp.controllers.ModularizationController"/>
-      </action>
-
-      <action
-        id="it.unibz.inf.ontouml.vp.actions.JsonImportAction"
-        actionType="generalAction"
-        description="Imports a project from a JSON file formatted according to the OntoUML JSON Schema."
-        style="normal"
-        tooltip="Imports a project from a JSON file formatted according to the OntoUML JSON Schema."
-        icon="icons/logo/ontouml-simple-logo-small.png"
-        label="Import from JSON"
-        menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
-        <actionController class="it.unibz.inf.ontouml.vp.controllers.JsonImportAndExportController"/>
+        tooltip="Tests if the model complies to OntoUML's syntactical constraints."
+        icon="icons/toolbar/check-circle-orange.png"
+        label="Check Model"
+        toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
+        <actionController class="it.unibz.inf.ontouml.vp.controllers.ModelVerificationController"/>
       </action>
 
       <action
@@ -78,18 +175,6 @@
       <separator id="project.import.ontouml" ribbonPath="Project/Import/#"/>
 
       <action
-        id="it.unibz.inf.ontouml.vp.actions.JsonExportAction"
-        actionType="generalAction"
-        description="Exports the project as a JSON file formatted according to the OntoUML JSON Schema."
-        style="normal"
-        tooltip="Exports the project as a JSON file formatted according to the OntoUML JSON Schema."
-        icon="icons/logo/ontouml-simple-logo-small.png"
-        label="Export to JSON"
-        menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
-        <actionController class="it.unibz.inf.ontouml.vp.controllers.JsonImportAndExportController"/>
-      </action>
-
-      <action
         id="project.export.JsonExportAction"
         actionType="generalAction"
         description="Exports the project as a JSON file formatted according to the OntoUML JSON Schema."
@@ -99,18 +184,6 @@
         label="Export to JSON"
         ribbonPath="Project/Export/#">
         <actionController class="it.unibz.inf.ontouml.vp.controllers.JsonImportAndExportController"/>
-      </action>
-
-      <action
-        id="it.unibz.inf.ontouml.vp.actions.GUFOExportAction"
-        actionType="generalAction"
-        description="Exports the OntoUML ontology to OWL gUFO."
-        style="normal"
-        tooltip="Exports the OntoUML ontology to OWL gUFO."
-        icon="icons/logo/ontouml-simple-logo-small.png"
-        label="Export to gUFO"
-        menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
-        <actionController class="it.unibz.inf.ontouml.vp.controllers.GufoExportController"/>
       </action>
 
       <action
@@ -127,50 +200,14 @@
 
       <separator id="project.export.ontouml" ribbonPath="Project/Export/#"/>
 
-      <action
-        id="it.unibz.inf.ontouml.vp.actions.UpdatePluginAction"
-        actionType="generalAction"
-        description="Opens the plugin update dialog."
-        style="normal"
-        tooltip="Opens the plugin update dialog."
-        icon="icons/toolbar/update-orange.png"
-        label="Update Plugin"
-        menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
-        <actionController class="it.unibz.inf.ontouml.vp.controllers.UpdatePluginController"/>
-      </action>
-
-      <action
-        id="it.unibz.inf.ontouml.vp.actions.SettingsMenuAction"
-        actionType="generalAction"
-        description="Opens the settings menu for the plugin."
-        style="normal"
-        tooltip="Opens the settings menu for the plugin."
-        icon="icons/toolbar/gear-orange.png"
-        label="Settings"
-        menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
-        <actionController class="it.unibz.inf.ontouml.vp.controllers.SettingsMenuController"/>
-      </action>
-
-      <action
-        id="it.unibz.inf.ontouml.vp.actions.ReportErrorAction"
-        actionType="generalAction"
-        description="Opens a bug report form on the browser."
-        style="normal"
-        tooltip="Opens a bug report form on the browser."
-        icon="icons/toolbar/sign-orange.png"
-        label="Report Error"
-        menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
-        <actionController class="it.unibz.inf.ontouml.vp.controllers.ReportErrorController"/>
-      </action>
-
       <!--
+      Nest this inside the "OntoUML Plugin" menu above (with no path attribute) to re-enable it.
       <action
         id="it.unibz.inf.ontouml.vp.actions.ReloadClassesAction"
         actionType="generalAction"
         label="Reload Plugin - DEBUG"
         tooltip="Reload Plugin"
-        style="normal"
-        menuPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
+        style="normal">
         <actionController class="it.unibz.inf.ontouml.vp.controllers.ReloadClassesController"/>
       </action>
       -->
@@ -315,6 +352,25 @@
         style="toggle" menuPath="attributesPropertiesMenu/#">
         <actionController class="it.unibz.inf.ontouml.vp.controllers.ApplyPropertiesController"/>
       </action>
+
+    </contextSensitiveActionSet>
+
+    <contextSensitiveActionSet id="it.unibz.inf.ontouml.vp.SuggestMetaclass">
+      <contextTypes all="false"/>
+      <include type="Class"/>
+
+      <action id="it.unibz.inf.ontouml.vp.SuggestMetaclass.suggest" label="Suggest Metaclass (AI)..."
+        style="normal" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png">
+        <actionController class="it.unibz.inf.ontouml.vp.controllers.SuggestMetaclassController"/>
+      </action>
+
+      <action id="it.unibz.inf.ontouml.vp.SuggestMetaclass.document"
+        label="Document or improve documentation..." style="normal" menuPath="#"
+        icon="icons/logo/ontouml-simple-logo-small.png">
+        <actionController class="it.unibz.inf.ontouml.vp.controllers.DocumentClassController"/>
+      </action>
+
+      <separator id="it.unibz.inf.ontouml.vp.SuggestMetaclass.separator" menuPath="#"/>
 
     </contextSensitiveActionSet>
 
