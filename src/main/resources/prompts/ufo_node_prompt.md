@@ -18,6 +18,9 @@ Base your answer on the evidence about the class given below, in this order of w
 
 ## Questions already answered for this class
 
+Answers marked as decided by the modeller are settled: take them as given, do not reopen or
+second-guess them, and reason from them.
+
 {path}
 
 ## Question to answer now

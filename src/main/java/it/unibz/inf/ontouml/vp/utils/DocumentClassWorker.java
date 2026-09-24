@@ -27,18 +27,47 @@ public class DocumentClassWorker extends SwingWorker<SuggestionResult, Void> {
 
   private static final String DEFAULT_ERROR_MESSAGE = "The documentation request failed.";
 
-  /** One request per source, so the neighbourhood's reading list has to stay bounded. */
-  private static final int MAX_SOURCE_SUMMARIES = 8;
+  /**
+   * At least one request per source, so the reading list has to stay bounded. Raised from 8 when
+   * the pool grew from "the neighbours' references" to four origins; the collection order is what
+   * guarantees the class' own references are never the ones left out.
+   */
+  private static final int MAX_SOURCE_SUMMARIES = 12;
+
+  /**
+   * How many sources are even attempted. A source that cannot be read still costs a retrieval and
+   * often a search, and it does not count towards the summary cap — so without this, a model whose
+   * references have all rotted would keep the dialog busy for as long as it had references.
+   */
+  private static final int MAX_SOURCES_ATTEMPTED = 20;
 
   private final IClass targetClass;
   private final ProgressDialogHandler dialogHandler;
+
+  /** What the progress window shows: the steps below, and the one that is running. */
+  private final TaskProgress progress;
+
+  private final TaskProgress.Step contextStep;
+  private final TaskProgress.Step sourcesStep;
+  private final TaskProgress.Step researchStep;
+  private final TaskProgress.Step generationStep;
+  private final TaskProgress.Step linksStep;
 
   /** The documentation after missing links were looked up; set on the background thread. */
   private String resolved;
 
   public DocumentClassWorker(IClass targetClass) {
     this.targetClass = targetClass;
-    this.dialogHandler = new ProgressDialogHandler();
+
+    // declared in the order doInBackground runs them, so the list reads as the story of the run
+    this.progress = new TaskProgress("Documentando \"" + targetClass.getName() + "\"");
+    this.contextStep = progress.step("Contexto do modelo");
+    this.sourcesStep = progress.step("Leitura das fontes citadas no modelo");
+    this.researchStep = progress.step("Pesquisa na web");
+    this.generationStep = progress.step("Geração da documentação pelo modelo de IA");
+    this.linksStep = progress.step("Links das fontes citadas sem endereço");
+
+    this.dialogHandler = new ProgressDialogHandler(progress);
     this.dialogHandler.onCancel(e -> cancel(true));
   }
 
@@ -46,24 +75,53 @@ public class DocumentClassWorker extends SwingWorker<SuggestionResult, Void> {
   protected SuggestionResult doInBackground() throws Exception {
     dialogHandler.showDialog();
 
-    final LlmConfigurations config = Configurations.getInstance().getLlmConfigurations();
+    // waits for the provider's rate limit are counted down in this task's window
+    LlmRequestPacing.bind(progress);
 
-    final String prompt =
-        LlmPromptResources.getDocumentationPrompt()
-            .replace("{class}", LlmPromptContextBuilder.buildDocumentationClassSummary(targetClass))
-            .replace("{related}", LlmPromptContextBuilder.buildRelatedClassesSummary(targetClass))
-            .replace("{relatedSources}", summariseRelatedSources(config))
-            .replace("{search}", researchSection(config))
-            .replace("{template}", LlmPromptResources.getDocumentationTemplate());
+    try {
+      final LlmConfigurations config = Configurations.getInstance().getLlmConfigurations();
 
-    final SuggestionResult result =
-        LlmAccessController.requestDocumentation(config, targetClass.getName(), prompt);
+      progress.start(contextStep);
+      progress.activity("Lendo a classe e as classes relacionadas");
+      final String classSummary = LlmPromptContextBuilder.buildDocumentationClassSummary(targetClass);
+      final String relatedSummary = LlmPromptContextBuilder.buildRelatedClassesSummary(targetClass);
+      progress.finish(contextStep);
 
-    resolved =
-        DocumentationTemplate.withoutEmptySourceSections(
-            resolveMissingUrls(config, result.getExchange().getResponse()));
+      final String sources = summariseRelatedSources(config);
+      final String search = researchSection(config);
 
-    return result;
+      final String prompt =
+          LlmPromptResources.getDocumentationPrompt()
+              .replace("{class}", classSummary)
+              .replace("{related}", relatedSummary)
+              .replace("{relatedSources}", sources)
+              .replace("{search}", search)
+              .replace("{template}", LlmPromptResources.getDocumentationTemplate());
+
+      progress.start(generationStep);
+      progress.activity(
+          "Aguardando "
+              + config.getModel()
+              + " — o prompt tem "
+              + prompt.length()
+              + " caracteres");
+
+      final SuggestionResult result =
+          LlmAccessController.requestDocumentation(config, targetClass.getName(), prompt);
+
+      progress.finish(generationStep);
+
+      resolved =
+          DocumentationTemplate.withoutEmptySourceSections(
+              resolveMissingUrls(config, result.getExchange().getResponse()));
+
+      return result;
+    } catch (Exception e) {
+      progress.failRunning(e.getMessage());
+      throw e;
+    } finally {
+      LlmRequestPacing.unbind();
+    }
   }
 
   /**
@@ -76,14 +134,17 @@ public class DocumentClassWorker extends SwingWorker<SuggestionResult, Void> {
     if (documentation == null
         || config.getSearchMode() != SearchMode.SEARCH_API
         || !config.isSearchUsable()) {
+      progress.skip(linksStep, "só é feito com a pesquisa por API ligada");
       return documentation;
     }
 
     final DocumentationTemplate parsed = DocumentationTemplate.parse(documentation);
     String enriched = documentation;
 
+    progress.start(linksStep);
     enriched = withResolvedUrls(config, enriched, parsed.getNormativeSources(), true);
     enriched = withResolvedUrls(config, enriched, parsed.getSources(), false);
+    progress.finish(linksStep);
 
     return enriched;
   }
@@ -96,6 +157,8 @@ public class DocumentClassWorker extends SwingWorker<SuggestionResult, Void> {
       if (isCancelled() || DocumentationTemplate.urlOf(source) != null) {
         continue;
       }
+
+      progress.activity("Procurando o endereço de \"" + citationOf(source) + "\"");
 
       try {
         final String url =
@@ -238,105 +301,101 @@ public class DocumentClassWorker extends SwingWorker<SuggestionResult, Void> {
   }
 
   /**
-   * Reads the sources cited by the neighbouring classes through the lens of this one: each page is
-   * retrieved first and summarised in at most 50 words focused on the class being documented, and
-   * the summaries go into the prompt as further input. Nothing here is guaranteed to be used — it
-   * is offered as material, the way a retrieval step feeds a generation step.
+   * Reads every source the model itself points at — the class' own references first, then its
+   * neighbours', the diagrams it is drawn on and the packages above it — through the lens of this
+   * class. Each one is retrieved and summarised in at most 50 words, and the summaries go into the
+   * prompt as further input. Nothing here is guaranteed to be used: it is offered as material, the
+   * way a retrieval step feeds a generation step.
    *
-   * <p>Retrieval comes first and search only after it: when the cited link is dead, the search
-   * service is asked for another page carrying the same reference, and that one is retrieved in
-   * turn. What is summarised is always text that was actually read.
+   * <p>A source that could not be read is listed all the same, with the reason. It used to be
+   * dropped, which left the model unaware that the class cites that norm at all — and a citation
+   * the model cannot see is one it cannot carry over, however clearly the author put it there.
    */
   private String summariseRelatedSources(LlmConfigurations config) {
-    final List<RelatedSource> sources = LlmPromptContextBuilder.collectRelatedSources(targetClass);
+    progress.start(sourcesStep);
+    progress.activity("Procurando referências na classe, nas vizinhas, nos diagramas e nos pacotes");
+
+    final List<RelatedSource> sources = LlmPromptContextBuilder.collectSources(targetClass);
 
     if (sources.isEmpty()) {
-      return "(the related classes cite no references)";
+      progress.skip(sourcesStep, "nem a classe nem o que a cerca cita referências");
+
+      return "(neither this class nor its surroundings cite any reference)";
     }
 
+    final SourceSummarizer summarizer =
+        new SourceSummarizer(config, targetClass.getName(), this::isCancelled, progress);
+    final int total = Math.min(sources.size(), MAX_SOURCES_ATTEMPTED);
     final StringBuilder text = new StringBuilder();
     int summarised = 0;
+    int declared = 0;
+
+    progress.count(sourcesStep, 0, total);
 
     for (RelatedSource source : sources) {
-      if (isCancelled() || summarised >= MAX_SOURCE_SUMMARIES) {
+      if (isCancelled()
+          || summarised >= MAX_SOURCE_SUMMARIES
+          || summarised + declared >= MAX_SOURCES_ATTEMPTED) {
         break;
       }
 
-      String content = WebPageFetcher.fetch(source.getUrl());
-      source.setRetrievedFrom(content != null ? source.getUrl() : null);
+      // the counter says which source is being read now, so it moves before the read, not after
+      progress.count(sourcesStep, summarised + declared + 1, total);
+      progress.activity("Lendo \"" + source.getCaption() + "\" (" + source.getOrigin() + ")");
 
-      // the link died, or the publisher moved the document: the search service is there to find
-      // where else the same reference lives, and that page is then read the same way
-      if (content == null
-          && config.getSearchMode() == SearchMode.SEARCH_API
-          && config.isSearchUsable()) {
-        content = fromAnotherPage(config, source);
+      final boolean read = summarizer.read(source);
+
+      if (read) {
+        summarised++;
+      } else {
+        declared++;
       }
 
-      // with no content and no provider-side search there is nothing to summarise from: asking
-      // anyway would just get us the model's recollection of the URL
-      if (content == null && config.getSearchMode() != SearchMode.MODEL) {
-        continue;
-      }
-
-      try {
-        source.setSummary(
-            LlmAccessController.requestSourceSummary(
-                config,
-                targetClass.getName(),
-                source.getCaption(),
-                source.getRetrievedFrom(),
-                content));
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-
-      if (!source.hasSummary()) {
-        continue;
-      }
-
-      summarised++;
       text.append("- ")
           .append(source.getCaption())
-          .append("  (cited by ")
-          .append(source.getOriginClass())
-          .append(")\n")
-          .append("  URL: ")
-          .append(source.getUrl())
-          .append("\n");
+          .append("  (origem: ")
+          .append(source.getOrigin())
+          .append(")\n");
+
+      if (source.hasLocator()) {
+        text.append("  ").append(locatorLabel(source)).append(": ").append(source.getLocator())
+            .append("\n");
+      }
 
       if (source.wasRetrievedElsewhere()) {
         text.append("  read from: ").append(source.getRetrievedFrom()).append("\n");
       }
 
-      text.append("  ").append(source.getSummary().replaceAll("\\s+", " ").trim()).append("\n");
+      if (read) {
+        text.append("  ").append(source.getSummary().replaceAll("\\s+", " ").trim()).append("\n");
+      } else {
+        text.append("  [not read] ").append(source.getUnreadReason()).append("\n");
+      }
     }
 
-    return summarised == 0
-        ? "(none of the references cited by the related classes could be read)"
-        : text.toString();
+    // a finished step shows how many sources it went through, not how many it meant to
+    progress.count(sourcesStep, summarised + declared, summarised + declared);
+    progress.finish(sourcesStep);
+
+    System.out.println(
+        "Sources for \""
+            + targetClass.getName()
+            + "\": "
+            + sources.size()
+            + " found, "
+            + summarised
+            + " summarised, "
+            + declared
+            + " declared unread, "
+            + Math.max(0, sources.size() - summarised - declared)
+            + " not attempted.");
+
+    return text.toString();
   }
 
-  /**
-   * Asks the search service where else the same reference can be read, and retrieves that page.
-   *
-   * @return the text of the replacement page, or null when none could be read.
-   */
-  private String fromAnotherPage(LlmConfigurations config, RelatedSource source) {
-    try {
-      final SearchResult alternative =
-          WebSearchController.findRetrievablePage(config, source.getCaption());
-
-      if (alternative != null) {
-        source.setRetrievedFrom(alternative.getUrl());
-        return alternative.getContent();
-      }
-    } catch (Exception e) {
-      // no replacement found: the source is simply left unread
-      e.printStackTrace();
-    }
-
-    return null;
+  /** A file reference and a URL reference are cited differently, and the model needs to know which. */
+  private static String locatorLabel(RelatedSource source) {
+    return LocalFileFetcher.isFileLocator(source.getLocator()) ? "Arquivo" : "URL";
   }
 
   /**
@@ -351,24 +410,34 @@ public class DocumentClassWorker extends SwingWorker<SuggestionResult, Void> {
    */
   private String researchSection(LlmConfigurations config) {
     if (config.getSearchMode() == SearchMode.MODEL) {
+      progress.skip(researchStep, "feita pelo próprio provedor do modelo, durante a geração");
+
       return "You have web search available. Search for official sources about this class before"
           + " answering, and cite only pages you actually retrieved.";
     }
 
     if (config.getSearchMode() != SearchMode.SEARCH_API || !config.isSearchUsable()) {
+      progress.skip(researchStep, "desligada nas configurações");
+
       return "(no research was performed — no search results are available, so every source you"
           + " list must be marked (não verificado))";
     }
 
     final List<SearchResult> found = new ArrayList<>();
+    final List<String> queries = queries();
 
-    for (String query : queries()) {
+    progress.start(researchStep);
+
+    for (int i = 0; i < queries.size(); i++) {
       if (isCancelled()) {
         return "(research cancelled)";
       }
 
+      progress.count(researchStep, i, queries.size());
+      progress.activity("Pesquisando: " + queries.get(i));
+
       try {
-        found.addAll(WebSearchController.search(config, query));
+        found.addAll(WebSearchController.search(config, queries.get(i)));
       } catch (Exception e) {
         // a failed query must not sink the whole documentation: carry on with what we have
         e.printStackTrace();
@@ -378,6 +447,8 @@ public class DocumentClassWorker extends SwingWorker<SuggestionResult, Void> {
     final List<SearchResult> results = WebSearchController.deduplicate(found);
 
     if (results.isEmpty()) {
+      progress.finish(researchStep);
+
       return "(the search returned nothing — every source you list must be marked"
           + " (não verificado))";
     }
@@ -386,7 +457,10 @@ public class DocumentClassWorker extends SwingWorker<SuggestionResult, Void> {
       return "(research cancelled)";
     }
 
+    progress.activity("Lendo as páginas encontradas (" + results.size() + " candidatas)");
+
     final int pagesRead = WebSearchController.retrieve(config, results);
+    progress.finish(researchStep);
 
     if (pagesRead == 0) {
       return "(the search found pages, but none of them could be retrieved — what follows are"
@@ -412,7 +486,7 @@ public class DocumentClassWorker extends SwingWorker<SuggestionResult, Void> {
 
   @Override
   protected void done() {
-    dialogHandler.closeDialog();
+    dialogHandler.closeDialog(isCancelled());
 
     if (isCancelled()) {
       return;

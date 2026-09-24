@@ -60,6 +60,18 @@
       </action>
 
       <action
+        id="it.unibz.inf.ontouml.vp.actions.ShowBackgroundTasksAction"
+        actionType="generalAction"
+        description="Reopens the progress window of a task running in the background."
+        style="normal"
+        tooltip="Shows the tasks that are running in the background, and lets you cancel them."
+        icon="icons/toolbar/list-orange.png"
+        label="Running Tasks"
+        toolbarPath="it.unibz.inf.ontouml.vp.actionset1.toolbar1/it.unibz.inf.ontouml.vp.actionset1.menu1/#">
+        <actionController class="it.unibz.inf.ontouml.vp.controllers.ShowBackgroundTasksController"/>
+      </action>
+
+      <action
         id="it.unibz.inf.ontouml.vp.actions.ShowLlmLogAction"
         actionType="generalAction"
         description="Shows the AI conversations made in this session."

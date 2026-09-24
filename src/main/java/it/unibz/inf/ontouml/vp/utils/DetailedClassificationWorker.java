@@ -10,6 +10,7 @@ import it.unibz.inf.ontouml.vp.model.DecisionStep;
 import it.unibz.inf.ontouml.vp.model.DecisionTree;
 import it.unibz.inf.ontouml.vp.model.LlmConfigurations;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -21,13 +22,22 @@ import javax.swing.SwingWorker;
  * <p>Every answered question is published as soon as it arrives, so the window can show the
  * reasoning unfolding instead of only its conclusion. The walk stops at the first answer that
  * reaches a stereotype, or when the tree is exhausted or an answer cannot be matched.
+ *
+ * <p>A walk can also start part-way down the tree, carrying the steps already taken. That is what
+ * machine teaching uses: the modeller fixes the answer of one question, and the walk resumes from
+ * the branch that answer opens, with the earlier answers given to the model as settled.
  */
 public class DetailedClassificationWorker extends SwingWorker<String, DecisionStep> {
 
   /** Guards against a malformed tree sending the walk around in circles. */
   private static final int MAX_STEPS = 15;
 
+  /** Marks an answer the model must take as given rather than reconsider. */
+  private static final String TAUGHT_MARKER = "  (decided by the modeller — a fixed answer)";
+
   private final IClass targetClass;
+  private final List<DecisionStep> priorSteps;
+  private final String startNodeId;
   private final Consumer<String> onNodeEntered;
   private final Consumer<DecisionStep> onStep;
   private final BiConsumer<String, String> onFinished;
@@ -45,7 +55,24 @@ public class DetailedClassificationWorker extends SwingWorker<String, DecisionSt
       Consumer<String> onNodeEntered,
       Consumer<DecisionStep> onStep,
       BiConsumer<String, String> onFinished) {
+    this(targetClass, Collections.emptyList(), null, onNodeEntered, onStep, onFinished);
+  }
+
+  /**
+   * @param priorSteps the questions already settled, in order. They are not asked again: they only
+   *     seed the context given to the model and the step numbering.
+   * @param startNodeId the node to ask first; null starts the walk at the root of the tree.
+   */
+  public DetailedClassificationWorker(
+      IClass targetClass,
+      List<DecisionStep> priorSteps,
+      String startNodeId,
+      Consumer<String> onNodeEntered,
+      Consumer<DecisionStep> onStep,
+      BiConsumer<String, String> onFinished) {
     this.targetClass = targetClass;
+    this.priorSteps = new ArrayList<>(priorSteps);
+    this.startNodeId = startNodeId;
     this.onNodeEntered = onNodeEntered;
     this.onStep = onStep;
     this.onFinished = onFinished;
@@ -64,9 +91,13 @@ public class DetailedClassificationWorker extends SwingWorker<String, DecisionSt
     final String classSummary = LlmPromptContextBuilder.buildClassSummary(targetClass);
     final StringBuilder path = new StringBuilder();
 
-    String nodeId = tree.getStartNodeId();
+    for (DecisionStep prior : priorSteps) {
+      appendToPath(path, prior.getNumber(), prior.getQuestion(), prior.getAnswer(), prior.isTaught());
+    }
+
+    String nodeId = startNodeId == null ? tree.getStartNodeId() : startNodeId;
     DecisionNode node = tree.getNode(nodeId);
-    int stepNumber = 0;
+    int stepNumber = priorSteps.size();
 
     while (node != null && stepNumber < MAX_STEPS) {
       if (isCancelled()) {
@@ -97,9 +128,8 @@ public class DetailedClassificationWorker extends SwingWorker<String, DecisionSt
                 node.getQuestion(),
                 node.getOptionsAsText(),
                 answer.getAnswer() + "  (not one of the allowed answers — walk stopped)",
-                answer.getJustification(),
-                null,
-                answer.getExchange()));
+                answer,
+                null));
         return null;
       }
 
@@ -110,16 +140,10 @@ public class DetailedClassificationWorker extends SwingWorker<String, DecisionSt
               node.getQuestion(),
               node.getOptionsAsText(),
               option.getAnswer(),
-              answer.getJustification(),
-              option.getStereotype(),
-              answer.getExchange()));
+              answer,
+              option.getStereotype()));
 
-      path.append(stepNumber)
-          .append(". ")
-          .append(node.getQuestion())
-          .append("\n   → ")
-          .append(option.getAnswer())
-          .append("\n");
+      appendToPath(path, stepNumber, node.getQuestion(), option.getAnswer(), false);
 
       if (option.isLeaf()) {
         return option.getStereotype();
@@ -130,6 +154,18 @@ public class DetailedClassificationWorker extends SwingWorker<String, DecisionSt
     }
 
     return null;
+  }
+
+  /** One entry of the "questions already answered" block handed to the model. */
+  private static void appendToPath(
+      StringBuilder path, int number, String question, String answer, boolean taught) {
+    path.append(number)
+        .append(". ")
+        .append(question)
+        .append("\n   → ")
+        .append(answer)
+        .append(taught ? TAUGHT_MARKER : "")
+        .append("\n");
   }
 
   private void publishNodeEntered(String nodeId) {
@@ -173,7 +209,10 @@ public class DetailedClassificationWorker extends SwingWorker<String, DecisionSt
     }
   }
 
+  /** Every step of the walk, the ones it started from included. */
   public List<DecisionStep> getSteps() {
-    return steps;
+    final List<DecisionStep> all = new ArrayList<>(priorSteps);
+    all.addAll(steps);
+    return all;
   }
 }

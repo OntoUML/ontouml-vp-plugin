@@ -9,12 +9,20 @@ import java.util.List;
 /**
  * In-memory history of the LLM conversations of the current session, newest first.
  *
- * <p>It is deliberately not persisted: the prompts embed the user's model and the log is meant for
- * inspecting what was just asked, not for keeping a permanent record on disk.
+ * <p>Not persisted by default: the prompts embed the user's model, and the log is meant for
+ * inspecting what was just asked rather than for keeping a permanent record on disk. Turning on
+ * debug mode in the settings lifts the cap and mirrors every exchange to a file — see {@link
+ * it.unibz.inf.ontouml.vp.utils.DebugLogWriter}.
  */
 public class LlmConversationLog {
 
   private static final int MAX_ENTRIES = 25;
+
+  /**
+   * Still bounded while debugging, because this list lives in memory and backs a window — the full
+   * record is the file on disk, which has no cap.
+   */
+  private static final int MAX_ENTRIES_WHEN_DEBUGGING = 500;
 
   private static LlmConversationLog instance;
 
@@ -33,9 +41,16 @@ public class LlmConversationLog {
   public synchronized void record(LlmExchange exchange) {
     exchanges.addFirst(exchange);
 
-    while (exchanges.size() > MAX_ENTRIES) {
+    // Debug mode keeps everything. Documenting one class can produce a dozen exchanges — one per
+    // source retrieved, one per part of a long document — so with the cap on, the ones worth
+    // reading scroll out of the window before anyone opens it.
+    final boolean debug = it.unibz.inf.ontouml.vp.utils.DebugLogWriter.isEnabled();
+
+    while (exchanges.size() > (debug ? MAX_ENTRIES_WHEN_DEBUGGING : MAX_ENTRIES)) {
       exchanges.removeLast();
     }
+
+    it.unibz.inf.ontouml.vp.utils.DebugLogWriter.write(exchange);
   }
 
   /** The recorded conversations, newest first. */

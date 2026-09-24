@@ -1,43 +1,53 @@
 package it.unibz.inf.ontouml.vp.utils;
 
+import it.unibz.inf.ontouml.vp.model.LlmConfigurations;
+import it.unibz.inf.ontouml.vp.utils.DocumentExtractor.Extraction;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.charset.CharacterCodingException;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CodingErrorAction;
-import java.nio.charset.IllegalCharsetNameException;
-import java.nio.charset.StandardCharsets;
-import java.nio.charset.UnsupportedCharsetException;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.InflaterInputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Locale;
 
 /**
- * Downloads a page and reduces it to plain text, so a source can be summarised from what it
- * actually says instead of from what the model remembers about its URL.
+ * Downloads a source and reduces it to plain text, so it can be summarised from what it actually
+ * says instead of from what the model remembers about its URL.
  *
  * <p>This is the first thing to run once a source is known: a search service is there to
  * <em>find</em> pages, and its snippet is only an advertisement for one. Every URL that reaches
  * the prompt should have been retrieved here first, falling back to the snippet only when
  * retrieval genuinely failed.
  *
- * <p>Retrieval is attempted twice: in-process over {@code HttpURLConnection}, and — because plenty
- * of official sites answer a bare Java client with 403 or a TLS handshake it cannot complete — with
- * {@code curl}, which is present on macOS, Linux and Windows 10+ alike.
+ * <p>Retrieval goes through {@code curl} first. It carries its own TLS stack and redirect handling,
+ * and plenty of official sites answer a bare Java client with 403 or a handshake it cannot
+ * complete; {@code HttpURLConnection} stays as the fallback for a machine without curl.
+ *
+ * <p>What comes back is not always a page. A PDF, a spreadsheet or a Word file is written to a
+ * temporary file and handed to {@link DocumentExtractor} — before this it was simply dropped, and
+ * PDF is the format most Brazilian norms are published in.
  */
 public class WebPageFetcher {
 
   /** Enough of a page to summarise; keeps a long document from swamping the request. */
   private static final int MAX_CHARACTERS = 6000;
 
-  /** Cap on what is read off the wire, before markup is stripped. */
-  private static final int MAX_BYTES = MAX_CHARACTERS * 8;
+  /**
+   * How many bytes of markup to parse for a given number of characters of text.
+   *
+   * <p>This used to be a constant, {@code MAX_CHARACTERS * 8}, tuned for the 6.000-character search
+   * path and then applied to every caller — including the one that asks for 120.000. Lei 14.133
+   * arrived as its first 48 KB of HTML, which is the preamble and the definitions: the text stopped
+   * at art. 6º, so a class about "inviabilidade de competição" was told, truthfully, that art. 74
+   * was not in there. The budget has to follow what the caller asked for.
+   */
+  private static long bytesFor(int maxCharacters) {
+    return Math.min((long) maxCharacters * 8, MAX_DOCUMENT_BYTES);
+  }
+
+  /** A document is downloaded whole: a converter cannot make sense of half a PDF. */
+  private static final long MAX_DOCUMENT_BYTES = 64L * 1024 * 1024;
 
   private static final int TIMEOUT_MILLIS = 15000;
 
@@ -54,56 +64,89 @@ public class WebPageFetcher {
   private static final String ACCEPT =
       "text/html,application/xhtml+xml,application/xml;q=0.9,text/plain;q=0.8,*/*;q=0.7";
 
+  /** Settled on the first attempt of a session, so a machine without curl pays for one process. */
+  private static Boolean curlAvailable = null;
+
   /**
-   * Retrieves the page and returns it as plain text.
+   * Retrieves the source and returns it as plain text.
    *
    * @return the text, or null when it cannot be retrieved — the caller must treat that as "no
    *     content", never as an invitation to summarise from memory.
    */
-  public static String fetch(String url) {
-    return fetch(url, MAX_CHARACTERS);
+  public static String fetch(LlmConfigurations config, String url) {
+    return fetch(config, url, MAX_CHARACTERS);
   }
 
-  /** As {@link #fetch(String)}, keeping at most {@code maxCharacters} of the text. */
-  public static String fetch(String url, int maxCharacters) {
-    if (!isRetrievable(url)) {
-      return null;
-    }
+  /** As {@link #fetch(LlmConfigurations, String)}, keeping at most {@code maxCharacters} of the text. */
+  public static String fetch(LlmConfigurations config, String url, int maxCharacters) {
+    final Extraction extraction = retrieve(config, url, maxCharacters);
 
-    final Retrieval attempt = fetchOverHttp(url);
-    String raw = attempt.text;
-
-    // curl is worth trying when the request itself did not get through, but not when it did and
-    // the answer was simply not something this class can read — a PDF stays a PDF
-    if (raw == null && attempt.worthRetrying) {
-      raw = fetchWithCurl(url);
-    }
-
-    return raw == null ? null : toPlainText(raw, maxCharacters);
+    return extraction.succeeded() ? extraction.getText() : null;
   }
 
   /**
-   * The outcome of one retrieval attempt, so a second attempt is only made when it could plausibly
-   * do better than the first.
+   * As {@link #fetch(LlmConfigurations, String, int)}, but saying why there is no text. The reason is what lets a
+   * source that could not be read still be declared to the model instead of disappearing.
    */
-  private static final class Retrieval {
+  public static Extraction retrieve(LlmConfigurations config, String url, int maxCharacters) {
+    return retrieve(config, TaskProgress.silent(), url, maxCharacters);
+  }
 
-    /** The request did not get through; another client may fare better. */
-    private static final Retrieval FAILED = new Retrieval(null, true);
-
-    /** The page came back, but it is not text this class can read. Trying again changes nothing. */
-    private static final Retrieval UNUSABLE = new Retrieval(null, false);
-
-    private final String text;
-    private final boolean worthRetrying;
-
-    private Retrieval(String text, boolean worthRetrying) {
-      this.text = text;
-      this.worthRetrying = worthRetrying;
+  /**
+   * As {@link #retrieve(LlmConfigurations, String, int)}, telling {@code progress} what is being
+   * done as it goes: which client is downloading, and that a document is being converted.
+   */
+  public static Extraction retrieve(
+      LlmConfigurations config, TaskProgress progress, String url, int maxCharacters) {
+    if (!isRetrievable(url)) {
+      return Extraction.failed("não é uma URL http(s): " + url);
     }
 
-    private static Retrieval of(String text) {
-      return new Retrieval(text, false);
+    Attempt viaCurl = null;
+
+    if (!Boolean.FALSE.equals(curlAvailable)) {
+      progress.activity("Baixando com curl: " + shorten(url));
+      viaCurl = fetchWithCurl(config, progress, url, maxCharacters);
+
+      if (viaCurl.extraction.succeeded()) {
+        return viaCurl.extraction;
+      }
+    }
+
+    // the in-process client is worth a turn only when curl never got a body: if it did, and the
+    // body was something we cannot read, asking again over HTTP fetches the same bytes
+    if (viaCurl == null || viaCurl.worthAnotherClient) {
+      progress.activity("Baixando (HTTP): " + shorten(url));
+      final Extraction viaHttp = fetchOverHttp(config, progress, url, maxCharacters);
+
+      if (viaCurl != null) {
+        // the curl attempt is part of how we got here, whichever client ended up answering
+        for (String line : viaCurl.extraction.getTrail()) {
+          viaHttp.noting(line);
+        }
+      }
+
+      if (viaHttp.succeeded() || viaCurl == null) {
+        return viaHttp;
+      }
+    }
+
+    return viaCurl.extraction;
+  }
+
+  /**
+   * One retrieval attempt, and whether a different client could plausibly do better than it did.
+   * A response we downloaded but cannot read is the same response for everyone; a request that
+   * never completed is not.
+   */
+  private static final class Attempt {
+
+    private final Extraction extraction;
+    private final boolean worthAnotherClient;
+
+    private Attempt(Extraction extraction, boolean worthAnotherClient) {
+      this.extraction = extraction;
+      this.worthAnotherClient = worthAnotherClient;
     }
   }
 
@@ -133,10 +176,142 @@ public class WebPageFetcher {
   }
 
   /**
-   * Follows redirects by hand: {@code HttpURLConnection} drops the ones that switch protocol, and
-   * an http URL landing on its https twin is the most common shape a normative source takes.
+   * The main path: {@code curl} writes the body to a temporary file and reports the content type it
+   * saw, which is what tells a page from a document.
+   *
+   * <p>The process is started without a shell and the URL is known to begin with a scheme, so it
+   * cannot be taken for an option.
    */
-  private static Retrieval fetchOverHttp(String url) {
+  private static Attempt fetchWithCurl(
+      LlmConfigurations config, TaskProgress progress, String url, int maxCharacters) {
+    final String executable = ExternalCommand.resolve("curl");
+
+    if (executable == null) {
+      curlAvailable = Boolean.FALSE;
+      return new Attempt(
+          Extraction.failed("curl não encontrado")
+              .noting("curl: não encontrado em " + ExternalCommand.describeSearchedDirectories()),
+          true);
+    }
+
+    Path body = null;
+    final long startedAt = System.currentTimeMillis();
+
+    try {
+      body = Files.createTempFile("ontouml-source", null);
+
+      final ExternalCommand.Result result =
+          ExternalCommand.run(
+              ExternalCommand.argumentsOf(
+                  executable,
+                  "--silent",
+                  "--show-error",
+                  "--location",
+                  "--compressed",
+                  // without this a 404 error page is written out and read as if it were the source
+                  "--fail",
+                  "--max-redirs",
+                  String.valueOf(MAX_REDIRECTS),
+                  "--max-time",
+                  String.valueOf(TIMEOUT_MILLIS / 1000),
+                  "--max-filesize",
+                  String.valueOf(MAX_DOCUMENT_BYTES),
+                  "--user-agent",
+                  USER_AGENT,
+                  "--header",
+                  "Accept: " + ACCEPT,
+                  "--output",
+                  body.toString(),
+                  "--write-out",
+                  "%{content_type}",
+                  url.trim()),
+              TIMEOUT_MILLIS / 1000 * 2);
+
+      if (result == null) {
+        curlAvailable = Boolean.FALSE;
+        return new Attempt(
+            Extraction.failed("curl não pôde ser executado")
+                .noting("curl: " + executable + " não pôde ser iniciado neste processo"),
+            true);
+      }
+
+      curlAvailable = Boolean.TRUE;
+
+      if (!result.succeeded()) {
+        return new Attempt(
+            Extraction.failed("curl falhou em " + url + " (" + describe(result) + ")")
+                .noting("curl: " + executable + " → " + describe(result) + elapsed(startedAt)),
+            worthAnotherClient(result));
+      }
+
+      final String contentType = new String(result.getOutput()).trim();
+      final long size = body.toFile().length();
+
+      // the body is in hand: whatever we make of it, another client would get the same bytes
+      return new Attempt(
+          interpret(config, progress, body.toFile(), contentType, url, maxCharacters)
+              .notingFirst(
+                  "curl: "
+                      + executable
+                      + " → ok, "
+                      + (contentType.isEmpty() ? "sem content-type" : contentType)
+                      + ", "
+                      + size
+                      + " bytes"
+                      + elapsed(startedAt)),
+          false);
+    } catch (Exception e) {
+      return new Attempt(Extraction.failed("curl: " + e).noting("curl: " + e), true);
+    } finally {
+      deleteQuietly(body);
+    }
+  }
+
+  /**
+   * Decides what was downloaded and turns it into text. The bytes have the last word over the
+   * declared type: a PDF served with no {@code Content-Type} used to pass for HTML here, and markup
+   * stripping turned it into gibberish that reached the prompt as if it were the source.
+   */
+  private static Extraction interpret(
+      LlmConfigurations config,
+      TaskProgress progress,
+      File body,
+      String contentType,
+      String label,
+      int maxCharacters) {
+    if (!body.isFile() || body.length() == 0) {
+      return Extraction.failed("resposta vazia de " + label);
+    }
+
+    try {
+      final byte[] head = readUpTo(body, bytesFor(maxCharacters));
+
+      if (TextExtraction.looksBinary(head) || isDocument(contentType)) {
+        return DocumentExtractor.extract(config, progress, body, label, maxCharacters);
+      }
+
+      if (!isTextual(contentType)) {
+        return Extraction.failed("tipo de conteúdo não legível (" + contentType + ") em " + label);
+      }
+
+      final String text =
+          TextExtraction.toPlainText(TextExtraction.decode(head, contentType), maxCharacters);
+
+      return text == null
+          ? Extraction.failed("nada legível em " + label)
+          : Extraction.of(text);
+    } catch (Exception e) {
+      return Extraction.failed("não foi possível ler a resposta de " + label + ": " + e);
+    }
+  }
+
+  /**
+   * The fallback, for a machine without curl. Redirects are followed by hand:
+   * {@code HttpURLConnection} drops the ones that switch protocol, and an http URL landing on its
+   * https twin is the most common shape a normative source takes.
+   */
+  private static Extraction fetchOverHttp(
+      LlmConfigurations config, TaskProgress progress, String url, int maxCharacters) {
     String target = url.trim();
 
     for (int redirect = 0; redirect <= MAX_REDIRECTS; redirect++) {
@@ -159,7 +334,7 @@ public class WebPageFetcher {
           final String location = connection.getHeaderField("Location");
 
           if (location == null) {
-            return Retrieval.UNUSABLE;
+            return Extraction.failed("redirecionamento sem destino em " + target);
           }
 
           // relative Locations are legal, so resolve against the URL we asked for
@@ -168,24 +343,57 @@ public class WebPageFetcher {
         }
 
         if (status != HttpURLConnection.HTTP_OK) {
-          System.out.println("Could not retrieve " + target + ": HTTP " + status);
-          return worthAnotherClient(status) ? Retrieval.FAILED : Retrieval.UNUSABLE;
+          return Extraction.failed("HTTP " + status + " em " + target)
+              .noting("HttpURLConnection: HTTP " + status + " em " + target);
         }
 
         final String contentType = connection.getContentType();
 
-        if (!isTextual(contentType)) {
-          System.out.println(
-              "Skipped " + target + ": content type " + contentType + " is not text");
-          return Retrieval.UNUSABLE;
+        // How much to read is decided by what is coming. MAX_BYTES is "enough of a page to
+        // summarise", and applying it to a document hands the converter a file cut in half: a
+        // 508 KB PDF arrived as 49 KB and pdftotext answered "Couldn't read xref table". A
+        // document is read whole, up to the document cap.
+        final byte[] bytes =
+            read(
+                decompress(connection.getInputStream(), connection),
+                isDocument(contentType) ? MAX_DOCUMENT_BYTES : bytesFor(maxCharacters));
+
+        if (bytes.length == 0) {
+          return Extraction.failed("resposta vazia de " + target);
         }
 
-        final byte[] bytes = read(decompress(connection.getInputStream(), connection));
+        // a document has to be on disk for a converter to open it
+        if (isDocument(contentType)) {
+          return extractFromBytes(config, progress, bytes, target, maxCharacters);
+        }
 
-        return bytes.length == 0 ? Retrieval.UNUSABLE : Retrieval.of(decode(bytes, contentType));
+        // the server declared nothing (or lied) and the bytes are a document: what we hold is the
+        // truncated head of one, so it has to be fetched again under the document cap
+        if (TextExtraction.looksBinary(bytes)) {
+          return refetchAsDocument(config, progress, target, maxCharacters)
+              .noting("HttpURLConnection: documento não declarado, relido inteiro");
+        }
+
+        if (!isTextual(contentType)) {
+          return Extraction.failed(
+              "tipo de conteúdo não legível (" + contentType + ") em " + target);
+        }
+
+        final String text =
+            TextExtraction.toPlainText(TextExtraction.decode(bytes, contentType), maxCharacters);
+        final String note =
+            "HttpURLConnection: ok, "
+                + (contentType == null ? "sem content-type" : contentType)
+                + ", "
+                + bytes.length
+                + " bytes";
+
+        return text == null
+            ? Extraction.failed("nada legível em " + target).noting(note)
+            : Extraction.of(text).noting(note);
       } catch (Exception e) {
-        System.out.println("Could not retrieve " + target + " in process: " + e);
-        return Retrieval.FAILED;
+        return Extraction.failed("não foi possível acessar " + target + ": " + e)
+            .noting("HttpURLConnection: " + e);
       } finally {
         if (connection != null) {
           connection.disconnect();
@@ -193,120 +401,60 @@ public class WebPageFetcher {
       }
     }
 
-    // a redirect chain this long is a loop, and curl would only walk the same one
-    return Retrieval.UNUSABLE;
+    return Extraction.failed("cadeia de redirecionamentos longa demais a partir de " + url);
   }
 
-  /**
-   * The second attempt, for the pages the in-process client cannot get: {@code curl} carries its
-   * own TLS stack and redirect handling, and is what a user would reach for to check the same URL.
-   *
-   * <p>The process is started without a shell and the URL is known to begin with a scheme, so it
-   * cannot be taken for an option.
-   */
-  private static String fetchWithCurl(String url) {
-    Process process = null;
+  private static Extraction extractFromBytes(
+      LlmConfigurations config,
+      TaskProgress progress,
+      byte[] bytes,
+      String label,
+      int maxCharacters) {
+    Path body = null;
 
     try {
-      final ProcessBuilder builder =
-          new ProcessBuilder(
-              "curl",
-              "--silent",
-              "--show-error",
-              "--location",
-              "--compressed",
-              "--max-redirs",
-              String.valueOf(MAX_REDIRECTS),
-              "--max-time",
-              String.valueOf(TIMEOUT_MILLIS / 1000),
-              "--user-agent",
-              USER_AGENT,
-              "--header",
-              "Accept: " + ACCEPT,
-              url.trim());
+      body = Files.createTempFile("ontouml-source", null);
+      Files.write(body, bytes);
 
-      builder.redirectErrorStream(false);
-      process = builder.start();
-
-      // reading stops at MAX_BYTES, so a long document leaves curl still writing: killing it there
-      // is deliberate — we have all the text we were going to keep
-      final byte[] bytes = read(process.getInputStream());
-      final boolean truncated = bytes.length >= MAX_BYTES;
-
-      if (!truncated && !process.waitFor(TIMEOUT_MILLIS * 2L, TimeUnit.MILLISECONDS)) {
-        return null;
-      }
-
-      if (!truncated && (process.exitValue() != 0 || bytes.length == 0)) {
-        System.out.println(
-            "curl could not retrieve "
-                + url
-                + (process.exitValue() == 0
-                    ? " (empty response)"
-                    : " (exit " + process.exitValue() + ")"));
-        return null;
-      }
-
-      if (bytes.length == 0 || looksBinary(bytes)) {
-        return null;
-      }
-
-      return decode(bytes, null);
+      return DocumentExtractor.extract(config, progress, body.toFile(), label, maxCharacters);
     } catch (Exception e) {
-      // curl missing, or blocked from running: the caller simply gets "no content"
-      System.out.println("curl is unavailable for " + url + ": " + e);
-      return null;
+      return Extraction.failed("não foi possível guardar o documento de " + label + ": " + e);
     } finally {
-      if (process != null && process.isAlive()) {
-        process.destroyForcibly();
-      }
+      deleteQuietly(body);
     }
   }
 
-  /**
-   * Whether the bytes are a document rather than text. curl reports no content type of its own, and
-   * a PDF or an image put through markup stripping yields gibberish, not a source.
-   */
-  private static boolean looksBinary(byte[] bytes) {
-    // the document format most often linked as a normative source, and the one this class cannot
-    // read at all
-    if (bytes.length >= 4
-        && bytes[0] == '%'
-        && bytes[1] == 'P'
-        && bytes[2] == 'D'
-        && bytes[3] == 'F') {
+  /** Whether the response is a document a converter may open rather than markup to strip. */
+  private static boolean isDocument(String contentType) {
+    if (contentType == null) {
+      return false;
+    }
+
+    final String type = contentType.toLowerCase(Locale.ROOT);
+
+    return type.contains("pdf")
+        || type.contains("msword")
+        || type.contains("officedocument")
+        || type.contains("ms-excel")
+        || type.contains("ms-powerpoint")
+        || type.contains("opendocument")
+        || type.contains("rtf");
+  }
+
+  /** Whether the response is something markup stripping can make sense of. A PDF is not. */
+  private static boolean isTextual(String contentType) {
+    if (contentType == null || contentType.isEmpty()) {
+      // servers that declare nothing are usually serving HTML; the byte check above already
+      // caught the ones that were not
       return true;
     }
 
-    final int sampled = Math.min(bytes.length, 1024);
-    int control = 0;
+    final String type = contentType.toLowerCase(Locale.ROOT);
 
-    for (int i = 0; i < sampled; i++) {
-      final byte value = bytes[i];
-
-      if (value == 0) {
-        return true;
-      }
-
-      if (value > 0 && value < 0x09) {
-        control++;
-      }
-    }
-
-    return control * 100 > sampled;
-  }
-
-  /**
-   * Whether a second client could get further than this status suggests. A page that is gone is
-   * gone for {@code curl} too; a refusal or a throttle, on the other hand, is often aimed at the
-   * client that asked.
-   */
-  private static boolean worthAnotherClient(int status) {
-    return status == HttpURLConnection.HTTP_UNAUTHORIZED
-        || status == HttpURLConnection.HTTP_FORBIDDEN
-        || status == HttpURLConnection.HTTP_NOT_ACCEPTABLE
-        || status == 429
-        || status >= 500;
+    return type.startsWith("text/")
+        || type.contains("html")
+        || type.contains("xml")
+        || type.contains("json");
   }
 
   private static boolean isRedirect(int status) {
@@ -315,21 +463,6 @@ public class WebPageFetcher {
         || status == HttpURLConnection.HTTP_SEE_OTHER
         || status == 307
         || status == 308;
-  }
-
-  /** Whether the response is something markup stripping can make sense of. A PDF is not. */
-  private static boolean isTextual(String contentType) {
-    if (contentType == null) {
-      // servers that declare nothing are usually serving HTML; let the parse decide
-      return true;
-    }
-
-    final String type = contentType.toLowerCase();
-
-    return type.startsWith("text/")
-        || type.contains("html")
-        || type.contains("xml")
-        || type.contains("json");
   }
 
   private static InputStream decompress(InputStream stream, HttpURLConnection connection)
@@ -341,22 +474,22 @@ public class WebPageFetcher {
     }
 
     if (encoding.equalsIgnoreCase("gzip")) {
-      return new GZIPInputStream(stream);
+      return new java.util.zip.GZIPInputStream(stream);
     }
 
     if (encoding.equalsIgnoreCase("deflate")) {
-      return new InflaterInputStream(stream);
+      return new java.util.zip.InflaterInputStream(stream);
     }
 
     return stream;
   }
 
-  private static byte[] read(InputStream stream) throws java.io.IOException {
+  private static byte[] read(InputStream stream, long maxBytes) throws java.io.IOException {
     final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     final byte[] chunk = new byte[8192];
     int count;
 
-    while (buffer.size() < MAX_BYTES && (count = stream.read(chunk)) != -1) {
+    while (buffer.size() < maxBytes && (count = stream.read(chunk)) != -1) {
       buffer.write(chunk, 0, count);
     }
 
@@ -366,152 +499,103 @@ public class WebPageFetcher {
   }
 
   /**
-   * Decodes with the charset the server declared, or the one the document declares about itself.
-   * Guessing UTF-8 for a page served as ISO-8859-1 is how "resolução" reaches the model as
-   * "resolu&#65533;&#65533;o".
+   * Downloads again, keeping the whole body, for a document the server did not declare as one. The
+   * second request is the price of a publisher that serves a PDF with no {@code Content-Type}; the
+   * alternative is handing a converter a truncated file, which fails in a way that reads like a
+   * broken document rather than a truncated download.
    */
-  private static String decode(byte[] bytes, String contentType) {
-    Charset charset = charsetOf(contentType);
-
-    if (charset == null) {
-      // the declaration inside the document is ASCII-compatible in every charset we may be facing
-      charset = charsetOf(new String(bytes, StandardCharsets.ISO_8859_1));
-    }
-
-    return new String(bytes, charset == null ? sniff(bytes) : charset);
-  }
-
-  /**
-   * The charset of a page that declares none — planalto.gov.br, the single most important publisher
-   * for this plugin, is one of them. Defaulting to UTF-8 there turns every accent into a
-   * replacement character, so the bytes decide: they are UTF-8 if they are valid UTF-8, and the
-   * legacy Latin encoding otherwise.
-   */
-  private static Charset sniff(byte[] bytes) {
-    final CharsetDecoder decoder =
-        StandardCharsets.UTF_8
-            .newDecoder()
-            .onMalformedInput(CodingErrorAction.REPORT)
-            .onUnmappableCharacter(CodingErrorAction.REPORT);
+  private static Extraction refetchAsDocument(
+      LlmConfigurations config, TaskProgress progress, String target, int maxCharacters) {
+    HttpURLConnection connection = null;
 
     try {
-      // the read stops at a byte count, so the last few bytes may be half of a character that was
-      // never going to arrive — judging the encoding by those would be judging our own truncation
-      decoder.decode(ByteBuffer.wrap(bytes, 0, Math.max(0, bytes.length - 4)));
-      return StandardCharsets.UTF_8;
-    } catch (CharacterCodingException e) {
-      return LEGACY_LATIN;
-    }
-  }
+      connection = (HttpURLConnection) new URL(target).openConnection();
+      connection.setRequestMethod("GET");
+      connection.setConnectTimeout(TIMEOUT_MILLIS);
+      connection.setReadTimeout(TIMEOUT_MILLIS);
+      connection.setRequestProperty("User-Agent", USER_AGENT);
+      connection.setRequestProperty("Accept", ACCEPT);
 
-  /** windows-1252, the encoding of the Brazilian official pages written before UTF-8 was assumed. */
-  private static final Charset LEGACY_LATIN = legacyLatin();
+      final byte[] bytes =
+          read(decompress(connection.getInputStream(), connection), MAX_DOCUMENT_BYTES);
 
-  private static Charset legacyLatin() {
-    try {
-      return Charset.forName("windows-1252");
-    } catch (IllegalCharsetNameException | UnsupportedCharsetException e) {
-      return StandardCharsets.ISO_8859_1;
-    }
-  }
-
-  private static final Pattern CHARSET =
-      Pattern.compile("charset\\s*=\\s*[\"']?([A-Za-z0-9_:.\\-]+)", Pattern.CASE_INSENSITIVE);
-
-  private static Charset charsetOf(String declaration) {
-    if (declaration == null) {
-      return null;
-    }
-
-    final Matcher matcher = CHARSET.matcher(declaration);
-
-    if (!matcher.find()) {
-      return null;
-    }
-
-    try {
-      return Charset.forName(matcher.group(1));
-    } catch (IllegalCharsetNameException | UnsupportedCharsetException e) {
-      return null;
-    }
-  }
-
-  /**
-   * Strips the markup, keeping the line structure: the blocks a page is written in are what make
-   * the text readable, both to the model and to whoever opens the AI Conversation Log.
-   */
-  private static String toPlainText(String html, int maxCharacters) {
-    final String withoutNoise =
-        html.replaceAll("(?is)<script.*?</script>", " ")
-            .replaceAll("(?is)<style.*?</style>", " ")
-            .replaceAll("(?is)<head.*?</head>", " ")
-            .replaceAll("(?is)<noscript.*?</noscript>", " ")
-            .replaceAll("(?s)<!--.*?-->", " ");
-
-    final String broken =
-        withoutNoise
-            .replaceAll("(?i)<br\\s*/?>", "\n")
-            .replaceAll("(?i)</(p|div|li|tr|h[1-6]|section|article|header|footer|table)\\s*>", "\n")
-            .replaceAll(
-                "(?i)<(p|div|li|tr|h[1-6]|section|article|header|footer|table)[^>]*>", "\n");
-
-    final String stripped =
-        decodeEntities(broken.replaceAll("(?s)<[^>]+>", " "))
-            // spaces and tabs collapse, newlines survive
-            .replaceAll("[ \\t\\x0B\\f\\u00a0]+", " ")
-            .replaceAll(" ?\\r?\\n ?", "\n")
-            .replaceAll("\\n{3,}", "\n\n")
-            .trim();
-
-    if (stripped.isEmpty()) {
-      return null;
-    }
-
-    return stripped.length() <= maxCharacters ? stripped : stripped.substring(0, maxCharacters);
-  }
-
-  /**
-   * Decodes the character entities a page is likely to carry. Accented ones matter here: leaving
-   * "comiss&atilde;o" in the text would hand the model mangled Portuguese to summarise.
-   */
-  private static String decodeEntities(String text) {
-    String decoded = text;
-
-    // numeric, decimal and hexadecimal
-    final Matcher numeric = Pattern.compile("&#(x?)([0-9a-fA-F]+);").matcher(decoded);
-    final StringBuffer buffer = new StringBuffer();
-
-    while (numeric.find()) {
-      try {
-        final int code =
-            Integer.parseInt(numeric.group(2), numeric.group(1).isEmpty() ? 10 : 16);
-        numeric.appendReplacement(buffer, Matcher.quoteReplacement(String.valueOf((char) code)));
-      } catch (NumberFormatException e) {
-        numeric.appendReplacement(buffer, Matcher.quoteReplacement(numeric.group()));
+      return bytes.length == 0
+          ? Extraction.failed("resposta vazia ao reler " + target)
+          : extractFromBytes(config, progress, bytes, target, maxCharacters);
+    } catch (Exception e) {
+      return Extraction.failed("não foi possível reler " + target + ": " + e);
+    } finally {
+      if (connection != null) {
+        connection.disconnect();
       }
     }
-
-    numeric.appendTail(buffer);
-    decoded = buffer.toString();
-
-    for (int i = 0; i < NAMED_ENTITIES.length; i += 2) {
-      decoded = decoded.replace(NAMED_ENTITIES[i], NAMED_ENTITIES[i + 1]);
-    }
-
-    return decoded;
   }
 
-  private static final String[] NAMED_ENTITIES = {
-    "&nbsp;", " ", "&lt;", "<", "&gt;", ">", "&quot;", "\"", "&apos;", "'",
-    "&aacute;", "á", "&agrave;", "à", "&atilde;", "ã", "&acirc;", "â", "&auml;", "ä",
-    "&eacute;", "é", "&ecirc;", "ê", "&egrave;", "è", "&iacute;", "í", "&icirc;", "î",
-    "&oacute;", "ó", "&otilde;", "õ", "&ocirc;", "ô", "&ouml;", "ö",
-    "&uacute;", "ú", "&ucirc;", "û", "&uuml;", "ü", "&ccedil;", "ç", "&ntilde;", "ñ",
-    "&Aacute;", "Á", "&Atilde;", "Ã", "&Acirc;", "Â", "&Eacute;", "É", "&Ecirc;", "Ê",
-    "&Iacute;", "Í", "&Oacute;", "Ó", "&Otilde;", "Õ", "&Ocirc;", "Ô", "&Uacute;", "Ú",
-    "&Ccedil;", "Ç", "&ordm;", "º", "&ordf;", "ª", "&deg;", "°", "&sect;", "§",
-    "&mdash;", "—", "&ndash;", "–", "&hellip;", "…", "&laquo;", "«", "&raquo;", "»",
-    // last, so an escaped "&amp;lt;" does not turn into a tag
-    "&amp;", "&"
-  };
+  /**
+   * The head of a downloaded body, for the text path. A document is read whole by its converter
+   * straight from the file, so only the markup path needs a cap here.
+   */
+  private static byte[] readUpTo(File file, long maxBytes) throws java.io.IOException {
+    try (InputStream stream = Files.newInputStream(file.toPath())) {
+      final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+      final byte[] chunk = new byte[8192];
+      int count;
+
+      while (buffer.size() < maxBytes && (count = stream.read(chunk)) != -1) {
+        buffer.write(chunk, 0, count);
+      }
+
+      return buffer.toByteArray();
+    }
+  }
+
+  /**
+   * Whether the in-process client deserves a turn after curl failed. A server that answered with a
+   * status — 404, 403, 500 — gave its answer, and asking again from another client only costs a
+   * second round trip per dead link, of which a model can carry many. A request that never
+   * completed is a different matter: a TLS quirk or a proxy may well go the other client's way.
+   */
+  private static boolean worthAnotherClient(ExternalCommand.Result result) {
+    final String error = result.getError();
+
+    return error == null || !error.contains("returned error:");
+  }
+
+  /** A URL short enough for one line of the progress dialog. */
+  static String shorten(String url) {
+    final String trimmed = url == null ? "" : url.trim();
+
+    return trimmed.length() <= 70 ? trimmed : trimmed.substring(0, 67) + "...";
+  }
+
+  /** Elapsed time for a trail line, in the form " (1,2 s)". */
+  private static String elapsed(long startedAt) {
+    return String.format(
+        java.util.Locale.ROOT, " (%.1fs)", (System.currentTimeMillis() - startedAt) / 1000.0);
+  }
+
+  private static String describe(ExternalCommand.Result result) {
+    final String error = result.getError();
+
+    return error == null || error.isEmpty()
+        ? "código " + result.getExitCode()
+        : error.replaceAll("\\s+", " ");
+  }
+
+  private static void deleteQuietly(Path path) {
+    if (path == null) {
+      return;
+    }
+
+    try {
+      Files.deleteIfExists(path);
+    } catch (Exception e) {
+      // a stray temporary file is not worth a message
+    }
+  }
+
+  /** Kept for callers that only want to know whether curl was usable, such as the settings view. */
+  public static boolean isCurlAvailable() {
+    return ExternalCommand.resolve("curl") != null;
+  }
 }

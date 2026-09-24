@@ -355,7 +355,7 @@ public class WebSearchController {
         break;
       }
 
-      if (WebPageFetcher.fetch(result.getUrl(), 500) != null) {
+      if (WebPageFetcher.fetch(config, result.getUrl(), 500) != null) {
         return result.getUrl();
       }
     }
@@ -379,7 +379,7 @@ public class WebSearchController {
         break;
       }
 
-      final String content = WebPageFetcher.fetch(result.getUrl(), MAX_PAGE_CHARACTERS);
+      final String content = WebPageFetcher.fetch(config, result.getUrl(), MAX_PAGE_CHARACTERS);
 
       if (content != null) {
         result.setContent(content);
@@ -440,7 +440,7 @@ public class WebSearchController {
       }
 
       attempted++;
-      final String content = WebPageFetcher.fetch(result.getUrl(), MAX_PAGE_CHARACTERS);
+      final String content = WebPageFetcher.fetch(config, result.getUrl(), MAX_PAGE_CHARACTERS);
 
       if (content == null) {
         trail.append("NOT RETRIEVED: ").append(result.getUrl()).append("\n\n");

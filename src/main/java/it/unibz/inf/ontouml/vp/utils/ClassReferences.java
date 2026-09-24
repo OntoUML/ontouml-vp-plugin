@@ -34,7 +34,11 @@ public class ClassReferences {
       }
 
       final IReference reference = IModelElementFactory.instance().createReference();
-      reference.setType(IReference.TYPE_URL);
+
+      // a cited file is a File reference: stored as a URL one, Visual Paradigm would offer the
+      // reader a link it cannot open
+      reference.setType(
+          LocalFileFetcher.isFileLocator(url) ? IReference.TYPE_FILE : IReference.TYPE_URL);
       reference.setUrl(url);
       reference.setName(DocumentationTemplate.captionOf(source));
       reference.setDescription(source);

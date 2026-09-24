@@ -48,7 +48,7 @@ public class GufoExportController implements VPActionController {
     fileFormat = !"Turtle".equals(projectConfigurations.getExportGUFOFormat()) ? ".nt" : ".ttl";
     filePath = getFilePath();
 
-    new SimpleServiceWorker(this::task).execute();
+    new SimpleServiceWorker(this::task, "Exportando para gUFO").execute();
   }
 
   private List<String> task(SimpleServiceWorker context) {

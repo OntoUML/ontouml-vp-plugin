@@ -26,28 +26,50 @@ public class SuggestMetaclassWorker extends SwingWorker<SuggestionResult, Void> 
 
   private final IClass targetClass;
   private final ProgressDialogHandler dialogHandler;
+  private final TaskProgress progress;
+  private final TaskProgress.Step contextStep;
+  private final TaskProgress.Step modelStep;
 
   public SuggestMetaclassWorker(IClass targetClass) {
     this.targetClass = targetClass;
-    this.dialogHandler = new ProgressDialogHandler();
+    this.progress = new TaskProgress("Sugerindo a metaclasse de \"" + targetClass.getName() + "\"");
+    this.contextStep = progress.step("Contexto da classe");
+    this.modelStep = progress.step("Consulta ao modelo de IA");
+    this.dialogHandler = new ProgressDialogHandler(progress);
     this.dialogHandler.onCancel(e -> cancel(true));
   }
 
   @Override
   protected SuggestionResult doInBackground() throws Exception {
     dialogHandler.showDialog();
+    LlmRequestPacing.bind(progress);
 
-    final LlmConfigurations config = Configurations.getInstance().getLlmConfigurations();
-    final String systemPrompt = LlmPromptContextBuilder.getSystemPrompt();
-    final String userPrompt = LlmPromptContextBuilder.buildClassSummary(targetClass);
+    try {
+      progress.start(contextStep);
+      final LlmConfigurations config = Configurations.getInstance().getLlmConfigurations();
+      final String systemPrompt = LlmPromptContextBuilder.getSystemPrompt();
+      final String userPrompt = LlmPromptContextBuilder.buildClassSummary(targetClass);
+      progress.finish(contextStep);
 
-    return LlmAccessController.requestMetaclassSuggestion(
-        config, targetClass.getName(), systemPrompt, userPrompt);
+      progress.start(modelStep);
+      progress.activity("Aguardando " + config.getModel());
+      final SuggestionResult result =
+          LlmAccessController.requestMetaclassSuggestion(
+              config, targetClass.getName(), systemPrompt, userPrompt);
+      progress.finish(modelStep);
+
+      return result;
+    } catch (Exception e) {
+      progress.failRunning(e.getMessage());
+      throw e;
+    } finally {
+      LlmRequestPacing.unbind();
+    }
   }
 
   @Override
   protected void done() {
-    dialogHandler.closeDialog();
+    dialogHandler.closeDialog(isCancelled());
 
     if (isCancelled()) {
       return;

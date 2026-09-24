@@ -17,6 +17,11 @@ import it.unibz.inf.ontouml.vp.model.LlmProvider;
 import it.unibz.inf.ontouml.vp.model.SearchMode;
 import it.unibz.inf.ontouml.vp.model.SearchProvider;
 import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
+import it.unibz.inf.ontouml.vp.utils.DebugLogWriter;
+import it.unibz.inf.ontouml.vp.utils.DocumentExtractor;
+import it.unibz.inf.ontouml.vp.utils.ExternalCommand;
+import it.unibz.inf.ontouml.vp.utils.LlmRequestPacing;
+import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -50,6 +55,20 @@ public class ConfigurationsView extends JPanel {
   private JButton _btnTestSearch;
   private JButton _btnTestLlm;
   private JLabel _lblLlmTestStatus;
+
+  private JCheckBox _chckbxDelayBetweenCalls;
+  private JSpinner _spnDelaySeconds;
+
+  private JCheckBox _chckbxDebugMode;
+  private JTextField _txtDebugLogDirectory;
+  private JLabel _lblDebugLogPath;
+
+  private JCheckBox _chckbxReadLocalFiles;
+  private JCheckBox _chckbxUseDocling;
+  private JTextField _txtDoclingCommand;
+  private JTextField _txtPdftotextCommand;
+  private JButton _btnTestDocling;
+  private JButton _btnTestPdftotext;
 
   private static final Color TEST_SUCCESS_COLOR = new Color(0, 128, 0);
   private static final Color TEST_FAILURE_COLOR = Color.RED.darker();
@@ -268,6 +287,30 @@ public class ConfigurationsView extends JPanel {
     gbc__searchProviders.gridwidth = 2;
     _llmPanel.add(buildSearchProvidersPanel(), gbc__searchProviders);
 
+    GridBagConstraints gbc__pacing = new GridBagConstraints();
+    gbc__pacing.fill = GridBagConstraints.HORIZONTAL;
+    gbc__pacing.insets = new Insets(5, 0, 0, 0);
+    gbc__pacing.gridx = 0;
+    gbc__pacing.gridy = 6;
+    gbc__pacing.gridwidth = 2;
+    _llmPanel.add(buildPacingPanel(), gbc__pacing);
+
+    GridBagConstraints gbc__documents = new GridBagConstraints();
+    gbc__documents.fill = GridBagConstraints.HORIZONTAL;
+    gbc__documents.insets = new Insets(5, 0, 0, 0);
+    gbc__documents.gridx = 0;
+    gbc__documents.gridy = 7;
+    gbc__documents.gridwidth = 2;
+    _llmPanel.add(buildDocumentsPanel(), gbc__documents);
+
+    GridBagConstraints gbc__debug = new GridBagConstraints();
+    gbc__debug.fill = GridBagConstraints.HORIZONTAL;
+    gbc__debug.insets = new Insets(5, 0, 0, 0);
+    gbc__debug.gridx = 0;
+    gbc__debug.gridy = 8;
+    gbc__debug.gridwidth = 2;
+    _llmPanel.add(buildDebugPanel(), gbc__debug);
+
     JPanel _llmTestPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
     _btnTestLlm = new JButton("Test");
@@ -316,7 +359,7 @@ public class ConfigurationsView extends JPanel {
     gbc__llmTestPanel.fill = GridBagConstraints.HORIZONTAL;
     gbc__llmTestPanel.insets = new Insets(8, 0, 0, 0);
     gbc__llmTestPanel.gridx = 1;
-    gbc__llmTestPanel.gridy = 7;
+    gbc__llmTestPanel.gridy = 9;
     _llmPanel.add(_llmTestPanel, gbc__llmTestPanel);
 
     JPanel _controlButtonsPanel = new JPanel();
@@ -525,6 +568,315 @@ public class ConfigurationsView extends JPanel {
     return panel;
   }
 
+  /**
+   * The pause between calls to the model.
+   *
+   * <p>Off by default. Documenting one class makes a request per source read plus the documentation
+   * itself, which on a provider that allows a handful of requests a minute is enough to be refused
+   * on its own. The 429 handling waits and retries whatever is set here; this is for spacing the
+   * calls out so it is not needed.
+   */
+  private JPanel buildPacingPanel() {
+    final JPanel panel = new JPanel(new GridBagLayout());
+    panel.setBorder(BorderFactory.createTitledBorder("Rate limiting"));
+
+    _chckbxDelayBetweenCalls = new JCheckBox("Wait between calls to the model");
+    _chckbxDelayBetweenCalls.setToolTipText(
+        "Pauses this long after each call before making the next. Use it with a provider whose"
+            + " free tier allows only a few requests per minute.");
+    _chckbxDelayBetweenCalls.addChangeListener(
+        new ChangeListener() {
+          public void stateChanged(ChangeEvent e) {
+            updateComponentsStatus();
+          }
+        });
+
+    final GridBagConstraints gbcBox = new GridBagConstraints();
+    gbcBox.anchor = GridBagConstraints.WEST;
+    gbcBox.insets = new Insets(2, 4, 2, 6);
+    gbcBox.gridx = 0;
+    gbcBox.gridy = 0;
+    panel.add(_chckbxDelayBetweenCalls, gbcBox);
+
+    _spnDelaySeconds =
+        new JSpinner(
+            new SpinnerNumberModel(
+                LlmConfigurations.DEFAULT_DELAY_BETWEEN_CALLS_SECONDS,
+                1,
+                LlmConfigurations.MAX_DELAY_BETWEEN_CALLS_SECONDS,
+                1));
+
+    final GridBagConstraints gbcSpinner = new GridBagConstraints();
+    gbcSpinner.anchor = GridBagConstraints.WEST;
+    gbcSpinner.insets = new Insets(2, 0, 2, 4);
+    gbcSpinner.gridx = 1;
+    gbcSpinner.gridy = 0;
+    panel.add(_spnDelaySeconds, gbcSpinner);
+
+    final GridBagConstraints gbcUnit = new GridBagConstraints();
+    gbcUnit.anchor = GridBagConstraints.WEST;
+    gbcUnit.weightx = 1.0;
+    gbcUnit.insets = new Insets(2, 0, 2, 4);
+    gbcUnit.gridx = 2;
+    gbcUnit.gridy = 0;
+    panel.add(new JLabel("seconds"), gbcUnit);
+
+    final JLabel note =
+        new JLabel(
+            "Whatever is set here, a 429 (too many requests) from the provider makes the plugin"
+                + " wait "
+                + LlmRequestPacing.RATE_LIMIT_WAIT_SECONDS
+                + " s and try again, up to "
+                + LlmRequestPacing.MAX_RATE_LIMIT_RETRIES
+                + " times.");
+    note.setForeground(Color.GRAY);
+
+    final GridBagConstraints gbcNote = new GridBagConstraints();
+    gbcNote.anchor = GridBagConstraints.WEST;
+    gbcNote.insets = new Insets(0, 22, 4, 4);
+    gbcNote.gridx = 0;
+    gbcNote.gridy = 1;
+    gbcNote.gridwidth = 3;
+    panel.add(note, gbcNote);
+
+    return panel;
+  }
+
+  /**
+   * Debug mode: keep every exchange and mirror it to disk.
+   *
+   * <p>The conversation window holds the last 25 exchanges of the session and nothing survives a
+   * restart. Documenting one class can produce a dozen — one per source retrieved, one per part of
+   * a long document — so the ones worth reading scroll away before anyone opens the window. The
+   * path is shown, not just configurable, because a log nobody can find is not a log.
+   */
+  private JPanel buildDebugPanel() {
+    final JPanel panel = new JPanel(new GridBagLayout());
+    panel.setBorder(BorderFactory.createTitledBorder("Debugging"));
+
+    _chckbxDebugMode = new JCheckBox("Debug mode — record every conversation to disk");
+    _chckbxDebugMode.setToolTipText(
+        "Keeps the whole session's exchanges (prompts, answers, and how each source was"
+            + " retrieved) and writes them to a file. Off by default: a prompt carries your model.");
+    _chckbxDebugMode.addChangeListener(
+        new ChangeListener() {
+          public void stateChanged(ChangeEvent e) {
+            updateComponentsStatus();
+          }
+        });
+
+    final GridBagConstraints gbcBox = new GridBagConstraints();
+    gbcBox.anchor = GridBagConstraints.WEST;
+    gbcBox.insets = new Insets(2, 4, 2, 4);
+    gbcBox.gridx = 0;
+    gbcBox.gridy = 0;
+    gbcBox.gridwidth = 3;
+    panel.add(_chckbxDebugMode, gbcBox);
+
+    final GridBagConstraints gbcLabel = new GridBagConstraints();
+    gbcLabel.anchor = GridBagConstraints.WEST;
+    gbcLabel.insets = new Insets(2, 22, 2, 6);
+    gbcLabel.gridx = 0;
+    gbcLabel.gridy = 1;
+    panel.add(new JLabel("Log folder:"), gbcLabel);
+
+    _txtDebugLogDirectory = new JTextField();
+    _txtDebugLogDirectory.setToolTipText(
+        "Leave empty to use the default folder, shown below, beside the plugin's configuration"
+            + " file in the Visual Paradigm workspace.");
+
+    final GridBagConstraints gbcField = new GridBagConstraints();
+    gbcField.fill = GridBagConstraints.HORIZONTAL;
+    gbcField.weightx = 1.0;
+    gbcField.insets = new Insets(2, 0, 2, 6);
+    gbcField.gridx = 1;
+    gbcField.gridy = 1;
+    gbcField.gridwidth = 2;
+    panel.add(_txtDebugLogDirectory, gbcField);
+
+    _lblDebugLogPath = new JLabel(" ");
+    _lblDebugLogPath.setForeground(Color.GRAY);
+
+    final GridBagConstraints gbcPath = new GridBagConstraints();
+    gbcPath.anchor = GridBagConstraints.WEST;
+    gbcPath.insets = new Insets(0, 22, 4, 4);
+    gbcPath.gridx = 0;
+    gbcPath.gridy = 2;
+    gbcPath.gridwidth = 3;
+    panel.add(_lblDebugLogPath, gbcPath);
+
+    return panel;
+  }
+
+  /** The folder that will actually be used, resolved from what is typed right now. */
+  private void refreshDebugLogPath() {
+    final String typed = _txtDebugLogDirectory.getText().trim();
+    final String path = typed.isEmpty() ? DebugLogWriter.describeDirectory() : typed;
+    final String current = DebugLogWriter.currentFile();
+
+    _lblDebugLogPath.setText(
+        current == null ? "Writes to: " + path : "Writing to: " + current);
+    _lblDebugLogPath.setToolTipText(_lblDebugLogPath.getText());
+  }
+
+  /**
+   * How a source that is not a web page gets read: a file the user attached to a class, and the
+   * documents — PDF above all — most norms are actually published as.
+   *
+   * <p>Docling is off by default and each converter has a Test button beside its path, because the
+   * failure they hit in practice is not being found: Visual Paradigm started from the Dock does not
+   * inherit the shell's {@code PATH}, so a command that works in the user's terminal is invisible
+   * here. Testing turns that into a message instead of documentation that quietly cites nothing.
+   */
+  private JPanel buildDocumentsPanel() {
+    final JPanel panel = new JPanel(new GridBagLayout());
+    panel.setBorder(BorderFactory.createTitledBorder("Reading sources that are not web pages"));
+
+    _chckbxReadLocalFiles = new JCheckBox("Read references that point to a file on this computer");
+    _chckbxReadLocalFiles.setToolTipText(
+        "A reference of type File is opened and read like a page. Turn off to keep local content"
+            + " from being sent to the model.");
+
+    final GridBagConstraints gbcLocal = new GridBagConstraints();
+    gbcLocal.anchor = GridBagConstraints.WEST;
+    gbcLocal.insets = new Insets(2, 4, 2, 4);
+    gbcLocal.gridx = 0;
+    gbcLocal.gridy = 0;
+    gbcLocal.gridwidth = 3;
+    panel.add(_chckbxReadLocalFiles, gbcLocal);
+
+    _chckbxUseDocling = new JCheckBox("Convert documents with Docling (PDF, Word, Excel, PowerPoint)");
+    _chckbxUseDocling.setToolTipText(
+        "Docling is a separate program (pip3 install docling). Its first conversion downloads"
+            + " layout models and can take several minutes.");
+    _chckbxUseDocling.addChangeListener(
+        new ChangeListener() {
+          public void stateChanged(ChangeEvent e) {
+            updateComponentsStatus();
+          }
+        });
+
+    final GridBagConstraints gbcDocling = new GridBagConstraints();
+    gbcDocling.anchor = GridBagConstraints.WEST;
+    gbcDocling.insets = new Insets(2, 4, 2, 4);
+    gbcDocling.gridx = 0;
+    gbcDocling.gridy = 1;
+    gbcDocling.gridwidth = 3;
+    panel.add(_chckbxUseDocling, gbcDocling);
+
+    _txtDoclingCommand = new JTextField();
+    _btnTestDocling =
+        addConverterRow(
+            panel,
+            2,
+            "Docling command:",
+            _txtDoclingCommand,
+            "Name or full path of the docling executable.",
+            new ActionListener() {
+              @Override
+              public void actionPerformed(ActionEvent e) {
+                testConverter(true);
+              }
+            });
+
+    _txtPdftotextCommand = new JTextField();
+    _btnTestPdftotext =
+        addConverterRow(
+            panel,
+            3,
+            "pdftotext command:",
+            _txtPdftotextCommand,
+            "Name or full path of pdftotext (poppler). Used for PDF when Docling is off.",
+            new ActionListener() {
+              @Override
+              public void actionPerformed(ActionEvent e) {
+                testConverter(false);
+              }
+            });
+
+    return panel;
+  }
+
+  /** A label, the path field and its Test button — the same shape for both converters. */
+  private JButton addConverterRow(
+      JPanel panel, int row, String label, JTextField field, String tooltip, ActionListener test) {
+    final GridBagConstraints gbcLabel = new GridBagConstraints();
+    gbcLabel.anchor = GridBagConstraints.WEST;
+    gbcLabel.insets = new Insets(2, 22, 2, 6);
+    gbcLabel.gridx = 0;
+    gbcLabel.gridy = row;
+    panel.add(new JLabel(label), gbcLabel);
+
+    field.setToolTipText(tooltip);
+
+    final GridBagConstraints gbcField = new GridBagConstraints();
+    gbcField.fill = GridBagConstraints.HORIZONTAL;
+    gbcField.weightx = 1.0;
+    gbcField.insets = new Insets(2, 0, 2, 6);
+    gbcField.gridx = 1;
+    gbcField.gridy = row;
+    panel.add(field, gbcField);
+
+    final JButton button = new JButton("Test");
+    button.setToolTipText("Runs the converter on a small file to prove it works.");
+    button.addActionListener(test);
+
+    final GridBagConstraints gbcButton = new GridBagConstraints();
+    gbcButton.anchor = GridBagConstraints.WEST;
+    gbcButton.insets = new Insets(2, 0, 2, 4);
+    gbcButton.gridx = 2;
+    gbcButton.gridy = row;
+    panel.add(button, gbcButton);
+
+    return button;
+  }
+
+  /**
+   * Runs the converter named in the form — not the saved one — so a path can be corrected and
+   * checked before saving. The verdict goes into a dialog rather than the status line: when it
+   * fails, what the user needs is the install command and the reason, not sixty characters of it.
+   */
+  private void testConverter(boolean docling) {
+    final LlmConfigurations probe = probeConfiguration();
+    final JButton button = docling ? _btnTestDocling : _btnTestPdftotext;
+    final String name = docling ? "Docling" : "pdftotext";
+
+    // a path typed and tested at once would otherwise be looked up under the previous verdict
+    ExternalCommand.forgetResolutions();
+
+    button.setEnabled(false);
+    setLlmTestStatus(Color.GRAY, "Testing " + name + "...");
+
+    new SwingWorker<String, Void>() {
+      @Override
+      protected String doInBackground() {
+        return docling
+            ? DocumentExtractor.describeDoclingAvailability(probe)
+            : DocumentExtractor.describePdftotextAvailability(probe);
+      }
+
+      @Override
+      protected void done() {
+        button.setEnabled(true);
+
+        String report;
+
+        try {
+          report = get();
+        } catch (Exception e) {
+          report = "The test could not be run: " + e.getMessage();
+          e.printStackTrace();
+        }
+
+        final boolean worked = report.contains("Conversão de teste concluída");
+        setLlmTestStatus(
+            worked ? TEST_SUCCESS_COLOR : TEST_FAILURE_COLOR,
+            name + (worked ? " OK" : " não está utilizável"));
+        ViewManagerUtils.simpleDialog(name + "\n\n" + report);
+      }
+    }.execute();
+  }
+
   private static String credentialOf(JTextField field) {
     return field instanceof JPasswordField
         ? new String(((JPasswordField) field).getPassword())
@@ -631,6 +983,11 @@ public class ConfigurationsView extends JPanel {
       probe.setSearchCredential(entry.getKey(), credentialOf(entry.getValue()).trim());
     }
 
+    probe.setReadLocalFileReferences(_chckbxReadLocalFiles.isSelected());
+    probe.setUseDocling(_chckbxUseDocling.isSelected());
+    probe.setDoclingCommand(_txtDoclingCommand.getText().trim());
+    probe.setPdftotextCommand(_txtPdftotextCommand.getText().trim());
+
     return probe;
   }
 
@@ -686,6 +1043,18 @@ public class ConfigurationsView extends JPanel {
     for (Map.Entry<SearchProvider, JTextField> entry : _searchCredentialFields.entrySet()) {
       llmConfigurations.setSearchCredential(entry.getKey(), credentialOf(entry.getValue()));
     }
+
+    llmConfigurations.setReadLocalFileReferences(_chckbxReadLocalFiles.isSelected());
+    llmConfigurations.setUseDocling(_chckbxUseDocling.isSelected());
+    llmConfigurations.setDoclingCommand(_txtDoclingCommand.getText().trim());
+    llmConfigurations.setPdftotextCommand(_txtPdftotextCommand.getText().trim());
+    llmConfigurations.setDelayBetweenCalls(_chckbxDelayBetweenCalls.isSelected());
+    llmConfigurations.setDelayBetweenCallsSeconds((Integer) _spnDelaySeconds.getValue());
+    llmConfigurations.setDebugMode(_chckbxDebugMode.isSelected());
+    llmConfigurations.setDebugLogDirectory(_txtDebugLogDirectory.getText().trim());
+
+    // a corrected path must take effect without restarting Visual Paradigm
+    ExternalCommand.forgetResolutions();
   }
 
   /**
@@ -713,6 +1082,18 @@ public class ConfigurationsView extends JPanel {
       _searchProviderBoxes.get(provider).setSelected(enabled.contains(provider));
       _searchCredentialFields.get(provider).setText(llmConfigurations.getSearchCredential(provider));
     }
+
+    _chckbxReadLocalFiles.setSelected(llmConfigurations.isReadLocalFileReferences());
+    _chckbxUseDocling.setSelected(llmConfigurations.isUseDocling());
+    _txtDoclingCommand.setText(llmConfigurations.getDoclingCommand());
+    _txtPdftotextCommand.setText(llmConfigurations.getPdftotextCommand());
+
+    _chckbxDelayBetweenCalls.setSelected(llmConfigurations.isDelayBetweenCalls());
+    _spnDelaySeconds.setValue(llmConfigurations.getDelayBetweenCallsSeconds());
+
+    _chckbxDebugMode.setSelected(llmConfigurations.isDebugMode());
+    _txtDebugLogDirectory.setText(llmConfigurations.getDebugLogDirectory());
+    refreshDebugLogPath();
   }
 
   /** Updates components with default values. */
@@ -735,6 +1116,19 @@ public class ConfigurationsView extends JPanel {
       _searchProviderBoxes.get(provider).setSelected(false);
       _searchCredentialFields.get(provider).setText("");
     }
+
+    _chckbxReadLocalFiles.setSelected(true);
+    _chckbxUseDocling.setSelected(false);
+    _txtDoclingCommand.setText(LlmConfigurations.DEFAULT_DOCLING_COMMAND);
+    _txtPdftotextCommand.setText(LlmConfigurations.DEFAULT_PDFTOTEXT_COMMAND);
+
+    _chckbxDelayBetweenCalls.setSelected(false);
+    _spnDelaySeconds.setValue(LlmConfigurations.DEFAULT_DELAY_BETWEEN_CALLS_SECONDS);
+
+    _chckbxDebugMode.setSelected(false);
+    _txtDebugLogDirectory.setText("");
+    refreshDebugLogPath();
+
     setLlmTestStatus(Color.GRAY, " ");
   }
 
@@ -762,5 +1156,20 @@ public class ConfigurationsView extends JPanel {
       // a credential is only worth typing for a service that is switched on
       _searchCredentialFields.get(searchProvider).setEnabled(usesSearchApi && box.isSelected());
     }
+
+    // both paths and both Test buttons stay live even with Docling switched off: finding out
+    // whether a converter works, and where it lives, is exactly what someone does before deciding
+    // to turn it on
+    _chckbxReadLocalFiles.setEnabled(true);
+    _chckbxUseDocling.setEnabled(true);
+    _txtDoclingCommand.setEnabled(true);
+    _txtPdftotextCommand.setEnabled(true);
+
+    _chckbxDelayBetweenCalls.setEnabled(true);
+    _spnDelaySeconds.setEnabled(_chckbxDelayBetweenCalls.isSelected());
+
+    _chckbxDebugMode.setEnabled(true);
+    _txtDebugLogDirectory.setEnabled(_chckbxDebugMode.isSelected());
+    refreshDebugLogPath();
   }
 }

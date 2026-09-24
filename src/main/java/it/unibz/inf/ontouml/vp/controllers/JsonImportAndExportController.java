@@ -64,9 +64,9 @@ public class JsonImportAndExportController implements VPActionController {
     filePath = getFilePath();
 
     if (shouldImport()) {
-      new SimpleServiceWorker(this::importTask).execute();
+      new SimpleServiceWorker(this::importTask, "Importando o projeto de JSON").execute();
     } else if (shouldExport()) {
-      new SimpleServiceWorker(this::exportTask).execute();
+      new SimpleServiceWorker(this::exportTask, "Exportando o projeto para JSON").execute();
     }
   }
 

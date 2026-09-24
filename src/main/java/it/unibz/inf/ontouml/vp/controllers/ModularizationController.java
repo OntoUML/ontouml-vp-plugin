@@ -15,7 +15,7 @@ public class ModularizationController implements VPActionController {
 
   @Override
   public void performAction(VPAction vpAction) {
-    final SimpleServiceWorker worker = new SimpleServiceWorker(this::task);
+    final SimpleServiceWorker worker = new SimpleServiceWorker(this::task, "Gerando os diagramas dos módulos");
     worker.execute();
   }
 
