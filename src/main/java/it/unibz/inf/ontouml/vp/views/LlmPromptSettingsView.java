@@ -9,6 +9,7 @@ import it.unibz.inf.ontouml.vp.model.DecisionOption;
 import it.unibz.inf.ontouml.vp.model.DecisionTree;
 import it.unibz.inf.ontouml.vp.model.LlmConfigurations;
 import it.unibz.inf.ontouml.vp.utils.LlmPromptResources;
+import it.unibz.inf.ontouml.vp.utils.Stereotype;
 import static it.unibz.inf.ontouml.vp.views.DecisionTreeBrowser.badge;
 import static it.unibz.inf.ontouml.vp.views.DecisionTreeBrowser.escape;
 import static it.unibz.inf.ontouml.vp.views.DecisionTreeBrowser.field;
@@ -24,6 +25,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -66,6 +68,9 @@ public class LlmPromptSettingsView implements IDialogHandler {
 
   /** Guards against a hand-edited tree that points back at itself. */
   private static final int MAX_TREE_DEPTH = 25;
+
+  /** Enough to fix a tree in one go without the dialog outgrowing the screen. */
+  private static final int MAX_REPORTED_PROBLEMS = 12;
 
   private IDialog dialog;
 
@@ -357,14 +362,26 @@ public class LlmPromptSettingsView implements IDialogHandler {
 
   private void save() {
     final String tree = decisionTreeArea.getText();
+    final List<String> problems = decisionTreeProblems(tree);
 
-    if (!isDecisionTreeUsable(tree)) {
+    if (!problems.isEmpty()) {
+      final StringBuilder message = new StringBuilder("The decision tree has problems:\n\n");
+
+      for (int i = 0; i < Math.min(problems.size(), MAX_REPORTED_PROBLEMS); i++) {
+        message.append("• ").append(problems.get(i)).append("\n");
+      }
+
+      if (problems.size() > MAX_REPORTED_PROBLEMS) {
+        message
+            .append("• ... and ")
+            .append(problems.size() - MAX_REPORTED_PROBLEMS)
+            .append(" more\n");
+      }
+
+      message.append("\nFix them or press \"Restore defaults\" before saving.");
+
       JOptionPane.showMessageDialog(
-          null,
-          "The decision tree is not valid JSON, or its startNode does not exist.\n"
-              + "Fix it or press \"Restore defaults\" before saving.",
-          "Invalid decision tree",
-          JOptionPane.ERROR_MESSAGE);
+          null, message.toString(), "Invalid decision tree", JOptionPane.ERROR_MESSAGE);
       return;
     }
 
@@ -393,12 +410,18 @@ public class LlmPromptSettingsView implements IDialogHandler {
     return edited == null || edited.trim().equals(bundled.trim()) ? "" : edited;
   }
 
-  private static boolean isDecisionTreeUsable(String json) {
+  /** Why the tree cannot be saved; a single entry when it is not even parseable. */
+  private static List<String> decisionTreeProblems(String json) {
     try {
       final DecisionTree parsed = new Gson().fromJson(json, DecisionTree.class);
-      return parsed != null && parsed.isUsable();
+
+      if (parsed == null) {
+        return Collections.singletonList("The text is empty.");
+      }
+
+      return parsed.findProblems(Stereotype.getOntoUMLClassStereotypeNames());
     } catch (Exception e) {
-      return false;
+      return Collections.singletonList("It is not valid JSON: " + e.getMessage());
     }
   }
 

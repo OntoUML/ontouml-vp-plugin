@@ -18,7 +18,8 @@ entradas na aba **References** do Visual Paradigm.
 ## 1. O template
 
 A estrutura preenchida pela IA é configurável em *Settings → Prompts & decision tree… → Documentation*
-(veja a [seção 6](#6-configuração)). O padrão é:
+(veja a [seção 6](#6-configuração)). O padrão fica em
+[`src/main/resources/prompts/`](../src/main/resources/prompts/README.md), junto com os demais prompts da IA, e é:
 
 ```markdown
 # {Nome da Classe}
@@ -379,6 +380,8 @@ e com quê.
 - **Prompts & decision tree…** → aba **Documentation** — edita o *template* e o *prompt*, com
   **Restore defaults**. Salvar um texto idêntico ao padrão não grava customização, de modo que os
   padrões continuam evoluindo junto com o plugin.
+  Os arquivos padrão e o passo a passo de personalização estão em
+  [`src/main/resources/prompts/README.md`](../src/main/resources/prompts/README.md).
 
 ---
 

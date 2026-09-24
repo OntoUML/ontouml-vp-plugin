@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * Result of an LLM-based OntoUML class stereotype suggestion, deserialized from the JSON
- * object the LLM is instructed to return (see ufo_decision_tree_prompt.md).
+ * object the LLM is instructed to return (see prompts/ufo_decision_tree_prompt.md).
  */
 public class MetaclassSuggestion {
 

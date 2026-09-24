@@ -19,10 +19,14 @@ import java.util.Map;
  *
  * <p>Each of them ships with the plugin and can be overridden by the user in the settings; an empty
  * override means "use the bundled default", which is what the "Restore defaults" button leaves
- * behind. Bundled files are cached since they cannot change while the plugin runs; overrides are
- * read from the configuration on every call so an edit takes effect immediately.
+ * behind. Bundled files live in the {@code prompts/} folder (see its README) and are cached since
+ * they cannot change while the plugin runs; overrides are read from the configuration on every call
+ * so an edit takes effect immediately.
  */
 public class LlmPromptResources {
+
+  /** Folder, inside the plugin directory, that holds every bundled prompt and template. */
+  public static final String PROMPTS_DIRECTORY = "prompts";
 
   public static final String SYSTEM_PROMPT_FILENAME = "ufo_decision_tree_prompt.md";
   public static final String NODE_PROMPT_FILENAME = "ufo_node_prompt.md";
@@ -104,7 +108,8 @@ public class LlmPromptResources {
     try {
       final VPPluginInfo pluginInfo =
           ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID);
-      content = new String(Files.readAllBytes(new File(pluginInfo.getPluginDir(), filename).toPath()));
+      final File promptsDirectory = new File(pluginInfo.getPluginDir(), PROMPTS_DIRECTORY);
+      content = new String(Files.readAllBytes(new File(promptsDirectory, filename).toPath()));
     } catch (IOException e) {
       e.printStackTrace();
     }
