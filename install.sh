@@ -12,7 +12,7 @@ USER=$(whoami) # Gather USER Name
 #OntoUML-Vp-Plugin Defaults
 repoName="ontouml-vp-plugin"
 repoUrl="https://github.com/propilideno/ontouml-vp-plugin/archive/refs/heads/master.zip"
-ontoumlPluginPath="ontouml-vp-plugin-0.5.3"
+ontoumlPluginPath="ontouml-vp-plugin-0.6"
 
 # =========== Visual Paradigm Defaults ===========
 #App Default Path
