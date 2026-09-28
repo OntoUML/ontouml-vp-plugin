@@ -2,6 +2,7 @@ package it.unibz.inf.ontouml.vp.utils;
 
 import it.unibz.inf.ontouml.vp.model.LlmConfigurations;
 import it.unibz.inf.ontouml.vp.utils.DocumentExtractor.Extraction;
+import java.nio.charset.StandardCharsets;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -244,7 +245,7 @@ public class WebPageFetcher {
             worthAnotherClient(result));
       }
 
-      final String contentType = new String(result.getOutput()).trim();
+      final String contentType = new String(result.getOutput(), StandardCharsets.UTF_8).trim();
       final long size = body.toFile().length();
 
       // the body is in hand: whatever we make of it, another client would get the same bytes

@@ -10,6 +10,7 @@ import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
 import it.unibz.inf.ontouml.vp.model.vp2ontouml.Uml2OntoumlTransformer;
 import it.unibz.inf.ontouml.vp.utils.SimpleServiceWorker;
 import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
+import java.nio.charset.StandardCharsets;
 import java.awt.FileDialog;
 import java.awt.Frame;
 import java.io.IOException;
@@ -65,7 +66,7 @@ public class GufoExportController implements VPActionController {
       final String gufoFile = result != null ? result.getResult() : "";
 
       if (!context.isCancelled()) {
-        Files.write(filePath, gufoFile.getBytes());
+        Files.write(filePath, gufoFile.getBytes(StandardCharsets.UTF_8));
         saveFilePath();
         ViewManagerUtils.log(MESSAGE_MODEL_EXPORTED);
         return List.of(MESSAGE_MODEL_EXPORTED);

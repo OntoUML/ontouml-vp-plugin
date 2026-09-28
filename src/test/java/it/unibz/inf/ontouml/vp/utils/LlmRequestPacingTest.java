@@ -119,6 +119,33 @@ class LlmRequestPacingTest {
   }
 
   @Test
+  @DisplayName("calls that overlap each get their own slot, a delay apart")
+  void overlappingCallsAreSpacedOut() throws IOException {
+    final LlmConfigurations config = delayed(5);
+
+    // three tasks ask before any of them has finished a call
+    LlmRequestPacing.beforeCall(config);
+    LlmRequestPacing.beforeCall(config);
+    LlmRequestPacing.beforeCall(config);
+
+    assertThat(slept).isNotEmpty();
+    assertThat(totalSlept()).isEqualTo(10_000);
+  }
+
+  @Test
+  @DisplayName("a call that ends later than the reserved slot still pushes the next one back")
+  void aLongCallDelaysTheNext() throws IOException {
+    final LlmConfigurations config = delayed(5);
+
+    LlmRequestPacing.beforeCall(config);
+    now.addAndGet(20_000); // the call itself took twenty seconds
+    LlmRequestPacing.afterCall(config);
+    LlmRequestPacing.beforeCall(config);
+
+    assertThat(totalSlept()).isEqualTo(5_000);
+  }
+
+  @Test
   @DisplayName("time already spent since the last call counts towards the pause")
   void elapsedTimeIsCredited() throws IOException {
     final LlmConfigurations config = delayed(5);

@@ -5,10 +5,9 @@ import com.google.gson.annotations.Expose;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IProject;
 import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
+import it.unibz.inf.ontouml.vp.utils.TextFiles;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -128,58 +127,74 @@ public class Configurations {
     return llm;
   }
 
-  /**
-   * Returns singleton instance of the class.
-   *
-   * @return configurations
-   */
-  public static Configurations getInstance() {
+  public static synchronized Configurations getInstance() {
     if (instance == null) {
-      final ApplicationManager application = ApplicationManager.instance();
-      final File workspace = application.getWorkspaceLocation();
-      final File configurationsFile = new File(workspace, CONFIG_FILE_NAME);
-
-      if (configurationsFile.exists()) {
-        String json = "";
-        try {
-          json = new String(Files.readAllBytes(configurationsFile.toPath()));
-          Gson gson = new Gson();
-          instance = gson.fromJson(json, Configurations.class);
-        } catch (Exception e) {
-          if (e instanceof IOException)
-            application
-                .getViewManager()
-                .showMessage(
-                    "Unable to load configuration file (" + OntoUMLPlugin.PLUGIN_NAME + ").\n");
-          else if (e instanceof JsonSyntaxException)
-            application
-                .getViewManager()
-                .showMessage(
-                    "Configuration file ill-formed (" + OntoUMLPlugin.PLUGIN_NAME + ").\n");
-          else
-            application
-                .getViewManager()
-                .showMessage(
-                    "Unknown error while reading configuration file ("
-                        + OntoUMLPlugin.PLUGIN_NAME
-                        + ").\n");
-
-          e.printStackTrace();
-        }
-      }
-
-      if (instance == null) instance = new Configurations();
+      instance = load();
     }
 
     return instance;
   }
 
-  /** Persists user preferences on Visual Paradigm's workspace. */
-  public void save() {
+  /**
+   * Reads the settings file, or starts from the defaults when there is none.
+   *
+   * <p>A file that cannot be read is not thrown away: it holds API keys and the user's own
+   * prompts, and the very next save would overwrite it with the defaults. A copy is kept beside
+   * it first, and the user is told where.
+   */
+  private static Configurations load() {
+    final ApplicationManager application = ApplicationManager.instance();
+    final File configurationsFile = new File(application.getWorkspaceLocation(), CONFIG_FILE_NAME);
+
+    if (!configurationsFile.exists()) {
+      return new Configurations();
+    }
+
+    try {
+      final String json = TextFiles.readUtf8OrLegacy(configurationsFile.toPath());
+      final Configurations loaded = json.trim().isEmpty() ? null : new Gson().fromJson(json, Configurations.class);
+
+      return loaded == null ? new Configurations() : loaded;
+    } catch (Exception e) {
+      final String problem =
+          e instanceof IOException
+              ? "Unable to load configuration file"
+              : e instanceof JsonSyntaxException
+                  ? "Configuration file ill-formed"
+                  : "Unknown error while reading configuration file";
+
+      application
+          .getViewManager()
+          .showMessage(
+              problem
+                  + " ("
+                  + OntoUMLPlugin.PLUGIN_NAME
+                  + "). Default settings are in use. "
+                  + keepACopyOf(configurationsFile)
+                  + "\n");
+
+      e.printStackTrace();
+
+      return new Configurations();
+    }
+  }
+
+  private static String keepACopyOf(File file) {
+    try {
+      return "The original was kept as " + TextFiles.backUp(file.toPath()).getFileName() + ".";
+    } catch (IOException e) {
+      return "It could not be copied (" + e.getMessage() + "), so saving will overwrite it.";
+    }
+  }
+
+  /**
+   * Persists user preferences on Visual Paradigm's workspace. The file is written beside the old one
+   * and swapped in, so a failure midway leaves the previous settings untouched.
+   */
+  public synchronized void save() {
     final ApplicationManager application = ApplicationManager.instance();
     final File workspace = application.getWorkspaceLocation();
     final File configurationsFile = new File(workspace, CONFIG_FILE_NAME);
-    final FileWriter fw;
     final GsonBuilder builder = new GsonBuilder();
 
     builder.registerTypeAdapter(
@@ -190,17 +205,10 @@ public class Configurations {
 
     builder.setPrettyPrinting();
 
-    final Gson gson = builder.create();
-    final String json = gson.toJson(this);
+    final String json = builder.create().toJson(this);
 
     try {
-      if (!configurationsFile.exists()) {
-        configurationsFile.createNewFile();
-      }
-
-      fw = new FileWriter(configurationsFile);
-      fw.write(json);
-      fw.close();
+      TextFiles.writeAtomically(configurationsFile.toPath(), json);
     } catch (IOException e) {
       application
           .getViewManager()

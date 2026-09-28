@@ -76,8 +76,15 @@ public class LlmRequestPacing {
 
     final long wait;
 
+    // The slot is taken in the same step that it is looked at. Reading the time of the previous call
+    // and only recording this one afterwards let two tasks running at once both find the way clear
+    // and start together; with the slot reserved here, each gets its own, a delay apart.
     synchronized (LOCK) {
-      wait = nextCallAllowedAt - clock.getAsLong();
+      final long now = clock.getAsLong();
+      final long slot = Math.max(now, nextCallAllowedAt);
+
+      wait = slot - now;
+      nextCallAllowedAt = slot + config.getDelayBetweenCallsSeconds() * 1000L;
     }
 
     if (wait > 0) {
@@ -94,7 +101,11 @@ public class LlmRequestPacing {
     }
 
     synchronized (LOCK) {
-      nextCallAllowedAt = clock.getAsLong() + config.getDelayBetweenCallsSeconds() * 1000L;
+      // never earlier than what was already promised to the calls waiting behind this one
+      nextCallAllowedAt =
+          Math.max(
+              nextCallAllowedAt,
+              clock.getAsLong() + config.getDelayBetweenCallsSeconds() * 1000L);
     }
   }
 

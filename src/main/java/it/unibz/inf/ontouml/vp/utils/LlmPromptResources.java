@@ -9,7 +9,6 @@ import it.unibz.inf.ontouml.vp.model.DecisionTree;
 import it.unibz.inf.ontouml.vp.model.LlmConfigurations;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -109,7 +108,7 @@ public class LlmPromptResources {
       final VPPluginInfo pluginInfo =
           ApplicationManager.instance().getPluginInfo(OntoUMLPlugin.PLUGIN_ID);
       final File promptsDirectory = new File(pluginInfo.getPluginDir(), PROMPTS_DIRECTORY);
-      content = new String(Files.readAllBytes(new File(promptsDirectory, filename).toPath()));
+      content = TextFiles.readUtf8(new File(promptsDirectory, filename).toPath());
     } catch (IOException e) {
       e.printStackTrace();
     }

@@ -9,6 +9,7 @@ import it.unibz.inf.ontouml.vp.model.ontouml2vp.Ontouml2UmlLoader;
 import it.unibz.inf.ontouml.vp.model.vp2ontouml.Uml2OntoumlTransformer;
 import it.unibz.inf.ontouml.vp.utils.SimpleServiceWorker;
 import it.unibz.inf.ontouml.vp.utils.ViewManagerUtils;
+import java.nio.charset.StandardCharsets;
 import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -178,7 +179,7 @@ public class JsonImportAndExportController implements VPActionController {
       final String exportFileContents = Uml2OntoumlTransformer.transformAndSerialize();
 
       if (!context.isCancelled()) {
-        Files.write(filePath, exportFileContents.getBytes());
+        Files.write(filePath, exportFileContents.getBytes(StandardCharsets.UTF_8));
         saveFilePath();
         ViewManagerUtils.log(MESSAGE_MODEL_EXPORTED);
         return List.of(MESSAGE_MODEL_EXPORTED);

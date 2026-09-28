@@ -108,11 +108,12 @@ public class DetailedClassificationWorker extends SwingWorker<String, DecisionSt
       publishNodeEntered(nodeId);
 
       final String prompt =
-          LlmPromptResources.getNodePrompt()
-              .replace("{class}", classSummary)
-              .replace("{path}", path.length() == 0 ? "(this is the first question)" : path.toString())
-              .replace("{question}", node.getQuestion())
-              .replace("{options}", node.getOptionsAsText());
+          PromptTemplate.fill(
+              LlmPromptResources.getNodePrompt(),
+              "class", classSummary,
+              "path", path.length() == 0 ? "(this is the first question)" : path.toString(),
+              "question", node.getQuestion(),
+              "options", node.getOptionsAsText());
 
       final NodeAnswer answer =
           LlmAccessController.askDecisionNode(
