@@ -234,7 +234,7 @@
 
       <action id="it.unibz.inf.ontouml.vp.AssociationActions.invertAssociation"
         label="Invert Association" style="normal" menuPath="#"
-        icon="icons/logo/ontouml-simple-logo-small.png">
+        icon="icons/logo/ontouml-simple-logo-context-item.png">
         <actionController class="it.unibz.inf.ontouml.vp.controllers.ModelActionController"/>
       </action>
 
@@ -247,7 +247,7 @@
       <separator id="it.unibz.inf.ontouml.vp.ClassProperties.separator" menuPath="#"/>
 
       <menu id="classPropertiesMenu" label="Meta-Properties" mnemonic="P" menuPath="#"
-        icon="icons/logo/ontouml-simple-logo-small.png"/>
+        icon="icons/logo/ontouml-simple-logo-context.png"/>
 
       <action id="it.unibz.inf.ontouml.vp.ClassProperties.order" label="Set Order" style="normal"
         menuPath="classPropertiesMenu/#">
@@ -286,7 +286,7 @@
       <include type="Association"/>
 
       <menu id="associationPropertiesMenu" label="Meta-Properties" menuPath="#"
-        icon="icons/logo/ontouml-simple-logo-small.png"/>
+        icon="icons/logo/ontouml-simple-logo-context.png"/>
 
       <menu id="associationTargetPropertiesMenu" label="Target End"
         menuPath="associationPropertiesMenu/#"/>
@@ -348,7 +348,7 @@
       <separator id="it.unibz.inf.ontouml.vp.AttributesProperties.separator" menuPath="#"/>
 
       <menu id="attributesPropertiesMenu" label="Meta-Properties" menuPath="#"
-        icon="icons/logo/ontouml-simple-logo-small.png"/>
+        icon="icons/logo/ontouml-simple-logo-context.png"/>
 
       <action id="it.unibz.inf.ontouml.vp.AttributeProperties.isDerived" label="Is Derived"
         style="toggle" menuPath="attributesPropertiesMenu/#">
@@ -372,13 +372,13 @@
       <include type="Class"/>
 
       <action id="it.unibz.inf.ontouml.vp.SuggestMetaclass.suggest" label="Suggest Metaclass (AI)..."
-        style="normal" menuPath="#" icon="icons/logo/ontouml-simple-logo-small.png">
+        style="normal" menuPath="#" icon="icons/logo/ontouml-simple-logo-context-item.png">
         <actionController class="it.unibz.inf.ontouml.vp.controllers.SuggestMetaclassController"/>
       </action>
 
       <action id="it.unibz.inf.ontouml.vp.SuggestMetaclass.document"
         label="Document or improve documentation..." style="normal" menuPath="#"
-        icon="icons/logo/ontouml-simple-logo-small.png">
+        icon="icons/logo/ontouml-simple-logo-context-item.png">
         <actionController class="it.unibz.inf.ontouml.vp.controllers.DocumentClassController"/>
       </action>
 
@@ -390,7 +390,7 @@
       <contextTypes all="false"/>
       <include type="Class"/>
       <menu id="ontoUMLMenu1" label="Suggested Stereotypes" mnemonic="O" menuPath="#"
-        icon="icons/logo/ontouml-simple-logo-small.png"/>
+        icon="icons/logo/ontouml-simple-logo-context.png"/>
 
       <action id="it.unibz.inf.ontouml.vp.addEnumerationStereotype" label="Enumeration"
         style="normal" menuPath="ontoUMLMenu1/#">
@@ -514,7 +514,7 @@
       <include type="Association"/>
 
       <menu id="ontoUMLMenu2" label="Suggested Stereotypes" mnemonic="O" menuPath="#"
-        icon="icons/logo/ontouml-simple-logo-small.png"/>
+        icon="icons/logo/ontouml-simple-logo-context.png"/>
 
       <action id="it.unibz.inf.ontouml.vp.addInstantiationStereotype" label="Instantiation"
         style="normal" menuPath="ontoUMLMenu2/#">
@@ -619,7 +619,7 @@
       <contextTypes all="false"/>
       <include type="Class"/>
       <menu id="ontoUMLMenu1.fixedMenu" label="OntoUML Stereotypes" mnemonic="O" menuPath="#"
-        icon="icons/logo/ontouml-simple-logo-small.png"/>
+        icon="icons/logo/ontouml-simple-logo-context.png"/>
 
 
       <action id="it.unibz.inf.ontouml.vp.addEnumerationStereotype.fixedMenu" label="Enumeration"
@@ -749,7 +749,7 @@
       <include type="Association"/>
 
       <menu id="ontoUMLMenu2.fixedMenu" label="OntoUML Stereotypes" mnemonic="O" menuPath="#"
-        icon="icons/logo/ontouml-simple-logo-small.png"/>
+        icon="icons/logo/ontouml-simple-logo-context.png"/>
 
       <action id="it.unibz.inf.ontouml.vp.addInstantiationStereotype.fixedMenu"
         label="Instantiation" style="normal" menuPath="ontoUMLMenu2.fixedMenu/#">
@@ -857,7 +857,7 @@
       <include type="Attribute"/>
 
       <menu id="ontoUMLMenu3.fixedMenu" label="OntoUML Stereotypes" mnemonic="O" menuPath="#"
-        icon="icons/logo/ontouml-simple-logo-small.png"/>
+        icon="icons/logo/ontouml-simple-logo-context.png"/>
 
       <action id="it.unibz.inf.ontouml.vp.addEndStereotype.fixedMenu" label="End" style="normal"
         menuPath="ontoUMLMenu3.fixedMenu/#">

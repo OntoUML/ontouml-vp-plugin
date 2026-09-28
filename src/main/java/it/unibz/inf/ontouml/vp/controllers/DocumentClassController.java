@@ -37,7 +37,11 @@ public class DocumentClassController implements VPContextActionController {
 
   @Override
   public void update(VPAction action, VPContext context) {
-    action.setEnabled(getSingleSelectedClass(context) != null);
+    // without a configured provider there is nothing to send the class to, so the action is
+    // off rather than opening a dialog that only says so; it comes back once the settings are saved
+    action.setEnabled(
+        getSingleSelectedClass(context) != null
+            && Configurations.getInstance().getLlmConfigurations().isConfigured());
   }
 
   private IClass getSingleSelectedClass(VPContext context) {
