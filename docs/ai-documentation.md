@@ -17,7 +17,7 @@ entradas na aba **References** do Visual Paradigm.
 
 ## 1. O template
 
-A estrutura preenchida pela IA é configurável em *Settings → Prompts & decision tree… → Documentation*
+A estrutura preenchida pela IA é configurável em *Settings → Prompts and decision tree → Edit prompts & decision tree… → Documentation*
 (veja a [seção 6](#6-configuração)). O padrão fica em
 [`src/main/resources/prompts/`](../src/main/resources/prompts/README.md), junto com os demais prompts da IA, e é:
 
@@ -387,21 +387,42 @@ e com quê.
 
 ## 6. Configuração
 
-*OntoUML Plugin → Settings*, grupo **AI Metaclass Suggestion**:
+*OntoUML Plugin → Settings*, grupo **LLM API Settings**. Cada botão de teste fica junto do que ele
+verifica:
 
-- **Provider / API key / Base URL / Model** — endpoint compatível com OpenAI. Suporta OpenAI,
-  Gemini, OpenRouter, Groq, Mistral, DeepSeek, Ollama e LM Studio (locais, sem chave), ou uma URL
-  própria em *Other*.
+- **Enable LLM Integration** — a chave-mestra do grupo: desligada, esconde todo o resto (inclusive
+  este grupo) e desabilita **Suggest Metaclass (AI)…** e **Document or improve documentation…** no
+  menu de contexto de uma classe. Ligada por padrão, para quem já tinha um provedor configurado
+  antes desta opção existir não perder a integração ao atualizar o plugin.
+- **Provider / API key / Base URL** — endpoint compatível com OpenAI. Suporta OpenAI, Gemini,
+  OpenRouter, Groq, Mistral, DeepSeek, Ollama e LM Studio (locais, sem chave), ou uma URL própria em
+  *Other*. O botão **Test**, logo abaixo, envia uma requisição mínima com esses campos, como estão
+  digitados (sem precisar salvar), e mostra o resultado ao lado.
+- **Model** — um combo editável: digite o nome livremente, ou clique **Fetch models** para listar
+  os modelos que o provedor oferece agora mesmo (`GET {Base URL}/models`, o mesmo endpoint que todo
+  provedor da lista expõe ao lado do `/chat/completions`, com a mesma chave). O nome digitado é
+  mantido mesmo que a busca falhe ou que o provedor não suporte esse endpoint — nesse caso o campo
+  continua se comportando como antes, um texto livre.
+- **Web research** — o modo da [seção 5](#5-modos-de-pesquisa), com os serviços e credenciais.
+  **Test search** fica ao lado do modo escolhido e testa exatamente ele: com *Search API* roda uma
+  consulta de exemplo nos serviços; com *Search via the model* **falha** se o provedor não devolver
+  as páginas que consultou (veja abaixo). Fica **desabilitado** em *No research*, e os serviços de
+  busca com suas próprias chaves só aparecem com *Search API* selecionado. Em ambos os modos que
+  pesquisam, o teste **abre o AI Conversation Log** com o que foi enviado e o que voltou.
+- **Prompts and decision tree** — o botão abre o editor dos textos enviados ao modelo. Na aba
+  **Documentation** edita-se o *template* e o *prompt*, com **Restore defaults**. Salvar um texto
+  idêntico ao padrão não grava customização, de modo que os padrões continuam evoluindo junto com
+  o plugin.
 - **Rate limiting** — a pausa entre chamadas ao modelo e o comportamento diante do erro 429, na
   [seção 12](#12-limite-de-requisições-do-provedor-http-429).
-- **Web research** — o modo da [seção 5](#5-modos-de-pesquisa), com os serviços e credenciais.
 - **Reading sources that are not web pages** — a leitura de arquivos locais e a conversão de
-  documentos, descritas na [seção 9](#9-fontes-que-nao-sao-paginas-web).
-- **Test** e **Test search** — executam uma chamada real e **abrem o AI Conversation Log** com o que
-  foi enviado e o que voltou, para validar a configuração.
-- **Prompts & decision tree…** → aba **Documentation** — edita o *template* e o *prompt*, com
-  **Restore defaults**. Salvar um texto idêntico ao padrão não grava customização, de modo que os
-  padrões continuam evoluindo junto com o plugin.
+  documentos, descritas na [seção 9](#9-fontes-que-nao-sao-paginas-web). Cada conversor tem o seu
+  **Test**.
+
+As ações **Suggest Metaclass (AI)…** e **Document or improve documentation…** do menu de contexto de
+uma classe ficam **desabilitadas** enquanto o provedor não estiver configurado (uma chave de API
+preenchida, exceto nos provedores locais). Elas voltam a valer ao salvar as configurações.
+
   Os arquivos padrão e o passo a passo de personalização estão em
   [`src/main/resources/prompts/README.md`](../src/main/resources/prompts/README.md).
 
@@ -458,8 +479,13 @@ antigo na tela em classes documentadas dentro do VP — cuja documentação est�
   renderizada — nesses casos a entrada fica com o trecho do buscador e a marca `(não verificado)`.
 - **O `curl` é a via principal**, e onde ele não existir vale apenas a tentativa em processo:
   páginas que recusam o cliente Java ficam sem ser lidas.
-- **O teste "via modelo" não prova que houve busca.** Ele verifica se veio uma URL na resposta, o que
-  é um indício forte, mas o modelo pode tê-la memorizado.
+- **O teste "via modelo" exige as páginas consultadas, não uma URL no texto.** Um modelo sem busca
+  cita de memória uma página real (para uma lei conhecida, acerta a URL), então uma URL na resposta
+  não prova nada. O teste só passa se o provedor devolver, junto da resposta, as citações que
+  usou — `annotations` do tipo `url_citation` (OpenAI, OpenRouter) ou `citations`/`search_results`
+  (Perplexity). Sem elas o teste falha e diz que o modelo não está pesquisando, como acontece com
+  `gemini-flash-lite-latest`. Ao documentar uma classe nesse modo, uma resposta sem citações gera o
+  mesmo aviso, porque as fontes vêm da memória do modelo.
 - **Fontes sem URL nem caminho não viram referência.** Uma citação como `Lei 14.133/2021, art. 8º`
   sem link permanece apenas no texto: uma referência no VP precisa de um alvo, e inventar um seria
   pior.

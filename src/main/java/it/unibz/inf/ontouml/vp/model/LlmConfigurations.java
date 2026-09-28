@@ -16,6 +16,16 @@ public class LlmConfigurations {
 
   public static final LlmProvider DEFAULT_PROVIDER = LlmProvider.OPENAI;
 
+  /**
+   * On by default: someone who already has a provider and a key configured from before this
+   * switch existed should not have the feature silently turn off under them.
+   */
+  public static final boolean DEFAULT_LLM_INTEGRATION_ENABLED = true;
+
+  @SerializedName("llmIntegrationEnabled")
+  @Expose()
+  private Boolean llmIntegrationEnabled;
+
   @SerializedName("provider")
   @Expose()
   private String provider;
@@ -144,6 +154,7 @@ public class LlmConfigurations {
   }
 
   public void setDefaultValues() {
+    this.llmIntegrationEnabled = DEFAULT_LLM_INTEGRATION_ENABLED;
     this.provider = DEFAULT_PROVIDER.name();
     this.apiKey = "";
     this.customBaseUrl = "";
@@ -425,9 +436,23 @@ public class LlmConfigurations {
     this.model = model;
   }
 
-  /** Whether enough is set up to attempt a request: an endpoint and, if required, a key. */
+  /** The master switch: off hides every other AI setting and disables the AI menu actions. */
+  public boolean isLlmIntegrationEnabled() {
+    return llmIntegrationEnabled == null
+        ? DEFAULT_LLM_INTEGRATION_ENABLED
+        : llmIntegrationEnabled;
+  }
+
+  public void setLlmIntegrationEnabled(boolean llmIntegrationEnabled) {
+    this.llmIntegrationEnabled = llmIntegrationEnabled;
+  }
+
+  /**
+   * Whether enough is set up to attempt a request: the integration is switched on, and there is an
+   * endpoint and, if required, a key.
+   */
   public boolean isConfigured() {
-    if (getEffectiveBaseUrl().isEmpty()) {
+    if (!isLlmIntegrationEnabled() || getEffectiveBaseUrl().isEmpty()) {
       return false;
     }
 

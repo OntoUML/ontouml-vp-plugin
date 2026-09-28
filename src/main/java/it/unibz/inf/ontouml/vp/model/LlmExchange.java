@@ -1,5 +1,8 @@
 package it.unibz.inf.ontouml.vp.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -26,6 +29,7 @@ public class LlmExchange {
   private String response;
   private String error;
   private long durationMillis;
+  private List<String> citations = new ArrayList<>();
 
   public LlmExchange(
       String label,
@@ -44,6 +48,15 @@ public class LlmExchange {
   public void succeeded(String response, long durationMillis) {
     this.response = response;
     this.durationMillis = durationMillis;
+  }
+
+  /** The pages the provider says it consulted; empty when it returned none. */
+  public void setCitations(List<String> citations) {
+    this.citations = citations == null ? new ArrayList<>() : new ArrayList<>(citations);
+  }
+
+  public List<String> getCitations() {
+    return Collections.unmodifiableList(citations);
   }
 
   public void failed(String error, long durationMillis) {

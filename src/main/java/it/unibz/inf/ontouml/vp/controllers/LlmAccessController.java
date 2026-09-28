@@ -11,6 +11,7 @@ import it.unibz.inf.ontouml.vp.model.LlmProvider;
 import it.unibz.inf.ontouml.vp.model.MetaclassSuggestion;
 import it.unibz.inf.ontouml.vp.model.SearchMode;
 import it.unibz.inf.ontouml.vp.utils.LlmRequestPacing;
+import it.unibz.inf.ontouml.vp.utils.ModelCitations;
 import it.unibz.inf.ontouml.vp.utils.Stereotype;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -387,8 +388,10 @@ public class LlmAccessController {
 
     try {
       final HttpURLConnection connection = request(config, url, body);
-      rawContent = readMessageContent(connection);
+      final Reply reply = readReply(connection);
+      rawContent = reply.content;
 
+      exchange.setCitations(reply.citations);
       exchange.succeeded(rawContent, System.currentTimeMillis() - startedAt);
       return new SuggestionResult(null, exchange);
     } catch (IOException e) {
@@ -555,8 +558,42 @@ public class LlmAccessController {
     }
   }
 
-  /** Probes provider-side search by asking for something only a fresh lookup can answer well. */
-  public static String testModelSearch(LlmConfigurations config) throws IOException {
+  /** What the probe of provider-side search found out. */
+  public static class ModelSearchProbe {
+
+    private final String reply;
+    private final List<String> citations;
+
+    private ModelSearchProbe(String reply, List<String> citations) {
+      this.reply = reply;
+      this.citations = citations;
+    }
+
+    /** What the model answered. */
+    public String getReply() {
+      return reply;
+    }
+
+    /** The pages the provider says it consulted. */
+    public List<String> getCitations() {
+      return citations;
+    }
+
+    /**
+     * Whether the provider searched. Only the pages it returns alongside the answer prove it: the
+     * text may well name the right page from memory.
+     */
+    public boolean isSearching() {
+      return !citations.isEmpty();
+    }
+  }
+
+  /**
+   * Probes provider-side search. The verdict does not rest on what the model wrote, which a model
+   * without search can get right from memory, but on whether the provider returned the pages it
+   * used; see {@link ModelCitations}.
+   */
+  public static ModelSearchProbe testModelSearch(LlmConfigurations config) throws IOException {
     if (!config.isConfigured()) {
       throw new IOException(USER_MESSAGE_MISSING_API_KEY);
     }
@@ -573,10 +610,11 @@ public class LlmAccessController {
 
     try {
       final HttpURLConnection connection = sendOnce(url, body, config.getApiKey());
-      final String content = readMessageContent(connection);
+      final Reply reply = readReply(connection);
 
-      exchange.succeeded(content, System.currentTimeMillis() - startedAt);
-      return content == null ? "" : content.trim();
+      exchange.setCitations(reply.citations);
+      exchange.succeeded(reply.content, System.currentTimeMillis() - startedAt);
+      return new ModelSearchProbe(reply.content == null ? "" : reply.content.trim(), reply.citations);
     } catch (IOException e) {
       exchange.failed(e.getMessage(), System.currentTimeMillis() - startedAt);
       throw e;
@@ -879,18 +917,36 @@ public class LlmAccessController {
   }
 
   private static String readMessageContent(HttpURLConnection connection) throws IOException {
+    return readReply(connection).content;
+  }
+
+  /** What a chat completion carried: the answer, and the pages the provider says it used. */
+  private static final class Reply {
+    private final String content;
+    private final List<String> citations;
+
+    private Reply(String content, List<String> citations) {
+      this.content = content;
+      this.citations = citations;
+    }
+  }
+
+  private static Reply readReply(HttpURLConnection connection) throws IOException {
     try (BufferedReader reader =
         new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
       final String json = reader.lines().collect(Collectors.joining("\n"));
       final JsonObject responseObject = new JsonParser().parse(json).getAsJsonObject();
 
-      return responseObject
-          .getAsJsonArray("choices")
-          .get(0)
-          .getAsJsonObject()
-          .getAsJsonObject("message")
-          .get("content")
-          .getAsString();
+      final String content =
+          responseObject
+              .getAsJsonArray("choices")
+              .get(0)
+              .getAsJsonObject()
+              .getAsJsonObject("message")
+              .get("content")
+              .getAsString();
+
+      return new Reply(content, ModelCitations.in(responseObject));
     } catch (Exception e) {
       throw new IOException(USER_MESSAGE_UNKNOWN_ERROR_RESPONSE);
     }

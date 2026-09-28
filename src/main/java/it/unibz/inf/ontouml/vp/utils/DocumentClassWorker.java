@@ -91,12 +91,13 @@ public class DocumentClassWorker extends SwingWorker<SuggestionResult, Void> {
       final String search = researchSection(config);
 
       final String prompt =
-          LlmPromptResources.getDocumentationPrompt()
-              .replace("{class}", classSummary)
-              .replace("{related}", relatedSummary)
-              .replace("{relatedSources}", sources)
-              .replace("{search}", search)
-              .replace("{template}", LlmPromptResources.getDocumentationTemplate());
+          PromptTemplate.fill(
+              LlmPromptResources.getDocumentationPrompt(),
+              "class", classSummary,
+              "related", relatedSummary,
+              "relatedSources", sources,
+              "search", search,
+              "template", LlmPromptResources.getDocumentationTemplate());
 
       progress.start(generationStep);
       progress.activity(
@@ -110,6 +111,20 @@ public class DocumentClassWorker extends SwingWorker<SuggestionResult, Void> {
           LlmAccessController.requestDocumentation(config, targetClass.getName(), prompt);
 
       progress.finish(generationStep);
+
+      if (config.getSearchMode() == SearchMode.MODEL
+          && result.getExchange().getCitations().isEmpty()) {
+        // the prompt said a search was available; without citations there is no sign one happened
+        final String warning =
+            "A pesquisa via modelo não está funcionando: "
+                + config.getModel()
+                + " respondeu sem citar nenhuma página, então as fontes da documentação vêm da"
+                + " memória do modelo e não foram verificadas. Use um modelo com busca ou a"
+                + " pesquisa por API.";
+
+        progress.activity(warning);
+        ViewManagerUtils.log(warning);
+      }
 
       resolved =
           DocumentationTemplate.withoutEmptySourceSections(

@@ -78,7 +78,8 @@ Existem duas estratégias, e cada uma usa arquivos diferentes:
 
 ### 1. Pela interface (recomendado)
 
-**Settings → Prompts & decision tree…** abre uma janela com uma aba para cada texto:
+No grupo **Prompts and decision tree** de *Settings*, o botão **Edit prompts & decision tree…** abre
+uma janela com uma aba para cada texto:
 
 | Aba | Arquivo correspondente |
 |---|---|
@@ -330,8 +331,8 @@ Duas observações:
 - **Documentação:** clique direito numa classe → *Document or improve documentation...* e confira o
   resultado. Use a classe de teste do seu modelo e compare antes e depois.
 - **Metaclasse:** rode a sugestão sobre uma classe cujo estereótipo você já conhece.
-- **Ver o que foi enviado:** os botões **Test** e **Test search** nas configurações da IA abrem o
-  *AI Conversation Log* com o prompt exato que foi montado e a resposta que voltou. É a forma mais
+- **Ver o que foi enviado:** o *AI Conversation Log* (aberto ao fim do **Test search**, ou pela ação
+  de mesmo nome) mostra o prompt exato que foi montado e a resposta que voltou. É a forma mais
   direta de checar se um placeholder foi substituído e se a IA seguiu as instruções.
 - Alterou a árvore? O **Save** recusa uma árvore com erro estrutural e diz onde está. Depois, abra
   a aba *Decision tree* no modo visual para conferir os caminhos e rode a avaliação detalhada numa
