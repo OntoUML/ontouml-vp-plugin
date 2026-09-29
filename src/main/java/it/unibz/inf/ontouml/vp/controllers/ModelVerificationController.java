@@ -45,7 +45,7 @@ public class ModelVerificationController implements VPActionController {
   @Override
   public void performAction(VPAction action) {
     this.action = action;
-    final SimpleServiceWorker worker = new SimpleServiceWorker(this::task);
+    final SimpleServiceWorker worker = new SimpleServiceWorker(this::task, "Verificando o modelo");
     worker.execute();
   }
 

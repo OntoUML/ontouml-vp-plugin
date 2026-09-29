@@ -6,6 +6,7 @@ import it.unibz.inf.ontouml.vp.OntoUMLPlugin;
 import it.unibz.inf.ontouml.vp.model.Configurations;
 import it.unibz.inf.ontouml.vp.model.GitHubRelease;
 import it.unibz.inf.ontouml.vp.model.GitHubReleaseAsset;
+import java.nio.charset.StandardCharsets;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -50,7 +51,7 @@ public class GitHubAccessController {
 
     if (responseCode == HttpsURLConnection.HTTP_OK) {
       try (BufferedReader in =
-          new BufferedReader(new InputStreamReader(request.getInputStream()))) {
+          new BufferedReader(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8))) {
         StringBuilder response = new StringBuilder();
         String line;
 

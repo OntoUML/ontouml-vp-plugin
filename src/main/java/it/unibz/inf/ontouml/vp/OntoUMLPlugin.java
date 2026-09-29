@@ -6,6 +6,7 @@ import com.vp.plugin.VPPlugin;
 import com.vp.plugin.VPPluginInfo;
 import com.vp.plugin.model.IProject;
 import it.unibz.inf.ontouml.vp.listeners.ProjectListener;
+import javax.swing.ToolTipManager;
 
 /**
  * Implementation of VPPlugin responsible for configuring OntoUML Plugin's behaviour when loading
@@ -16,7 +17,7 @@ import it.unibz.inf.ontouml.vp.listeners.ProjectListener;
  */
 public class OntoUMLPlugin implements VPPlugin {
 
-  public static final String PLUGIN_VERSION_RELEASE = "0.5.3";
+  public static final String PLUGIN_VERSION_RELEASE = "0.6";
   public static final String PLUGIN_ID = "it.unibz.inf.ontouml.vp";
   public static final String PLUGIN_NAME = "OntoUML Plugin";
   public static final String PLUGIN_REPO = "https://github.com/OntoUML/ontouml-vp-plugin/";
@@ -42,6 +43,14 @@ public class OntoUMLPlugin implements VPPlugin {
    */
   @Override
   public void loaded(VPPluginInfo pluginInfo) {
+    // Visual Paradigm's own window is not a plain Swing top-level; every dialog this plugin opens
+    // (Configurations, Suggest Metaclass, Document...) is a Swing panel hosted inside it. In that
+    // arrangement Swing's normal tooltip — a lightweight popup drawn on the window's own layered
+    // pane — can end up not shown at all, on any component, however long the mouse sits still,
+    // because there is no such pane to draw it on. A real (heavyweight) popup window is drawn by
+    // the OS instead, and does not depend on that.
+    ToolTipManager.sharedInstance().setLightWeightPopupEnabled(false);
+
     final ProjectManager pm = ApplicationManager.instance().getProjectManager();
     final IProject p = pm.getProject();
 

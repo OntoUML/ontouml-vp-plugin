@@ -1,0 +1,118 @@
+{
+  "startNode": "natureOfTheThing",
+  "nodes": {
+    "natureOfTheThing": {
+      "question": "What kind of thing do the instances of this class belong to? An ENDURANT is an object-like entity that persists through time and can change (a person, a car, a colour, a marriage). A PERDURANT is something that happens or unfolds in time and has temporal parts (a meeting, a payment, an erosion). A SITUATION is a state of affairs that obtains or holds at a time (a medical emergency, a compliance violation).",
+      "options": [
+        { "answer": "endurant", "next": "independence" },
+        { "answer": "perdurant", "stereotype": "event" },
+        { "answer": "situation", "stereotype": "situation" }
+      ]
+    },
+
+    "independence": {
+      "question": "Do the instances exist on their own, or do they exist only by inhering in some bearer? A SUBSTANTIAL is existentially independent (a person, a car, an amount of water). A MOMENT existentially depends on something else that carries it (a colour, a skill, an obligation, a marriage between two people).",
+      "options": [
+        { "answer": "substantial", "next": "concreteness" },
+        { "answer": "moment", "next": "intrinsicOrRelator" }
+      ]
+    },
+
+    "concreteness": {
+      "question": "Are the instances CONCRETE (they exist in space and time, like a person or a car) or ABSTRACT (they have no spatio-temporal existence and are values, like a number, a date, a colour value or a status code)?",
+      "options": [
+        { "answer": "concrete", "next": "sortality" },
+        { "answer": "abstract", "next": "fixedValueSpace" }
+      ]
+    },
+
+    "fixedValueSpace": {
+      "question": "Does this abstract type have a fixed, enumerable value space — a small closed set of named literals such as {Red, Blue, Green} or {Draft, Published}? Answer 'yes' for such an enumeration, or 'no' for an open value space such as String, Number or Date.",
+      "options": [
+        { "answer": "yes", "stereotype": "enumeration" },
+        { "answer": "no", "stereotype": "datatype" }
+      ]
+    },
+
+    "sortality": {
+      "question": "Is this class a SORTAL, i.e. does it by itself supply a uniform identity principle for its instances (it answers 'what makes two instances the same thing', as Person or Car do)? Or is it a NON-SORTAL, which classifies instances that get their identity from some other, more specific type they also instantiate (Furniture, Customer, InsuredItem — these cut across different kinds of thing)?",
+      "options": [
+        { "answer": "sortal", "next": "sortalRigidity" },
+        { "answer": "non-sortal", "next": "nonSortalRigidity" }
+      ]
+    },
+
+    "sortalRigidity": {
+      "question": "Is this class RIGID, i.e. must every instance keep this classification for as long as it exists (a Person is always a Person)? Or is it ANTI-RIGID, meaning an instance can stop being it while continuing to exist as the same entity (a Student can stop being a Student; a Child becomes an Adult)?",
+      "options": [
+        { "answer": "rigid", "next": "ultimateOrSubkind" },
+        { "answer": "anti-rigid", "next": "sortalDependence" }
+      ]
+    },
+
+    "ultimateOrSubkind": {
+      "question": "Is this class the most general sortal for its instances — the kind of thing they fundamentally are (an ULTIMATE SORTAL such as Person or Car)? Or is it a SUBKIND, a rigid specialisation of an already identified kind along some further criterion (Man as a subkind of Person, ArabicaCoffee as a subkind of Coffee)? A class that specialises another rigid sortal is a subkind.",
+      "options": [
+        { "answer": "ultimate sortal", "next": "objectCollectiveQuantity" },
+        { "answer": "subkind", "stereotype": "subkind" }
+      ]
+    },
+
+    "objectCollectiveQuantity": {
+      "question": "What do the instances look like structurally? An OBJECT is a functional complex whose parts play different roles (a person, a car, a table). A COLLECTIVE is a whole made of member parts that all play the same role (a forest of trees, a team of players, a deck of cards). A QUANTITY is an amount of homogeneous stuff with no distinguishable parts (water, gold, wine).",
+      "options": [
+        { "answer": "object", "stereotype": "kind" },
+        { "answer": "collective", "stereotype": "collective" },
+        { "answer": "quantity", "stereotype": "quantity" }
+      ]
+    },
+
+    "sortalDependence": {
+      "question": "Why can an instance stop being classified by this class? Answer 'relationally dependent' when being it is defined by a relationship to another entity (a Student depends on an enrolment, an Employee on an employment, a Customer on a purchase — often visible as a «mediation» to a «relator»). Answer 'intrinsic' when it changes because of an intrinsic phase or state of the entity itself (Child, Adult, LivingPerson).",
+      "options": [
+        { "answer": "relationally dependent", "stereotype": "role" },
+        { "answer": "intrinsic", "stereotype": "phase" }
+      ]
+    },
+
+    "nonSortalRigidity": {
+      "question": "Is this non-sortal RIGID, i.e. every instance is necessarily classified by it for its whole existence (PhysicalObject, Furniture)? Answer 'rigid' in that case, or 'not rigid' when at least some instances can stop being classified by it.",
+      "options": [
+        { "answer": "rigid", "stereotype": "category" },
+        { "answer": "not rigid", "next": "semiRigidity" }
+      ]
+    },
+
+    "semiRigidity": {
+      "question": "Is this non-sortal SEMI-RIGID, i.e. rigid for some of its instances and anti-rigid for others (Animal is rigid for a dog but anti-rigid for a person considered as an animal; InsuredObject is necessary for some items and contingent for others)? Answer 'semi-rigid' in that case, or 'anti-rigid' when it is contingent for every instance.",
+      "options": [
+        { "answer": "semi-rigid", "stereotype": "mixin" },
+        { "answer": "anti-rigid", "next": "nonSortalDependence" }
+      ]
+    },
+
+    "nonSortalDependence": {
+      "question": "Why is this anti-rigid non-sortal contingent? Answer 'relationally dependent' when being it depends on a relationship to another entity, and it applies to instances of different kinds (Customer, Tenant, InsuredParty). Answer 'intrinsic' when it depends on an intrinsic phase or state instead (Fresh/Stale item, Living/Dead animal).",
+      "options": [
+        { "answer": "relationally dependent", "stereotype": "roleMixin" },
+        { "answer": "intrinsic", "stereotype": "phaseMixin" }
+      ]
+    },
+
+    "intrinsicOrRelator": {
+      "question": "Does this moment inhere in a SINGLE bearer (an INTRINSIC moment such as a colour, a weight, a skill or a belief)? Or does it existentially depend on and bind TWO OR MORE entities together (a RELATOR such as a Marriage, an Employment or an Enrolment, which usually derives a material relation like isMarriedTo or worksFor)?",
+      "options": [
+        { "answer": "intrinsic", "next": "qualityOrMode" },
+        { "answer": "relator", "stereotype": "relator" }
+      ]
+    },
+
+    "qualityOrMode": {
+      "question": "Is this intrinsic moment a QUALITY, i.e. something measurable that can be projected onto a structured value space (weight, colour, temperature, bank balance, a status taken from an enumeration)? Or is it a MODE, a way-of-being or disposition that has no such value space (a skill, a fragility, a belief, an intention, an obligation)?",
+      "options": [
+        { "answer": "quality", "stereotype": "quality" },
+        { "answer": "mode", "stereotype": "mode" }
+      ]
+    }
+  }
+}

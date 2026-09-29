@@ -7,6 +7,7 @@ import it.unibz.inf.ontouml.vp.model.ModularizationServiceResult;
 import it.unibz.inf.ontouml.vp.model.ProjectConfigurations;
 import it.unibz.inf.ontouml.vp.model.ServiceResult;
 import it.unibz.inf.ontouml.vp.model.VerificationServiceResult;
+import java.nio.charset.StandardCharsets;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -78,7 +79,7 @@ public class OntoUMLServerAccessController {
     }
 
     final BufferedReader reader =
-        new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
     final String json = reader.lines().parallel().collect(Collectors.joining("\n"));
     return new ObjectMapper().readValue(json, _class);
   }
@@ -182,7 +183,7 @@ public class OntoUMLServerAccessController {
     request.setDoOutput(true);
 
     final OutputStream requestStream = request.getOutputStream();
-    final byte[] requestBody = body.getBytes();
+    final byte[] requestBody = body.getBytes(StandardCharsets.UTF_8);
 
     requestStream.write(requestBody, 0, requestBody.length);
     requestStream.flush();

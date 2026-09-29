@@ -29,6 +29,21 @@ WARNING: some more advanced features are based on web services that process your
 
 ### Features
 
+#### AI-Assisted Documentation
+
+The plugin can write or improve the documentation of a class with an LLM, following a configurable
+template and grounded in web research that favours official sources. Cited sources that carry a URL
+are published to the class' **References** tab.
+
+Right-click a class → **Document or improve documentation...**
+
+See [docs/ai-documentation.md](./docs/ai-documentation.md) for the full flow, the diagrams, the
+search modes and the rules that keep the model from inventing citations.
+
+The prompts, the documentation template and the decision tree that drive the AI features live in
+[src/main/resources/prompts](./src/main/resources/prompts/README.md), which explains how to customize
+them (in Portuguese).
+
 #### OntoUML Enhanced Modeling
 
 Stereotypes and meta-properties that are essential to OntoUML modeling are easily available to classes, associations and attributes with a simple right-click.
