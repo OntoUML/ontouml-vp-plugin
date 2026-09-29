@@ -13,8 +13,7 @@ import it.unibz.inf.ontouml.vp.model.uml.Association;
 import it.unibz.inf.ontouml.vp.model.uml.Class;
 import it.unibz.inf.ontouml.vp.model.uml.ModelElement;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
@@ -61,9 +60,9 @@ public class OntoUMLConstraintsManager {
 
       final JsonParser parser = new JsonParser();
       final JsonObject gConstraintsObject =
-          parser.parse(new FileReader(generalizationsConstraintsFile)).getAsJsonObject();
+          parser.parse(TextFiles.readUtf8(generalizationsConstraintsFile.toPath())).getAsJsonObject();
       final JsonObject aConstraintsObject =
-          parser.parse(new FileReader(associationConstraintsFile)).getAsJsonObject();
+          parser.parse(TextFiles.readUtf8(associationConstraintsFile.toPath())).getAsJsonObject();
 
       final Gson gson = new Gson();
       allowedSubClassesFor =
@@ -72,7 +71,7 @@ public class OntoUMLConstraintsManager {
           gson.fromJson(gConstraintsObject.getAsJsonObject(ALLOWED_SUPERCLASSES), mapOfListsType);
       associationConstraints = gson.fromJson(aConstraintsObject, mapOfListsType);
 
-    } catch (FileNotFoundException e) {
+    } catch (IOException e) {
       e.printStackTrace();
     }
   }

@@ -3,6 +3,7 @@ package it.unibz.inf.ontouml.vp.controllers;
 import it.unibz.inf.ontouml.vp.utils.Stereotype;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.Set;
 
 public enum ApplyClassStereotypeId {
@@ -123,6 +124,21 @@ public enum ApplyClassStereotypeId {
     }
 
     return actionIdMap.get(actionId);
+  }
+
+  /**
+   * Resolves a non-fixed-menu enum value from a raw OntoUML class stereotype name (e.g. as
+   * suggested at runtime by the AI metaclass suggestion feature), so callers can check {@link
+   * #hasKnownNature()} without going through an action ID.
+   *
+   * @param stereotype - raw stereotype name, see {@link Stereotype}.
+   * @return matching enum value, if any.
+   */
+  public static Optional<ApplyClassStereotypeId> fromStereotype(String stereotype) {
+    return Arrays.stream(ApplyClassStereotypeId.values())
+        .filter(id -> !id.isFixed())
+        .filter(id -> id.getStereotype().equals(stereotype))
+        .findFirst();
   }
 
   public boolean hasKnownNature() {

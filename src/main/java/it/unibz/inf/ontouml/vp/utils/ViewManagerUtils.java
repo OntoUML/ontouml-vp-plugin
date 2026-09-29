@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -204,8 +205,134 @@ public class ViewManagerUtils {
     log(jList);
   }
 
+  /** How many lines the plugin's own message log keeps; older ones scroll off the top. */
+  private static final int MAX_LOG_LINES = 300;
+
+  /** One list for the plugin's messages, kept for the whole session. */
+  private static DefaultListModel<String> messageModel;
+
+  private static JScrollPane messageScroll;
+
+  /** Progress lines that are updated in place, by the key of the task they belong to. */
+  private static final Map<String, String> statusLines = new HashMap<>();
+
+  /**
+   * Adds a line to the plugin's message log.
+   *
+   * <p>This used to build a new list holding only this message and hand it to Visual Paradigm,
+   * which replaces what the pane was showing — so every message erased the one before it. A source
+   * that could not be read, reported a moment earlier, was gone by the time the next one was. The
+   * lines now accumulate, up to {@link #MAX_LOG_LINES}. Callers that pass a whole list of their own
+   * — the model verification — still replace the pane with it, as they should.
+   */
   public static void log(String message) {
-    log(List.of(message));
+    onEventThread(
+        () -> {
+          appendLogLine(message);
+          showMessageLog();
+        });
+  }
+
+  /**
+   * Writes or updates the progress line of a task that is running in the background.
+   *
+   * <p>The line for a key is rewritten in place rather than appended, so a task that reports every
+   * few seconds leaves one line that changes, not a column of "step 3 of 12", "step 4 of 12". The
+   * pane is brought forward only for the first line of a task: a progress update must not pull it
+   * up in front of whatever the user is doing.
+   */
+  public static void logStatus(String key, String message) {
+    onEventThread(
+        () -> {
+          final boolean first = !statusLines.containsKey(key);
+          final String previous = statusLines.put(key, message);
+
+          if (previous == null) {
+            appendLogLine(message);
+          } else {
+            replaceLogLine(previous, message);
+          }
+
+          if (first) {
+            showMessageLog();
+          }
+        });
+  }
+
+  /** Writes the last line of a task's progress and stops updating it. */
+  public static void finishStatus(String key, String message) {
+    onEventThread(
+        () -> {
+          final String previous = statusLines.remove(key);
+
+          if (previous == null) {
+            appendLogLine(message);
+          } else {
+            replaceLogLine(previous, message);
+          }
+
+          showMessageLog();
+        });
+  }
+
+  private static synchronized DefaultListModel<String> messageModel() {
+    if (messageModel == null) {
+      messageModel = new DefaultListModel<>();
+      messageScroll = new JScrollPane(new JList<>(messageModel));
+    }
+
+    return messageModel;
+  }
+
+  private static void appendLogLine(String message) {
+    final DefaultListModel<String> model = messageModel();
+    model.addElement(message);
+
+    while (model.size() > MAX_LOG_LINES) {
+      model.remove(0);
+    }
+  }
+
+  /** Rewrites the most recent line equal to {@code previous}, or appends when it has scrolled off. */
+  private static void replaceLogLine(String previous, String message) {
+    final DefaultListModel<String> model = messageModel();
+    final int index = model.lastIndexOf(previous);
+
+    if (index >= 0) {
+      model.set(index, message);
+    } else {
+      appendLogLine(message);
+    }
+  }
+
+  private static void showMessageLog() {
+    messageModel();
+
+    ApplicationManager.instance()
+        .getViewManager()
+        .showMessagePaneComponent(OntoUMLPlugin.PLUGIN_ID, SCOPE_PLUGIN, messageScroll);
+  }
+
+  /**
+   * Swing models belong to the event thread, and this is called from workers. A failure inside is
+   * printed rather than thrown: a message that cannot be shown must never take down the task that
+   * was only reporting on itself.
+   */
+  private static void onEventThread(Runnable action) {
+    final Runnable guarded =
+        () -> {
+          try {
+            action.run();
+          } catch (RuntimeException | NoClassDefFoundError e) {
+            System.out.println("Could not write to the message pane: " + e);
+          }
+        };
+
+    if (javax.swing.SwingUtilities.isEventDispatchThread()) {
+      guarded.run();
+    } else {
+      javax.swing.SwingUtilities.invokeLater(guarded);
+    }
   }
 
   public static void exportToGUFOIssueDialog(String msg) {

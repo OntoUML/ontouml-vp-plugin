@@ -77,7 +77,10 @@ public class SettingsMenuController implements VPActionController {
       _dialog.setTitle(OntoUMLPlugin.PLUGIN_NAME + " Configurations");
       _dialog.setModal(false);
       _dialog.setResizable(true);
-      _dialog.setSize(_configurationsMenuView.getWidth(), _configurationsMenuView.getHeight() + 20);
+      // a floor, so the dialog never opens too small for the groups inside it
+      _dialog.setSize(
+          Math.max(_configurationsMenuView.getWidth(), 720),
+          Math.max(_configurationsMenuView.getHeight() + 20, 580));
       _configurationsMenuView.setContainerDialog(_dialog);
     }
 
