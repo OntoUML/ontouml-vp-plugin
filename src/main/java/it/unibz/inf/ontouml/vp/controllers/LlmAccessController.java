@@ -11,6 +11,7 @@ import it.unibz.inf.ontouml.vp.model.LlmProvider;
 import it.unibz.inf.ontouml.vp.model.MetaclassSuggestion;
 import it.unibz.inf.ontouml.vp.model.SearchMode;
 import it.unibz.inf.ontouml.vp.utils.LlmRequestPacing;
+import it.unibz.inf.ontouml.vp.utils.LlmPromptResources;
 import it.unibz.inf.ontouml.vp.utils.ModelCitations;
 import it.unibz.inf.ontouml.vp.utils.Stereotype;
 import java.io.BufferedReader;
@@ -72,19 +73,10 @@ public class LlmAccessController {
 
   private static final String USER_MESSAGE_UNPARSEABLE_ANSWER =
       "The AI did not answer the decision-tree question in the expected format.";
-  private static final String NODE_SYSTEM_PROMPT =
-      "You answer one question of the UFO decision tree at a time and reply only with the JSON"
-          + " object the user asks for.";
-
-  private static final String DOCUMENTATION_SYSTEM_PROMPT =
-      "You document classes of an OntoUML model. You never invent laws, articles or URLs, and you"
-          + " mark as (não verificado) every source you cannot back with the search results given"
-          + " to you.";
-
-  private static final String SUMMARY_SYSTEM_PROMPT =
-      "You summarise a source in at most 50 words, focused on one given concept. You never invent"
-          + " content: if the source text is missing or says nothing about the concept, you reply"
-          + " exactly (conteúdo não recuperado).";
+  // The system prompts sent alongside the decision-node, documentation and source-summary user
+  // prompts are not constants: like every other prompt this controller sends, they are bundled
+  // files under prompts/ that "AI Prompts & Decision Tree" lets the user override, so they are
+  // read through LlmPromptResources at the point each request is built, not cached here.
 
   /** Answered by the model when it has nothing legitimate to summarise. */
   public static final String NO_CONTENT_ANSWER = "(conteúdo não recuperado)";
@@ -296,8 +288,9 @@ public class LlmAccessController {
     }
 
     final String url = config.getEffectiveBaseUrl() + CHAT_COMPLETIONS_ENDPOINT;
-    final String body = buildRequestBody(config.getModel(), NODE_SYSTEM_PROMPT, prompt);
-    final LlmExchange exchange = new LlmExchange(label, config, url, NODE_SYSTEM_PROMPT, prompt);
+    final String systemPrompt = LlmPromptResources.getNodeSystemPrompt();
+    final String body = buildRequestBody(config.getModel(), systemPrompt, prompt);
+    final LlmExchange exchange = new LlmExchange(label, config, url, systemPrompt, prompt);
     final long startedAt = System.currentTimeMillis();
     String rawContent = null;
 
@@ -374,15 +367,11 @@ public class LlmAccessController {
     }
 
     final String url = config.getEffectiveBaseUrl() + CHAT_COMPLETIONS_ENDPOINT;
-    final String body =
-        buildRequestBody(searchAwareModel(config), DOCUMENTATION_SYSTEM_PROMPT, userPrompt);
+    final String systemPrompt = LlmPromptResources.getDocumentationSystemPrompt();
+    final String body = buildRequestBody(searchAwareModel(config), systemPrompt, userPrompt);
     final LlmExchange exchange =
         new LlmExchange(
-            "Documentation for \"" + className + "\"",
-            config,
-            url,
-            DOCUMENTATION_SYSTEM_PROMPT,
-            userPrompt);
+            "Documentation for \"" + className + "\"", config, url, systemPrompt, userPrompt);
     final long startedAt = System.currentTimeMillis();
     String rawContent = null;
 
@@ -456,8 +445,8 @@ public class LlmAccessController {
             + "\". Reply with the summary only, in the language of the source.";
 
     final String url = config.getEffectiveBaseUrl() + CHAT_COMPLETIONS_ENDPOINT;
-    final String body =
-        buildRequestBody(searchAwareModel(config), SUMMARY_SYSTEM_PROMPT, prompt);
+    final String systemPrompt = LlmPromptResources.getSourceSummaryPrompt();
+    final String body = buildRequestBody(searchAwareModel(config), systemPrompt, prompt);
     final LlmExchange exchange =
         new LlmExchange(
             "Source summary for \""
@@ -467,7 +456,7 @@ public class LlmAccessController {
                 + (part == null ? "" : " (" + part + ")"),
             config,
             url,
-            SUMMARY_SYSTEM_PROMPT,
+            systemPrompt,
             prompt);
     final long startedAt = System.currentTimeMillis();
 
@@ -529,13 +518,14 @@ public class LlmAccessController {
             + " document. Reply with the summary only, in the language of the source.";
 
     final String url = config.getEffectiveBaseUrl() + CHAT_COMPLETIONS_ENDPOINT;
-    final String body = buildRequestBody(searchAwareModel(config), SUMMARY_SYSTEM_PROMPT, prompt);
+    final String systemPrompt = LlmPromptResources.getSourceSummaryPrompt();
+    final String body = buildRequestBody(searchAwareModel(config), systemPrompt, prompt);
     final LlmExchange exchange =
         new LlmExchange(
             "Source digest for \"" + concept + "\" — " + caption + " (" + parts.size() + " parts)",
             config,
             url,
-            SUMMARY_SYSTEM_PROMPT,
+            systemPrompt,
             prompt);
     final long startedAt = System.currentTimeMillis();
 

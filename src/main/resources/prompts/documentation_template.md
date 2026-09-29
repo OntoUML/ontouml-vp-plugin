@@ -1,17 +1,17 @@
-# {Nome da Classe}
+# {Class Name}
 
-## Descrição curta
+## Short description
 
-{Descrição curta da classe. No máximo 40 palavras.}
+{Short description of the class. At most 40 words.}
 
-## Descrição completa
+## Full description
 
-{Descrição completa da classe. Tamanho livre.}
+{Full description of the class. No length limit.}
 
-## Fontes Normativas
+## Normative sources
 
-{Leis, Documentações Oficiais, Resoluções...}
+{Laws, official documentation, resolutions...}
 
-## Fontes
+## Sources
 
-{Blogs, Livros e Documentos explicativos que auxiliem na compreensão}
+{Blogs, books and explanatory documents that help understand it}

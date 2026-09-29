@@ -17,7 +17,7 @@ entradas na aba **References** do Visual Paradigm.
 
 ## 1. O template
 
-A estrutura preenchida pela IA é configurável em *Settings → Prompts and decision tree → Edit prompts & decision tree… → Documentation*
+A estrutura preenchida pela IA é configurável em *Settings → AI Settings → Prompts → Edit prompts & decision tree… → Documentation*
 (veja a [seção 6](#6-configuração)). O padrão fica em
 [`src/main/resources/prompts/`](../src/main/resources/prompts/README.md), junto com os demais prompts da IA, e é:
 
@@ -387,13 +387,14 @@ e com quê.
 
 ## 6. Configuração
 
-*OntoUML Plugin → Settings*, grupo **LLM API Settings**. Cada botão de teste fica junto do que ele
-verifica:
+*OntoUML Plugin → Settings*, grupo **AI Settings**. O **Enable LLM Integration** no topo do
+grupo é a chave-mestra: desligado, esconde as quatro abas abaixo (inclusive o grupo) e desabilita
+**Suggest Metaclass (AI)…** e **Document or improve documentation…** no menu de contexto de uma
+classe. Ligado por padrão, para quem já tinha um provedor configurado antes desta opção existir não
+perder a integração ao atualizar o plugin. As quatro abas:
 
-- **Enable LLM Integration** — a chave-mestra do grupo: desligada, esconde todo o resto (inclusive
-  este grupo) e desabilita **Suggest Metaclass (AI)…** e **Document or improve documentation…** no
-  menu de contexto de uma classe. Ligada por padrão, para quem já tinha um provedor configurado
-  antes desta opção existir não perder a integração ao atualizar o plugin.
+**LLM Provider**
+
 - **Provider / API key / Base URL** — endpoint compatível com OpenAI. Suporta OpenAI, Gemini,
   OpenRouter, Groq, Mistral, DeepSeek, Ollama e LM Studio (locais, sem chave), ou uma URL própria em
   *Other*. O botão **Test**, logo abaixo, envia uma requisição mínima com esses campos, como estão
@@ -403,21 +404,37 @@ verifica:
   provedor da lista expõe ao lado do `/chat/completions`, com a mesma chave). O nome digitado é
   mantido mesmo que a busca falhe ou que o provedor não suporte esse endpoint — nesse caso o campo
   continua se comportando como antes, um texto livre.
-- **Web research** — o modo da [seção 5](#5-modos-de-pesquisa), com os serviços e credenciais.
-  **Test search** fica ao lado do modo escolhido e testa exatamente ele: com *Search API* roda uma
-  consulta de exemplo nos serviços; com *Search via the model* **falha** se o provedor não devolver
-  as páginas que consultou (veja abaixo). Fica **desabilitado** em *No research*, e os serviços de
-  busca com suas próprias chaves só aparecem com *Search API* selecionado. Em ambos os modos que
-  pesquisam, o teste **abre o AI Conversation Log** com o que foi enviado e o que voltou.
-- **Prompts and decision tree** — o botão abre o editor dos textos enviados ao modelo. Na aba
-  **Documentation** edita-se o *template* e o *prompt*, com **Restore defaults**. Salvar um texto
-  idêntico ao padrão não grava customização, de modo que os padrões continuam evoluindo junto com
-  o plugin.
 - **Rate limiting** — a pausa entre chamadas ao modelo e o comportamento diante do erro 429, na
   [seção 12](#12-limite-de-requisições-do-provedor-http-429).
-- **Reading sources that are not web pages** — a leitura de arquivos locais e a conversão de
+
+**References & Research**
+
+- **References cited in the model** — até onde ir buscar as referências citadas (classe atual,
+  diagrama, todas as vizinhas, ou nenhuma) e como consumi-las (ler tudo com map-reduce, ou cortar
+  em N caracteres), descrito em detalhe no [`prompts/README.md`](../src/main/resources/prompts/README.md).
+- **Reading sources that are not web pages** — logo abaixo, por ser sobre o mesmo tipo de coisa
+  (ler o que já está citado, não buscar algo novo): a leitura de arquivos locais e a conversão de
   documentos, descritas na [seção 9](#9-fontes-que-nao-sao-paginas-web). Cada conversor tem o seu
   **Test**.
+- **Web research** — o modo da [seção 5](#5-modos-de-pesquisa), com os serviços e credenciais. A
+  explicação abaixo do combo mostra só o modo selecionado. **Test search** fica ao lado do modo
+  escolhido e testa exatamente ele: com *Search API* roda uma consulta de exemplo nos serviços; com
+  *Search via the model* **falha** se o provedor não devolver as páginas que consultou (veja
+  abaixo). Fica **desabilitado** em *No research*, e os serviços de busca com suas próprias chaves
+  só aparecem com *Search API* selecionado. Em ambos os modos que pesquisam, o teste **abre o AI
+  Conversation Log** com o que foi enviado e o que voltou.
+
+**Prompts**
+
+- **Edit prompts & decision tree…** — abre o editor dos textos enviados ao modelo. Na aba
+  **Documentation** edita-se o *template* e o *prompt*, com **Restore defaults**, e o campo
+  **Documentation language** escolhe o idioma em que a documentação é escrita (veja
+  [`prompts/README.md`](../src/main/resources/prompts/README.md)). Salvar um texto idêntico ao
+  padrão não grava customização, de modo que os padrões continuam evoluindo junto com o plugin.
+
+**Debugging**
+
+- Ver [seção 11](#11-modo-debug).
 
 As ações **Suggest Metaclass (AI)…** e **Document or improve documentation…** do menu de contexto de
 uma classe ficam **desabilitadas** enquanto o provedor não estiver configurado (uma chave de API
@@ -635,7 +652,7 @@ anterior, e um aviso de fonte não lida sumia com a mensagem seguinte.
 
 ## 11. Modo debug
 
-*Settings* → **Debugging**. Ligado, ele:
+*Settings → AI Settings → Debugging*. Ligado, ele:
 
 - tira o teto de 25 entradas do *AI Conversation Log* (vai a 500 em memória);
 - grava **todas** as trocas em disco, uma arquivo por sessão, na ordem em que aconteceram.

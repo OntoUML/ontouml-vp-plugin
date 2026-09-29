@@ -10,6 +10,7 @@ import it.unibz.inf.ontouml.vp.model.LlmConfigurations;
 import it.unibz.inf.ontouml.vp.model.RelatedSource;
 import it.unibz.inf.ontouml.vp.model.SearchMode;
 import it.unibz.inf.ontouml.vp.model.SearchResult;
+import it.unibz.inf.ontouml.vp.model.SourceReadScope;
 import it.unibz.inf.ontouml.vp.views.DocumentClassView;
 import it.unibz.inf.ontouml.vp.views.ProgressDialogHandler;
 import java.util.ArrayList;
@@ -28,18 +29,12 @@ public class DocumentClassWorker extends SwingWorker<SuggestionResult, Void> {
   private static final String DEFAULT_ERROR_MESSAGE = "The documentation request failed.";
 
   /**
-   * At least one request per source, so the reading list has to stay bounded. Raised from 8 when
-   * the pool grew from "the neighbours' references" to four origins; the collection order is what
-   * guarantees the class' own references are never the ones left out.
+   * How many more sources than {@link LlmConfigurations#getMaxSourcesToRead()} are even attempted.
+   * A source that cannot be read still costs a retrieval and often a search, and it does not count
+   * towards that cap — so without a margin of its own, a class whose references have all rotted
+   * would keep the dialog busy for as long as it had references, however low the cap was set.
    */
-  private static final int MAX_SOURCE_SUMMARIES = 12;
-
-  /**
-   * How many sources are even attempted. A source that cannot be read still costs a retrieval and
-   * often a search, and it does not count towards the summary cap — so without this, a model whose
-   * references have all rotted would keep the dialog busy for as long as it had references.
-   */
-  private static final int MAX_SOURCES_ATTEMPTED = 20;
+  private static final int ATTEMPT_SAFETY_MARGIN = 8;
 
   private final IClass targetClass;
   private final ProgressDialogHandler dialogHandler;
@@ -97,6 +92,7 @@ public class DocumentClassWorker extends SwingWorker<SuggestionResult, Void> {
               "related", relatedSummary,
               "relatedSources", sources,
               "search", search,
+              "language", config.getDocumentationLanguage(),
               "template", LlmPromptResources.getDocumentationTemplate());
 
       progress.start(generationStep);
@@ -327,20 +323,45 @@ public class DocumentClassWorker extends SwingWorker<SuggestionResult, Void> {
    * the model cannot see is one it cannot carry over, however clearly the author put it there.
    */
   private String summariseRelatedSources(LlmConfigurations config) {
+    final SourceReadScope scope = config.getSourceReadScope();
+
+    if (scope == SourceReadScope.NONE) {
+      progress.skip(sourcesStep, "desligada nas configurações (\"Sources cited in the model\")");
+
+      return "(reading the sources cited in the model is turned off in settings — every source"
+          + " you list must be marked (não verificado))";
+    }
+
     progress.start(sourcesStep);
     progress.activity("Procurando referências na classe, nas vizinhas, nos diagramas e nos pacotes");
 
-    final List<RelatedSource> sources = LlmPromptContextBuilder.collectSources(targetClass);
+    final List<RelatedSource> allSources = LlmPromptContextBuilder.collectSources(targetClass);
+    final List<RelatedSource> sources = new ArrayList<>();
+
+    for (RelatedSource source : allSources) {
+      if (scope.includes(source.getScope())) {
+        sources.add(source);
+      }
+    }
 
     if (sources.isEmpty()) {
-      progress.skip(sourcesStep, "nem a classe nem o que a cerca cita referências");
+      progress.skip(
+          sourcesStep,
+          allSources.isEmpty()
+              ? "nem a classe nem o que a cerca cita referências"
+              : "nada dentro do escopo configurado (\"" + scope.getLabel() + "\") cita referências");
 
-      return "(neither this class nor its surroundings cite any reference)";
+      return allSources.isEmpty()
+          ? "(neither this class nor its surroundings cite any reference)"
+          : "(references exist, but none within the configured retrieval scope — every source you"
+              + " list must be marked (não verificado))";
     }
 
     final SourceSummarizer summarizer =
         new SourceSummarizer(config, targetClass.getName(), this::isCancelled, progress);
-    final int total = Math.min(sources.size(), MAX_SOURCES_ATTEMPTED);
+    final int maxToRead = config.getMaxSourcesToRead();
+    final int maxToAttempt = maxToRead + ATTEMPT_SAFETY_MARGIN;
+    final int total = Math.min(sources.size(), maxToAttempt);
     final StringBuilder text = new StringBuilder();
     int summarised = 0;
     int declared = 0;
@@ -348,9 +369,7 @@ public class DocumentClassWorker extends SwingWorker<SuggestionResult, Void> {
     progress.count(sourcesStep, 0, total);
 
     for (RelatedSource source : sources) {
-      if (isCancelled()
-          || summarised >= MAX_SOURCE_SUMMARIES
-          || summarised + declared >= MAX_SOURCES_ATTEMPTED) {
+      if (isCancelled() || summarised >= maxToRead || summarised + declared >= maxToAttempt) {
         break;
       }
 

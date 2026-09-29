@@ -1,6 +1,7 @@
 You document one class of an OntoUML model. Produce the documentation by filling the template given
-at the end, in the same language as the class name and its existing documentation (Portuguese, if in
-doubt).
+at the end. **Write the text you fill it with in {language}**, regardless of what language the class
+name or its existing documentation are in. The template's own section headings stay exactly as
+given, in English — only the content you write under each one is in {language}.
 
 ## The class to document
 
@@ -65,12 +66,12 @@ search results show it to be wrong, and say so explicitly in the full descriptio
 
 **On sources — this is the rule that matters most.** Never invent a law, article, resolution or URL.
 
-- **Fontes Normativas** is for binding, official material: laws, decrees, resolutions, normative
+- **Normative sources** is for binding, official material: laws, decrees, resolutions, normative
   instructions, official agency documentation. A URL may be listed here **only if it appears in the
   search results above**, or if it was already cited as a source somewhere in the model. Prefer the
   ones whose page was retrieved, and cite the specific article or section when that page supports
   it.
-- **Fontes** is for explanatory material: books, articles, blogs, technical documentation.
+- **Sources** is for explanatory material: books, articles, blogs, technical documentation.
 - **Always give the URL of a source you retrieved**, on the same line as the citation, after an
   em dash: `Lei 14.133/2021, art. 8º — https://www.planalto.gov.br/...`. A citation without a URL
   cannot become a navigable reference, so leave one out only when you genuinely do not have it from
@@ -83,7 +84,7 @@ search results show it to be wrong, and say so explicitly in the full descriptio
   unchanged, and add the mark to any source listed as `[not read]`. Never drop a mark: a reference
   does not become verified by being copied, nor by having been cited by the author.
 - **Omit a whole section when it would have no entries.** If you have no defensible normative
-  source, leave the "Fontes Normativas" heading out entirely; likewise for "Fontes". Never keep an
+  source, leave the "Normative sources" heading out entirely; likewise for "Sources". Never keep an
   empty heading, and never pad one with plausible-looking references just to fill it.
 
 **On the content.** The short description must be at most 40 words and must say what the thing *is*,
@@ -93,10 +94,10 @@ that the sources establish for it.
 
 **No modelling jargon.** The stereotype of the class is given to you only so you understand the
 nature of the thing. Never mention it, or any other OntoUML/UFO vocabulary, in the documentation:
-do not write "esta classe é um «role»", "trata-se de um kind", "relator", "sortal", "endurant" and
-so on. The reader of this text is a domain reader, not a modeller — describe the thing itself, in
-the vocabulary of the domain. The same holds for the related classes: refer to them by their name,
-not by their stereotype.
+do not write "this class is a «role»", "it is a kind", "relator", "sortal", "endurant" and so on.
+The reader of this text is a domain reader, not a modeller — describe the thing itself, in the
+vocabulary of the domain. The same holds for the related classes: refer to them by their name, not
+by their stereotype.
 
 ## Output format
 

@@ -28,15 +28,28 @@ public class LlmPromptResources {
   public static final String PROMPTS_DIRECTORY = "prompts";
 
   public static final String SYSTEM_PROMPT_FILENAME = "ufo_decision_tree_prompt.md";
+  public static final String NODE_SYSTEM_PROMPT_FILENAME = "node_system_prompt.md";
   public static final String NODE_PROMPT_FILENAME = "ufo_node_prompt.md";
   public static final String DECISION_TREE_FILENAME = "ufo_decision_tree.json";
+  public static final String DOCUMENTATION_SYSTEM_PROMPT_FILENAME = "documentation_system_prompt.md";
   public static final String DOCUMENTATION_PROMPT_FILENAME = "documentation_prompt.md";
   public static final String DOCUMENTATION_TEMPLATE_FILENAME = "documentation_template.md";
+  public static final String SOURCE_SUMMARY_PROMPT_FILENAME = "source_summary_prompt.md";
 
   private static final Map<String, String> bundledCache = new HashMap<>();
 
+  /**
+   * The active configuration, or a fresh (no-override) one when there is no Visual Paradigm host to
+   * read it from — a plain unit test, most likely, exercising a controller method that reads a
+   * prompt through this class along the way. Every override this returns "none" for is one that
+   * production, running inside Visual Paradigm, would have found.
+   */
   private static LlmConfigurations config() {
-    return Configurations.getInstance().getLlmConfigurations();
+    try {
+      return Configurations.getInstance().getLlmConfigurations();
+    } catch (RuntimeException | NoClassDefFoundError e) {
+      return new LlmConfigurations();
+    }
   }
 
   private static String orDefault(String custom, String filename) {
@@ -63,6 +76,30 @@ public class LlmPromptResources {
     return orDefault(config().getCustomDocumentationTemplate(), DOCUMENTATION_TEMPLATE_FILENAME);
   }
 
+  /**
+   * The system message sent alongside the per-question user prompt ({@link #getNodePrompt()}) in
+   * the detailed evaluation. Short and generic on purpose: the instructions that actually vary from
+   * question to question live in the user prompt, not here.
+   */
+  public static String getNodeSystemPrompt() {
+    return orDefault(config().getCustomNodeSystemPrompt(), NODE_SYSTEM_PROMPT_FILENAME);
+  }
+
+  /** The system message sent alongside the documentation prompt when writing a class's documentation. */
+  public static String getDocumentationSystemPrompt() {
+    return orDefault(
+        config().getCustomDocumentationSystemPrompt(), DOCUMENTATION_SYSTEM_PROMPT_FILENAME);
+  }
+
+  /**
+   * The system message sent when condensing a source cited in the model — one call per source (or
+   * per part of a long one) while reading the sources cited in the model, before documenting a
+   * class; see {@link it.unibz.inf.ontouml.vp.utils.SourceSummarizer}.
+   */
+  public static String getSourceSummaryPrompt() {
+    return orDefault(config().getCustomSourceSummaryPrompt(), SOURCE_SUMMARY_PROMPT_FILENAME);
+  }
+
   public static String getDefaultDocumentationPrompt() {
     return readBundled(DOCUMENTATION_PROMPT_FILENAME);
   }
@@ -77,6 +114,18 @@ public class LlmPromptResources {
 
   public static String getDefaultNodePrompt() {
     return readBundled(NODE_PROMPT_FILENAME);
+  }
+
+  public static String getDefaultNodeSystemPrompt() {
+    return readBundled(NODE_SYSTEM_PROMPT_FILENAME);
+  }
+
+  public static String getDefaultDocumentationSystemPrompt() {
+    return readBundled(DOCUMENTATION_SYSTEM_PROMPT_FILENAME);
+  }
+
+  public static String getDefaultSourceSummaryPrompt() {
+    return readBundled(SOURCE_SUMMARY_PROMPT_FILENAME);
   }
 
   public static String getDefaultDecisionTreeJson() {
@@ -111,6 +160,8 @@ public class LlmPromptResources {
       content = TextFiles.readUtf8(new File(promptsDirectory, filename).toPath());
     } catch (IOException e) {
       e.printStackTrace();
+    } catch (RuntimeException | NoClassDefFoundError e) {
+      // no Visual Paradigm host to ask for the plugin directory — a unit test, most likely
     }
 
     bundledCache.put(filename, content);

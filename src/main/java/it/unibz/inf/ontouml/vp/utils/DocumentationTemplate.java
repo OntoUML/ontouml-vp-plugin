@@ -65,6 +65,31 @@ public class DocumentationTemplate {
     return shortDescription.isEmpty() && fullDescription.isEmpty();
   }
 
+  /**
+   * The four sections' headings. The bundled template's are English, unconditionally — the
+   * documentation prompt tells the model to keep them as given regardless of what language it
+   * writes the content in ({@code {language}}), so a fixed structure does not need to track that
+   * setting. The Portuguese ones are matched too, only so a class documented under the plugin's
+   * original template (Portuguese headings, before that {@code {language}} placeholder existed)
+   * keeps parsing correctly. Matched whole, case-insensitively, never as a substring: "Fontes"
+   * must not swallow "Fontes Normativas".
+   */
+  private static final String[] SHORT_DESCRIPTION_HEADINGS = {"Short description", "Descrição curta"};
+
+  private static final String[] FULL_DESCRIPTION_HEADINGS = {
+    "Full description", "Descrição completa"
+  };
+
+  private static final String[] NORMATIVE_SOURCES_HEADINGS = {
+    "Normative sources", "Fontes Normativas"
+  };
+
+  private static final String[] SOURCES_HEADINGS = {"Sources", "Fontes"};
+
+  private static final String[] NO_VERIFIED_SOURCE = {
+    "No verified source.", "Nenhuma fonte verificada."
+  };
+
   public static DocumentationTemplate parse(String description) {
     if (description == null || description.trim().isEmpty()) {
       return new DocumentationTemplate("", "", new ArrayList<>(), new ArrayList<>(), false);
@@ -72,10 +97,10 @@ public class DocumentationTemplate {
 
     final String text = description.replace("\r\n", "\n").replace('\r', '\n');
 
-    final String shortDescription = section(text, "Descrição curta");
-    final String fullDescription = section(text, "Descrição completa");
-    final List<String> normative = lines(section(text, "Fontes Normativas"));
-    final List<String> sources = lines(section(text, "Fontes"));
+    final String shortDescription = section(text, SHORT_DESCRIPTION_HEADINGS);
+    final String fullDescription = section(text, FULL_DESCRIPTION_HEADINGS);
+    final List<String> normative = lines(section(text, NORMATIVE_SOURCES_HEADINGS));
+    final List<String> sources = lines(section(text, SOURCES_HEADINGS));
 
     final boolean templated =
         !shortDescription.isEmpty() || !fullDescription.isEmpty() || !normative.isEmpty();
@@ -94,10 +119,10 @@ public class DocumentationTemplate {
   }
 
   /**
-   * The body of a section, matched on its heading. "Fontes" must not swallow "Fontes Normativas",
-   * so a heading only matches when nothing but whitespace follows the title on that line.
+   * The body of a section, matched on its heading in whichever of the four languages it was
+   * written in. A heading only matches when nothing but whitespace follows the title on that line.
    */
-  private static String section(String text, String heading) {
+  private static String section(String text, String[] headings) {
     final String[] lines = text.split("\n");
     final StringBuilder body = new StringBuilder();
     boolean inside = false;
@@ -110,7 +135,7 @@ public class DocumentationTemplate {
           break;
         }
 
-        inside = stripped.equalsIgnoreCase(heading);
+        inside = matches(stripped, headings);
         continue;
       }
 
@@ -122,12 +147,22 @@ public class DocumentationTemplate {
     return body.toString().trim();
   }
 
+  private static boolean matches(String stripped, String[] candidates) {
+    for (String candidate : candidates) {
+      if (stripped.equalsIgnoreCase(candidate)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   private static String strip(String line) {
     return line.replaceAll("^[#*\\s]+", "").replaceAll("[*:\\s]+$", "").trim();
   }
 
   private static boolean isSourceHeading(String stripped) {
-    return stripped.equalsIgnoreCase("Fontes Normativas") || stripped.equalsIgnoreCase("Fontes");
+    return matches(stripped, NORMATIVE_SOURCES_HEADINGS) || matches(stripped, SOURCES_HEADINGS);
   }
 
   /**
@@ -171,8 +206,8 @@ public class DocumentationTemplate {
   }
 
   private static boolean isHeading(String stripped) {
-    return stripped.equalsIgnoreCase("Descrição curta")
-        || stripped.equalsIgnoreCase("Descrição completa")
+    return matches(stripped, SHORT_DESCRIPTION_HEADINGS)
+        || matches(stripped, FULL_DESCRIPTION_HEADINGS)
         || isSourceHeading(stripped);
   }
 
@@ -183,7 +218,7 @@ public class DocumentationTemplate {
     for (String line : body.split("\n")) {
       final String cleaned = line.replaceAll("^[-*•\\s]+", "").trim();
 
-      if (!cleaned.isEmpty() && !cleaned.startsWith("{") && !cleaned.equalsIgnoreCase("Nenhuma fonte verificada.")) {
+      if (!cleaned.isEmpty() && !cleaned.startsWith("{") && !matches(cleaned, NO_VERIFIED_SOURCE)) {
         collected.add(cleaned);
       }
     }

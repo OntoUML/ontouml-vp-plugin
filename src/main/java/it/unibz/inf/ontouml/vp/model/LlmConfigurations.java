@@ -48,6 +48,10 @@ public class LlmConfigurations {
   @Expose()
   private String customSystemPrompt;
 
+  @SerializedName("customNodeSystemPrompt")
+  @Expose()
+  private String customNodeSystemPrompt;
+
   @SerializedName("customNodePrompt")
   @Expose()
   private String customNodePrompt;
@@ -56,6 +60,10 @@ public class LlmConfigurations {
   @Expose()
   private String customDecisionTree;
 
+  @SerializedName("customDocumentationSystemPrompt")
+  @Expose()
+  private String customDocumentationSystemPrompt;
+
   @SerializedName("customDocumentationPrompt")
   @Expose()
   private String customDocumentationPrompt;
@@ -63,6 +71,46 @@ public class LlmConfigurations {
   @SerializedName("customDocumentationTemplate")
   @Expose()
   private String customDocumentationTemplate;
+
+  @SerializedName("customSourceSummaryPrompt")
+  @Expose()
+  private String customSourceSummaryPrompt;
+
+  /**
+   * The language the AI is told to write a class's documentation in — free text, sent into the
+   * documentation prompt's {@code {language}} placeholder exactly as typed (e.g. "English (US)",
+   * "Italiano", "日本語"). The template's own section headings are not affected by it: they stay in
+   * English regardless, as a fixed structure {@link it.unibz.inf.ontouml.vp.utils.DocumentationTemplate}
+   * reads back.
+   */
+  @SerializedName("documentationLanguage")
+  @Expose()
+  private String documentationLanguage;
+
+  /**
+   * How far to look for the sources cited around a class before documenting it — the class itself,
+   * its diagrams, its neighbours, or none of it. Reading them costs a request per source, sometimes
+   * more than one for a long one, so this is where that whole cost is scaled down, or switched off
+   * outright, rather than merely tuned.
+   */
+  @SerializedName("sourceReadScope")
+  @Expose()
+  private String sourceReadScope;
+
+  /** How many of the sources found are actually fetched and summarised, at most. */
+  @SerializedName("maxSourcesToRead")
+  @Expose()
+  private Integer maxSourcesToRead;
+
+  /** {@link SourceReadMode#MAP_REDUCE} (read everything) or {@link SourceReadMode#TRUNCATE}. */
+  @SerializedName("sourceReadMode")
+  @Expose()
+  private String sourceReadMode;
+
+  /** Only read under {@link SourceReadMode#TRUNCATE}: how much of one source is kept. */
+  @SerializedName("maxCharactersPerSource")
+  @Expose()
+  private Integer maxCharactersPerSource;
 
   @SerializedName("searchMode")
   @Expose()
@@ -149,6 +197,33 @@ public class LlmConfigurations {
   public static final String DEFAULT_PDFTOTEXT_COMMAND = "pdftotext";
   public static final int DEFAULT_CONVERSION_TIMEOUT_SECONDS = 180;
 
+  /** As wide as this used to be, unconditionally: reads the class, its diagrams and its neighbours. */
+  public static final SourceReadScope DEFAULT_SOURCE_READ_SCOPE = SourceReadScope.ALL_NEIGHBOURS;
+
+  /** Same number this used to be hard-coded to. */
+  public static final int DEFAULT_MAX_SOURCES_TO_READ = 12;
+
+  public static final int MAX_SOURCES_TO_READ_LIMIT = 50;
+
+  /** {@link SourceReadMode#MAP_REDUCE} is what this used to do unconditionally. */
+  public static final SourceReadMode DEFAULT_SOURCE_READ_MODE = SourceReadMode.MAP_REDUCE;
+
+  /**
+   * Only read under {@link SourceReadMode#TRUNCATE}. About 5,000 tokens: generous enough for an
+   * ordinary page or article in one piece even though today's frontier models could take far more,
+   * because {@link #DEFAULT_MAX_SOURCES_TO_READ} sources share one prompt's budget — twelve of them
+   * at this size is already comfortably within even a 128k-token context window, with room left for
+   * the rest of the prompt. A source long enough to be cut here is exactly the case
+   * {@link SourceReadMode#MAP_REDUCE} exists for.
+   */
+  public static final int DEFAULT_MAX_CHARACTERS_PER_SOURCE = 20_000;
+
+  public static final int MIN_CHARACTERS_PER_SOURCE = 1_000;
+  public static final int MAX_CHARACTERS_PER_SOURCE_LIMIT = 2_000_000;
+
+  public static final String DEFAULT_DOCUMENTATION_LANGUAGE =
+      DocumentationLanguage.ENGLISH_US.getPromptValue();
+
   public LlmConfigurations() {
     setDefaultValues();
   }
@@ -159,6 +234,11 @@ public class LlmConfigurations {
     this.apiKey = "";
     this.customBaseUrl = "";
     this.model = DEFAULT_PROVIDER.getDefaultModel();
+    this.documentationLanguage = DEFAULT_DOCUMENTATION_LANGUAGE;
+    this.sourceReadScope = DEFAULT_SOURCE_READ_SCOPE.name();
+    this.maxSourcesToRead = DEFAULT_MAX_SOURCES_TO_READ;
+    this.sourceReadMode = DEFAULT_SOURCE_READ_MODE.name();
+    this.maxCharactersPerSource = DEFAULT_MAX_CHARACTERS_PER_SOURCE;
     this.searchMode = SearchMode.NONE.name();
     this.searchProviders = new ArrayList<>();
     this.searchCredentials = new LinkedHashMap<>();
@@ -222,6 +302,54 @@ public class LlmConfigurations {
 
   public void setReadLocalFileReferences(boolean readLocalFileReferences) {
     this.readLocalFileReferences = readLocalFileReferences;
+  }
+
+  /** How far to look for the sources cited around a class before documenting it. */
+  public SourceReadScope getSourceReadScope() {
+    return sourceReadScope == null ? DEFAULT_SOURCE_READ_SCOPE : SourceReadScope.fromName(sourceReadScope);
+  }
+
+  public void setSourceReadScope(SourceReadScope sourceReadScope) {
+    this.sourceReadScope = sourceReadScope.name();
+  }
+
+  /** Whether the sources cited in the model are read at all while documenting a class. */
+  public boolean isReadCitedSources() {
+    return getSourceReadScope() != SourceReadScope.NONE;
+  }
+
+  public SourceReadMode getSourceReadMode() {
+    return sourceReadMode == null ? DEFAULT_SOURCE_READ_MODE : SourceReadMode.fromName(sourceReadMode);
+  }
+
+  public void setSourceReadMode(SourceReadMode sourceReadMode) {
+    this.sourceReadMode = sourceReadMode.name();
+  }
+
+  public int getMaxSourcesToRead() {
+    if (maxSourcesToRead == null || maxSourcesToRead <= 0) {
+      return DEFAULT_MAX_SOURCES_TO_READ;
+    }
+
+    return Math.min(maxSourcesToRead, MAX_SOURCES_TO_READ_LIMIT);
+  }
+
+  public void setMaxSourcesToRead(int maxSourcesToRead) {
+    this.maxSourcesToRead = maxSourcesToRead;
+  }
+
+  public int getMaxCharactersPerSource() {
+    if (maxCharactersPerSource == null || maxCharactersPerSource <= 0) {
+      return DEFAULT_MAX_CHARACTERS_PER_SOURCE;
+    }
+
+    return Math.min(
+        Math.max(maxCharactersPerSource, MIN_CHARACTERS_PER_SOURCE),
+        MAX_CHARACTERS_PER_SOURCE_LIMIT);
+  }
+
+  public void setMaxCharactersPerSource(int maxCharactersPerSource) {
+    this.maxCharactersPerSource = maxCharactersPerSource;
   }
 
   public boolean isUseDocling() {
@@ -345,10 +473,48 @@ public class LlmConfigurations {
   /** Drops every customisation, so the bundled prompts and decision tree are used again. */
   public void restorePromptDefaults() {
     this.customSystemPrompt = "";
+    this.customNodeSystemPrompt = "";
     this.customNodePrompt = "";
     this.customDecisionTree = "";
+    this.customDocumentationSystemPrompt = "";
     this.customDocumentationPrompt = "";
     this.customDocumentationTemplate = "";
+    this.customSourceSummaryPrompt = "";
+  }
+
+  public String getCustomNodeSystemPrompt() {
+    return customNodeSystemPrompt == null ? "" : customNodeSystemPrompt;
+  }
+
+  public void setCustomNodeSystemPrompt(String customNodeSystemPrompt) {
+    this.customNodeSystemPrompt = customNodeSystemPrompt;
+  }
+
+  public String getCustomDocumentationSystemPrompt() {
+    return customDocumentationSystemPrompt == null ? "" : customDocumentationSystemPrompt;
+  }
+
+  public void setCustomDocumentationSystemPrompt(String customDocumentationSystemPrompt) {
+    this.customDocumentationSystemPrompt = customDocumentationSystemPrompt;
+  }
+
+  public String getCustomSourceSummaryPrompt() {
+    return customSourceSummaryPrompt == null ? "" : customSourceSummaryPrompt;
+  }
+
+  public void setCustomSourceSummaryPrompt(String customSourceSummaryPrompt) {
+    this.customSourceSummaryPrompt = customSourceSummaryPrompt;
+  }
+
+  /** The language a class's documentation is written in; never blank. */
+  public String getDocumentationLanguage() {
+    return documentationLanguage == null || documentationLanguage.trim().isEmpty()
+        ? DEFAULT_DOCUMENTATION_LANGUAGE
+        : documentationLanguage.trim();
+  }
+
+  public void setDocumentationLanguage(String documentationLanguage) {
+    this.documentationLanguage = documentationLanguage;
   }
 
   public String getCustomDocumentationPrompt() {

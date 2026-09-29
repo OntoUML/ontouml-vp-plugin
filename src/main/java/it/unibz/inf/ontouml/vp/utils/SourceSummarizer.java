@@ -8,6 +8,7 @@ import it.unibz.inf.ontouml.vp.model.LlmExchange;
 import it.unibz.inf.ontouml.vp.model.RelatedSource;
 import it.unibz.inf.ontouml.vp.model.SearchMode;
 import it.unibz.inf.ontouml.vp.model.SearchResult;
+import it.unibz.inf.ontouml.vp.model.SourceReadMode;
 import it.unibz.inf.ontouml.vp.utils.DocumentExtractor.Extraction;
 import java.util.ArrayList;
 import java.util.List;
@@ -160,11 +161,25 @@ public class SourceSummarizer {
     LlmConversationLog.getInstance().record(exchange);
   }
 
+  /**
+   * How much of a source is even fetched. Under {@link SourceReadMode#TRUNCATE} this is the user's
+   * own cutoff, since reading further only to throw it away at summarising time would still cost
+   * the bandwidth and the time; under {@link SourceReadMode#MAP_REDUCE} it stays generous, so a
+   * long norm is not cut before the map-reduce below ever gets to see its tail.
+   */
+  private int retrievalLimit() {
+    return config.getSourceReadMode() == SourceReadMode.TRUNCATE
+        ? config.getMaxCharactersPerSource()
+        : MAX_SOURCE_CHARACTERS;
+  }
+
   /** Opens the source where it says it lives: a web page, or a file on this machine. */
   private Extraction retrieve(RelatedSource source) {
     if (!source.hasLocator()) {
       return Extraction.failed("a referência não indica um endereço");
     }
+
+    final int limit = retrievalLimit();
 
     if (LocalFileFetcher.isFileLocator(source.getLocator())) {
       if (!config.isReadLocalFileReferences()) {
@@ -172,8 +187,7 @@ public class SourceSummarizer {
             "leitura de arquivos locais desligada nas configurações: " + source.getLocator());
       }
 
-      final Extraction extraction =
-          LocalFileFetcher.fetch(config, progress, source.getLocator(), MAX_SOURCE_CHARACTERS);
+      final Extraction extraction = LocalFileFetcher.fetch(config, progress, source.getLocator(), limit);
 
       if (extraction.succeeded()) {
         source.setRetrievedFrom(source.getLocator());
@@ -192,8 +206,7 @@ public class SourceSummarizer {
       return extraction;
     }
 
-    final Extraction extraction =
-        WebPageFetcher.retrieve(config, progress, source.getLocator(), MAX_SOURCE_CHARACTERS);
+    final Extraction extraction = WebPageFetcher.retrieve(config, progress, source.getLocator(), limit);
 
     if (extraction.succeeded()) {
       source.setRetrievedFrom(source.getLocator());
@@ -236,13 +249,23 @@ public class SourceSummarizer {
   }
 
   /**
-   * One request for a source that fits, and a map-reduce for one that does not: each part is
-   * summarised with the class in focus, then the partial summaries are consolidated into one.
-   * Truncating instead, as this used to, threw away everything past the first few thousand
-   * characters — in a norm, usually the articles that actually bind.
+   * One request for a source that fits, and — under {@link SourceReadMode#MAP_REDUCE} — a
+   * map-reduce for one that does not: each part is summarised with the class in focus, then the
+   * partial summaries are consolidated into one. A norm runs long, and its tail is often where the
+   * duties are, which is the whole reason this mode exists instead of simply truncating.
+   *
+   * <p>Under {@link SourceReadMode#TRUNCATE} the content given here was already cut down to
+   * {@link LlmConfigurations#getMaxCharactersPerSource()} at retrieval time, and stays one request
+   * regardless of how long that cut still leaves it — trading the tail of a long source for the
+   * cost of reading it.
    */
   private String summarise(RelatedSource source, String content) throws Exception {
-    if (content == null || content.length() <= MAX_CHARACTERS_PER_PART) {
+    final boolean fitsOneRequest =
+        content == null
+            || content.length() <= MAX_CHARACTERS_PER_PART
+            || config.getSourceReadMode() == SourceReadMode.TRUNCATE;
+
+    if (fitsOneRequest) {
       progress.activity("Resumindo \"" + source.getCaption() + "\" com o modelo de IA");
 
       return LlmAccessController.requestSourceSummary(

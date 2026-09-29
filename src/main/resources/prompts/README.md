@@ -16,7 +16,7 @@ ou o equivalente na janela de configurações, sem tocar em uma linha de código
   - [`documentation_template.md`](#documentation_templatemd)
   - [`documentation_prompt.md`](#documentation_promptmd)
   - [`ufo_decision_tree_prompt.md`](#ufo_decision_tree_promptmd)
-  - [`ufo_node_prompt.md`](#ufo_node_promptmd)
+  - [`node_system_prompt.md` e `ufo_node_prompt.md`](#node_system_promptmd-e-ufo_node_promptmd)
   - [`ufo_decision_tree.json`](#ufo_decision_treejson)
 - [Placeholders](#placeholders)
 - [O que não pode ser mudado sem quebrar o plugin](#o-que-não-pode-ser-mudado-sem-quebrar-o-plugin)
@@ -30,10 +30,16 @@ ou o equivalente na janela de configurações, sem tocar em uma linha de código
 | Arquivo | Funcionalidade | Papel |
 |---|---|---|
 | `documentation_template.md` | Documentar classe | A **estrutura** que a IA preenche |
-| `documentation_prompt.md` | Documentar classe | As **instruções** de como preencher |
+| `documentation_prompt.md` | Documentar classe | As **instruções** de como preencher, incluindo o placeholder `{language}` |
+| `documentation_system_prompt.md` | Documentar classe | *System prompt* enviado junto do prompt acima |
+| `source_summary_prompt.md` | Documentar classe (leitura de fontes) | *System prompt* usado ao resumir uma fonte citada no modelo |
 | `ufo_decision_tree_prompt.md` | Sugerir metaclasse (avaliação rápida) | *System prompt*: o guia da árvore de decisão UFO |
+| `node_system_prompt.md` | Sugerir metaclasse (avaliação detalhada) | *System prompt* enviado junto do prompt de cada pergunta |
 | `ufo_node_prompt.md` | Sugerir metaclasse (avaliação detalhada) | O prompt de **uma pergunta** da árvore |
 | `ufo_decision_tree.json` | Sugerir metaclasse (avaliação detalhada) | A **árvore** percorrida, pergunta a pergunta |
+
+Todos os arquivos são um texto só, em inglês, independentemente do idioma em que a documentação
+final é escrita — veja [seção 3](#3-idioma-da-documentação) logo abaixo.
 
 > As regras de validação do modelo (`association_constraints*.json`, `generalization_constraints.json`)
 > **não** ficam aqui. Elas não são prompts: são dados lidos pelo verificador de modelos e continuam
@@ -47,7 +53,7 @@ Clique direito na classe → **Document or improve documentation...**
 
 ```
 documentation_prompt.md ──┐
-                          ├─ {class}, {related}, {relatedSources}, {search} preenchidos pelo plugin
+                          ├─ {class}, {related}, {relatedSources}, {search}, {language} do plugin
 documentation_template.md ┴─ entra no lugar de {template}
                                         │
                                         ▼
@@ -59,8 +65,9 @@ documentation_template.md ┴─ entra no lugar de {template}
 
 O plugin monta o prompt lendo o `documentation_prompt.md` e substituindo cada
 [placeholder](#placeholders) pelo conteúdo real do modelo: a classe, as classes vizinhas, o que as
-fontes citadas dizem e os resultados da pesquisa na web. O `documentation_template.md` entra no
-final, no lugar de `{template}`. O fluxo completo está em
+fontes citadas dizem, os resultados da pesquisa na web e o idioma configurado (ver
+[seção 3](#3-idioma-da-documentação)). O `documentation_template.md` entra no final, no lugar de
+`{template}`. O fluxo completo está em
 [`docs/ai-documentation.md`](../../../../docs/ai-documentation.md).
 
 ### Sugerir a metaclasse (estereótipo) de uma classe
@@ -78,23 +85,29 @@ Existem duas estratégias, e cada uma usa arquivos diferentes:
 
 ### 1. Pela interface (recomendado)
 
-No grupo **Prompts and decision tree** de *Settings*, o botão **Edit prompts & decision tree…** abre
-uma janela com uma aba para cada texto:
+No grupo **AI Settings**, aba **Prompts**, o botão **Edit prompts & decision tree…** abre uma
+janela com uma aba para cada texto:
 
 | Aba | Arquivo correspondente |
 |---|---|
 | Quick classification prompt | `ufo_decision_tree_prompt.md` |
-| Decision node prompt | `ufo_node_prompt.md` |
+| Decision node prompt | `node_system_prompt.md` (em cima) + `ufo_node_prompt.md` (embaixo) |
 | Decision tree | `ufo_decision_tree.json` (visual, ou JSON para editar) |
 | Documentation → Template | `documentation_template.md` |
 | Documentation → Prompt | `documentation_prompt.md` |
+| Documentation → System prompt | `documentation_system_prompt.md` |
+| Documentation → Source summaries | `source_summary_prompt.md` |
+
+No topo da aba Documentation também fica o campo **Documentation language** (veja a
+[seção 3](#3-idioma-da-documentação)).
 
 Edite o texto e clique em **Save**. Vale a partir da próxima chamada à IA, sem reiniciar o Visual
 Paradigm.
 
 - A personalização é **sua**, não do projeto: fica no arquivo `.ontouml.config.json` do *workspace*
-  do Visual Paradigm, nos campos `customSystemPrompt`, `customNodePrompt`, `customDecisionTree`,
-  `customDocumentationPrompt` e `customDocumentationTemplate`.
+  do Visual Paradigm, um campo `customX` por texto (`customSystemPrompt`, `customNodeSystemPrompt`,
+  `customNodePrompt`, `customDecisionTree`, `customDocumentationSystemPrompt`,
+  `customDocumentationPrompt`, `customDocumentationTemplate`, `customSourceSummaryPrompt`).
 - Ela **sobrevive à atualização** do plugin.
 - **Restore defaults** devolve todas as abas ao texto desta pasta.
 - Salvar um texto **idêntico** ao padrão não grava nada. Assim o plugin continua seguindo os padrões
@@ -103,6 +116,36 @@ Paradigm.
 - A árvore só é salva se passar na validação descrita em
   [`ufo_decision_tree.json`](#ufo_decision_treejson); do contrário a janela lista os problemas e
   recusa.
+- A janela tem uma barra com **Export prompts...** e **Import prompts...**: Export gera um `.zip`
+  com o texto atual de cada aba, nomeado exatamente como os arquivos desta pasta — pode ser
+  descompactado direto sobre `src/main/resources/prompts/` para virar o novo padrão do repositório.
+  Import lê um `.zip` assim de volta nas abas; nada é salvo até clicar em **Save**.
+
+### 3. Idioma da documentação
+
+Os quatro arquivos usados para documentar uma classe (Template, Prompt, System prompt e Source
+summaries) são um texto único, em inglês — não há uma cópia por idioma. Quem decide em que idioma a
+documentação sai é um único campo de texto livre, **Documentation language** (no topo da aba
+Documentation da janela de prompts), com **"English (US)"** como padrão. Ele pode receber qualquer
+idioma digitado — "Português (Brasil)", "Deutsch", "Español", "日本語", o que for — e vai para o
+placeholder `{language}` do `documentation_prompt.md`, que instrui a IA a escrever o conteúdo nesse
+idioma.
+
+- **Os cabeçalhos do template continuam sempre em inglês** ("Short description", "Full
+  description"...), qualquer que seja o idioma escolhido — só o texto que a IA escreve sob cada um
+  muda de idioma. O `documentation_prompt.md` deixa isso explícito para a IA. Isso é o que permite
+  ter um único template (em vez de um por idioma) e ainda assim manter o
+  [`DocumentationTemplate`](#o-que-não-pode-ser-mudado-sem-quebrar-o-plugin) simples: ele reconhece
+  esses cabeçalhos fixos, mais os da versão original em português (mantidos só por compatibilidade
+  com classes documentadas antes deste campo existir).
+- Alguns rótulos que o próprio código insere no contexto da classe — `origem:`, `a própria classe` /
+  `classe X` / `diagrama X` / `pacote X`, `(não verificado)`, `(conteúdo não recuperado)`, `URL:` e
+  `Arquivo:` — permanecem em português **qualquer que seja o idioma escolhido**; são tokens que o
+  código lê de volta, não texto para traduzir. O `documentation_prompt.md` explica o que eles
+  significam, em prosa, para a IA — do mesmo jeito que já explicava `(não verificado)` antes deste
+  campo existir.
+- Trocar o idioma não exige reescrever nada: é um campo, salvo com **Save** como qualquer outro
+  texto desta janela.
 
 ### 2. Editando os arquivos desta pasta (para quem mantém o plugin)
 
@@ -219,7 +262,7 @@ O bloco **Output format** é um contrato com o código: a resposta é lida como 
 renomeie esses campos. O valor de `stereotype` precisa ser um dos nomes de máquina do vocabulário
 listado no início do arquivo.
 
-### `ufo_node_prompt.md`
+### `node_system_prompt.md` e `ufo_node_prompt.md`
 
 O prompt de **uma pergunta** na avaliação **detalhada**. É repetido a cada nó da árvore, com os
 [placeholders](#placeholders) `{class}`, `{path}`, `{question}` e `{options}` preenchidos. A IA
